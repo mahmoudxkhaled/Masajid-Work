@@ -125,13 +125,13 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
         const code = (error.message).toString();
         switch (code) {
 
-            case 'ERP11135':
+            case 'DAP11135':
                 this.errorMessage = 'Invalid Reset Token. Please use the link from your email.';
                 return;
-            case 'ERP11136':
+            case 'DAP11136':
                 this.errorMessage = 'Invalid New Password. Please enter a valid password.';
                 return;
-            case 'ERP11137':
+            case 'DAP11137':
                 this.errorMessage = 'New Password Format is incompliant. Please check the password requirements.';
                 return;
             default:

@@ -1057,7 +1057,7 @@ export class FileSystemsPermissionsComponent implements OnInit {
   // #region Business errors
   private getPermissionsAdminBusinessErrorCode(response: any): string {
     let code = (response?.errorCode ?? response?.message?.code ?? response?.code ?? '').toString();
-    if (!code && typeof response?.message === 'string' && /^(ERP|FWA)\d+$/.test(response.message)) {
+    if (!code && typeof response?.message === 'string' && /^(ERP|DAP|FWA)\d+$/i.test(response.message)) {
       code = response.message;
     }
     return code;
@@ -1106,69 +1106,69 @@ export class FileSystemsPermissionsComponent implements OnInit {
 
   private getPermissionsAdminFileSystemApiErrorMessage(code: string): string | null {
     switch (code) {
-      case 'ERP12000':
+      case 'DAP12000':
         return this.translate.getInstant('fileSystem.admin.errorAccessDenied');
-      case 'ERP12001':
+      case 'DAP12001':
         return this.translate.getInstant('fileSystem.admin.errorBlockedIpPermanent');
-      case 'ERP12002':
+      case 'DAP12002':
         return this.translate.getInstant('fileSystem.admin.errorBlockedIpTemporary');
-      case 'ERP12005':
+      case 'DAP12005':
         return this.translate.getInstant('fileSystem.admin.errorMissingStorageToken');
-      case 'ERP12006':
+      case 'DAP12006':
         return this.translate.getInstant('fileSystem.admin.errorInvalidStorageToken');
-      case 'ERP12007':
+      case 'DAP12007':
         return this.translate.getInstant('fileSystem.admin.errorAccessDeniedAction');
-      case 'ERP12008':
+      case 'DAP12008':
         return this.translate.getInstant('fileSystem.admin.errorInvalidRequestRouting');
-      case 'ERP12009':
+      case 'DAP12009':
         return this.translate.getInstant('fileSystem.admin.errorRequestUnderDevelopment');
-      case 'ERP12010':
+      case 'DAP12010':
         return this.translate.getInstant('fileSystem.admin.errorResponseManagement');
-      case 'ERP12011':
+      case 'DAP12011':
         return this.translate.getInstant('fileSystem.admin.errorApiCallExecution');
-      case 'ERP12012':
+      case 'DAP12012':
         return this.translate.getInstant('fileSystem.admin.errorFileServerDatabase');
-      case 'ERP12240':
+      case 'DAP12240':
         return this.translate.getInstant('fileSystem.admin.errorInvalidFileId');
-      case 'ERP12248':
+      case 'DAP12248':
         return this.translate.getInstant('fileSystem.admin.errorInvalidEntityFilter');
-      case 'ERP12250':
+      case 'DAP12250':
         return this.translate.getInstant('fileSystem.admin.errorInvalidFolderId');
-      case 'ERP12260':
+      case 'DAP12260':
         return this.translate.getInstant('fileSystem.admin.errorInvalidFileSystemId');
-      case 'ERP12263':
+      case 'DAP12263':
         return this.translate.getInstant('fileSystem.admin.errorInvalidFileAllocationType');
-      case 'ERP12270':
+      case 'DAP12270':
         return this.translate.getInstant('fileSystem.admin.errorInvalidFileSystemAccessToken');
-      case 'ERP12280':
+      case 'DAP12280':
         return this.translate.getInstant('fileSystem.admin.errorInvalidFileAllocation');
-      case 'ERP12290':
+      case 'DAP12290':
         return this.translate.getInstant('fileSystem.admin.errorInvalidDriveId');
-      case 'ERP12291':
+      case 'DAP12291':
         return this.translate.getInstant('fileSystem.admin.errorDriveInactive');
-      case 'ERP12292':
+      case 'DAP12292':
         return this.translate.getInstant('fileSystem.admin.errorAccessDeniedDriveOwner');
-      case 'ERP12293':
+      case 'DAP12293':
         return this.translate.getInstant('fileSystem.admin.errorInvalidAccessType');
-      case 'ERP12294':
+      case 'DAP12294':
         return this.translate.getInstant('fileSystem.admin.errorInvalidAccessRight');
-      case 'ERP12295':
+      case 'DAP12295':
         return this.translate.getInstant('fileSystem.admin.errorNotEnoughFileSystemAccessRight');
-      case 'ERP12296':
+      case 'DAP12296':
         return this.translate.getInstant('fileSystem.admin.errorInvalidAccountId');
-      case 'ERP12297':
+      case 'DAP12297':
         return this.translate.getInstant('fileSystem.admin.errorOwnerOrFullRequired');
-      case 'ERP12298':
+      case 'DAP12298':
         return this.translate.getInstant('fileSystem.admin.errorActionNotAllowedOnReferenceAllocation');
-      case 'ERP12299':
+      case 'DAP12299':
         return this.translate.getInstant('fileSystem.admin.errorActionNotAllowedOnCopyAllocation');
-      case 'ERP12251':
+      case 'DAP12251':
         return this.translate.getInstant('fileSystem.admin.errorInvalidFileSystemName');
-      case 'ERP12252':
+      case 'DAP12252':
         return this.translate.getInstant('fileSystem.admin.errorInvalidFileSystemName');
-      case 'ERP12255':
+      case 'DAP12255':
         return this.translate.getInstant('fileSystem.admin.errorFileSystemInUse');
-      case 'ERP12267':
+      case 'DAP12267':
         return this.translate.getInstant('fileSystem.folderManagement.errorInvalidRestoreSelection');
       case 'FWA12251':
         return this.translate.getInstant('fileSystem.admin.errorInvalidFileSystemName');
@@ -1187,23 +1187,23 @@ export class FileSystemsPermissionsComponent implements OnInit {
       return fromFs;
     }
     switch (code) {
-      case 'ERP11255':
+      case 'DAP11255':
         return this.translate.getInstant('fileSystem.entityAdmin.permissionsAdmin.relatedTargetsErrors.erp11255');
-      case 'ERP11260':
+      case 'DAP11260':
         return this.translate.getInstant('fileSystem.entityAdmin.permissionsAdmin.relatedTargetsErrors.erp11260');
-      case 'ERP11261':
+      case 'DAP11261':
         return this.translate.getInstant('fileSystem.entityAdmin.permissionsAdmin.relatedTargetsErrors.erp11261');
-      case 'ERP11262':
+      case 'DAP11262':
         return this.translate.getInstant('fileSystem.entityAdmin.permissionsAdmin.relatedTargetsErrors.erp11262');
-      case 'ERP11263':
+      case 'DAP11263':
         return this.translate.getInstant('fileSystem.entityAdmin.permissionsAdmin.relatedTargetsErrors.erp11263');
-      case 'ERP11270':
+      case 'DAP11270':
         return this.translate.getInstant('fileSystem.entityAdmin.permissionsAdmin.relatedTargetsErrors.erp11270');
-      case 'ERP11287':
+      case 'DAP11287':
         return this.translate.getInstant('fileSystem.entityAdmin.permissionsAdmin.relatedTargetsErrors.erp11287');
-      case 'ERP11288':
+      case 'DAP11288':
         return this.translate.getInstant('fileSystem.entityAdmin.permissionsAdmin.relatedTargetsErrors.erp11288');
-      case 'ERP11290':
+      case 'DAP11290':
         return this.translate.getInstant('fileSystem.entityAdmin.permissionsAdmin.relatedTargetsErrors.erp11290');
       default:
         return null;

@@ -367,11 +367,11 @@ export class ModuleFormComponent implements OnInit, OnChanges, OnDestroy {
 
     private getCreationErrorMessage(code: string): string | null {
         switch (code) {
-            case 'ERP11400':
+            case 'DAP11400':
                 return 'Invalid Function ID';
-            case 'ERP11401':
+            case 'DAP11401':
                 return 'Invalid Code format, duplicate code, or length > 10 characters';
-            case 'ERP11402':
+            case 'DAP11402':
                 return 'Invalid Name format, or length > 30 characters';
             default:
                 return null;
@@ -380,17 +380,17 @@ export class ModuleFormComponent implements OnInit, OnChanges, OnDestroy {
 
     private getUpdateErrorMessage(code: string): string | null {
         switch (code) {
-            case 'ERP11400':
+            case 'DAP11400':
                 return 'Invalid Function ID';
-            case 'ERP11410':
+            case 'DAP11410':
                 return 'Invalid Module ID';
-            case 'ERP11401':
+            case 'DAP11401':
                 return 'Invalid Code format';
-            case 'ERP11402':
+            case 'DAP11402':
                 return 'Invalid Name format';
-            case 'ERP11403':
+            case 'DAP11403':
                 return 'Invalid Default Order value -> value must be greater than zero';
-            case 'ERP11404':
+            case 'DAP11404':
                 return 'Invalid URL format';
             default:
                 return null;
@@ -398,7 +398,7 @@ export class ModuleFormComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     private getDetailsErrorMessage(code: string): string | null {
-        if (code === 'ERP11410') {
+        if (code === 'DAP11410') {
             return 'Invalid Module ID';
         }
         return null;

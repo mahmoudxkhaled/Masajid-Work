@@ -158,11 +158,11 @@ export class OsfsComponent implements OnInit {
 
   private getListErrorMessage(code: string): string | null {
     switch (code) {
-      case 'ERP12296':
+      case 'DAP12296':
         return this.translate.getInstant('fileSystem.admin.errorInvalidAccountId');
-      case 'ERP12000':
+      case 'DAP12000':
         return this.translate.getInstant('fileSystem.admin.errorAccessDenied');
-      case 'ERP12007':
+      case 'DAP12007':
         return this.translate.getInstant('fileSystem.admin.errorAccessDeniedAction');
       default:
         return null;

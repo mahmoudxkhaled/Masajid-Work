@@ -11,11 +11,11 @@ export type SettingsLayerType =
     | 'entity';
 
 export const SETTINGS_ERROR_CODES = {
-    EMPTY_KEY: 'ERP11420',
-    EMPTY_VALUE: 'ERP11421',
-    NOT_FOUND: 'ERP11422',
-    INVALID_ACCOUNT_ID: 'ERP11425',
-    INVALID_ENTITY_ID: 'ERP11426',
+    EMPTY_KEY: 'DAP11420',
+    EMPTY_VALUE: 'DAP11421',
+    NOT_FOUND: 'DAP11422',
+    INVALID_ACCOUNT_ID: 'DAP11425',
+    INVALID_ENTITY_ID: 'DAP11426',
 } as const;
 
 @Injectable({

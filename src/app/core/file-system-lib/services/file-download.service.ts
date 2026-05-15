@@ -68,7 +68,7 @@ export class FileDownloadService {
 
     console.log('Download_Request response:', response);
 
-    // If API failed (e.g. { success: false, message: "ERP12241" }), throw a response-like
+    // If API failed (e.g. { success: false, message: "DAP12241" }), throw a response-like
     // object so callers (folder-management component) can use getFileSystemErrorDetail
     // with the Storage/File System API error codes.
     if (!response?.success || !response?.message) {

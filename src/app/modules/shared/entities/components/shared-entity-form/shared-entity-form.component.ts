@@ -488,15 +488,15 @@ export class SharedEntityFormComponent implements OnInit, OnDestroy {
 
     private getCreationErrorMessage(code: string): string | null {
         switch (code) {
-            case 'ERP11250':
+            case 'DAP11250':
                 return 'Invalid Parent Entity ID';
-            case 'ERP11251':
+            case 'DAP11251':
                 return 'Invalid \'Code\' format';
-            case 'ERP11252':
+            case 'DAP11252':
                 return 'Invalid \'Name\' format';
-            case 'ERP11253':
+            case 'DAP11253':
                 return 'Invalid \'Description\' format';
-            case 'ERP11254':
+            case 'DAP11254':
                 return 'The \'Code\' is not unique in the main root Entity tree. The administrator adding the entity should be notified to adjust the \'Code\' field';
             default:
                 return null;
@@ -505,17 +505,17 @@ export class SharedEntityFormComponent implements OnInit, OnDestroy {
 
     private getUpdateErrorMessage(code: string): string | null {
         switch (code) {
-            case 'ERP11260':
+            case 'DAP11260':
                 return 'Invalid Entity ID';
-            case 'ERP11250':
+            case 'DAP11250':
                 return 'Invalid Parent Entity ID';
-            case 'ERP11251':
+            case 'DAP11251':
                 return 'Invalid \'Code\' format';
-            case 'ERP11252':
+            case 'DAP11252':
                 return 'Invalid \'Name\' format';
-            case 'ERP11253':
+            case 'DAP11253':
                 return 'Invalid \'Description\' format';
-            case 'ERP11254':
+            case 'DAP11254':
                 return 'The \'Code\' is not unique in the main root Entity tree. The administrator adding the entity should be notified to adjust the \'Code\' field';
             default:
                 return null;
@@ -523,7 +523,7 @@ export class SharedEntityFormComponent implements OnInit, OnDestroy {
     }
 
     private getDetailsErrorMessage(code: string): string | null {
-        if (code === 'ERP11260') {
+        if (code === 'DAP11260') {
             return 'Invalid Entity ID';
         }
 
@@ -546,13 +546,13 @@ export class SharedEntityFormComponent implements OnInit, OnDestroy {
 
     private getCreateEntityRoleErrorMessage(code: string): string | null {
         switch (code) {
-            case 'ERP11300':
+            case 'DAP11300':
                 return 'Invalid entity selected.';
-            case 'ERP11301':
+            case 'DAP11301':
                 return 'Invalid role title format.';
-            case 'ERP11302':
+            case 'DAP11302':
                 return 'Invalid role description format.';
-            case 'ERP11303':
+            case 'DAP11303':
                 return 'A role with this title already exists for this entity.';
             default:
                 return null;
@@ -575,17 +575,17 @@ export class SharedEntityFormComponent implements OnInit, OnDestroy {
 
     private getCreateAccountErrorMessage(code: string): string | null {
         switch (code) {
-            case 'ERP11130':
+            case 'DAP11130':
                 return 'Invalid email address format';
-            case 'ERP11141':
+            case 'DAP11141':
                 return 'An account with the same email already exists';
-            case 'ERP11142':
+            case 'DAP11142':
                 return 'Invalid First Name format -> Empty or contains special characters';
-            case 'ERP11143':
+            case 'DAP11143':
                 return 'Invalid Last Name format -> Empty or contains special characters';
-            case 'ERP11144':
+            case 'DAP11144':
                 return 'Invalid Entity ID -> The database does not have an Entity with this ID';
-            case 'ERP11145':
+            case 'DAP11145':
                 return 'Invalid Role ID -> The entity does not have a Role with this ID';
             default:
                 return null;
@@ -618,7 +618,7 @@ export class SharedEntityFormComponent implements OnInit, OnDestroy {
             },
             error: (error: any) => {
                 const errorCode = String(error?.message || '');
-                if (errorCode === 'ERP11150') {
+                if (errorCode === 'DAP11150') {
                     this.proceedWithEntityCreation(code, name, description, parentId, isPersonalValue, email, firstName, lastName);
                 } else {
                     this.handleBusinessError('create', error);

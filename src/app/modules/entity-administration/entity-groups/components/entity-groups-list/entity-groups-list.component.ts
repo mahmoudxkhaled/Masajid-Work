@@ -451,7 +451,7 @@ export class EntityGroupsListComponent implements OnInit, OnDestroy, OnChanges {
 
     private getListErrorMessage(code: string): string | null {
         switch (code) {
-            case 'ERP11287':
+            case 'DAP11287':
                 return 'Invalid Entity ID';
             default:
                 return null;
@@ -460,7 +460,7 @@ export class EntityGroupsListComponent implements OnInit, OnDestroy, OnChanges {
 
     private getActivateErrorMessage(code: string): string | null {
         switch (code) {
-            case 'ERP11290':
+            case 'DAP11290':
                 return 'Invalid Group ID';
             default:
                 return null;
@@ -469,7 +469,7 @@ export class EntityGroupsListComponent implements OnInit, OnDestroy, OnChanges {
 
     private getDeactivateErrorMessage(code: string): string | null {
         switch (code) {
-            case 'ERP11290':
+            case 'DAP11290':
                 return 'Invalid Group ID';
             default:
                 return null;
@@ -478,7 +478,7 @@ export class EntityGroupsListComponent implements OnInit, OnDestroy, OnChanges {
 
     private getDeleteErrorMessage(code: string): string | null {
         switch (code) {
-            case 'ERP11290':
+            case 'DAP11290':
                 return 'Invalid Group ID';
             default:
                 return null;
@@ -487,9 +487,9 @@ export class EntityGroupsListComponent implements OnInit, OnDestroy, OnChanges {
 
     private getRemoveMembersErrorMessage(code: string): string | null {
         switch (code) {
-            case 'ERP11290':
+            case 'DAP11290':
                 return 'Invalid Group ID';
-            case 'ERP11288':
+            case 'DAP11288':
                 return 'Invalid one or more Account ID';
             default:
                 return null;

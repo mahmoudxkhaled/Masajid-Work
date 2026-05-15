@@ -554,19 +554,19 @@ export class VirtualDrivesSectionComponent implements OnInit {
 
     private getListErrorMessage(code: string): string | null {
         switch (code) {
-            case 'ERP12000':
+            case 'DAP12000':
                 return this.translate.getInstant('fileSystem.admin.virtualDrivesListErrorAccessDenied');
-            case 'ERP12005':
+            case 'DAP12005':
                 return this.translate.getInstant('fileSystem.admin.virtualDrivesListErrorMissingToken');
-            case 'ERP12006':
+            case 'DAP12006':
                 return this.translate.getInstant('fileSystem.admin.virtualDrivesListErrorInvalidToken');
-            case 'ERP12012':
+            case 'DAP12012':
                 return this.translate.getInstant('fileSystem.admin.virtualDrivesListErrorDatabase');
-            case 'ERP12248':
+            case 'DAP12248':
                 return this.translate.getInstant('fileSystem.admin.virtualDrivesListErrorInvalidEntityFilter');
-            case 'ERP12290':
+            case 'DAP12290':
                 return this.translate.getInstant('fileSystem.admin.virtualDrivesListErrorInvalidDriveId');
-            case 'ERP12292':
+            case 'DAP12292':
                 return this.translate.getInstant('fileSystem.admin.virtualDrivesListErrorAccessDeniedOwner');
             default:
                 return null;
@@ -575,13 +575,13 @@ export class VirtualDrivesSectionComponent implements OnInit {
 
     private getCreateErrorMessage(code: string): string | null {
         switch (code) {
-            case 'ERP12271':
+            case 'DAP12271':
                 return this.translate.getInstant('fileSystem.admin.virtualDrivesCreateErrorInvalidName');
-            case 'ERP12272':
+            case 'DAP12272':
                 return this.translate.getInstant('fileSystem.admin.virtualDrivesCreateErrorInvalidLicense');
-            case 'ERP12273':
+            case 'DAP12273':
                 return this.translate.getInstant('fileSystem.admin.virtualDrivesCreateErrorLicenseHasDrive');
-            case 'ERP12274':
+            case 'DAP12274':
                 return this.translate.getInstant('fileSystem.admin.virtualDrivesCreateErrorInvalidCapacity');
             default:
                 return null;
@@ -590,9 +590,9 @@ export class VirtualDrivesSectionComponent implements OnInit {
 
     private getRenameErrorMessage(code: string): string | null {
         switch (code) {
-            case 'ERP12271':
+            case 'DAP12271':
                 return this.translate.getInstant('fileSystem.admin.virtualDrivesRenameErrorInvalidName');
-            case 'ERP12290':
+            case 'DAP12290':
                 return this.translate.getInstant('fileSystem.admin.virtualDrivesRenameErrorInvalidDriveId');
             default:
                 return null;
@@ -601,9 +601,9 @@ export class VirtualDrivesSectionComponent implements OnInit {
 
     private getUpdateCapacityErrorMessage(code: string): string | null {
         switch (code) {
-            case 'ERP12274':
+            case 'DAP12274':
                 return this.translate.getInstant('fileSystem.admin.virtualDrivesUpdateCapacityErrorInvalidRange');
-            case 'ERP12290':
+            case 'DAP12290':
                 return this.translate.getInstant('fileSystem.admin.virtualDrivesUpdateCapacityErrorInvalidDriveId');
             default:
                 return null;
@@ -612,9 +612,9 @@ export class VirtualDrivesSectionComponent implements OnInit {
 
     private getActivateDeactivateErrorMessage(code: string): string | null {
         switch (code) {
-            case 'ERP12290':
+            case 'DAP12290':
                 return this.translate.getInstant('fileSystem.admin.virtualDrivesStatusErrorInvalidDriveId');
-            case 'ERP12291':
+            case 'DAP12291':
                 return this.translate.getInstant('fileSystem.admin.virtualDrivesStatusErrorInactive');
             default:
                 return null;

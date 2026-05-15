@@ -133,50 +133,62 @@ export class ErrorHandlingInterceptor implements HttpInterceptor {
         window.location.assign(`${window.location.origin}${url}`);
     }
 
+    private canonicalErrorCode(code: string): string {
+        const c = String(code || '').trim();
+        const m = c.match(/^ERP(\d+)$/i);
+        if (m) {
+            return `DAP${m[1]}`;
+        }
+        return c;
+    }
+
     private isGenericErrorCode(code: string): boolean {
         if (!code || typeof code !== 'string') {
             return false;
         }
-        let match = code.match(/^ERP11(\d{3})$/);
+        const canon = this.canonicalErrorCode(code);
+        let match = canon.match(/^DAP11(\d{3})$/);
         if (!match) {
-            match = code.match(/^11(\d{3})$/);
-        }
-        if (!match) {
+            match = canon.match(/^11(\d{3})$/);
+            if (match) {
+                const number = parseInt(match[1], 10);
+                return number >= 0 && number <= 99;
+            }
             return false;
         }
         const number = parseInt(match[1], 10);
         return number >= 0 && number <= 99;
     }
 
-    private normalizeGenericErpCode(code: string): string {
-        const c = String(code || '').trim();
-        if (/^ERP11\d{3}$/.test(c)) {
+    private normalizeGenericErrorCode(code: string): string {
+        const c = this.canonicalErrorCode(String(code || '').trim());
+        if (/^DAP11\d{3}$/.test(c)) {
             return c;
         }
         const m = c.match(/^11(\d{3})$/);
         if (m) {
-            return `ERP11${m[1]}`;
+            return `DAP11${m[1]}`;
         }
         return c;
     }
 
     private isSessionExpiredCode(code: string): boolean {
-        const normalized = this.normalizeGenericErpCode(code);
+        const normalized = this.normalizeGenericErrorCode(code);
         const sessionExpiredCodes = [
-            'ERP11040',
-            'ERP11041',
-            'ERP11042',
-            'ERP11062',
-            'ERP11063'
+            'DAP11040',
+            'DAP11041',
+            'DAP11042',
+            'DAP11062',
+            'DAP11063'
         ];
         return sessionExpiredCodes.includes(normalized);
     }
 
     private getGenericErrorDetail(code: string): string {
-        const normalized = this.normalizeGenericErpCode(code);
+        const normalized = this.normalizeGenericErrorCode(code);
 
-        if (normalized.match(/^ERP11(071|072|073|074|075|076|077|078|079|08[0-9]|09[0-9])$/)) {
-            const match = normalized.match(/^ERP11(\d{3})$/);
+        if (normalized.match(/^DAP11(071|072|073|074|075|076|077|078|079|08[0-9]|09[0-9])$/)) {
+            const match = normalized.match(/^DAP11(\d{3})$/);
             if (match) {
                 const paramNumber = parseInt(match[1], 10) - 70;
                 return this.translate.instant('errorHandling.genericErrors.paramInvalidType', { n: String(paramNumber) });

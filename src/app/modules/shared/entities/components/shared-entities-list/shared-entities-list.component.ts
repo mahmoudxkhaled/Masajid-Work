@@ -410,7 +410,7 @@ export class SharedEntitiesListComponent implements OnInit, OnDestroy {
 
     private getListErrorMessage(code: string): string | null {
         switch (code) {
-            case 'ERP11255':
+            case 'DAP11255':
                 return 'Invalid value for the Filter_Count parameter, should be a minimum of 5 records, and a maximum of 100 records';
             default:
                 return null;
@@ -419,11 +419,11 @@ export class SharedEntitiesListComponent implements OnInit, OnDestroy {
 
     private getActivateErrorMessage(code: string): string | null {
         switch (code) {
-            case 'ERP11260':
+            case 'DAP11260':
                 return 'Invalid Entity ID';
-            case 'ERP11261':
+            case 'DAP11261':
                 return 'An entity administrator cannot activate/deactivate his parent entity';
-            case 'ERP11262':
+            case 'DAP11262':
                 return 'The entity is already active';
             default:
                 return null;
@@ -432,11 +432,11 @@ export class SharedEntitiesListComponent implements OnInit, OnDestroy {
 
     private getDeactivateErrorMessage(code: string): string | null {
         switch (code) {
-            case 'ERP11260':
+            case 'DAP11260':
                 return 'Invalid Entity ID';
-            case 'ERP11261':
+            case 'DAP11261':
                 return 'An entity administrator cannot activate/deactivate his parent entity';
-            case 'ERP11263':
+            case 'DAP11263':
                 return 'The entity is already deactivated';
             default:
                 return null;
@@ -445,9 +445,9 @@ export class SharedEntitiesListComponent implements OnInit, OnDestroy {
 
     private getDeleteErrorMessage(code: string): string | null {
         switch (code) {
-            case 'ERP11260':
+            case 'DAP11260':
                 return 'Invalid Entity ID';
-            case 'ERP11270':
+            case 'DAP11270':
                 return 'The entity contains accounts and other data. It should be either deactivated, or all linked records need to be deleted first';
             default:
                 return null;

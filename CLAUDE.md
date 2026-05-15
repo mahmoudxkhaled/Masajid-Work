@@ -129,7 +129,7 @@ export class MyFeatureService {
 | ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
 | `routing-header.interceptor.ts` | Adds `Routing` header to all `/SystemAPIs/` calls                                                                                |
 | `loading.interceptor.ts`        | Toggles global loading spinner                                                                                                   |
-| `error-handling.interceptor.ts` | Session-related ERP codes → clear storage + redirect `/auth?sessionExpired=1`; other generic ERP11xxx errors → translated toasts |
+| `error-handling.interceptor.ts` | Session-related ERP codes → clear storage + redirect `/auth?sessionExpired=1`; other generic DAP11xxx errors → translated toasts |
 
 ---
 
@@ -406,7 +406,7 @@ When working on upload, download, file systems, folders, file allocations, or vi
 - **Upload flow**: `Upload_Request` (get token) → `Upload_File_Chunk` (query: token; form: Current_Chunk, Offset, Hash; file: chunk). File ID returned only on the **last** chunk.
 - **Download flow**: `Download_Request` (get token + chunk count) → `Download_File_Chunk` (query: token; form: Chunk_ID); response body is the chunk stream.
 - Use **`Delete_File_Allocation`** instead of `Delete_File` for ERP.
-- Match error codes (`ERP12xxx`) and permission matrix from the doc when handling errors and access.
+- Match error codes (`DAP12xxx`) and permission matrix from the doc when handling errors and access.
 
 Applies to: `file-system*/`, `file-system-lib/`, `document-control/`, `system-storage-management/`, `entity-storage-management/`
 

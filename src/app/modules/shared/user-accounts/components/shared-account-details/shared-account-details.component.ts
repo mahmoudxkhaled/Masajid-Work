@@ -324,7 +324,7 @@ export class SharedAccountDetailsComponent implements OnInit, OnDestroy, OnChang
 
   private getGetAccountDetailsErrorMessage(code: string): string | null {
     switch (code) {
-      case 'ERP11150':
+      case 'DAP11150':
         return 'Invalid email address -> The Entity does not have an account with this email address';
       default:
         return null;
@@ -333,9 +333,9 @@ export class SharedAccountDetailsComponent implements OnInit, OnDestroy, OnChang
 
   private getUpdateAccountDetailsErrorMessage(code: string): string | null {
     switch (code) {
-      case 'ERP11150':
+      case 'DAP11150':
         return 'Invalid email address -> The Entity does not have an account with this email address';
-      case 'ERP11154':
+      case 'DAP11154':
         return 'Invalid \'Description\' format';
       default:
         return null;

@@ -179,7 +179,7 @@ export class FileUploadService {
     console.log('Upload_Request response:', response);
 
     if (!response?.success || !response?.message) {
-      // Throw a response-like object so UI can map ERP error codes (e.g. ERP12227) using getFileSystemErrorDetail.
+      // Throw a response-like object so UI can map ERP error codes (e.g. DAP12227) using getFileSystemErrorDetail.
       throw {
         errorCode: response?.message,
         message: response?.message || 'Upload request failed.',

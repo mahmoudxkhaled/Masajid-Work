@@ -315,15 +315,15 @@ export class SharedEntityContactComponent implements OnInit, OnDestroy {
 
     private getUpdateErrorMessage(code: string): string | null {
         switch (code) {
-            case 'ERP11260':
+            case 'DAP11260':
                 return this.translate.instant('entities.contact.errors.invalidEntityId');
-            case 'ERP11271':
+            case 'DAP11271':
                 return this.translate.instant('entities.contact.errors.invalidAddressFormat');
-            case 'ERP11272':
+            case 'DAP11272':
                 return this.translate.instant('entities.contact.errors.invalidPhoneFormat');
-            case 'ERP11273':
+            case 'DAP11273':
                 return this.translate.instant('entities.contact.errors.invalidFaxFormat');
-            case 'ERP11274':
+            case 'DAP11274':
                 return this.translate.instant('entities.contact.errors.invalidEmailFormat');
         }
         return null;
@@ -331,7 +331,7 @@ export class SharedEntityContactComponent implements OnInit, OnDestroy {
 
     private handleBusinessError(response: any): void {
         const code = String(response?.message || '');
-        if (code === 'ERP11260') {
+        if (code === 'DAP11260') {
             this.messageService.add({
                 severity: 'error',
                 summary: this.translate.instant('common.error'),

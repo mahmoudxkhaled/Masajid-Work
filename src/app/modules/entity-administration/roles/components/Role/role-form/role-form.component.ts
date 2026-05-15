@@ -380,15 +380,15 @@ export class RoleFormComponent implements OnInit, OnDestroy {
 
     private getCreationErrorMessage(code: string): string | null {
         switch (code) {
-            case 'ERP11300':
+            case 'DAP11300':
                 return 'Invalid Entity ID';
-            case 'ERP11301':
+            case 'DAP11301':
                 return 'Invalid Title Format';
-            case 'ERP11302':
+            case 'DAP11302':
                 return 'Invalid Description Format';
-            case 'ERP11303':
+            case 'DAP11303':
                 return 'Duplicate Title with another Role in the same Entity';
-            case 'ERP11305':
+            case 'DAP11305':
                 return 'Access Denied to Entity Roles';
             default:
                 return null;
@@ -397,15 +397,15 @@ export class RoleFormComponent implements OnInit, OnDestroy {
 
     private getUpdateErrorMessage(code: string): string | null {
         switch (code) {
-            case 'ERP11310':
+            case 'DAP11310':
                 return 'Invalid Entity Role ID';
-            case 'ERP11301':
+            case 'DAP11301':
                 return 'Invalid Title Format';
-            case 'ERP11302':
+            case 'DAP11302':
                 return 'Invalid Description Format';
-            case 'ERP11303':
+            case 'DAP11303':
                 return 'Duplicate Title with another Role in the same Entity';
-            case 'ERP11305':
+            case 'DAP11305':
                 return 'Access Denied to Entity Roles';
             default:
                 return null;
@@ -413,10 +413,10 @@ export class RoleFormComponent implements OnInit, OnDestroy {
     }
 
     private getDetailsErrorMessage(code: string): string | null {
-        if (code === 'ERP11310') {
+        if (code === 'DAP11310') {
             return 'Invalid Entity Role ID';
         }
-        if (code === 'ERP11305') {
+        if (code === 'DAP11305') {
             return 'Access Denied to Entity Roles';
         }
         return null;

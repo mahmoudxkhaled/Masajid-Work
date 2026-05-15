@@ -325,13 +325,13 @@ export class RolesListComponent implements OnInit, OnDestroy, OnChanges {
 
     private getListErrorMessage(code: string): string | null {
         switch (code) {
-            case 'ERP11300':
+            case 'DAP11300':
                 return 'Invalid Entity ID';
-            case 'ERP11312':
+            case 'DAP11312':
                 return 'Invalid value for the Filter_Count parameter (should be a minimum of 5 records, and a maximum of 100 records)';
-            case 'ERP11310':
+            case 'DAP11310':
                 return 'Invalid Entity Role ID';
-            case 'ERP11305':
+            case 'DAP11305':
                 return 'Access Denied to Entity Roles';
             default:
                 return null;
@@ -340,11 +340,11 @@ export class RolesListComponent implements OnInit, OnDestroy, OnChanges {
 
     private getDeleteErrorMessage(code: string): string | null {
         switch (code) {
-            case 'ERP11310':
+            case 'DAP11310':
                 return 'Invalid Entity Role ID';
-            case 'ERP11311':
+            case 'DAP11311':
                 return 'Cannot remove Entity Role if already assigned to accounts. Role assignments should be removed first.';
-            case 'ERP11305':
+            case 'DAP11305':
                 return 'Access Denied to Entity Roles';
             default:
                 return null;

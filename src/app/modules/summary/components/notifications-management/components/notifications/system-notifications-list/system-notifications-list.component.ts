@@ -390,11 +390,11 @@ export class SystemNotificationsListComponent implements OnInit, OnDestroy {
 
     private getListErrorMessage(code: string): string | null {
         switch (code) {
-            case 'ERP11456':
+            case 'DAP11456':
                 return 'Invalid one or more Type_ID';
-            case 'ERP11457':
+            case 'DAP11457':
                 return 'Invalid one or more Category_ID';
-            case 'ERP11458':
+            case 'DAP11458':
                 return 'Filter_Count must be between 5 and 100';
             default:
                 return null;
@@ -403,7 +403,7 @@ export class SystemNotificationsListComponent implements OnInit, OnDestroy {
 
     private getDeleteErrorMessage(code: string): string | null {
         switch (code) {
-            case 'ERP11465':
+            case 'DAP11465':
                 return 'Invalid Notification ID';
             default:
                 return null;

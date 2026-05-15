@@ -400,10 +400,10 @@ export class RoleDetailsComponent implements OnInit, OnDestroy {
         let detail = '';
 
         switch (code) {
-            case 'ERP11310':
+            case 'DAP11310':
                 detail = 'Invalid Entity Role ID';
                 break;
-            case 'ERP11305':
+            case 'DAP11305':
                 detail = 'Access Denied to Entity Roles';
                 break;
             default:

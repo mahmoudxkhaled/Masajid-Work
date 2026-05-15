@@ -268,11 +268,11 @@ export class EntityGroupFormComponent implements OnInit, OnDestroy, OnChanges {
 
     private getCreationErrorMessage(code: string): string | null {
         switch (code) {
-            case 'ERP11285':
+            case 'DAP11285':
                 return 'Invalid \'Title\' format';
-            case 'ERP11286':
+            case 'DAP11286':
                 return 'Invalid \'Description\' format';
-            case 'ERP11260':
+            case 'DAP11260':
                 return 'Invalid Entity ID';
             default:
                 return null;
@@ -281,11 +281,11 @@ export class EntityGroupFormComponent implements OnInit, OnDestroy, OnChanges {
 
     private getUpdateErrorMessage(code: string): string | null {
         switch (code) {
-            case 'ERP11290':
+            case 'DAP11290':
                 return 'Invalid Group ID';
-            case 'ERP11285':
+            case 'DAP11285':
                 return 'Invalid \'Title\' format';
-            case 'ERP11286':
+            case 'DAP11286':
                 return 'Invalid \'Description\' format';
             default:
                 return null;
@@ -293,7 +293,7 @@ export class EntityGroupFormComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     private getDetailsErrorMessage(code: string): string | null {
-        if (code === 'ERP11290') {
+        if (code === 'DAP11290') {
             return 'Invalid Group ID';
         }
 

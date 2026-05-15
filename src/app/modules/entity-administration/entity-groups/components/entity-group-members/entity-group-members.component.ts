@@ -349,9 +349,9 @@ export class EntityGroupMembersComponent implements OnInit, OnDestroy {
 
     private getErrorMessage(context: string, code: string): string | null {
         switch (code) {
-            case 'ERP11290':
+            case 'DAP11290':
                 return 'Invalid Group ID';
-            case 'ERP11288':
+            case 'DAP11288':
                 return 'Invalid one or more Account ID';
             default:
                 return null;

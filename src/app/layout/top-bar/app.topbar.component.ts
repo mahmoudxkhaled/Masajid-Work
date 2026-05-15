@@ -680,13 +680,13 @@ export class AppTopbarComponent implements OnInit, OnDestroy {
 
     private getTopBarNotificationsListErrorMessage(code: string): string | null {
         switch (code) {
-            case 'ERP11470':
+            case 'DAP11470':
                 return this.translate.getInstant('layout.top-bar.notifications.errors.invalidAccountId');
-            case 'ERP11456':
+            case 'DAP11456':
                 return this.translate.getInstant('layout.top-bar.notifications.errors.invalidTypeIds');
-            case 'ERP11457':
+            case 'DAP11457':
                 return this.translate.getInstant('layout.top-bar.notifications.errors.invalidCategoryIds');
-            case 'ERP11458':
+            case 'DAP11458':
                 return this.translate.getInstant('layout.top-bar.notifications.errors.invalidFilterCount');
             default:
                 return null;
@@ -695,9 +695,9 @@ export class AppTopbarComponent implements OnInit, OnDestroy {
 
     private getTopBarNotificationsMarkReadErrorMessage(code: string): string | null {
         switch (code) {
-            case 'ERP11470':
+            case 'DAP11470':
                 return this.translate.getInstant('layout.top-bar.notifications.errors.invalidAccountId');
-            case 'ERP11465':
+            case 'DAP11465':
                 return this.translate.getInstant('layout.top-bar.notifications.errors.invalidNotificationId');
             default:
                 return null;

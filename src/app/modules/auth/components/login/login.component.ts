@@ -61,7 +61,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     initForm() {
         this.loginCreditials = new FormGroup({
-            email: new FormControl<string>('96cpp82uzi@bltiwd.com', [Validators.required, Validators.email]),
+            email: new FormControl<string>('mahmoudxkhaled@gmail.com', [Validators.required, Validators.email]),
             password: new FormControl<string>('Kakuzu@123456', [Validators.required]),
         });
     }
@@ -95,23 +95,23 @@ export class LoginComponent implements OnInit, OnDestroy {
         const code = (error.message).toString();
         switch (code) {
 
-            case 'ERP11100':
+            case 'DAP11100':
                 this.clearLoginBanner();
                 this.router.navigate(['/auth/account-status'], { queryParams: { status: 'Inactive' } });
                 return;
-            case 'ERP11101':
+            case 'DAP11101':
                 this.clearLoginBanner();
                 this.router.navigate(['/auth/email-verified'], { queryParams: { email: email } });
                 return;
-            case 'ERP11102':
+            case 'DAP11102':
                 this.clearLoginBanner();
                 this.router.navigate(['/auth/account-status'], { queryParams: { status: 'Locked' } });
                 return;
-            case 'ERP11103':
+            case 'DAP11103':
                 this.clearLoginBanner();
                 this.router.navigate(['/auth/verify-2fa', email]);
                 return;
-            case 'ERP11104':
+            case 'DAP11104':
                 this.setLoginBanner('auth.login.invalidCredentials');
                 return;
             default:

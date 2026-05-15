@@ -128,7 +128,7 @@ export class GroupDetailsComponent implements OnInit, OnDestroy {
 
     private getErrorMessage(context: string, code: string): string | null {
         switch (code) {
-            case 'ERP11290':
+            case 'DAP11290':
                 return 'Invalid Group ID';
             default:
                 return null;

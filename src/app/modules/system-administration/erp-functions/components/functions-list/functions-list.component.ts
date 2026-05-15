@@ -419,11 +419,11 @@ export class FunctionsListComponent implements OnInit, OnDestroy {
 
     private getActivationErrorMessage(code: string): string | null {
         switch (code) {
-            case 'ERP11400':
+            case 'DAP11400':
                 return 'Invalid Function ID';
-            case 'ERP11406':
+            case 'DAP11406':
                 return 'Function already Active';
-            case 'ERP11407':
+            case 'DAP11407':
                 return 'Function already Inactive';
             default:
                 return null;

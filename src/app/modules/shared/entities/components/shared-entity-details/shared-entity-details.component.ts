@@ -503,17 +503,17 @@ export class SharedEntityDetailsComponent implements OnInit, OnDestroy {
 
     private getErrorMessage(context: string, code: string): string | null {
         switch (code) {
-            case 'ERP11260':
+            case 'DAP11260':
                 return 'Invalid Entity ID';
-            case 'ERP11277':
+            case 'DAP11277':
                 return 'Invalid Account ID (issued if the Account ID does not exist in the database, or if an entity administrator tries to assign an account outside his entity tree)';
-            case 'ERP11278':
+            case 'DAP11278':
                 return 'Invalid action. The Entity Admin account must be assigned directly to the entity (i.e. the Account\'s Entity_ID must be equal to the Entity_ID)';
-            case 'ERP11281':
+            case 'DAP11281':
                 return 'Unknown image file format';
-            case 'ERP11282':
+            case 'DAP11282':
                 return 'Empty contents for Image file';
-            case 'ERP11279':
+            case 'DAP11279':
                 return 'Invalid Account ID. Provided ID is not part of the Entity\'s admins';
             default:
                 return null;

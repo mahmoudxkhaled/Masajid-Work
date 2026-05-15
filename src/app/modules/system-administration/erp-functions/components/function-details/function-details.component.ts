@@ -476,7 +476,7 @@ export class FunctionDetailsComponent implements OnInit, OnChanges, OnDestroy {
         let detail = '';
 
         switch (code) {
-            case 'ERP11400':
+            case 'DAP11400':
                 detail = this.translate.getInstant('systemAdministration.erpFunctions.functionDetails.invalidFunctionId');
                 break;
             default:

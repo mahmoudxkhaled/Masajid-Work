@@ -2,8 +2,8 @@
 
 
     <div class="mx-4 flex align-items-center company-info-desktop topbar-entity-block">
-        <img *ngIf="headerDisplayLogo" width="45" height="45" class="mx-2 topbar-entity-logo"
-            [src]="headerDisplayLogo" [attr.alt]="'layout.top-bar.companyLogo' | translate" />
+        <img *ngIf="headerDisplayLogo" width="45" height="45" class="mx-2 topbar-entity-logo" [src]="headerDisplayLogo"
+            [attr.alt]="'layout.top-bar.companyLogo' | translate" />
         <p *ngIf="headerDisplayTitle" class="topbar-entity-title">{{ headerDisplayTitle }}</p>
     </div>
     <div class="company-info-mobile layout-topbar-start flex justify-content-between align-items-center"
@@ -43,8 +43,7 @@
             </svg> -->
         <!-- <img src="../../assets/media/logo1.png" width="100" alt="Logo" /> -->
         <!-- </a> -->
-        <img width="80" src="../../assets/media/logo/PMAT_Logo_(Medium)_No_Bkgnd.png" routerLink="/"
-            style="cursor: pointer;"
+        <img width="80" src="../../assets/media/logo/Slogan.png" routerLink="/" style="cursor: pointer;"
             [ngClass]="{ 'topbar-pmat-logo--white': layoutService.config().topbarTheme !== 'light' }"
             [attr.alt]="'layout.top-bar.companyLogo' | translate" />
     </div>

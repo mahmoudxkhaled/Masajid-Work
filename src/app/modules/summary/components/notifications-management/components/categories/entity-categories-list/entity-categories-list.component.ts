@@ -318,9 +318,9 @@ export class EntityCategoriesListComponent implements OnInit, OnDestroy {
 
     private getListErrorMessage(code: string): string | null {
         switch (code) {
-            case 'ERP11455':
+            case 'DAP11455':
                 return 'Invalid Entity ID';
-            case 'ERP11458':
+            case 'DAP11458':
                 return 'Filter_Count must be between 5 and 100';
             default:
                 return null;
@@ -329,7 +329,7 @@ export class EntityCategoriesListComponent implements OnInit, OnDestroy {
 
     private getDeleteErrorMessage(code: string): string | null {
         switch (code) {
-            case 'ERP11450':
+            case 'DAP11450':
                 return 'Invalid Category ID';
             default:
                 return null;

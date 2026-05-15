@@ -331,16 +331,16 @@ export class SendNotificationComponent implements OnInit, OnDestroy {
         let detail: string | null = null;
 
         switch (code) {
-            case 'ERP11466':
+            case 'DAP11466':
                 detail = 'Invalid Account IDs';
                 break;
-            case 'ERP11467':
+            case 'DAP11467':
                 detail = 'Invalid Group IDs';
                 break;
-            case 'ERP11468':
+            case 'DAP11468':
                 detail = 'Invalid Entity Role IDs';
                 break;
-            case 'ERP11469':
+            case 'DAP11469':
                 detail = 'Invalid Entity IDs';
                 break;
             default:

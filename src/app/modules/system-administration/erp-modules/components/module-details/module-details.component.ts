@@ -182,7 +182,7 @@ export class ModuleDetailsComponent implements OnInit, OnChanges, OnDestroy {
         let detail = '';
 
         switch (code) {
-            case 'ERP11410':
+            case 'DAP11410':
                 detail = 'Invalid Module ID';
                 break;
             default:

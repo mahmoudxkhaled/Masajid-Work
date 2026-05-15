@@ -519,15 +519,15 @@ export class ProfileEditComponent implements OnInit, OnDestroy {
 
     private getUpdateErrorMessage(code: string): string | null {
         switch (code) {
-            case 'ERP11190':
+            case 'DAP11190':
                 return 'Invalid User ID';
-            case 'ERP11180':
+            case 'DAP11180':
                 return 'Invalid format for First Name';
-            case 'ERP11181':
+            case 'DAP11181':
                 return 'Invalid format for Last Name';
-            case 'ERP11182':
+            case 'DAP11182':
                 return 'Invalid format for Middle Name';
-            case 'ERP11183':
+            case 'DAP11183':
                 return 'Invalid format for Prefix';
             default:
                 return null;
@@ -536,17 +536,17 @@ export class ProfileEditComponent implements OnInit, OnDestroy {
 
     private getContactErrorMessage(code: string): string | null {
         switch (code) {
-            case 'ERP11190':
+            case 'DAP11190':
                 return 'Invalid User ID';
-            case 'ERP11191':
+            case 'DAP11191':
                 return 'Invalid format for one or more of the Phone Numbers';
-            case 'ERP11192':
+            case 'DAP11192':
                 return 'Invalid link for the LinkedIn Page';
-            case 'ERP11193':
+            case 'DAP11193':
                 return 'Invalid link for the Facebook Page';
-            case 'ERP11194':
+            case 'DAP11194':
                 return 'Invalid link for the Instagram Page';
-            case 'ERP11195':
+            case 'DAP11195':
                 return 'Invalid link for the Twitter Page';
             default:
                 return null;

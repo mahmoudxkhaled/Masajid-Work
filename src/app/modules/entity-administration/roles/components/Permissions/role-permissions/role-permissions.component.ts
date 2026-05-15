@@ -605,16 +605,16 @@ export class RolePermissionsComponent implements OnInit, OnDestroy {
         let detail = '';
 
         switch (code) {
-            case 'ERP11310':
+            case 'DAP11310':
                 detail = 'Invalid Entity Role ID';
                 break;
-            case 'ERP11316':
+            case 'DAP11316':
                 detail = type === 'functions' ? 'Invalid Functions list format' : 'Invalid Modules list format';
                 break;
-            case 'ERP11318':
+            case 'DAP11318':
                 detail = 'Invalid Modules list format';
                 break;
-            case 'ERP11305':
+            case 'DAP11305':
                 detail = 'Access Denied to Entity Roles';
                 break;
             default:

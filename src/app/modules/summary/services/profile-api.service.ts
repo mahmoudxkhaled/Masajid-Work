@@ -24,7 +24,7 @@ export class ProfileApiService {
      * Get user details
      * API Code: 201
      * @param userId - User ID
-     * Error codes: ERP11190 (Invalid User ID)
+     * Error codes: DAP11190 (Invalid User ID)
      */
     getUserDetails(userId: number): Observable<any> {
         this.isLoadingSubject.next(true);
@@ -43,7 +43,7 @@ export class ProfileApiService {
      * @param prefix - Prefix (varchar 10)
      * @param isRegional - Whether to use regional fields
      * @param gender - Gender (true: Male, false: Female)
-     * Error codes: ERP11190 (Invalid User ID), ERP11180 (Invalid First Name), ERP11181 (Invalid Last Name), ERP11182 (Invalid Middle Name), ERP11183 (Invalid Prefix)
+     * Error codes: DAP11190 (Invalid User ID), DAP11180 (Invalid First Name), DAP11181 (Invalid Last Name), DAP11182 (Invalid Middle Name), DAP11183 (Invalid Prefix)
      */
     updateUserDetails(
         userId: number,
@@ -73,7 +73,7 @@ export class ProfileApiService {
      * Get user contact information
      * API Code: 204
      * @param userId - User ID
-     * Error codes: ERP11190 (Invalid User ID)
+     * Error codes: DAP11190 (Invalid User ID)
      */
     getUserContactInfo(userId: number): Observable<any> {
         this.isLoadingSubject.next(true);
@@ -93,7 +93,7 @@ export class ProfileApiService {
      * @param facebookPage - Facebook page URL
      * @param instagramPage - Instagram page URL
      * @param twitterPage - Twitter page URL
-     * Error codes: ERP11190 (Invalid User ID), ERP11191 (Invalid Phone Numbers), ERP11192 (Invalid LinkedIn), ERP11193 (Invalid Facebook), ERP11194 (Invalid Instagram), ERP11195 (Invalid Twitter)
+     * Error codes: DAP11190 (Invalid User ID), DAP11191 (Invalid Phone Numbers), DAP11192 (Invalid LinkedIn), DAP11193 (Invalid Facebook), DAP11194 (Invalid Instagram), DAP11195 (Invalid Twitter)
      */
     updateUserContactInfo(
         userId: number,
@@ -173,7 +173,7 @@ export class ProfileApiService {
      * @param userId - User ID
      * @param imageFormat - Image format (png, jpg, jpeg, gif, bmp, tiff, pict)
      * @param base64Image - Base64 encoded image string
-     * Error codes: ERP11220 (Invalid Image Format), ERP11221 (Invalid Image Size)
+     * Error codes: DAP11220 (Invalid Image Format), DAP11221 (Invalid Image Size)
      */
     assignProfilePicture(userId: number, imageFormat: string, base64Image: string): Observable<any> {
         this.isLoadingSubject.next(true);

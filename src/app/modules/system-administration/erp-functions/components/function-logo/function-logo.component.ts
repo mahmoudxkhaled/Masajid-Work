@@ -208,9 +208,9 @@ export class FunctionLogoComponent implements OnInit, OnChanges, OnDestroy {
         ).subscribe({
             next: (response: any) => {
                 if (!response?.success) {
-                    // Check if error is ERP11409 (empty contents) - this is expected for removal
+                    // Check if error is DAP11409 (empty contents) - this is expected for removal
                     const errorCode = String(response?.message || '');
-                    if (errorCode === 'ERP11409') {
+                    if (errorCode === 'DAP11409') {
                         // API accepted empty string as removal
                         this.messageService.add({
                             severity: 'success',
@@ -260,13 +260,13 @@ export class FunctionLogoComponent implements OnInit, OnChanges, OnDestroy {
         let detail = '';
 
         switch (code) {
-            case 'ERP11400':
+            case 'DAP11400':
                 detail = 'Invalid Function ID';
                 break;
-            case 'ERP11408':
+            case 'DAP11408':
                 detail = 'Unknown image file format';
                 break;
-            case 'ERP11409':
+            case 'DAP11409':
                 detail = 'Empty contents for logo file';
                 break;
             default:

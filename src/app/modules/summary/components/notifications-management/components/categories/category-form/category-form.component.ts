@@ -315,13 +315,13 @@ export class CategoryFormComponent implements OnInit, OnDestroy, OnChanges {
 
     private getCreateErrorMessage(code: string): string | null {
         switch (code) {
-            case 'ERP11451':
+            case 'DAP11451':
                 return 'Invalid Category Title';
-            case 'ERP11452':
+            case 'DAP11452':
                 return 'Invalid Category Description';
-            case 'ERP11453':
+            case 'DAP11453':
                 return 'Invalid Type ID';
-            case 'ERP11455':
+            case 'DAP11455':
                 return 'Invalid Entity ID';
             default:
                 return null;
@@ -330,13 +330,13 @@ export class CategoryFormComponent implements OnInit, OnDestroy, OnChanges {
 
     private getUpdateErrorMessage(code: string): string | null {
         switch (code) {
-            case 'ERP11450':
+            case 'DAP11450':
                 return 'Invalid Category ID';
-            case 'ERP11451':
+            case 'DAP11451':
                 return 'Invalid Category Title';
-            case 'ERP11452':
+            case 'DAP11452':
                 return 'Invalid Category Description';
-            case 'ERP11453':
+            case 'DAP11453':
                 return 'Invalid Type ID';
             default:
                 return null;
@@ -345,7 +345,7 @@ export class CategoryFormComponent implements OnInit, OnDestroy, OnChanges {
 
     private getDetailsErrorMessage(code: string): string | null {
         switch (code) {
-            case 'ERP11450':
+            case 'DAP11450':
                 return 'Invalid Category ID';
             default:
                 return null;

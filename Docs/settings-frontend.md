@@ -64,11 +64,11 @@ All calls go through `ApiService.callAPI` with the access token. Set operations 
 
 | Code | Constant |
 |------|----------|
-| `ERP11420` | `EMPTY_KEY` |
-| `ERP11421` | `EMPTY_VALUE` |
-| `ERP11422` | `NOT_FOUND` |
-| `ERP11425` | `INVALID_ACCOUNT_ID` |
-| `ERP11426` | `INVALID_ENTITY_ID` |
+| `DAP11420` | `EMPTY_KEY` |
+| `DAP11421` | `EMPTY_VALUE` |
+| `DAP11422` | `NOT_FOUND` |
+| `DAP11425` | `INVALID_ACCOUNT_ID` |
+| `DAP11426` | `INVALID_ENTITY_ID` |
 
 Handled in `SettingsSectionComponent` via `handleBusinessError` + `settings.messages.errors.*` (see `.cursor/rules/business-error-handling.mdc` pattern).
 

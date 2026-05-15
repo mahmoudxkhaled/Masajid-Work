@@ -1081,7 +1081,7 @@ export class FolderManagementComponent implements OnInit, OnChanges, OnDestroy {
 
   /**
    * Download file using FileDownloadService.
-   * Uses Storage/File System error codes (ERP12xxx) via handleBusinessError on failure.
+   * Uses Storage/File System error codes (DAP12xxx) via handleBusinessError on failure.
    */
   async downloadFile(file: FolderContentRow): Promise<void> {
     if (this.downloadInProgress || this.fileSystemId <= 0) {
@@ -1300,7 +1300,7 @@ export class FolderManagementComponent implements OnInit, OnChanges, OnDestroy {
   /**
    * Upload selected files to the current folder.
    * Checks that no selected file has the same name as an existing file or folder in the current folder.
-   * Uses Storage/File System error codes (ERP12xxx) via handleBusinessError on failure.
+   * Uses Storage/File System error codes (DAP12xxx) via handleBusinessError on failure.
    */
   async onUploadConfirm(): Promise<void> {
     if (this.selectedFiles.length === 0 || this.fileSystemId <= 0) {
@@ -2058,7 +2058,7 @@ export class FolderManagementComponent implements OnInit, OnChanges, OnDestroy {
       if (msg != null && typeof msg === 'object' && (msg as { detail?: string }).detail != null) {
         return String((msg as { detail?: string }).detail);
       }
-      if (typeof msg === 'string' && !/^(ERP|FWA)\d+$/.test(msg)) {
+      if (typeof msg === 'string' && !/^(ERP|DAP|FWA)\d+$/i.test(msg)) {
         return msg;
       }
       return null;
@@ -2068,100 +2068,100 @@ export class FolderManagementComponent implements OnInit, OnChanges, OnDestroy {
 
   private getStorageApiErrorMessage(code: string): string | null {
     switch (code) {
-      case 'ERP12000':
+      case 'DAP12000':
         return this.translate.getInstant('fileSystem.admin.errorAccessDenied');
-      case 'ERP12001':
+      case 'DAP12001':
         return this.translate.getInstant('fileSystem.admin.errorBlockedIpPermanent');
-      case 'ERP12002':
+      case 'DAP12002':
         return this.translate.getInstant('fileSystem.admin.errorBlockedIpTemporary');
-      case 'ERP12005':
+      case 'DAP12005':
         return this.translate.getInstant('fileSystem.admin.errorMissingStorageToken');
-      case 'ERP12006':
+      case 'DAP12006':
         return this.translate.getInstant('fileSystem.admin.errorInvalidStorageToken');
-      case 'ERP12007':
+      case 'DAP12007':
         return this.translate.getInstant('fileSystem.admin.errorAccessDeniedAction');
-      case 'ERP12008':
+      case 'DAP12008':
         return this.translate.getInstant('fileSystem.admin.errorInvalidRequestRouting');
-      case 'ERP12009':
+      case 'DAP12009':
         return this.translate.getInstant('fileSystem.admin.errorRequestUnderDevelopment');
-      case 'ERP12010':
+      case 'DAP12010':
         return this.translate.getInstant('fileSystem.admin.errorResponseManagement');
-      case 'ERP12011':
+      case 'DAP12011':
         return this.translate.getInstant('fileSystem.admin.errorApiCallExecution');
-      case 'ERP12012':
+      case 'DAP12012':
         return this.translate.getInstant('fileSystem.admin.errorFileServerDatabase');
-      case 'ERP12240':
+      case 'DAP12240':
         return this.translate.getInstant('fileSystem.admin.errorInvalidFileId');
-      case 'ERP12250':
+      case 'DAP12250':
         return this.translate.getInstant('fileSystem.admin.errorInvalidFolderId');
-      case 'ERP12260':
+      case 'DAP12260':
         return this.translate.getInstant('fileSystem.admin.errorInvalidFileSystemId');
-      case 'ERP12270':
+      case 'DAP12270':
         return this.translate.getInstant('fileSystem.admin.errorInvalidFileSystemAccessToken');
-      case 'ERP12280':
+      case 'DAP12280':
         return this.translate.getInstant('fileSystem.admin.errorInvalidFileAllocation');
-      case 'ERP12290':
+      case 'DAP12290':
         return this.translate.getInstant('fileSystem.admin.errorInvalidDriveId');
-      case 'ERP12291':
+      case 'DAP12291':
         return this.translate.getInstant('fileSystem.admin.errorDriveInactive');
-      case 'ERP12292':
+      case 'DAP12292':
         return this.translate.getInstant('fileSystem.admin.errorAccessDeniedDriveOwner');
-      case 'ERP12295':
+      case 'DAP12295':
         return this.translate.getInstant('fileSystem.admin.errorNotEnoughFileSystemAccessRight');
-      case 'ERP12293':
+      case 'DAP12293':
         return this.translate.getInstant('fileSystem.admin.errorInvalidAccessType');
-      case 'ERP12294':
+      case 'DAP12294':
         return this.translate.getInstant('fileSystem.admin.errorInvalidAccessRight');
-      case 'ERP12296':
+      case 'DAP12296':
         return this.translate.getInstant('fileSystem.admin.errorInvalidAccountId');
-      case 'ERP12297':
+      case 'DAP12297':
         return this.translate.getInstant('fileSystem.admin.errorOwnerOrFullRequired');
-      case 'ERP12298':
+      case 'DAP12298':
         return this.translate.getInstant('fileSystem.admin.errorActionNotAllowedOnReferenceAllocation');
-      case 'ERP12299':
+      case 'DAP12299':
         return this.translate.getInstant('fileSystem.admin.errorActionNotAllowedOnCopyAllocation');
-      case 'ERP12220':
+      case 'DAP12220':
         return this.translate.getInstant('fileSystem.admin.errorInvalidFileName');
-      case 'ERP12221':
+      case 'DAP12221':
         return this.translate.getInstant('fileSystem.admin.errorInvalidFileType');
-      case 'ERP12222':
+      case 'DAP12222':
         return this.translate.getInstant('fileSystem.admin.errorInvalidDateFormat');
-      case 'ERP12223':
+      case 'DAP12223':
         return this.translate.getInstant('fileSystem.admin.errorInvalidFileSize');
-      case 'ERP12224':
+      case 'DAP12224':
         return this.translate.getInstant('fileSystem.admin.errorInvalidNChunks');
-      case 'ERP12225':
+      case 'DAP12225':
         return this.translate.getInstant('fileSystem.admin.errorNChunksMismatch');
-      case 'ERP12226':
+      case 'DAP12226':
         return this.translate.getInstant('fileSystem.admin.errorInsufficientStorage');
-      case 'ERP12227':
+      case 'DAP12227':
         return this.translate.getInstant('fileSystem.admin.errorFileExistsInFolder');
-      case 'ERP12230':
+      case 'DAP12230':
         return this.translate.getInstant('fileSystem.admin.errorInvalidUploadToken');
-      case 'ERP12231':
+      case 'DAP12231':
         return this.translate.getInstant('fileSystem.admin.errorInvalidChunkId');
-      case 'ERP12232':
+      case 'DAP12232':
         return this.translate.getInstant('fileSystem.admin.errorInvalidOffset');
-      case 'ERP12233':
+      case 'DAP12233':
         return this.translate.getInstant('fileSystem.admin.errorNoChunksReceived');
-      case 'ERP12234':
+      case 'DAP12234':
         return this.translate.getInstant('fileSystem.admin.errorChunkEmpty');
-      case 'ERP12235':
+      case 'DAP12235':
         return this.translate.getInstant('fileSystem.admin.errorChunkHashEmpty');
-      case 'ERP12236':
+      case 'DAP12236':
         return this.translate.getInstant('fileSystem.admin.errorChunkHashInvalid');
-      case 'ERP12237':
+      case 'DAP12237':
         return this.translate.getInstant('fileSystem.admin.errorFileStorage');
-      case 'ERP12248':
+      case 'DAP12248':
         return this.translate.getInstant('fileSystem.admin.errorInvalidEntityFilter');
-      case 'ERP12251':
-      case 'ERP12252':
+      case 'DAP12251':
+      case 'DAP12252':
         return this.translate.getInstant('fileSystem.admin.errorInvalidFileSystemName');
-      case 'ERP12255':
+      case 'DAP12255':
         return this.translate.getInstant('fileSystem.admin.errorFileSystemInUse');
-      case 'ERP12267':
+      case 'DAP12267':
         return this.translate.getInstant('fileSystem.folderManagement.errorInvalidRestoreSelection');
-      case 'ERP12263':
+      case 'DAP12263':
         return this.translate.getInstant('fileSystem.admin.errorInvalidFileAllocationType');
       case 'FWA12251':
       case 'FWA12252':

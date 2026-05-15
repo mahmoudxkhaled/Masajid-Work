@@ -181,78 +181,78 @@ Roles: **DEV | SADMIN | EADMIN | USER | GUEST**
 ## 10. Error Codes
 
 ### Common (All File Server Actions)
-- ERP12000 – Access Denied  
-- ERP12001 – Blocked IP (Permanent)  
-- ERP12002 – Blocked IP (Temporary)  
-- ERP12005 – Missing Storage Access Token  
-- ERP12006 – Invalid Storage Access Token  
-- ERP12007 – Access Denied to perform this action  
-- ERP12008 – Invalid Request Routing  
-- ERP12009 – Request Under Development  
-- ERP12010 – Response Management → Global Execution error  
-- ERP12011 – API Call Execution → Global Execution error  
-- ERP12012 – File Server Database Error  
+- DAP12000 – Access Denied  
+- DAP12001 – Blocked IP (Permanent)  
+- DAP12002 – Blocked IP (Temporary)  
+- DAP12005 – Missing Storage Access Token  
+- DAP12006 – Invalid Storage Access Token  
+- DAP12007 – Access Denied to perform this action  
+- DAP12008 – Invalid Request Routing  
+- DAP12009 – Request Under Development  
+- DAP12010 – Response Management → Global Execution error  
+- DAP12011 – API Call Execution → Global Execution error  
+- DAP12012 – File Server Database Error  
 
 ### Common (2B Actions)
-- ERP12240 – Invalid File ID  
-- ERP12250 – Invalid Folder ID  
-- ERP12260 – Invalid File System ID  
-- ERP12270 – Invalid File System Access Token  
-- ERP12280 – Invalid File Allocation (File ID + Folder ID)  
-- ERP12290 – Invalid Drive ID  
-- ERP12291 – Drive is inactive  
-- ERP12292 – Access Denied to the drive(s) of this Owner ID  
-- ERP12295 – Not enough File System Access Right to perform this action  
-- ERP12297 – Access Denied. This action can only be performed by the File System owner or an account with ‘Full’ Access Right  
-- ERP12298 – This action cannot be performed on a ‘Reference’ file allocation  
-- ERP12299 – This action cannot be performed on a ‘Copy’ file allocation  
+- DAP12240 – Invalid File ID  
+- DAP12250 – Invalid Folder ID  
+- DAP12260 – Invalid File System ID  
+- DAP12270 – Invalid File System Access Token  
+- DAP12280 – Invalid File Allocation (File ID + Folder ID)  
+- DAP12290 – Invalid Drive ID  
+- DAP12291 – Drive is inactive  
+- DAP12292 – Access Denied to the drive(s) of this Owner ID  
+- DAP12295 – Not enough File System Access Right to perform this action  
+- DAP12297 – Access Denied. This action can only be performed by the File System owner or an account with ‘Full’ Access Right  
+- DAP12298 – This action cannot be performed on a ‘Reference’ file allocation  
+- DAP12299 – This action cannot be performed on a ‘Copy’ file allocation  
 
 ### Upload_Request
-- ERP12220 – Invalid File Name  
-- ERP12221 – Invalid File Type  
-- ERP12222 – Invalid Date Format  
-- ERP12223 – Invalid File Size (≤ 0)  
-- ERP12224 – Invalid nChunks (0–4,000,000 ≈ 1 TB)  
-- ERP12225 – nChunks not matching Chunk_Size  
-- ERP12226 – Insufficient Storage Capacity  
-- ERP12227 – File with same name exists in folder  
+- DAP12220 – Invalid File Name  
+- DAP12221 – Invalid File Type  
+- DAP12222 – Invalid Date Format  
+- DAP12223 – Invalid File Size (≤ 0)  
+- DAP12224 – Invalid nChunks (0–4,000,000 ≈ 1 TB)  
+- DAP12225 – nChunks not matching Chunk_Size  
+- DAP12226 – Insufficient Storage Capacity  
+- DAP12227 – File with same name exists in folder  
 
 ### Upload_File_Chunk
-- ERP12230 – Invalid File Upload Token  
-- ERP12231 – Invalid File Chunk ID (1 to nChunks)  
-- ERP12232 – Invalid Offset (0 to File_Size)  
-- ERP12233 – No File Chunks received  
-- ERP12234 – File Chunk is empty  
-- ERP12235 – File Chunk Hash empty  
-- ERP12236 – File Chunk Hash invalid  
-- ERP12237 – Error during file storage  
+- DAP12230 – Invalid File Upload Token  
+- DAP12231 – Invalid File Chunk ID (1 to nChunks)  
+- DAP12232 – Invalid Offset (0 to File_Size)  
+- DAP12233 – No File Chunks received  
+- DAP12234 – File Chunk is empty  
+- DAP12235 – File Chunk Hash empty  
+- DAP12236 – File Chunk Hash invalid  
+- DAP12237 – Error during file storage  
 
 ### Download
-- ERP12241 – File contents currently unavailable  
-- ERP12245 – Invalid/Expired Download Token  
-- ERP12246 – Invalid File Chunk ID (1 to nChunks)  
-- ERP12249 – File Chunk not yet ready, retry in few seconds  
+- DAP12241 – File contents currently unavailable  
+- DAP12245 – Invalid/Expired Download Token  
+- DAP12246 – Invalid File Chunk ID (1 to nChunks)  
+- DAP12249 – File Chunk not yet ready, retry in few seconds  
 
 ### Other APIs
-- List_File_Systems: ERP12248 – Invalid Entity Filter  
-- Create_File_System: ERP12251 Invalid File System Name, ERP12252 Invalid File System Type  
+- List_File_Systems: DAP12248 – Invalid Entity Filter  
+- Create_File_System: DAP12251 Invalid File System Name, DAP12252 Invalid File System Type  
 - Update_File_System_Details: FWA12251 Invalid File System Name, FWA12252 Invalid File System Type  
 - Delete_File_System: FWA12255 Cannot delete File System, already in use  
-- Create_Folder: ERP12261 Invalid Folder Name, ERP12262 Invalid Parent Folder ID  
-- Update_Folder_Details: ERP12261 Invalid Folder Name  
-- Move_Folder: ERP12262 Invalid Parent Folder ID, ERP12266 Invalid Parent Folder ID -> Same Folder or one of its children  
-- Restore_Deleted_Folders/Files: ERP12267 Invalid Array Length  
-- Delete_File: ERP12247 File still contains active allocations  
-- Update_File_Details: ERP12220 Invalid File Name, ERP12221 Invalid File Type  
-- Update_File_Allocation_Details: ERP12263 Invalid File Allocation Type  
-- Allocate_File: ERP12263 Invalid File Allocation Type, ERP12227 File with same name exists in folder  
-- Move_File: ERP12227 File with same name exists in selected folder, ERP12262 Invalid Parent Folder ID  
-- Create_Virtual_Drive: ERP12271 Invalid Drive Name, ERP12272 Invalid License ID, ERP12273 This License already has an assigned drive, ERP12274 Invalid Drive Capacity (should be from 0 to License max)  
-- Rename_Virtual_Drive: ERP12271 Invalid Drive Name  
-- Update_Drive_Capacity: ERP12274 Invalid Drive Capacity (should be from 0 to License max)  
-- Set_File_System_Access_Permission: ERP12293 Invalid Access Type, ERP12294 Invalid Access Right  
-- List_Account_File_Systems: ERP12296 Invalid Account ID  
-- List_Account_FS_Permissions: ERP12260 Invalid File System ID, ERP12296 Invalid Account ID  
+- Create_Folder: DAP12261 Invalid Folder Name, DAP12262 Invalid Parent Folder ID  
+- Update_Folder_Details: DAP12261 Invalid Folder Name  
+- Move_Folder: DAP12262 Invalid Parent Folder ID, DAP12266 Invalid Parent Folder ID -> Same Folder or one of its children  
+- Restore_Deleted_Folders/Files: DAP12267 Invalid Array Length  
+- Delete_File: DAP12247 File still contains active allocations  
+- Update_File_Details: DAP12220 Invalid File Name, DAP12221 Invalid File Type  
+- Update_File_Allocation_Details: DAP12263 Invalid File Allocation Type  
+- Allocate_File: DAP12263 Invalid File Allocation Type, DAP12227 File with same name exists in folder  
+- Move_File: DAP12227 File with same name exists in selected folder, DAP12262 Invalid Parent Folder ID  
+- Create_Virtual_Drive: DAP12271 Invalid Drive Name, DAP12272 Invalid License ID, DAP12273 This License already has an assigned drive, DAP12274 Invalid Drive Capacity (should be from 0 to License max)  
+- Rename_Virtual_Drive: DAP12271 Invalid Drive Name  
+- Update_Drive_Capacity: DAP12274 Invalid Drive Capacity (should be from 0 to License max)  
+- Set_File_System_Access_Permission: DAP12293 Invalid Access Type, DAP12294 Invalid Access Right  
+- List_Account_File_Systems: DAP12296 Invalid Account ID  
+- List_Account_FS_Permissions: DAP12260 Invalid File System ID, DAP12296 Invalid Account ID  
 
 ### List_File_System_Permissions (1170) — response interpretation
 

@@ -303,7 +303,7 @@ export class SystemCategoriesListComponent implements OnInit, OnDestroy {
 
     private getListErrorMessage(code: string): string | null {
         switch (code) {
-            case 'ERP11458':
+            case 'DAP11458':
                 return 'Filter_Count must be between 5 and 100';
             default:
                 return null;
@@ -312,7 +312,7 @@ export class SystemCategoriesListComponent implements OnInit, OnDestroy {
 
     private getDeleteErrorMessage(code: string): string | null {
         switch (code) {
-            case 'ERP11450':
+            case 'DAP11450':
                 return 'Invalid Category ID';
             default:
                 return null;

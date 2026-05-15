@@ -371,15 +371,15 @@ export class NotificationFormComponent implements OnInit, OnDestroy, OnChanges {
 
     private getCreateErrorMessage(code: string): string | null {
         switch (code) {
-            case 'ERP11460':
+            case 'DAP11460':
                 return 'Invalid Module ID';
-            case 'ERP11461':
+            case 'DAP11461':
                 return 'Invalid Notification Title';
-            case 'ERP11462':
+            case 'DAP11462':
                 return 'Invalid Notification Message';
-            case 'ERP11463':
+            case 'DAP11463':
                 return 'Invalid Reference Type';
-            case 'ERP11464':
+            case 'DAP11464':
                 return 'Invalid Reference ID';
             default:
                 return null;
@@ -388,15 +388,15 @@ export class NotificationFormComponent implements OnInit, OnDestroy, OnChanges {
 
     private getUpdateErrorMessage(code: string): string | null {
         switch (code) {
-            case 'ERP11465':
+            case 'DAP11465':
                 return 'Invalid Notification ID';
-            case 'ERP11461':
+            case 'DAP11461':
                 return 'Invalid Notification Title';
-            case 'ERP11462':
+            case 'DAP11462':
                 return 'Invalid Notification Message';
-            case 'ERP11463':
+            case 'DAP11463':
                 return 'Invalid Reference Type';
-            case 'ERP11464':
+            case 'DAP11464':
                 return 'Invalid Reference ID';
             default:
                 return null;
@@ -405,7 +405,7 @@ export class NotificationFormComponent implements OnInit, OnDestroy, OnChanges {
 
     private getDetailsErrorMessage(code: string): string | null {
         switch (code) {
-            case 'ERP11465':
+            case 'DAP11465':
                 return 'Invalid Notification ID';
             default:
                 return null;

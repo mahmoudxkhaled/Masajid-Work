@@ -188,13 +188,13 @@ export class AssignRoleToAccountComponent implements OnInit, OnDestroy {
         let detail = '';
 
         switch (code) {
-            case 'ERP11310':
+            case 'DAP11310':
                 detail = 'Invalid Entity Role ID';
                 break;
-            case 'ERP11315':
+            case 'DAP11315':
                 detail = 'Invalid Account ID';
                 break;
-            case 'ERP11305':
+            case 'DAP11305':
                 detail = 'Access Denied to Entity Roles';
                 break;
             default:

@@ -242,19 +242,19 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
         let detail: string | null = null;
 
         switch (code) {
-            case 'ERP11460':
+            case 'DAP11460':
                 detail = 'Invalid Module ID';
                 break;
-            case 'ERP11461':
+            case 'DAP11461':
                 detail = 'Invalid Notification Title';
                 break;
-            case 'ERP11462':
+            case 'DAP11462':
                 detail = 'Invalid Notification Message';
                 break;
-            case 'ERP11463':
+            case 'DAP11463':
                 detail = 'Invalid Reference Type';
                 break;
-            case 'ERP11464':
+            case 'DAP11464':
                 detail = 'Invalid Reference ID';
                 break;
             default:

@@ -1196,13 +1196,13 @@ export class SharedAccountListComponent implements OnInit, OnDestroy, OnChanges 
 
   private getErrorMessage(context: string, code: string): string | null {
     switch (code) {
-      case 'ERP11260':
+      case 'DAP11260':
         return 'Invalid Entity ID';
-      case 'ERP11255':
+      case 'DAP11255':
         return 'Invalid value for the Filter_Count parameter, should be a minimum of 5 records, and a maximum of 100 records';
-      case 'ERP11277':
+      case 'DAP11277':
         return 'Invalid account selected.';
-      case 'ERP11278':
+      case 'DAP11278':
         return 'Account does not belong to this entity.';
       default:
         if (context === 'accounts') {
@@ -1214,38 +1214,38 @@ export class SharedAccountListComponent implements OnInit, OnDestroy, OnChanges 
 
   private getAccountErrorMessage(operation: string, code: string): string | null {
     switch (code) {
-      case 'ERP11260':
+      case 'DAP11260':
         return 'Invalid Entity ID';
-      case 'ERP11277':
+      case 'DAP11277':
         return 'Invalid account selected.';
-      case 'ERP11278':
+      case 'DAP11278':
         return 'Account does not belong to this entity.';
     }
 
     switch (operation) {
       case 'activate':
         switch (code) {
-          case 'ERP11150':
+          case 'DAP11150':
             return 'Invalid email address → The Entity does not have an account with this email address';
-          case 'ERP11151':
+          case 'DAP11151':
             return 'The account is already active';
           default:
             return null;
         }
       case 'deactivate':
         switch (code) {
-          case 'ERP11150':
+          case 'DAP11150':
             return 'Invalid email address → The Entity does not have an account with this email address';
-          case 'ERP11152':
+          case 'DAP11152':
             return 'The account was already deactivated';
           default:
             return null;
         }
       case 'delete':
         switch (code) {
-          case 'ERP11150':
+          case 'DAP11150':
             return 'Invalid email address → The Entity does not have an account with this email address';
-          case 'ERP11153':
+          case 'DAP11153':
             return 'Account was already created. Deactivate_Account to be used instead';
           default:
             return null;
@@ -1257,11 +1257,11 @@ export class SharedAccountListComponent implements OnInit, OnDestroy, OnChanges 
 
   private getAssignAdminErrorMessage(code: string): string | null {
     switch (code) {
-      case 'ERP11260':
+      case 'DAP11260':
         return 'Invalid Entity ID.';
-      case 'ERP11277':
+      case 'DAP11277':
         return 'Invalid account. Make sure the account exists and belongs to this entity tree.';
-      case 'ERP11278':
+      case 'DAP11278':
         return 'The account must belong directly to this entity before it can be promoted.';
       default:
         return null;
@@ -1400,13 +1400,13 @@ export class SharedAccountListComponent implements OnInit, OnDestroy, OnChanges 
 
   private getUpdateAccountEmailErrorMessage(code: string): string | null {
     switch (code) {
-      case 'ERP11150':
+      case 'DAP11150':
         return 'Invalid email address -> The Entity does not have an account with this email address';
-      case 'ERP11141':
+      case 'DAP11141':
         return 'An account with the same email already exists';
-      case 'ERP11160':
+      case 'DAP11160':
         return '\'Account_ID\' not matching with \'Current Email\'';
-      case 'ERP11161':
+      case 'DAP11161':
         return 'Invalid format for the \'New_Email\'';
       default:
         return null;
@@ -1415,11 +1415,11 @@ export class SharedAccountListComponent implements OnInit, OnDestroy, OnChanges 
 
   private getUpdateAccountEntityErrorMessage(code: string): string | null {
     switch (code) {
-      case 'ERP11150':
+      case 'DAP11150':
         return 'Invalid email address -> The Entity does not have an account with this email address';
-      case 'ERP11144':
+      case 'DAP11144':
         return 'Invalid Entity ID -> The database does not have an Entity with this ID';
-      case 'ERP11145':
+      case 'DAP11145':
         return 'Invalid Role ID -> The entity does not have a Role with this ID';
       default:
         return null;
@@ -1442,13 +1442,13 @@ export class SharedAccountListComponent implements OnInit, OnDestroy, OnChanges 
 
   private getCreateEntityRoleErrorMessage(code: string): string | null {
     switch (code) {
-      case 'ERP11300':
+      case 'DAP11300':
         return 'Invalid entity selected.';
-      case 'ERP11301':
+      case 'DAP11301':
         return 'Invalid role title format.';
-      case 'ERP11302':
+      case 'DAP11302':
         return 'Invalid role description format.';
-      case 'ERP11303':
+      case 'DAP11303':
         return 'A role with this title already exists for this entity.';
       default:
         return null;
@@ -1471,17 +1471,17 @@ export class SharedAccountListComponent implements OnInit, OnDestroy, OnChanges 
 
   private getCreateAccountErrorMessage(code: string): string | null {
     switch (code) {
-      case 'ERP11130':
+      case 'DAP11130':
         return 'Invalid email address format';
-      case 'ERP11141':
+      case 'DAP11141':
         return 'An account with the same email already exists';
-      case 'ERP11142':
+      case 'DAP11142':
         return 'Invalid First Name format -> Empty or contains special characters';
-      case 'ERP11143':
+      case 'DAP11143':
         return 'Invalid Last Name format -> Empty or contains special characters';
-      case 'ERP11144':
+      case 'DAP11144':
         return 'Invalid Entity ID -> The database does not have an Entity with this ID';
-      case 'ERP11145':
+      case 'DAP11145':
         return 'Invalid Role ID -> The entity does not have a Role with this ID';
       default:
         return null;

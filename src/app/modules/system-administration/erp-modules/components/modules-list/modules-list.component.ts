@@ -412,11 +412,11 @@ export class ModulesListComponent implements OnInit, OnDestroy {
 
     private getActivationErrorMessage(code: string): string | null {
         switch (code) {
-            case 'ERP11410':
+            case 'DAP11410':
                 return 'Invalid Module ID';
-            case 'ERP11411':
+            case 'DAP11411':
                 return 'Module already Active';
-            case 'ERP11412':
+            case 'DAP11412':
                 return 'Module already Inactive';
             default:
                 return null;

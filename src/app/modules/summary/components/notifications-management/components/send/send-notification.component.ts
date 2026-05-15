@@ -604,11 +604,11 @@ export class SendNotificationComponent implements OnInit, OnDestroy {
     private handleCreateError(response: any): void {
         const code = String(response?.message || '');
         let detail: string | null = null;
-        if (code === 'ERP11460') detail = 'Invalid Module ID';
-        else if (code === 'ERP11461') detail = 'Invalid Notification Title';
-        else if (code === 'ERP11462') detail = 'Invalid Notification Message';
-        else if (code === 'ERP11463') detail = 'Invalid Reference Type';
-        else if (code === 'ERP11464') detail = 'Invalid Reference ID';
+        if (code === 'DAP11460') detail = 'Invalid Module ID';
+        else if (code === 'DAP11461') detail = 'Invalid Notification Title';
+        else if (code === 'DAP11462') detail = 'Invalid Notification Message';
+        else if (code === 'DAP11463') detail = 'Invalid Reference Type';
+        else if (code === 'DAP11464') detail = 'Invalid Reference ID';
         if (detail) {
             this.messageService.add({ severity: 'error', summary: 'Error', detail });
         }
@@ -668,10 +668,10 @@ export class SendNotificationComponent implements OnInit, OnDestroy {
         if (!response?.success) {
             const code = String(response?.message || '');
             let detail: string | null = null;
-            if (code === 'ERP11466') detail = 'Invalid Account IDs';
-            else if (code === 'ERP11467') detail = 'Invalid Group IDs';
-            else if (code === 'ERP11468') detail = 'Invalid Entity Role IDs';
-            else if (code === 'ERP11469') detail = 'Invalid Entity IDs';
+            if (code === 'DAP11466') detail = 'Invalid Account IDs';
+            else if (code === 'DAP11467') detail = 'Invalid Group IDs';
+            else if (code === 'DAP11468') detail = 'Invalid Entity Role IDs';
+            else if (code === 'DAP11469') detail = 'Invalid Entity IDs';
             if (detail) {
                 this.messageService.add({ severity: 'error', summary: 'Error', detail });
             }
