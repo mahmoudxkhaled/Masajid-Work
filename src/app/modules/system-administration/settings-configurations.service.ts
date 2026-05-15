@@ -311,18 +311,11 @@ export class SettingsConfigurationsService {
         );
     }
 
-    /**
-     * Get module logo
-     * API Code: 717
-     * @param moduleId - Module ID
-     * @param options.silent - When true, do not set global loading state
-     * @returns Observable containing ModuleLogoResponse
-     */
-    getModuleLogo(moduleId: number, options?: { silent?: boolean }): Observable<any> {
+    getModuleLogo(_moduleId: number, options?: { silent?: boolean }): Observable<any> {
         if (!options?.silent) {
             this.isLoadingSubject.next(true);
         }
-        return this.apiServices.callAPI(717, this.getAccessToken(), [moduleId.toString()]).pipe(
+        return of({ success: false }).pipe(
             finalize(() => {
                 if (!options?.silent) {
                     this.isLoadingSubject.next(false);

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, finalize } from 'rxjs';
+import { BehaviorSubject, Observable, of, finalize } from 'rxjs';
 import { ApiService } from 'src/app/core/api/api.service';
 import { LocalStorageService } from 'src/app/core/services/local-storage.service';
 import {
@@ -321,15 +321,9 @@ export class SettingsConfigurationsService {
         );
     }
 
-    /**
-     * Get module logo
-     * API Code: 717
-     * @param moduleId - Module ID
-     * @returns Observable containing ModuleLogoResponse
-     */
-    getModuleLogo(moduleId: number): Observable<any> {
+    getModuleLogo(_moduleId: number): Observable<any> {
         this.isLoadingSubject.next(true);
-        return this.apiServices.callAPI(717, this.getAccessToken(), [moduleId.toString()]).pipe(
+        return of({ success: false }).pipe(
             finalize(() => this.isLoadingSubject.next(false))
         );
     }

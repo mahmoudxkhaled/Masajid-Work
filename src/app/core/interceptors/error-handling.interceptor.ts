@@ -24,16 +24,34 @@ export class ErrorHandlingInterceptor implements HttpInterceptor {
         return next.handle(req).pipe(
             tap((event: HttpEvent<any>) => {
                 if (event instanceof HttpResponse && !isLogoutRequest) {
-                    this.handleBusinessError(event);
+                    this.handleBusinessError(req, event);
                 }
             }),
             catchError((error: HttpErrorResponse) => {
                 if (!isLogoutRequest) {
-                    this.showErrorMessage(error);
+                    this.showErrorMessage(req, error);
                 }
                 return throwError(() => new Error(error.message || 'An unknown error occurred'));
             })
         );
+    }
+
+    private getPackedRequestCode(req: HttpRequest<any>): number | null {
+        const contents = req.body?.Contents;
+        if (!Array.isArray(contents) || contents.length < 4) {
+            return null;
+        }
+        return contents[0] | (contents[1] << 8) | (contents[2] << 16) | (contents[3] << 24);
+    }
+
+    private logApiErrorContext(req: HttpRequest<any>, kind: 'business' | 'http', payload: Record<string, unknown>): void {
+        const requestCode = this.getPackedRequestCode(req);
+        console.error('[ErrorHandlingInterceptor]', kind, {
+            url: req.url,
+            method: req.method,
+            requestCode,
+            ...payload,
+        });
     }
 
     private isLogoutRequest(req: HttpRequest<any>): boolean {
@@ -43,7 +61,7 @@ export class ErrorHandlingInterceptor implements HttpInterceptor {
         return false;
     }
 
-    private handleBusinessError(response: HttpResponse<any>): void {
+    private handleBusinessError(req: HttpRequest<any>, response: HttpResponse<any>): void {
         if (!response || !response.body) {
             return;
         }
@@ -58,6 +76,11 @@ export class ErrorHandlingInterceptor implements HttpInterceptor {
         if (!errorCode) {
             return;
         }
+
+        this.logApiErrorContext(req, 'business', {
+            success: body.success,
+            errorCode,
+        });
 
         if (this.isGenericErrorCode(errorCode)) {
             if (this.isSessionExpiredCode(errorCode)) {
@@ -75,7 +98,13 @@ export class ErrorHandlingInterceptor implements HttpInterceptor {
         }
     }
 
-    private showErrorMessage(error: HttpErrorResponse): void {
+    private showErrorMessage(req: HttpRequest<any>, error: HttpErrorResponse): void {
+        this.logApiErrorContext(req, 'http', {
+            status: error.status,
+            statusText: error.statusText,
+            error: error.error,
+        });
+
         let errorMessage = this.translate.instant('errorHandling.httpTryAgain');
         let errorCode: string | null = null;
 

@@ -3,8 +3,8 @@ export interface Get_Login_Data_Package {
     Account_Details: IAccountDetails;
     User_Details: IUserDetails;
     Entity_Details: IEntityDetails;
-    Functions_Details: IFunctionsDetails;
-    Modules_Details: IModulesDetails;
+    Functions_Details?: IFunctionsDetails;
+    Modules_Details?: IModulesDetails;
     Account_Settings: IAccountSettings;
     User_Accounts?: IUserAccountItem[];
 }
@@ -108,8 +108,8 @@ export interface IAccountStatusResponse {
     Account_Details: IAccountDetails;
     User_Details: IUserDetails;
     Entity_Details: IEntityDetails;
-    Functions_Details: IFunctionsDetails;
-    Modules_Details: IModulesDetails;
+    Functions_Details?: IFunctionsDetails;
+    Modules_Details?: IModulesDetails;
     Account_Settings: IAccountSettings;
     User_Accounts?: IUserAccountItem[];
 }
