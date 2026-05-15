@@ -1,3 +1,5 @@
+@import '../../../../../brand-palette';
+
 .auth-brand {
     display: flex;
     align-items: center;
@@ -40,7 +42,7 @@
     font-size: 29px;
     font-weight: 800;
     text-align: start;
-    background: linear-gradient(180deg, #003366, #0077cc);
+    background: linear-gradient(180deg, $brand-primary-dark, $brand-secondary-violet);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;

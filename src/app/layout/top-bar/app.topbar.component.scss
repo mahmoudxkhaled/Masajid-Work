@@ -231,6 +231,7 @@ p-autoComplete {
   right: 0;
   top: 0;
   bottom: 0;
+  
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1505,6 +1506,8 @@ p-autoComplete {
   .layout-topbar-middel img {
     position: fixed;
     left: 50vw;
+  width: 54px !important;
+
     top: 2rem;
     transform: translate(-50%, -50%);
     z-index: 1000;

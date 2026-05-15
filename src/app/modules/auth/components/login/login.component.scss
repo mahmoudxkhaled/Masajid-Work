@@ -1,3 +1,5 @@
+@import '../../../../../brand-palette';
+
 * {
     margin: 0;
     padding: 0;
@@ -17,7 +19,7 @@
     position: relative;
     justify-content: center;
     align-items: center;
-    background: radial-gradient(circle, #001f3f, #004080, #0059b3);;
+    background: radial-gradient(circle, $brand-primary-dark, $brand-primary, $brand-secondary-violet);
     background-size: 400% 400%;
     animation: gradientShift 20s ease infinite;
 }
@@ -66,16 +68,16 @@
 
 /* Login Container */
 .login-container {
-    background: #ffffff;
-    border: 1px solid #d9dce1;
+    background: $brand-white;
+    border: 1px solid #e0dce8;
     border-radius: 20px;
     width: 450px;
     padding: 50px;
     text-align: center;
-    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 15px 45px rgba(43, 6, 79, 0.12);
     position: relative;
     z-index: 10;
-    color: #515C66;
+    color: $brand-muted;
     animation: fadeIn 1s ease;
 }
 
@@ -104,12 +106,12 @@
 }
 
 .form-group input::placeholder {
-    color: #515C66;
+    color: $brand-muted;
 }
 
 .form-group input:focus {
-    border: 1px solid #003366;
-    box-shadow: 0 3px 8px rgba(103, 58, 183, 0.2);
+    border: 1px solid $brand-primary;
+    box-shadow: 0 3px 8px rgba(90, 12, 168, 0.18);
 }
 
 .form-group input.valid {
@@ -125,7 +127,7 @@
     top: 15px;
     left: 16px;
     font-size: 14px;
-    color: #515C66;
+    color: $brand-muted;
     pointer-events: none;
     transition: all 0.3s ease;
 }
@@ -135,8 +137,8 @@
     top: -10px;
     left: 12px;
     font-size: 12px;
-    color: #003366;
-    background: #ffffff;
+    color: $brand-primary;
+    background: $brand-white;
     padding: 0 5px;
     border-radius: 5px;
 }
@@ -149,32 +151,38 @@
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    background: linear-gradient(90deg, #001f3f, #0059b3) !important;
+    background: linear-gradient(90deg, $brand-primary-dark, $brand-primary) !important;
     color: white !important;
     font-weight: bold;
     transition: all 0.3s ease;
 }
 
 .login-btn:hover {
-    background: #5e35b1;
-    box-shadow: 0 8px 20px rgba(103, 58, 183, 0.3);
+    background: $brand-primary-hover !important;
+    box-shadow: 0 8px 20px rgba(90, 12, 168, 0.35);
+}
+
+.login-btn:focus-visible {
+    outline: 2px solid $brand-accent;
+    outline-offset: 2px;
 }
 
 /* Links */
 .links {
     margin-top: 20px;
     font-size: 15px;
-    color: #515C66;
+    color: $brand-muted;
 }
 
 .links a {
-    color: #003366;
+    color: $brand-primary;
     text-decoration: none;
     margin: 0 5px;
     font-weight: bold;
 }
 
 .links a:hover {
+    color: $brand-primary-hover;
     text-decoration: underline;
 }
 
@@ -182,7 +190,7 @@
 .footer {
     margin-top: 15px;
     font-size: 12px;
-    color: #515C66;
+    color: $brand-muted;
     text-align: center;
 }
 
@@ -221,7 +229,7 @@
 
 .message {
     font-size: 18px;
-    color: #003366;
+    color: $brand-primary;
     margin: 15px 0;
     text-align: center;
     font-weight: 600;
@@ -237,11 +245,11 @@
 }
 
 .login-banner-notice {
-    color: #004080;
+    color: $brand-primary-dark;
     padding: 10px;
     border-radius: 8px;
-    border: 1px solid #0059b3;
-    background-color: #e8f4fc;
+    border: 1px solid #c199f6;
+    background-color: $brand-bg-light;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -273,19 +281,19 @@
 }
 
 .p-button-ripple:hover {
-    background: linear-gradient(135deg, #6a1b9a, #512da8) !important;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5) !important;
+    background: linear-gradient(135deg, $brand-primary, $brand-primary-hover) !important;
+    box-shadow: 0 6px 20px rgba(43, 6, 79, 0.35) !important;
 }
 
 .p-button-secondary {
-    background-color: #d3d3d3;
-    border-color: #d3d3d3;
-    color: #555555;
+    background-color: #e8e2f4;
+    border-color: #dcd5eb;
+    color: $brand-text;
 }
 
 .p-button-secondary:hover {
-    background: linear-gradient(135deg, #6a1b9a, #512da8);
-    box-shadow: 0 6px 20px #b0b0b0;
+    background: $brand-bg-lavender;
+    box-shadow: 0 6px 16px rgba(90, 12, 168, 0.12);
 }
 
 .login-btn:disabled {
