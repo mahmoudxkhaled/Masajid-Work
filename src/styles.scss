@@ -30,16 +30,12 @@ $gutter: 1rem; //for primeflex grid system
 
 .unread-notification {
     background-color: #80808054;
-    /* Light gray background for unread notifications */
-    border-left: 4px solid #6f42c1;
-    /* Blue border to indicate unread */
+    border-left: 4px solid var(--primary-color, #5a0ca8);
   }
   
   .read-notification {
-    background-color: var(color-scheme);
-    /* White background for read notifications */
+    background-color: #ffffff;
     border-left: 4px solid transparent;
-    /* No border for read */
   }
   
   .disabled-link {
@@ -137,8 +133,7 @@ $gutter: 1rem; //for primeflex grid system
   
   /* Campaign and Lesson Notification Styles */
   .campaign-notification {
-    border-left: 5px solid #007bff;
-    /* Blue color for campaign notifications */
+    border-left: 5px solid var(--primary-color);
   }
   
   .lesson-notification {

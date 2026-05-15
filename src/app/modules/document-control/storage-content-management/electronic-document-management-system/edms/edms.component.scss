@@ -25,14 +25,14 @@
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
-        color: #2563eb;
+        color: var(--primary-color);
         text-decoration: none;
         font-size: 0.9375rem;
         font-weight: 500;
         cursor: pointer;
     }
     .back-link:hover {
-        color: #1d4ed8;
+        color: var(--primary-700);
         text-decoration: underline;
     }
     .back-link i {

@@ -1,3 +1,5 @@
+﻿@import '../../../../../brand-palette';
+
 * {
     margin: 0;
     padding: 0;
@@ -17,7 +19,7 @@
     position: relative;
     justify-content: center;
     align-items: center;
-    background: radial-gradient(circle, #001f3f, #004080, #0059b3);
+    background: radial-gradient(circle, $brand-primary-dark, $brand-primary, $brand-secondary-violet);
     background-size: 400% 400%;
     animation: gradientShift 20s ease infinite;
 }
@@ -89,7 +91,7 @@
     font-size: 36px;
     margin-bottom: 15px;
     font-weight: bold;
-    color: #003366;
+    color: $brand-primary;
 }
 
 .forgot-container p {
@@ -127,7 +129,7 @@
 }
 
 .links a {
-    color: #003366;
+    color: $brand-primary;
     text-decoration: none;
     margin: 0 5px;
     font-weight: bold;

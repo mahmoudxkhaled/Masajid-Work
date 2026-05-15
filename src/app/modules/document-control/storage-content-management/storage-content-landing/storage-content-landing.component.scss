@@ -9,7 +9,7 @@
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
-        color: #2563eb;
+        color: var(--primary-color);
         text-decoration: none;
         font-size: 0.9375rem;
         font-weight: 500;
@@ -17,7 +17,7 @@
         cursor: pointer;
     }
     .back-link:hover {
-        color: #1d4ed8;
+        color: var(--primary-700);
         text-decoration: underline;
     }
     .back-link i {
@@ -101,7 +101,7 @@
             left: 50%;
             width: 0;
             height: 4px;
-            background: #004a80;
+            background: var(--primary-color);
             transition: all 0.3s ease;
             border-radius: 2px 2px 0 0;
         }
@@ -109,7 +109,7 @@
         &:hover {
             transform: translateY(-8px);
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-            border-color: #004a80;
+            border-color: var(--primary-color);
             .active-bar {
                 width: 60%;
                 left: 20%;

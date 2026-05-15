@@ -70,7 +70,7 @@
             left: 50%;
             width: 0;
             height: 4px;
-            background: #004a80; // Matching your top bar blue
+            background: var(--primary-color);
             transition: all 0.3s ease;
             border-radius: 2px 2px 0 0;
         }
@@ -79,9 +79,8 @@
         &:hover:not(.is-locked) {
             transform: translateY(-8px);
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-            border-color: #004a80;
-            // Stronger tint so it stands out in dark theme as well
-            background: rgba(0, 148, 255, 0.1);
+            border-color: var(--primary-color);
+            background: rgba(90, 12, 168, 0.08);
 
             .active-bar {
                 width: 60%;
@@ -103,15 +102,15 @@
         // Highlight animation for breadcrumb navigation
         &.module-highlighted {
             animation: highlightPulse 0.6s ease-in-out;
-            border-color: #004a80;
-            box-shadow: 0 0 0 4px rgba(0, 74, 128, 0.2), 0 8px 24px rgba(0, 0, 0, 0.15);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(90, 12, 168, 0.22), 0 8px 24px rgba(0, 0, 0, 0.15);
             transform: scale(1.05);
             z-index: 10;
 
             .active-bar {
                 width: 100%;
                 left: 0;
-                background: #004a80;
+                background: var(--primary-color);
                 animation: barPulse 0.6s ease-in-out;
             }
 
@@ -129,15 +128,15 @@
 // Highlight animation keyframes
 @keyframes highlightPulse {
     0% {
-        box-shadow: 0 0 0 0 rgba(0, 74, 128, 0.4);
+        box-shadow: 0 0 0 0 rgba(90, 12, 168, 0.35);
         transform: scale(1);
     }
     50% {
-        box-shadow: 0 0 0 8px rgba(0, 74, 128, 0.1);
+        box-shadow: 0 0 0 8px rgba(90, 12, 168, 0.12);
         transform: scale(1.05);
     }
     100% {
-        box-shadow: 0 0 0 4px rgba(0, 74, 128, 0.2), 0 8px 24px rgba(0, 0, 0, 0.15);
+        box-shadow: 0 0 0 4px rgba(90, 12, 168, 0.22), 0 8px 24px rgba(0, 0, 0, 0.15);
         transform: scale(1.05);
     }
 }

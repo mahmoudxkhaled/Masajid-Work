@@ -232,16 +232,16 @@
   min-height: 48px !important;
   padding: 0.75rem 2.25rem !important;
   border-radius: 12px;
-  background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%) !important;
+  background: linear-gradient(180deg, #2b064f 0%, #5a0ca8 100%) !important;
   border: none !important;
   color: #fff !important;
-  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
+  box-shadow: 0 2px 8px rgba(90, 12, 168, 0.35);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 
   &:hover {
-    background: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%) !important;
+    background: linear-gradient(180deg, #5a0ca8 0%, #7b2ff7 100%) !important;
     color: #fff !important;
-    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.45);
+    box-shadow: 0 4px 14px rgba(90, 12, 168, 0.45);
     transform: translateY(-1px);
   }
 

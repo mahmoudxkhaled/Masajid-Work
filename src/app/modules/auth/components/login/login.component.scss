@@ -154,12 +154,12 @@
     background: linear-gradient(90deg, $brand-primary-dark, $brand-primary) !important;
     color: white !important;
     font-weight: bold;
-    transition: all 0.3s ease;
+    transition: box-shadow 0.3s ease, transform 0.2s ease;
 }
 
-.login-btn:hover {
+.login-btn:hover:not(:disabled) {
     background: $brand-primary-hover !important;
-    box-shadow: 0 8px 20px rgba(90, 12, 168, 0.35);
+    box-shadow: 0 8px 20px rgba(90, 12, 168, 0.3);
 }
 
 .login-btn:focus-visible {
