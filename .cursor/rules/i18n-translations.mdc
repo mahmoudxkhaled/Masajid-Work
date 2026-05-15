@@ -1,0 +1,68 @@
+---
+description: Authoritative i18n — translate pipe, hierarchical keys, en + ar, toasts (MessageService)
+alwaysApply: true
+---
+
+# i18n and translations (authoritative)
+
+All **user-visible** strings use **`@ngx-translate`**, keys in **`src/assets/i18n/en.json`** and **`src/assets/i18n/ar.json`**. Apply when editing templates, TypeScript that shows messages, or translation files.
+
+## Templates
+
+1. Replace **static user-visible text** with the translate pipe. Prefer not to change TypeScript logic, form wiring, or validation unless the task requires it.
+2. **Patterns:**
+   - `{{ 'key.path.here' | translate }}`
+   - `[placeholder]="'key.path.here' | translate"` (and similar attributes)
+3. **Keep** DOM structure, icons, and CSS classes unless the task is to change layout.
+
+## Key naming (hierarchical)
+
+Use a clear hierarchy: `[module].[pageOrFeature].[section].[element]`.
+
+Examples:
+
+- `auth.reset-password.title`
+- `auth.reset-password.fields.newPassword`
+- `entityGroups.form.editTitle`
+- `systemAdministration.erpFunctions.functionsList.searchPlaceholder`
+
+For toasts: `[module].[feature].messages.*` or shared keys like `common.success`, `common.error`.
+
+## Translation files
+
+- **Always** add or update keys in **both** `en.json` and `ar.json`.
+- **Arabic:** formal, professional UI Arabic (not slang); avoid overly literal word-by-word translation where it hurts UX.
+
+## Examples
+
+```html
+<!-- Before -->
+<h2>Reset Password</h2>
+<p-button label="Submit"></p-button>
+
+<!-- After -->
+<h2>{{ 'auth.reset-password.title' | translate }}</h2>
+<p-button [label]="'auth.reset-password.actions.submit' | translate"></p-button>
+```
+
+When you add or change copy, add the new keys to **both** language files.
+
+## Toaster / notifications (`MessageService`)
+
+- **Never** hardcode `summary` or `detail`.
+- Use `this.translate.instant('key')` (or `translate.instant('key')`) for both; register every key in **en** and **ar**.
+
+```ts
+this.messageService.add({
+  severity: 'success',
+  summary: this.translate.instant('common.success'),
+  detail: this.translate.instant('entityAccounts.messages.created')
+});
+```
+
+## Checklist
+
+- [ ] Template text uses `translate` pipe (or `instant` in TS for dynamic strings).
+- [ ] Keys follow the naming hierarchy above.
+- [ ] `en.json` and `ar.json` updated together.
+- [ ] Toasts use translated `summary` / `detail` only.

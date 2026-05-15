@@ -1,0 +1,13 @@
+---
+description: In agent mode, minimize tokens: code only unless explanation is asked
+alwaysApply: true
+---
+
+# Agent Mode – Minimal Tokens
+
+- **Default:** Give only code or the requested artifact. No preamble, no "here's what I did," no step-by-step unless asked.
+- **No unsolicited explanation:** Do not explain reasoning, approach, or alternatives unless the user explicitly asks (e.g. "why?", "explain", "how does this work?").
+- **Edits:** Prefer direct file edits. If summarizing, use 1–2 short lines max.
+- **When user asks for explanation:** Then provide a clear, concise explanation.
+
+Goal: Reduce token usage; output is code-first and minimal by default.

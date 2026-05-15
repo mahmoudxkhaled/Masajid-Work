@@ -1,0 +1,71 @@
+<!-- Global upload progress (fixed at bottom-left) -->
+<ng-container *ngIf="uploadProgressState$ | async as uploadState">
+  <div *ngIf="uploadState.visible" class="upload-progress-container">
+    <div class="upload-progress-card card">
+      <div class="flex flex-column gap-3 w-full">
+        <div class="flex align-items-center justify-content-between">
+          <div class="flex align-items-center gap-2">
+            <i class="pi pi-cloud-upload text-primary text-xl"></i>
+            <span class="font-semibold">
+              {{ 'fileSystem.folderManagement.uploadProgress' | translate }}
+            </span>
+          </div>
+        </div>
+
+        <div class="selected-files-list border-1 surface-border border-round p-2" style="max-height: 150px; overflow-y: auto;">
+          <div
+            *ngFor="let file of uploadState.files"
+            class="flex align-items-center justify-content-between mb-2 pb-1 border-bottom-1 surface-border">
+            <div class="flex align-items-center gap-2 flex-1">
+              <i *ngIf="file.status === 'pending'" class="pi pi-file text-primary"></i>
+              <i *ngIf="file.status === 'uploading'" class="pi pi-spin pi-spinner text-primary"></i>
+              <i *ngIf="file.status === 'completed'" class="pi pi-check-circle text-green-500"></i>
+              <i *ngIf="file.status === 'error'" class="pi pi-times-circle text-red-500"></i>
+              <span class="text-sm flex-1" [title]="file.name">{{ file.name }}</span>
+            </div>
+            <span class="text-xs text-500">{{ formatFileSize(file.size) }}</span>
+          </div>
+        </div>
+
+        <div>
+          <p-progressBar [value]="uploadState.percent" [showValue]="true"></p-progressBar>
+          <small class="text-500 block mt-1">
+            {{ uploadState.percent }}% {{ 'fileSystem.folderManagement.complete' | translate }}
+          </small>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<!-- Download progress component (fixed at bottom-right) -->
+<ng-container *ngIf="downloadProgressState$ | async as downloadState">
+  <div *ngIf="downloadState.visible" class="download-progress-container">
+    <div class="download-progress-card card">
+      <div class="flex align-items-center gap-3 w-full">
+        <i class="pi pi-download text-primary text-xl"></i>
+        <div class="flex flex-column gap-2 flex-1">
+          <div class="flex align-items-center justify-content-between">
+            <span class="font-semibold">{{ downloadState.fileName }}</span>
+            <button
+              pButton
+              type="button"
+              icon="pi pi-times"
+              class="p-button-rounded p-button-text p-button-sm"
+              (click)="hideDownloadProgress()"
+              [pTooltip]="'fileSystem.folderManagement.hide' | translate">
+            </button>
+          </div>
+          <p-progressBar [value]="downloadState.percent" [showValue]="true"></p-progressBar>
+          <div class="flex align-items-center justify-content-between">
+            <small class="text-500">{{ downloadState.percent }}%</small>
+            <small class="text-500" *ngIf="downloadState.fileSizeBytes > 0">
+              {{ 'fileSystem.folderManagement.remaining' | translate }}:
+              {{ formatBytes(downloadState.remainingBytes) }}
+            </small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>

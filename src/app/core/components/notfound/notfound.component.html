@@ -1,0 +1,32 @@
+<main class="notfound-page" [class.notfound-rtl]="isRtl" role="alert"
+    [attr.aria-label]="'notfound.ariaLabel' | translate">
+    <div class="notfound-background" aria-hidden="true">
+        <div class="notfound-watermark">
+            <img src="assets/media/logo/PMAT_Logo_(Small)_No_Bkgnd.png" alt="" />
+        </div>
+        <div class="notfound-watermark-brand-bottom" aria-hidden="true">
+            <span>{{ 'notfound.brandName' | translate }}</span>
+        </div>
+        <div class="notfound-pattern"></div>
+        <div class="notfound-glow notfound-glow-1"></div>
+        <div class="notfound-glow notfound-glow-2"></div>
+    </div>
+
+    <div class="notfound-content">
+        <h1 class="notfound-oops">{{ 'notfound.oops' | translate }}</h1>
+        <p class="notfound-code">{{ 'notfound.codeAndMessage' | translate }}</p>
+        <p class="notfound-description">
+            {{ 'notfound.descriptionShort' | translate }}
+        </p>
+        <div class="notfound-actions">
+            <button pButton pRipple type="button" (click)="goBack()" [attr.aria-label]="'notfound.back' | translate"
+                [label]="'notfound.back' | translate" [icon]="isRtl ? 'pi pi-arrow-right' : 'pi pi-arrow-left'"
+                [iconPos]="isRtl ? 'right' : 'left'" class="notfound-button-back">
+            </button>
+            <button pButton pRipple type="button" [routerLink]="['/']"
+                [attr.aria-label]="'notfound.goToHomepage' | translate" [label]="'notfound.goToHomepage' | translate"
+                icon="pi pi-home" [iconPos]="isRtl ? 'right' : 'left'" class="notfound-button-homepage">
+            </button>
+        </div>
+    </div>
+</main>

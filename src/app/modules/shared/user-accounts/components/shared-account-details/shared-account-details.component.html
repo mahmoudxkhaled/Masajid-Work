@@ -1,0 +1,126 @@
+<p-dialog [(visible)]="visible" [modal]="true" [style]="{ width: dialogContentWidth }" [closable]="true" [draggable]="false"
+    [resizable]="false" (onHide)="onDialogHide()" [header]="detailsTitleKey | translate" styleClass="account-details-dialog">
+    <div *ngIf="loadingAccountDetails" class="account-details-content">
+        <ng-container *ngIf="dialogMode === 'editDescription'">
+            <div class="account-details-row account-details-name">
+                <span class="account-details-label">{{ 'entityAccounts.details.email' | translate }}</span>
+                <span class="account-details-value"><p-skeleton width="12rem" height="1.05rem"></p-skeleton></span>
+            </div>
+            <div class="account-details-divider"></div>
+            <div class="account-details-description-edit pt-2">
+                <label class="account-details-label block mb-2">{{ 'entityAccounts.details.description' | translate }}</label>
+                <p-skeleton width="100%" height="5.5rem" borderRadius="6px"></p-skeleton>
+            </div>
+        </ng-container>
+        <ng-container *ngIf="dialogMode !== 'editDescription'">
+            <div class="account-details-row account-details-name">
+                <span class="account-details-label"><p-skeleton width="5rem" height="0.875rem"></p-skeleton></span>
+                <span class="account-details-value"><p-skeleton width="8rem" height="1.05rem"></p-skeleton></span>
+            </div>
+            <div class="account-details-divider"></div>
+            <div class="account-details-row" *ngFor="let _ of [1,2,3,4,5]">
+                <span class="account-details-label"><p-skeleton width="6rem" height="0.875rem"></p-skeleton></span>
+                <span class="account-details-value flex justify-content-end"><p-skeleton width="7rem" height="1rem"></p-skeleton></span>
+            </div>
+            <div class="account-details-divider"></div>
+            <div class="account-details-row account-details-status-row mt-2">
+                <span class="account-details-label"><p-skeleton width="4rem" height="0.875rem"></p-skeleton></span>
+                <p-skeleton width="4.5rem" height="1.75rem" borderRadius="6px"></p-skeleton>
+            </div>
+            <div *ngIf="dialogMode === 'view'" class="account-details-divider mt-3"></div>
+            <div *ngIf="dialogMode === 'view'" class="account-details-row account-details-description-row align-items-start">
+                <span class="account-details-label align-self-start"><p-skeleton width="5rem" height="0.875rem"></p-skeleton></span>
+                <div class="account-details-value account-details-description-value text-right">
+                    <p-skeleton width="100%" height="2.75rem"></p-skeleton>
+                </div>
+            </div>
+            <div *ngIf="dialogMode === 'viewEdit'" class="account-details-divider mt-3"></div>
+            <div *ngIf="dialogMode === 'viewEdit'" class="account-details-description-edit pt-2">
+                <p-skeleton width="35%" height="0.875rem" class="mb-2"></p-skeleton>
+                <p-skeleton width="100%" height="5.5rem" borderRadius="6px"></p-skeleton>
+            </div>
+        </ng-container>
+    </div>
+
+    <div *ngIf="!loadingAccountDetails" class="account-details-content">
+        <div *ngIf="dialogMode === 'editDescription'" class="account-details-row account-details-name">
+            <span class="account-details-label">{{ 'entityAccounts.details.email' | translate }}</span>
+            <span class="account-details-value font-semibold">{{ email || ('entityAccounts.details.na' | translate) }}</span>
+        </div>
+        <div *ngIf="dialogMode === 'editDescription'" class="account-details-divider"></div>
+
+        <ng-container *ngIf="dialogMode !== 'editDescription'">
+            <div class="account-details-row account-details-name">
+                <span class="account-details-label">{{ 'entityAccounts.details.email' | translate }}</span>
+                <span class="account-details-value font-semibold">{{ email || ('entityAccounts.details.na' | translate) }}</span>
+            </div>
+            <div class="account-details-divider"></div>
+            <div class="account-details-row">
+                <span class="account-details-label">{{ 'entityAccounts.details.accountId' | translate }}</span>
+                <span class="account-details-value">{{ accountId || ('entityAccounts.details.na' | translate) }}</span>
+            </div>
+            <div class="account-details-row">
+                <span class="account-details-label">{{ 'entityAccounts.details.userId' | translate }}</span>
+                <span class="account-details-value">{{ userId || ('entityAccounts.details.na' | translate) }}</span>
+            </div>
+            <div class="account-details-row">
+                <span class="account-details-label">{{ 'entityAccounts.details.systemRole' | translate }}</span>
+                <span class="account-details-value">{{ systemRoleNameLabel || ('entityAccounts.details.na' | translate) }}</span>
+            </div>
+            <div class="account-details-row">
+                <span class="account-details-label">{{ 'entityAccounts.details.entity' | translate }}</span>
+                <span class="account-details-value">{{ getEntityDisplay() || ('entityAccounts.details.na' | translate) }}</span>
+            </div>
+            <div class="account-details-row">
+                <span class="account-details-label">{{ 'entityAccounts.details.entityRole' | translate }}</span>
+                <span class="account-details-value">{{ getEntityRoleDisplay() || ('entityAccounts.details.na' | translate) }}</span>
+            </div>
+            <div class="account-details-divider"></div>
+            <div class="account-details-row account-details-status-row mt-2">
+                <span class="account-details-label">{{ 'entityAccounts.details.accountState' | translate }}</span>
+                <p-tag [value]="getAccountStateText()" [severity]="getAccountStateSeverity()"></p-tag>
+            </div>
+        </ng-container>
+
+        <div *ngIf="dialogMode === 'view'" class="account-details-divider mt-3"></div>
+        <div *ngIf="dialogMode === 'view'" class="account-details-row account-details-description-row align-items-start">
+            <span class="account-details-label align-self-start">{{ 'entityAccounts.details.description' | translate }}</span>
+            <div class="account-details-value account-details-description-value text-right">
+                <span *ngIf="descriptionReadonlyText; else noDescView" class="account-details-description-readonly">{{ descriptionReadonlyText }}</span>
+                <ng-template #noDescView>
+                    <span class="text-500">{{ 'entityAccounts.details.noDescription' | translate }}</span>
+                </ng-template>
+            </div>
+        </div>
+
+        <div *ngIf="dialogMode === 'viewEdit' || dialogMode === 'editDescription'" class="account-details-description-edit pt-2">
+            <label for="detailsDescription" class="account-details-label block mb-2">{{ 'entityAccounts.details.description' | translate }}</label>
+            <textarea id="detailsDescription" pInputTextarea [formControl]="descriptionFormControl" rows="4" class="w-full"
+                [placeholder]="'entityAccounts.details.descriptionPlaceholder' | translate"></textarea>
+        </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <div class="flex justify-content-end gap-2">
+            <p-button *ngIf="dialogMode === 'view'" [label]="'entityAccounts.details.close' | translate" icon="pi pi-times" class="p-button-text" (onClick)="closeDialog()"
+                [disabled]="savingAccountDetails">
+            </p-button>
+            <ng-container *ngIf="dialogMode === 'viewEdit'">
+                <p-button [label]="'entityAccounts.details.close' | translate" icon="pi pi-times" class="p-button-text" (onClick)="closeDialog()"
+                    [disabled]="savingAccountDetails">
+                </p-button>
+                <p-button [label]="'entityAccounts.details.save' | translate" icon="pi pi-check" (onClick)="saveAccountDetails()" [loading]="savingAccountDetails"
+                    [disabled]="savingAccountDetails || !isDescriptionModified">
+                </p-button>
+            </ng-container>
+            <ng-container *ngIf="dialogMode === 'editDescription'">
+                <p-button [label]="'common.cancel' | translate" icon="pi pi-times" class="p-button-text" (onClick)="closeDialog()"
+                    [disabled]="savingAccountDetails">
+                </p-button>
+                <p-button [label]="'entityAccounts.details.save' | translate" icon="pi pi-check" (onClick)="saveAccountDetails()" [loading]="savingAccountDetails"
+                    [disabled]="savingAccountDetails || !isDescriptionModified">
+                </p-button>
+            </ng-container>
+        </div>
+    </ng-template>
+</p-dialog>

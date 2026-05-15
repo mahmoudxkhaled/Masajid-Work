@@ -1,0 +1,585 @@
+<div class="card">
+    <!-- Filter Options -->
+    <div class="flex gap-4 align-items-center justify-content-between mb-3">
+        <div class="flex align-items-center gap-2 flex-1">
+            <span class="p-input-icon-left w-full">
+                <i class="pi pi-search"></i>
+                <input pInputText type="text" [placeholder]="'entityAccounts.list.searchPlaceholder' | translate"
+                    #searchInput (input)="onSearchInput($event)" class="w-full" />
+            </span>
+        </div>
+        <div class="flex gap-4 align-items-center">
+            <div class="flex align-items-center gap-2" *ngIf="!isSystemUserAccountsPage">
+                <label for="includeSubentities" class="text-600">{{ 'entityAccounts.list.includeSubentities' | translate
+                    }}</label>
+                <p-inputSwitch id="includeSubentities" [(ngModel)]="includeSubentities" (onChange)="onFilterChange()"
+                    [disabled]="loadingAccounts"></p-inputSwitch>
+            </div>
+            <div class="flex align-items-center gap-2">
+                <label for="activeOnly" class="text-600">{{ 'entityAccounts.list.activeOnly' | translate }}</label>
+                <p-inputSwitch id="activeOnly" [(ngModel)]="activeOnly" (onChange)="onFilterChange()"
+                    [disabled]="loadingAccounts"></p-inputSwitch>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section: Accounts -->
+    <p-panel header=" " class="mb-4">
+
+        <ng-template pTemplate="header">
+            <div class="flex align-items-center justify-content-between w-full">
+                <div class="flex align-items-center gap-3">
+                    <i class="pi pi-shield text-primary text-2xl"></i>
+                    <span class="text-xl font-semibold">{{ 'entityAccounts.list.title' | translate }}</span>
+                </div>
+                <div class="flex gap-2" *ngIf="canCreateAccount">
+                    <p-button [label]="'entityAccounts.list.createAccount' | translate" icon="pi pi-user-plus"
+                        iconPos="left" size="small" severity="contrast" (onClick)="navigateToAddAccount()"
+                        [disabled]="loadingAccounts"></p-button>
+                </div>
+            </div>
+        </ng-template>
+
+        <p-table [value]="tableValue" [paginator]="true" [first]="first" [rows]="rows" [totalRecords]="totalRecords"
+            [showCurrentPageReport]="true" responsiveLayout="scroll" [rowsPerPageOptions]="[10, 25, 50, 100]"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [lazy]="true"
+            (onLazyLoad)="onPageChange($event)" styleClass="account-list-table p-datatable-sm">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th class="text-center account-list-th account-list-th--id">{{ 'entityAccounts.list.table.accountId'
+                        | translate }}</th>
+                    <th class="account-list-th account-list-th--email">{{ 'entityAccounts.list.table.email' | translate
+                        }}</th>
+                    <th class="account-list-th account-list-th--entity">{{ 'entityAccounts.list.table.entity' |
+                        translate }}</th>
+                    <th class="text-center account-list-th account-list-th--entityRole">{{
+                        'entityAccounts.list.table.entityRole' | translate }}</th>
+                    <th class="text-center account-list-th account-list-th--state">{{
+                        'entityAccounts.list.table.accountState' | translate }}</th>
+                    <th class="text-center account-list-th account-list-th--login">{{
+                        'entityAccounts.list.table.lastLogin' | translate }}</th>
+                    <th class="text-start account-list-th account-list-th--actions">{{
+                        'entityAccounts.list.table.actions' | translate }}</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-account>
+                <tr class="account-list-row-clickable" (click)="!loadingAccounts && openViewAccountDetails(account)">
+                    <td class="text-center account-list-td">
+                        <ng-container *ngIf="loadingAccounts; else normalAccountId">
+                            <div class="flex justify-content-center w-full">
+                                <p-skeleton height="1.5rem" width="4rem" borderRadius="4px"></p-skeleton>
+                            </div>
+                        </ng-container>
+                        <ng-template #normalAccountId>
+                            <span class="text-600 account-list-ellipsis account-list-ellipsis--center">{{
+                                account.accountId }}</span>
+                        </ng-template>
+                    </td>
+                    <td class="account-list-td">
+                        <ng-container *ngIf="loadingAccounts; else normalEmail">
+                            <div class="account-list-skeleton-line">
+                                <p-skeleton height="1.5rem" width="100%" borderRadius="4px"></p-skeleton>
+                            </div>
+                        </ng-container>
+                        <ng-template #normalEmail>
+                            <span class="text-600 account-list-ellipsis account-list-ellipsis--start">{{ account.email
+                                }}</span>
+                        </ng-template>
+                    </td>
+                    <td class="account-list-td">
+                        <ng-container *ngIf="loadingAccounts; else normalEntityName">
+                            <div class="account-list-skeleton-line">
+                                <p-skeleton height="1.5rem" width="100%" borderRadius="4px"></p-skeleton>
+                            </div>
+                        </ng-container>
+                        <ng-template #normalEntityName>
+                            <ng-container *ngIf="!account.accountEntityId || account.accountEntityId <= 0">
+                                <span class="text-600 account-list-ellipsis account-list-ellipsis--start">{{
+                                    'entityAccounts.list.na' | translate }}</span>
+                            </ng-container>
+                            <ng-container *ngIf="account.accountEntityId > 0 && account.entityNameLabel === undefined">
+                                <div class="account-list-skeleton-line">
+                                    <p-skeleton height="1.5rem" width="100%" borderRadius="4px"></p-skeleton>
+                                </div>
+                            </ng-container>
+                            <ng-container
+                                *ngIf="account.accountEntityId > 0 && account.entityNameLabel !== undefined && account.entityNameLabel !== null">
+                                <span class="text-600 account-list-ellipsis account-list-ellipsis--start">{{
+                                    account.entityNameLabel }}</span>
+                            </ng-container>
+                            <ng-container *ngIf="account.accountEntityId > 0 && account.entityNameLabel === null">
+                                <span class="text-600 account-list-ellipsis account-list-ellipsis--start">{{
+                                    'entityAccounts.list.na' | translate }}</span>
+                            </ng-container>
+                        </ng-template>
+                    </td>
+                    <td class="text-center account-list-td">
+                        <ng-container *ngIf="loadingAccounts; else normalEntityRole">
+                            <div class="flex justify-content-center w-full">
+                                <p-skeleton height="1.5rem" width="6rem" borderRadius="4px"></p-skeleton>
+                            </div>
+                        </ng-container>
+                        <ng-template #normalEntityRole>
+                            <span class="text-600 account-list-ellipsis account-list-ellipsis--center">{{
+                                account.entityRoleName || ('entityAccounts.list.na' | translate) }}</span>
+                        </ng-template>
+                    </td>
+                    <td class="text-center account-list-td">
+                        <ng-container *ngIf="loadingAccounts; else normalAccountState">
+                            <div class="flex justify-content-center w-full">
+                                <p-skeleton height="1.75rem" width="4.5rem" borderRadius="6px"></p-skeleton>
+                            </div>
+                        </ng-container>
+                        <ng-template #normalAccountState>
+                            <div class="account-list-tag-clip">
+                                <p-tag
+                                    [value]="account.accountState === 1 ? ('entityAccounts.list.active' | translate) : ('entityAccounts.list.inactive' | translate)"
+                                    [severity]="account.accountState === 1 ? 'success' : 'danger'"></p-tag>
+                            </div>
+                        </ng-template>
+                    </td>
+                    <td class="text-center account-list-td">
+                        <ng-container *ngIf="loadingAccounts; else normalLastLogin">
+                            <div class="flex justify-content-center w-full">
+                                <p-skeleton height="1.5rem" width="7rem" borderRadius="4px"></p-skeleton>
+                            </div>
+                        </ng-container>
+                        <ng-template #normalLastLogin>
+                            <span class="text-600 account-list-ellipsis account-list-ellipsis--center">
+                                {{ isDefaultDate(account.Last_Login) ? ('entityAccounts.list.never' | translate) :
+                                (account.Last_Login | date:'short') }}
+                            </span>
+                        </ng-template>
+                    </td>
+                    <td class="text-start account-list-td account-list-td--actions">
+                        <ng-container *ngIf="loadingAccounts; else normalActions">
+                            <div class="account-list-actions-skeleton">
+                                <p-skeleton shape="circle" size="2rem"></p-skeleton>
+                            </div>
+                        </ng-container>
+                        <ng-template #normalActions>
+                            <button pButton pRipple type="button" icon="pi pi-ellipsis-v"
+                                class="p-button-rounded p-button-text p-button-plain"
+                                (click)="$event.stopPropagation(); openOtherAccountMenu(rowMenu, account, $event)"
+                                [disabled]="loadingAccounts">
+                            </button>
+                            <p-menu #rowMenu [model]="otherAccountsMenuItems" [popup]="true" [appendTo]="'body'"
+                                (onHide)="onRowMenuHide(rowMenu)"></p-menu>
+                        </ng-template>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="7" class="text-center">{{ 'entityAccounts.list.noAccounts' | translate }}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </p-panel>
+</div>
+
+<!-- Delete Account Confirmation Dialog -->
+<p-dialog [(visible)]="deleteAccountDialog" [modal]="true" [style]="{ width: '450px' }" [closable]="true"
+    [draggable]="false" [resizable]="false">
+    <ng-template pTemplate="header">
+        <h3>{{ 'entityAccounts.list.deleteDialog.title' | translate }}</h3>
+    </ng-template>
+    <div class="flex flex-column gap-3">
+        <p>{{ 'entityAccounts.list.deleteDialog.messagePrefix' | translate }}<span
+                class="font-semibold">{{ accountToDelete?.email }}</span>{{ 'entityAccounts.list.deleteDialog.messageSuffix' | translate }}</p>
+        <p class="text-red-500 font-semibold">{{ 'entityAccounts.list.deleteDialog.cannotUndo' | translate }}</p>
+    </div>
+    <ng-template pTemplate="footer">
+        <p-button [label]="'entityAccounts.list.deleteDialog.cancel' | translate" icon="pi pi-times"
+            class="p-button-text" (onClick)="onCancelDeleteAccountDialog()" [disabled]="loadingAccounts">
+        </p-button>
+        <p-button styleClass="p-button-danger account-list-footer-primary-btn" (onClick)="deleteAccount()"
+            [disabled]="loadingAccounts">
+            <span class="account-list-footer-primary-inner">
+                <ng-container *ngIf="loadingAccounts">
+                    <span class="indicator-progress flex align-items-center justify-content-center gap-2">
+                        {{ 'entityAccounts.list.pleaseWait' | translate }}
+                        <p-skeleton width="1rem" height="1rem" shape="circle"></p-skeleton>
+                    </span>
+                </ng-container>
+                <ng-container *ngIf="!loadingAccounts">
+                    <span>{{ 'entityAccounts.list.deleteDialog.delete' | translate }}</span>
+                </ng-container>
+            </span>
+        </p-button>
+    </ng-template>
+</p-dialog>
+
+<!-- Add Account Dialog -->
+<p-dialog [(visible)]="addAccountDialog" [modal]="true" [style]="{ width: '500px' }" [closable]="true"
+    [draggable]="false" [resizable]="false" (onHide)="onAddAccountDialogHide()">
+    <ng-template pTemplate="header">
+        <h3>{{ 'entityAccounts.list.addAccountDialog.title' | translate }}</h3>
+    </ng-template>
+    <form *ngIf="form" [formGroup]="form" (ngSubmit)="submit()">
+        <div class="flex flex-column gap-3">
+            <!-- Email Field -->
+            <div class="field p-fluid">
+                <label for="email">{{ 'entityAccounts.list.addAccountDialog.email' | translate }} <span
+                        class="text-red-500">*</span></label>
+                <input id="email" type="email" pInputText formControlName="email"
+                    [class.ng-invalid]="submitted && f['email'].invalid"
+                    [placeholder]="'entityAccounts.list.addAccountDialog.placeholderEmail' | translate" />
+                <small class="p-error" *ngIf="submitted && f['email'].invalid">
+                    <span *ngIf="f['email'].errors?.['required']">{{
+                        'entityAccounts.list.addAccountDialog.emailRequired' | translate }}</span>
+                    <span *ngIf="f['email'].errors?.['email']">{{ 'entityAccounts.list.addAccountDialog.validEmail' |
+                        translate }}</span>
+                </small>
+            </div>
+
+            <!-- First Name Field -->
+            <div class="field p-fluid">
+                <label for="firstName">{{ 'entityAccounts.list.addAccountDialog.firstName' | translate }} <span
+                        class="text-red-500">*</span></label>
+                <input id="firstName" type="text" pInputText formControlName="firstName"
+                    [class.ng-invalid]="submitted && f['firstName'].invalid"
+                    [placeholder]="'entityAccounts.list.addAccountDialog.placeholderFirstName' | translate" />
+                <small class="p-error" *ngIf="submitted && f['firstName'].invalid && firstNameError">
+                    {{ firstNameError }}
+                </small>
+            </div>
+
+            <!-- Last Name Field -->
+            <div class="field p-fluid">
+                <label for="lastName">{{ 'entityAccounts.list.addAccountDialog.lastName' | translate }} <span
+                        class="text-red-500">*</span></label>
+                <input id="lastName" type="text" pInputText formControlName="lastName"
+                    [class.ng-invalid]="submitted && f['lastName'].invalid"
+                    [placeholder]="'entityAccounts.list.addAccountDialog.placeholderLastName' | translate" />
+                <small class="p-error" *ngIf="submitted && f['lastName'].invalid && lastNameError">
+                    {{ lastNameError }}
+                </small>
+            </div>
+
+            <ng-container *ngIf="isSystemCreateFlow">
+                <div class="field p-fluid">
+                    <label for="entitySelector">{{ 'entityAccounts.list.addAccountDialog.entity' | translate }} <span
+                            class="text-red-500">*</span></label>
+                    <div class="flex gap-2 cursor-pointer" (click)="openCreateEntityDialog()">
+                        <input id="entitySelector" pInputText type="text" [value]="getCreateEntityDisplayText()"
+                            readonly [placeholder]="'entityAccounts.list.addAccountDialog.selectEntity' | translate"
+                            class="w-full" style="cursor: pointer;" />
+                        <p-button icon="pi pi-search" [disabled]="loading" styleClass="cursor-pointer"></p-button>
+                    </div>
+                    <small class="p-error" *ngIf="submitted && f['entityId'].invalid">
+                        {{ 'entityAccounts.list.addAccountDialog.entityRequired' | translate }}
+                    </small>
+                </div>
+            </ng-container>
+
+            <div class="field p-fluid">
+                <label for="entityRoleSelector">{{ 'entityAccounts.list.addAccountDialog.entityRole' | translate }}
+                    <span class="text-red-500">*</span></label>
+                <div class="flex gap-2 cursor-pointer"
+                    (click)="!loading && !!f['entityId'].value && openCreateRoleDialog()">
+                    <input id="entityRoleSelector" pInputText type="text" [value]="getCreateRoleDisplayText()" readonly
+                        [placeholder]="'entityAccounts.list.addAccountDialog.selectEntityRole' | translate"
+                        class="w-full" style="cursor: pointer;" />
+                    <p-button icon="pi pi-search" [disabled]="loading || !f['entityId'].value"
+                        styleClass="cursor-pointer"></p-button>
+                </div>
+                <small class="p-error" *ngIf="submitted && f['entityRoleId'].invalid">
+                    {{ 'entityAccounts.list.addAccountDialog.entityRoleRequired' | translate }}
+                </small>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex justify-content-end gap-2 mt-4">
+            <p-button [label]="'entityAccounts.list.addAccountDialog.cancel' | translate" icon="pi pi-times"
+                class="p-button-text" (onClick)="onAccountCancelled()" [disabled]="loading">
+            </p-button>
+            <p-button type="submit" [label]="'entityAccounts.list.addAccountDialog.createAccount' | translate"
+                icon="pi pi-check" [loading]="loading" styleClass="account-list-footer-primary-btn">
+            </p-button>
+        </div>
+    </form>
+</p-dialog>
+
+<p-dialog [(visible)]="entityDialogVisible" [modal]="true" [style]="{ width: '800px' }" [closable]="true"
+    [draggable]="false" [resizable]="false" (onHide)="closeCreateEntityDialog()">
+    <ng-template pTemplate="header">
+        <h3>{{ 'entityAccounts.list.addAccountDialog.selectEntity' | translate }}</h3>
+    </ng-template>
+
+    <div class="flex flex-column gap-3">
+        <span class="p-input-icon-left w-full">
+            <i class="pi pi-search"></i>
+            <input pInputText type="text" [placeholder]="'entityRoles.form.entityDialog.searchPlaceholder' | translate"
+                class="w-full" [value]="entityTableTextFilter" (input)="onEntityTableSearchInput($event)" />
+        </span>
+
+        <div style="position: relative; min-height: 400px;">
+            <p-table [value]="entityTableValue" [paginator]="true" [first]="entityTableFirst" [rows]="entityTableRows"
+                [rowsPerPageOptions]="[10, 25, 50, 100]" [totalRecords]="entityTableTotalRecords"
+                [showCurrentPageReport]="true" [lazy]="true"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                (onLazyLoad)="onEntityTablePageChange($event)" styleClass="p-datatable-sm">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 150px;">{{ 'entityRoles.form.entityDialog.code' | translate }}</th>
+                        <th>{{ 'entityRoles.form.entityDialog.name' | translate }}</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-entity>
+                    <tr [class.selected-row]="isCreateEntitySelected(entity)" (click)="selectCreateEntity(entity)"
+                        style="cursor: pointer;">
+                        <td>
+                            <ng-container *ngIf="loadingEntitiesTable; else entityCodeContent">
+                                <p-skeleton height="1.25rem" width="5rem"></p-skeleton>
+                            </ng-container>
+                            <ng-template #entityCodeContent>
+                                <span class="font-semibold">{{ entity.code }}</span>
+                            </ng-template>
+                        </td>
+                        <td>
+                            <ng-container *ngIf="loadingEntitiesTable; else entityNameContent">
+                                <p-skeleton height="1.25rem" width="12rem"></p-skeleton>
+                            </ng-container>
+                            <ng-template #entityNameContent>
+                                <span class="font-semibold">{{ entity.name }}</span>
+                            </ng-template>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="2" class="text-center p-4">{{ 'entityRoles.form.entityDialog.noEntities' |
+                            translate }}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <p-button [label]="'common.cancel' | translate" icon="pi pi-times" class="p-button-text"
+            (onClick)="closeCreateEntityDialog()"></p-button>
+        <p-button [label]="'common.select' | translate" icon="pi pi-check" (onClick)="closeCreateEntityDialog()"
+            [disabled]="!selectedCreateEntity"></p-button>
+    </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="roleDialogVisible" [modal]="true" [style]="{ width: '700px' }" [closable]="true"
+    [draggable]="false" [resizable]="false" (onHide)="closeCreateRoleDialog()">
+    <ng-template pTemplate="header">
+        <h3>{{ 'entityAccounts.list.addAccountDialog.selectEntityRole' | translate }}</h3>
+    </ng-template>
+
+    <div style="position: relative; min-height: 350px;">
+        <p-table [value]="roleTableValue" [paginator]="true" [first]="roleTableFirst" [rows]="roleTableRows"
+            [rowsPerPageOptions]="[10, 25, 50, 100]" [totalRecords]="roleTableTotalRecords"
+            [showCurrentPageReport]="true" [lazy]="true"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+            (onLazyLoad)="onRoleTablePageChange($event)" styleClass="p-datatable-sm">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="width: 150px;">ID</th>
+                    <th>{{ 'entityAccounts.list.addAccountDialog.entityRole' | translate }}</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-role>
+                <tr [class.selected-row]="isCreateRoleSelected(role)" (click)="selectCreateRole(role)"
+                    style="cursor: pointer;">
+                    <td>
+                        <ng-container *ngIf="loadingRolesTable; else roleIdContent">
+                            <p-skeleton height="1.25rem" width="4rem"></p-skeleton>
+                        </ng-container>
+                        <ng-template #roleIdContent>
+                            <span class="font-semibold">{{ role.id }}</span>
+                        </ng-template>
+                    </td>
+                    <td>
+                        <ng-container *ngIf="loadingRolesTable; else roleTitleContent">
+                            <p-skeleton height="1.25rem" width="12rem"></p-skeleton>
+                        </ng-container>
+                        <ng-template #roleTitleContent>
+                            <span class="font-semibold">{{ role.title }}</span>
+                        </ng-template>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="2" class="text-center p-4">{{ 'entityAccounts.list.noAccounts' | translate }}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <p-button [label]="'common.cancel' | translate" icon="pi pi-times" class="p-button-text"
+            (onClick)="closeCreateRoleDialog()"></p-button>
+        <p-button [label]="'common.select' | translate" icon="pi pi-check" (onClick)="closeCreateRoleDialog()"
+            [disabled]="!selectedCreateRole"></p-button>
+    </ng-template>
+</p-dialog>
+
+<!-- Activate Account Confirmation Dialog -->
+<p-dialog [(visible)]="activateAccountDialog" [modal]="true" [style]="{ width: '450px' }" [closable]="true"
+    (onHide)="onCancelActivateAccountDialog()" [draggable]="false" [resizable]="false">
+    <ng-template pTemplate="header">
+        <h3>{{ 'entityAccounts.list.activateDialog.title' | translate }}</h3>
+    </ng-template>
+    <div class="flex flex-column gap-3">
+        <p>{{ 'entityAccounts.list.activateDialog.messagePrefix' | translate }}<span
+                class="font-semibold">{{ accountToActivate?.email }}</span>{{ 'entityAccounts.list.activateDialog.messageSuffix' | translate }}</p>
+    </div>
+    <ng-template pTemplate="footer">
+        <p-button [label]="'entityAccounts.list.activateDialog.cancel' | translate" icon="pi pi-times"
+            class="p-button-text" (onClick)="onCancelActivateAccountDialog()" [disabled]="loadingAccounts">
+        </p-button>
+        <p-button (onClick)="activateAccount()" [disabled]="loadingAccounts"
+            styleClass="account-list-footer-primary-btn">
+            <span class="account-list-footer-primary-inner">
+                <ng-container *ngIf="loadingAccounts">
+                    <span class="indicator-progress flex align-items-center justify-content-center gap-2">
+                        {{ 'entityAccounts.list.pleaseWait' | translate }}
+                        <p-skeleton width="1rem" height="1rem" shape="circle"></p-skeleton>
+                    </span>
+                </ng-container>
+                <ng-container *ngIf="!loadingAccounts">
+                    <span>{{ 'entityAccounts.list.activateDialog.activate' | translate }}</span>
+                </ng-container>
+            </span>
+        </p-button>
+    </ng-template>
+</p-dialog>
+
+<!-- Deactivate Account Confirmation Dialog -->
+<p-dialog [(visible)]="deactivateAccountDialog" [modal]="true" [style]="{ width: '450px' }" [closable]="true"
+    (onHide)="onCancelDeactivateAccountDialog()" [draggable]="false" [resizable]="false">
+    <ng-template pTemplate="header">
+        <h3>{{ 'entityAccounts.list.deactivateDialog.title' | translate }}</h3>
+    </ng-template>
+    <div class="flex flex-column gap-3">
+        <p>{{ 'entityAccounts.list.deactivateDialog.messagePrefix' | translate }}<span
+                class="font-semibold">{{ accountToDeactivate?.email }}</span>{{ 'entityAccounts.list.deactivateDialog.messageSuffix' | translate }}</p>
+    </div>
+    <ng-template pTemplate="footer">
+        <p-button [label]="'entityAccounts.list.deactivateDialog.cancel' | translate" icon="pi pi-times"
+            class="p-button-text" (onClick)="onCancelDeactivateAccountDialog()" [disabled]="loadingAccounts">
+        </p-button>
+        <p-button (onClick)="deactivateAccount()" [disabled]="loadingAccounts"
+            styleClass="account-list-footer-primary-btn">
+            <span class="account-list-footer-primary-inner">
+                <ng-container *ngIf="loadingAccounts">
+                    <span class="indicator-progress flex align-items-center justify-content-center gap-2">
+                        {{ 'entityAccounts.list.pleaseWait' | translate }}
+                        <p-skeleton width="1rem" height="1rem" shape="circle"></p-skeleton>
+                    </span>
+                </ng-container>
+                <ng-container *ngIf="!loadingAccounts">
+                    <span>{{ 'entityAccounts.list.deactivateDialog.deactivate' | translate }}</span>
+                </ng-container>
+            </span>
+        </p-button>
+    </ng-template>
+</p-dialog>
+
+<!-- Assign Admin Confirmation Dialog -->
+<p-dialog [(visible)]="assignAdminDialog" [modal]="true" [style]="{ width: '450px' }" [closable]="true"
+    [draggable]="false" [resizable]="false">
+    <ng-template pTemplate="header">
+        <h3>{{ 'entityAccounts.list.assignAdminDialog.title' | translate }}</h3>
+    </ng-template>
+    <div class="flex flex-column gap-3">
+        <p>{{ 'entityAccounts.list.assignAdminDialog.messagePrefix' | translate }}<span class="font-semibold">{{
+                accountToAssign?.email }}</span>{{ 'entityAccounts.list.assignAdminDialog.messageMiddle' | translate }}<span
+                class="font-semibold">{{ getEntityName() }}</span>{{ 'entityAccounts.list.assignAdminDialog.messageSuffix' | translate }}</p>
+    </div>
+    <ng-template pTemplate="footer">
+        <p-button [label]="'entityAccounts.list.assignAdminDialog.cancel' | translate" icon="pi pi-times"
+            class="p-button-text" (onClick)="onCancelAssignAdminDialog()" [disabled]="loadingAccounts">
+        </p-button>
+        <p-button (onClick)="assignAccountAsAdmin()" [disabled]="loadingAccounts"
+            styleClass="account-list-footer-primary-btn">
+            <span class="account-list-footer-primary-inner">
+                <ng-container *ngIf="loadingAccounts">
+                    <span class="indicator-progress flex align-items-center justify-content-center gap-2">
+                        {{ 'entityAccounts.list.pleaseWait' | translate }}
+                        <p-skeleton width="1rem" height="1rem" shape="circle"></p-skeleton>
+                    </span>
+                </ng-container>
+                <ng-container *ngIf="!loadingAccounts">
+                    <span>{{ 'entityAccounts.list.assignAdminDialog.assign' | translate }}</span>
+                </ng-container>
+            </span>
+        </p-button>
+    </ng-template>
+</p-dialog>
+
+<app-shared-account-details [(visible)]="viewAccountDetailsDialog" [account]="selectedAccountForDetails"
+    [dialogMode]="'view'" (saved)="onAccountDetailsSaved()">
+</app-shared-account-details>
+<app-shared-account-details [(visible)]="editAccountDescriptionDialog" [account]="selectedAccountForDetails"
+    [dialogMode]="'editDescription'" (saved)="onAccountDetailsSaved()">
+</app-shared-account-details>
+
+<!-- Update Account Email Dialog -->
+<p-dialog [(visible)]="updateAccountEmailDialog" [modal]="true" [style]="{ width: '500px' }" [closable]="true"
+    [draggable]="false" [resizable]="false" (onHide)="onCloseUpdateAccountEmailDialog()">
+    <ng-template pTemplate="header">
+        <h3>{{ 'entityAccounts.list.updateEmailDialog.title' | translate }}</h3>
+    </ng-template>
+    <form *ngIf="updateEmailForm" [formGroup]="updateEmailForm" (ngSubmit)="saveAccountEmail()">
+        <div class="flex flex-column gap-3">
+            <div class="account-details-content">
+                <div class="account-details-row">
+                    <span class="account-details-label">{{ 'entityAccounts.list.updateEmailDialog.accountId' | translate
+                        }}</span>
+                    <span class="account-details-value">{{ selectedAccountForDetails?.accountId }}</span>
+                </div>
+                <div class="account-details-divider"></div>
+                <div class="account-details-row account-details-name">
+                    <span class="account-details-label">{{ 'entityAccounts.list.updateEmailDialog.currentEmail' |
+                        translate }}</span>
+                    <span class="account-details-value account-details-description-value font-semibold">{{
+                        selectedAccountForDetails?.email }}</span>
+                </div>
+                <div class="account-details-divider"></div>
+            </div>
+
+            <div class="account-details-description-edit pt-2">
+                <label for="newEmail" class="account-details-label block mb-2">{{
+                    'entityAccounts.list.updateEmailDialog.newEmail' | translate }} <span
+                        class="text-red-500">*</span></label>
+                <input id="newEmail" type="email" pInputText formControlName="newEmail" class="w-full"
+                    [class.ng-invalid]="updateEmailForm.get('newEmail')?.invalid && updateEmailForm.get('newEmail')?.touched"
+                    [placeholder]="'entityAccounts.list.updateEmailDialog.placeholderNewEmail' | translate" />
+                <small class="p-error"
+                    *ngIf="updateEmailForm.get('newEmail')?.invalid && updateEmailForm.get('newEmail')?.touched">
+                    <span *ngIf="updateEmailForm.get('newEmail')?.errors?.['required']">{{
+                        'entityAccounts.list.updateEmailDialog.newEmailRequired' | translate }}</span>
+                    <span *ngIf="updateEmailForm.get('newEmail')?.errors?.['email']">{{
+                        'entityAccounts.list.updateEmailDialog.validEmail' | translate }}</span>
+                </small>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex justify-content-end gap-2 mt-4">
+            <p-button [label]="'entityAccounts.list.updateEmailDialog.cancel' | translate" icon="pi pi-times"
+                class="p-button-text" (onClick)="onCloseUpdateAccountEmailDialog()" [disabled]="savingAccountEmail">
+            </p-button>
+            <p-button type="submit" [label]="'entityAccounts.list.updateEmailDialog.updateEmail' | translate"
+                icon="pi pi-check" [loading]="savingAccountEmail" [disabled]="updateEmailForm.invalid"
+                styleClass="account-list-footer-primary-btn">
+            </p-button>
+        </div>
+    </form>
+</p-dialog>
+
+<!-- Update Account Entity Dialog (Shared Component) -->
+<app-shared-account-update [visible]="updateAccountEntityDialogVisible" [accountEmail]="accountEmailForUpdate"
+    [requestedSystemRole]="requestedSystemRole" (onSave)="onAccountEntityUpdateSave($event)"
+    (onCancel)="onAccountEntityUpdateCancel()" (onClose)="onAccountEntityUpdateCancel()">
+</app-shared-account-update>
+
+<p-toast></p-toast>

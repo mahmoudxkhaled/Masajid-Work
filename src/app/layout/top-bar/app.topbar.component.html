@@ -1,0 +1,184 @@
+<div class="layout-topbar" [ngClass]="{ 'border-bottom-none': layoutService.config().topbarTheme !== 'light' }">
+
+
+    <div class="mx-4 flex align-items-center company-info-desktop topbar-entity-block">
+        <img *ngIf="headerDisplayLogo" width="45" height="45" class="mx-2 topbar-entity-logo"
+            [src]="headerDisplayLogo" [attr.alt]="'layout.top-bar.companyLogo' | translate" />
+        <p *ngIf="headerDisplayTitle" class="topbar-entity-title">{{ headerDisplayTitle }}</p>
+    </div>
+    <div class="company-info-mobile layout-topbar-start flex justify-content-between align-items-center"
+        style="margin-top: 10px">
+
+
+
+        <div id="" class="flex justify-content-center flex-grow-1">
+            <a class="iaware-logo layout-topbar-logo" routerLink="/">
+                <!-- <svg width="150" viewBox="0 0 200 40" xmlns="http://www.w3.org/2000/svg">
+                    <text x="10" y="30" font-family="Arial, sans-serif" font-size="32"
+                        fill="var(--topbar-item-text-color)" font-weight="700">
+                        ERP Logo
+                    </text>
+                </svg> -->
+                <img width="80" src="../../assets/media/logo/PMAT_Logo_(Medium)_No_Bkgnd.png"
+                    [ngClass]="{ 'topbar-pmat-logo--white': layoutService.config().topbarTheme !== 'light' }"
+                    [attr.alt]="'layout.top-bar.companyLogo' | translate" />
+                <!-- <img src="../../assets/media/logo1.png" alt="iAware Logo" /> -->
+            </a>
+        </div>
+
+        <a #mobileMenuButton class="layout-topbar-mobile-button" (click)="onMobileTopbarMenuButtonClick()" pRipple>
+            <i class="pi pi-bars text-4xl"></i>
+        </a>
+    </div>
+
+    <div class="layout-topbar-middel company-info-desktop">
+
+
+        <!-- <a class="layout-topbar-logo company-info-desktop" routerLink="/"> -->
+        <!-- <svg width="150" viewBox="0 0 200 40" xmlns="http://www.w3.org/2000/svg">
+                <text x="10" y="30" font-family="Arial, sans-serif" font-size="32" fill="var(--topbar-item-text-color)"
+                    font-weight="700">
+                    ERP Logo
+                </text>
+            </svg> -->
+        <!-- <img src="../../assets/media/logo1.png" width="100" alt="Logo" /> -->
+        <!-- </a> -->
+        <img width="80" src="../../assets/media/logo/PMAT_Logo_(Medium)_No_Bkgnd.png" routerLink="/"
+            style="cursor: pointer;"
+            [ngClass]="{ 'topbar-pmat-logo--white': layoutService.config().topbarTheme !== 'light' }"
+            [attr.alt]="'layout.top-bar.companyLogo' | translate" />
+    </div>
+    <div class="layout-topbar-end">
+        <div class="layout-topbar-actions-end">
+            <ul class="layout-topbar-items" style="align-items: center">
+
+                <li>
+                    <i [class]="
+                            themeLoading
+                                ? 'pi pi-spin pi-spinner text-xl'
+                                : userTheme === 'dark'
+                                ? 'pi pi-sun text-xl cursor-pointer'
+                                : 'pi pi-moon text-xl cursor-pointer'
+                        " [style.cursor]="themeLoading ? 'default' : 'pointer'" (click)="changeUserTheme()"></i>
+                </li>
+
+                <!-- Notification Bell: fixed-width wrap avoids layout shift; badge only when unread -->
+                <li class="topbar-notification-bell-wrap">
+                    <i *ngIf="unreadCount > 0" class="pi pi-bell text-2xl cursor-pointer" pBadge severity="danger"
+                        [value]="unreadCount > 99 ? '99+' : unreadCount.toString()" pStyleClass="@next"
+                        enterFromClass="ng-hidden" enterActiveClass="px-scalein" leaveToClass="ng-hidden"
+                        leaveActiveClass="px-fadeout" [hideOnOutsideClick]="true"
+                        (click)="onNotificationPanelOpen($event)">
+                    </i>
+                    <i *ngIf="unreadCount === 0" class="pi pi-bell text-2xl cursor-pointer" pStyleClass="@next"
+                        enterFromClass="ng-hidden" enterActiveClass="px-scalein" leaveToClass="ng-hidden"
+                        leaveActiveClass="px-fadeout" [hideOnOutsideClick]="true"
+                        (click)="onNotificationPanelOpen($event)">
+                    </i>
+
+                    <div #notificationPanel class="ng-hidden" style="margin-top: -6px">
+                        <!-- Loading State: Skeleton mimics notification list (same size as scrollPanel: 35rem x 300px) -->
+                        <div *ngIf="loadingNotifications" class="notification-skeleton"
+                            [style]="{ width: '35rem', height: '300px' }">
+                            <div *ngFor="let i of [1,2,3,4,5]"
+                                class="skeleton-row py-3 px-3 flex justify-content-between align-items-start">
+                                <div class="flex flex-column gap-2 flex-grow-1">
+                                    <p-skeleton width="70%" height="1rem"></p-skeleton>
+                                    <p-skeleton width="100%" height="0.875rem"></p-skeleton>
+                                </div>
+                                <p-skeleton width="4rem" height="0.75rem" styleClass="mb-0"></p-skeleton>
+                            </div>
+                        </div>
+
+                        <p-scrollPanel
+                            *ngIf="!loadingNotifications && notifications && notifications.length > 0; else noNotifications"
+                            [style]="{ width: '35rem', height: '300px' }">
+                            <!-- Notification List -->
+                            <ul class="list-none p-0 m-0">
+                                <li *ngFor="let notification of notifications; let last = last" [ngClass]="{
+                                        'unread-notification': !notification.isRead,
+                                        'read-notification': notification.isRead
+                                    }" [ngStyle]="{ 'border-bottom': last ? 'none' : '1px solid #80808026' }"
+                                    class="notification-item py-3 px-3"
+                                    (click)="onNotificationClick(notification, $event)">
+                                    <!-- Notification Item -->
+                                    <div class="flex justify-content-between flex-wrap notification-content"
+                                        style="cursor: pointer;">
+                                        <!-- Left: Text -->
+                                        <div class="flex align-items-center">
+                                            <div class="notification-msg">
+                                                <span class="notification-title">{{ notification.title }}</span>
+                                                <span class="notification-text">{{ notification.message }}</span>
+                                            </div>
+                                        </div>
+                                        <!-- Right: Date -->
+                                        <div class="notification-date flex align-items-center">
+                                            <span class="notification-time">{{ getTimeAgo(notification.createdAt)
+                                                }}</span>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </p-scrollPanel>
+
+                        <ng-template #noNotifications>
+                            <div class="no-notifications" style="text-align: center; padding: 1rem; color: gray">
+                                <div *ngIf="!loadingNotifications">
+                                    {{ 'layout.top-bar.noNotificationsYet' | translate }}
+                                </div>
+                            </div>
+                        </ng-template>
+
+                        <div class="flex justify-content-between">
+
+                            <a *ngIf="!loadingNotifications && notifications && notifications.length > 0"
+                                (click)="markAllAsRead()"
+                                [ngStyle]="{ color: unreadCount > 0 ? 'var(--primary-color)' : 'gray' }"
+                                style="cursor: pointer"
+                                class="mark-all-btn flex justify-content-end     text-sm font-medium">
+                                <i class="pi pi-check mx-1"></i>{{ 'layout.top-bar.markAllAsRead' | translate }}
+                            </a>
+
+                            <div *ngIf="!loadingNotifications && notifications && notifications.length > 0"
+                                class="flex justify-content-end mx-3 my-2">
+                                <a (click)="navigateToInbox()" class="text-sm font-medium"
+                                    style="cursor: pointer; color: var(--primary-color); text-decoration: none;">
+                                    {{ 'layout.top-bar.viewAll' | translate }}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+
+                <li>
+                    <a pStyleClass="@next" enterFromClass="ng-hidden-temp" enterActiveClass="px-scalein"
+                        leaveToClass="ng-hidden-temp" leaveActiveClass="px-fadeout" [hideOnOutsideClick]="true" pRipple
+                        [style.cursor]="langLoading ? 'default' : 'pointer'">
+                        <i [class]="
+                                langLoading 
+                                    ? 'pi pi-spin pi-spinner text-xl' 
+                                    : 'pi pi-globe text-xl'
+                            "></i>
+                    </a>
+                    <div #langListboxPanel class="ng-hidden-temp hidden-temp">
+                        <p-listbox [options]="languages" optionLabel="name" optionValue="id"
+                            [(ngModel)]="userLanguageId" (onChange)="changeUserLanguage($event)"></p-listbox>
+                    </div>
+                </li>
+                <li>
+                    <p style="font-size: 1.2rem; font-weight: 600; cursor: pointer;" routerLink="/summary/profile"> {{
+                        userName }}</p>
+                </li>
+                <li>
+                    <img [src]="profilePictureUrl" [attr.alt]="'layout.top-bar.avatar' | translate" style="width: 32px; height: 32px; vertical-align: middle; border-radius: 50%;
+                        border: 1px solid gray; background-color: white; cursor: pointer; object-fit: cover;"
+                        routerLink="/summary/profile" />
+                </li>
+
+                <!-- <li>
+                    <i class="pi pi-power-off text-xl cursor-pointer" (click)="logOut()"></i>
+                </li> -->
+            </ul>
+        </div>
+    </div>
+</div>

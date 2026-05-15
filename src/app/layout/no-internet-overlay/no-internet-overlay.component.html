@@ -1,0 +1,14 @@
+<!-- <div *ngIf="!isInternetWork" class="no-internet-overlay">
+    <div class="no-internet-message">
+      <h1>No Internet Connection</h1>
+      <p>You are offline. Some features may not be available.</p>
+      <button pButton pRipple (click)="retry()">Retry</button>
+    </div>
+</div> -->
+<div class="no-internet-container">
+  <div class="no-internet-content">
+    <h1><i class="pi pi-exclamation-circle" style="color: red; font-size: x-large;"></i> Oops!</h1>
+    <p>It looks like you’re offline. Check your connection and try again.</p>
+    <button class="retry-button" pButton pRipple (click)="retry()">Retry</button>
+  </div>
+</div>

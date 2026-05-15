@@ -1,0 +1,93 @@
+---
+description: UI changes — PrimeNG skeleton (exact layout, no shift), existing loading flags only; strings via i18n-translations
+alwaysApply: true
+---
+
+# UI defaults (skeleton)
+
+When writing or editing **UI** (templates), apply this by default for **loading states**. For **all user-visible text, keys, en/ar files, and toasts**, follow the dedicated rule **`i18n-translations`** (single source of truth).
+
+---
+
+## Loading state — use PrimeNG Skeleton
+
+- Use **`<p-skeleton>`** for loading; do not add spinners or new loading flags.
+- Use existing loading flags only (e.g. `loading`, `loadingDetails`, `isLoading$`).
+
+### Mandatory rule
+
+- **Any change in ANY component MUST include a proper skeleton state.**
+- The skeleton must:
+  - Match the **exact original size** of the content (height & width)
+  - Preserve the **same layout structure**
+  - Keep the **same spacing, gaps, padding, and margins**
+  - Avoid any layout shift when switching between loading and loaded states
+
+---
+
+### Pattern
+
+```html
+*ngIf="loading; else realContent"
+<ng-template #realContent>
+```
+
+- Skeleton replaces **only inner content**
+- **Do not:**
+  - Remove or change containers
+  - Modify layout structure
+  - Change CSS affecting spacing
+
+---
+
+### Correct example
+
+If original content:
+
+```html
+<div class="card p-3 mb-3">
+  <h3 class="mb-2">Title</h3>
+  <p>Description</p>
+</div>
+```
+
+Skeleton **must** be:
+
+```html
+<div class="card p-3 mb-3">
+  <p-skeleton height="24px" class="mb-2"></p-skeleton>
+  <p-skeleton height="16px" width="80%"></p-skeleton>
+</div>
+```
+
+- Same container, padding, margins, and spacing as loaded content.
+
+---
+
+### Wrong
+
+- Removing wrappers, changing spacing, random skeleton sizes, new loading flags, or replacing the full layout instead of inner content.
+
+---
+
+### Important notes
+
+- Do not change TypeScript logic; only change the HTML template for skeleton wiring unless the task requires TS.
+- Skeleton should visually match the final UI (shape + spacing).
+- **If the skeleton disappears, the layout should not move at all.**
+
+---
+
+### PrimeNG `p-table` — skeleton / placeholder rows
+
+- If the table shows **multiple skeleton body rows** while loading (including via placeholder objects in `[value]`), the **row count must match `[rows]`** on `p-table` so table height matches the first loaded page. Reuse the same numeric source as the paginator’s page size (single property in `.ts` or equivalent). See **`table-defaults`** for the full table pattern.
+
+---
+
+## Summary (UI work)
+
+1. Include a proper skeleton state on any component you touch.
+2. Match exact layout (size + spacing + structure); no layout shift.
+3. Use existing loading flags only.
+4. **Tables:** skeleton / placeholder **body row count** = **`p-table` `[rows]`** (see **`table-defaults`**).
+5. **Strings / i18n / toasts:** see **`i18n-translations`**.

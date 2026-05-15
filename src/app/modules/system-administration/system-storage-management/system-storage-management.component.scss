@@ -1,0 +1,213 @@
+.system-admin-view {
+    margin: 0 auto;
+
+    .system-admin-top {
+        align-items: start;
+    }
+
+    .page-header {
+        margin-bottom: 2rem;
+        text-align: start;
+        width: 100%;
+    }
+    .page-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--p-text-color);
+        margin: 0 0 0.5rem 0;
+    }
+    .page-description {
+        font-size: 0.9375rem;
+        color: var(--p-text-muted-color);
+        margin: 0;
+        line-height: 1.5;
+    }
+
+    .block-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--p-text-color);
+        margin: 0 0 0.75rem 0;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid var(--p-surface-200);
+    }
+
+    .kpi-section {
+        margin-bottom: 2.5rem;
+    }
+
+    .stat-card {
+        position: relative;
+        padding: 1.25rem 1.35rem;
+        border: 1px solid var(--surface-border);
+        background: var(--surface-card);
+        overflow: hidden;
+        transition:
+            box-shadow 0.2s ease,
+            transform 0.2s ease,
+            border-color 0.2s ease;
+
+        &::before {
+            content: '';
+            position: absolute;
+            inset-inline-start: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--primary-color);
+            border-radius: 0;
+        }
+
+        &:hover {
+            border-color: color-mix(in srgb, var(--primary-color) 35%, var(--surface-border));
+            box-shadow: 0 10px 28px color-mix(in srgb, var(--primary-color) 14%, transparent);
+            transform: translateY(-2px);
+        }
+
+        &--no-trend .stat-card__value {
+            margin-bottom: 0;
+        }
+    }
+
+    .stat-card__label {
+        font-size: 0.8125rem;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+        color: var(--text-color-secondary);
+        margin-bottom: 0.35rem;
+    }
+
+    .stat-card__value {
+        font-size: clamp(1.75rem, 2.8vw, 2.35rem);
+        font-weight: 700;
+        line-height: 1.12;
+        letter-spacing: -0.03em;
+        color: var(--text-color);
+        margin-bottom: 0.65rem;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .stat-card__value--md {
+        font-size: clamp(1.35rem, 2.2vw, 1.85rem);
+    }
+
+    .stat-card__icon {
+        width: 3.5rem;
+        height: 3.5rem;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        font-size: 1.5rem;
+        line-height: 1;
+        color: var(--primary-color);
+        position: relative;
+        background: linear-gradient(
+            155deg,
+            color-mix(in srgb, var(--primary-color) 28%, var(--surface-card)) 0%,
+            color-mix(in srgb, var(--primary-color) 12%, var(--surface-ground)) 100%
+        );
+        border: 1px solid color-mix(in srgb, var(--primary-color) 34%, var(--surface-border));
+        box-shadow:
+            0 1px 2px color-mix(in srgb, var(--primary-color) 12%, transparent),
+            0 6px 16px color-mix(in srgb, var(--primary-color) 14%, transparent),
+            inset 0 1px 0 color-mix(in srgb, var(--primary-color) 38%, transparent);
+        transition:
+            transform 0.22s ease,
+            box-shadow 0.22s ease,
+            border-color 0.22s ease;
+
+        .pi {
+            font-family: 'primeicons', sans-serif;
+            font-style: normal;
+            font-weight: normal;
+            filter: drop-shadow(0 1px 1px color-mix(in srgb, var(--primary-color) 28%, transparent));
+        }
+
+        .stat-card:hover & {
+            transform: scale(1.05) translateY(-1px);
+            border-color: color-mix(in srgb, var(--primary-color) 52%, var(--surface-border));
+            box-shadow:
+                0 2px 8px color-mix(in srgb, var(--primary-color) 18%, transparent),
+                0 12px 26px color-mix(in srgb, var(--primary-color) 20%, transparent),
+                inset 0 1px 0 color-mix(in srgb, var(--primary-color) 48%, transparent);
+        }
+    }
+
+    .block-section {
+        margin-bottom: 2.5rem;
+    }
+    .block-card {
+        background: var(--p-surface-0);
+        border: 1px solid var(--p-surface-200);
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    }
+
+    .capacity-block {
+        .capacity-summary {
+            font-size: 0.9375rem;
+            color: var(--p-text-muted-color);
+            margin: 1rem 0 0 0;
+        }
+        .capacity-detail {
+            margin-top: 1.25rem;
+            padding: 1rem 1.25rem;
+            background: var(--p-surface-50);
+            border-radius: 8px;
+            border: 1px solid var(--p-surface-200);
+        }
+        .capacity-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            font-size: 0.9375rem;
+        }
+        .capacity-row:not(:last-child) {
+            border-bottom: 1px solid var(--p-surface-200);
+        }
+        .capacity-label {
+            color: var(--p-text-muted-color);
+        }
+        .capacity-value {
+            font-weight: 600;
+            color: var(--p-text-color);
+        }
+    }
+
+    .expiry-badge {
+        font-size: 0.8125rem;
+        padding: 0.35rem 0.65rem;
+        background: var(--p-surface-100);
+        border-radius: 6px;
+        color: var(--p-text-color);
+    }
+
+    .cell-product {
+        font-weight: 500;
+        color: var(--p-text-color);
+    }
+}
+
+::ng-deep .system-admin-view .capacity-bar.p-progressbar {
+    height: 1.25rem;
+    border-radius: 8px;
+    overflow: hidden;
+    .p-progressbar-value {
+        background: linear-gradient(90deg, var(--p-primary-500), var(--p-primary-400));
+    }
+}
+
+::ng-deep .system-admin-view .system-admin-table.p-datatable .p-datatable-tbody > tr > td {
+    padding: 0.875rem 1rem;
+}
+::ng-deep .system-admin-view .system-admin-table.p-datatable .p-datatable-thead > tr > th {
+    padding: 0.875rem 1rem;
+    background: var(--p-surface-50);
+    font-weight: 600;
+    color: var(--p-text-color);
+}

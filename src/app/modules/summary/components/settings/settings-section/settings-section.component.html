@@ -1,0 +1,80 @@
+<p-panel [header]="panelHeader" styleClass="mb-4">
+    <div *ngIf="showAddKey" class="flex flex-wrap align-items-end gap-2 mb-4">
+        <div class="flex-1 min-w-12rem">
+            <label class="block text-sm font-medium mb-2">{{ 'settings.sharedPanel.addExistingKey' | translate
+                }}</label>
+            <p-dropdown class="w-full p-fluid" [options]="availableOptions" [(ngModel)]="addKeyOption"
+                optionValue="value" [placeholder]="'settings.sharedPanel.addKeyPlaceholder' | translate"
+                [showClear]="true" [disabled]="loading || availableOptions.length === 0">
+                <ng-template let-item pTemplate="selectedItem">
+                    <span *ngIf="item && !item.isUnknownKey">{{ translate.getInstant(item.labelKey!) }}</span>
+                    <span *ngIf="item?.isUnknownKey">{{ item.value }}</span>
+                </ng-template>
+                <ng-template let-item pTemplate="item">
+                    <span *ngIf="!item.isUnknownKey">{{ translate.getInstant(item.labelKey!) }}</span>
+                    <span *ngIf="item.isUnknownKey">{{ item.value }}</span>
+                </ng-template>
+            </p-dropdown>
+        </div>
+        <p-button [label]="'settings.sharedPanel.addKey' | translate" icon="pi pi-plus"
+            [disabled]="!addKeyOption || loading" (onClick)="addSelectedKey()"></p-button>
+        <p-button *ngIf="allowCustomKey" [label]="'settings.sharedPanel.addNewKey' | translate" icon="pi pi-pencil"
+            severity="secondary" [disabled]="loading" (onClick)="openNewKeyDialog()"></p-button>
+    </div>
+
+    <app-shared-settings-panel [activeKeys]="activeKeys" [values]="values" [showRemove]="showRemove"
+        [removeKeyWhitelist]="panelTrashWhitelist" [refreshableKeys]="panelRefreshKeyList"
+        [resetToSchemaDefault]="layer === 'system'" [loading]="loading" (valuesChange)="onValuesChange($event)"
+        (removeKey)="requestRemove($event)" (resetKey)="onResetKey($event)"></app-shared-settings-panel>
+
+    <div class="flex justify-content-end align-items-center gap-2 mt-3">
+        <p-button *ngIf="hasUnsavedChanges" type="button" icon="pi pi-arrow-right" severity="success" [text]="true"
+            [rounded]="true" [pTooltip]="'settings.sections.common.saveHintTooltip' | translate" tooltipPosition="top"
+            [attr.aria-label]="'settings.sections.common.saveHintAria' | translate" [disabled]="saving || loading"
+            (onClick)="save()"></p-button>
+        <p-button [label]="'shared.actions.save' | translate" icon="pi pi-save"
+            [severity]="hasUnsavedChanges ? 'success' : 'primary'" [loading]="saving"
+            [disabled]="!hasUnsavedChanges || saving || loading" (onClick)="save()"></p-button>
+    </div>
+</p-panel>
+
+<p-dialog [(visible)]="showNewKeyDialog" [modal]="true" [draggable]="false" [resizable]="false"
+    [style]="{ width: '420px' }" [header]="'settings.sharedPanel.addNewKey' | translate">
+    <div class="flex flex-column gap-2">
+        <label class="text-sm font-medium">{{ 'settings.sharedPanel.customKeyLabel' | translate }}</label>
+        <input pInputText class="w-full" [(ngModel)]="newKeyInput" />
+    </div>
+    <ng-template pTemplate="footer">
+        <p-button [label]="'common.cancel' | translate" severity="secondary"
+            (onClick)="showNewKeyDialog = false"></p-button>
+        <p-button [label]="'common.confirm' | translate" (onClick)="confirmNewKey()"></p-button>
+    </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="showRemoveConfirm" [modal]="true" [draggable]="false" [resizable]="false"
+    [style]="{ width: '420px' }">
+    <ng-template pTemplate="header">
+        <h3 class="m-0">{{ 'settings.sections.common.removeConfirmTitle' | translate }}</h3>
+    </ng-template>
+    <p>{{ 'settings.sections.common.removeConfirmMessage' | translate: { key: keyToRemove } }}</p>
+    <ng-template pTemplate="footer">
+        <p-button [label]="'common.cancel' | translate" severity="secondary" (onClick)="cancelRemove()"
+            [disabled]="saving"></p-button>
+        <p-button severity="danger" [label]="'common.confirm' | translate" (onClick)="confirmRemove()"
+            [disabled]="saving"></p-button>
+    </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="showDefaultSaveConfirm" [modal]="true" [draggable]="false" [resizable]="false"
+    [style]="{ width: '560px' }" (onHide)="cancelDefaultSave()">
+    <ng-template pTemplate="header">
+        <h3 class="m-0">{{ defaultSaveConfirmTitleKey | translate }}</h3>
+    </ng-template>
+    <p class="m-0 white-space-pre-line  ">{{ defaultSaveConfirmMessageKey | translate }}</p>
+    <ng-template pTemplate="footer">
+        <p-button [label]="'common.cancel' | translate" severity="secondary" (onClick)="cancelDefaultSave()"
+            [disabled]="saving"></p-button>
+        <p-button [label]="'common.confirm' | translate" (onClick)="confirmDefaultSave()" [disabled]="saving || loading"
+            [loading]="saving"></p-button>
+    </ng-template>
+</p-dialog>

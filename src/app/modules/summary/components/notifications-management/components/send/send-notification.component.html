@@ -1,0 +1,453 @@
+<div class="send-notification-page card">
+    <!-- Page Header -->
+    <div class="page-header mb-4">
+        <div class="flex align-items-center justify-content-between">
+            <div class="flex align-items-center gap-3">
+                <p-button icon="pi pi-arrow-left" class="p-button-text p-button-rounded" (onClick)="goBack()"
+                    [pTooltip]="'notificationsManagement.send.goBack' | translate" tooltipPosition="bottom">
+                </p-button>
+                <div class="flex align-items-center gap-2 flex-wrap">
+                    <i class="pi pi-send text-3xl text-primary"></i>
+                    <h2 class="m-0">{{ 'notificationsManagement.send.pageTitle' | translate }}</h2>
+                    <span *ngIf="usedTemplateTitle" class="text-600 font-normal ml-2">{{ 'notificationsManagement.send.usedTemplate' | translate: { title: usedTemplateTitle } }}</span>
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <p-button [label]="'notificationsManagement.send.cancel' | translate" icon="pi pi-times" class="p-button-secondary" (onClick)="goBack()"
+                    [disabled]="sending">
+                </p-button>
+                <p-button *ngIf="activeStep === 1" [label]="'notificationsManagement.send.sendNotification' | translate" icon="pi pi-send" (onClick)="send()"
+                    [loading]="sending" [disabled]="sending || !isStep2Valid" class="p-button-primary">
+                </p-button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Skeleton: exact same layout as Step 1 (same number of fields and order) -->
+    <div *ngIf="loadingCategories" class="send-loading-skeleton mb-4">
+        <div class="step-indicator mb-4">
+            <div class="flex align-items-center gap-2">
+                <p-skeleton width="10rem" height="2.5rem" styleClass="rounded"></p-skeleton>
+                <span class="step-connector"></span>
+                <p-skeleton width="10rem" height="2.5rem" styleClass="rounded"></p-skeleton>
+            </div>
+        </div>
+        <div class="step-content">
+            <div class="text-center mt-2 mb-4"><p-skeleton width="14rem" height="1.5rem" class="mx-auto"></p-skeleton></div>
+            <div class="field mb-3">
+                <p-skeleton width="11rem" height="1rem" class="mb-2"></p-skeleton>
+                <p-skeleton width="100%" height="3rem"></p-skeleton>
+            </div>
+            <div class="field mb-3">
+                <p-skeleton width="5rem" height="1rem" class="mb-2"></p-skeleton>
+                <p-skeleton width="100%" height="3rem"></p-skeleton>
+            </div>
+            <div class="field mb-3">
+                <p-skeleton width="4rem" height="1rem" class="mb-2"></p-skeleton>
+                <p-skeleton width="100%" height="2.5rem"></p-skeleton>
+            </div>
+            <div class="field mb-3">
+                <p-skeleton width="6rem" height="1rem" class="mb-2"></p-skeleton>
+                <p-skeleton width="100%" height="7.5rem"></p-skeleton>
+            </div>
+            <div class="grid">
+                <div class="col-12 md:col-6">
+                    <div class="field mb-3">
+                        <p-skeleton width="9rem" height="1rem" class="mb-2"></p-skeleton>
+                        <p-skeleton width="100%" height="3rem"></p-skeleton>
+                    </div>
+                </div>
+                <div class="col-12 md:col-6">
+                    <div class="field mb-3">
+                        <p-skeleton width="8rem" height="1rem" class="mb-2"></p-skeleton>
+                        <p-skeleton width="100%" height="3rem"></p-skeleton>
+                    </div>
+                </div>
+            </div>
+            <div class="flex pt-4 justify-content-end">
+                <p-skeleton width="6rem" height="2.5rem" styleClass="rounded"></p-skeleton>
+            </div>
+        </div>
+    </div>
+    <!-- Skeleton: same as Step 1 (same fields) when loading notification -->
+    <div *ngIf="!loadingCategories && loading" class="send-loading-skeleton mb-4">
+        <div class="step-indicator mb-4">
+            <div class="flex align-items-center gap-2">
+                <p-skeleton width="10rem" height="2.5rem" styleClass="rounded"></p-skeleton>
+                <span class="step-connector"></span>
+                <p-skeleton width="10rem" height="2.5rem" styleClass="rounded"></p-skeleton>
+            </div>
+        </div>
+        <div class="step-content">
+            <div class="text-center mt-2 mb-4"><p-skeleton width="14rem" height="1.5rem" class="mx-auto"></p-skeleton></div>
+            <div class="field mb-3">
+                <p-skeleton width="11rem" height="1rem" class="mb-2"></p-skeleton>
+                <p-skeleton width="100%" height="3rem"></p-skeleton>
+            </div>
+            <div class="field mb-3">
+                <p-skeleton width="5rem" height="1rem" class="mb-2"></p-skeleton>
+                <p-skeleton width="100%" height="3rem"></p-skeleton>
+            </div>
+            <div class="field mb-3">
+                <p-skeleton width="4rem" height="1rem" class="mb-2"></p-skeleton>
+                <p-skeleton width="100%" height="2.5rem"></p-skeleton>
+            </div>
+            <div class="field mb-3">
+                <p-skeleton width="6rem" height="1rem" class="mb-2"></p-skeleton>
+                <p-skeleton width="100%" height="7.5rem"></p-skeleton>
+            </div>
+            <div class="grid">
+                <div class="col-12 md:col-6">
+                    <div class="field mb-3">
+                        <p-skeleton width="9rem" height="1rem" class="mb-2"></p-skeleton>
+                        <p-skeleton width="100%" height="3rem"></p-skeleton>
+                    </div>
+                </div>
+                <div class="col-12 md:col-6">
+                    <div class="field mb-3">
+                        <p-skeleton width="8rem" height="1rem" class="mb-2"></p-skeleton>
+                        <p-skeleton width="100%" height="3rem"></p-skeleton>
+                    </div>
+                </div>
+            </div>
+            <div class="flex pt-4 justify-content-end">
+                <p-skeleton width="6rem" height="2.5rem" styleClass="rounded"></p-skeleton>
+            </div>
+        </div>
+    </div>
+
+    <!-- Two-step layout: show only after categories are loaded so Category dropdown can bind -->
+    <div *ngIf="!loadingCategories && !loading" class="send-notification-stepper">
+        <div class="step-indicator mb-4">
+            <div class="flex align-items-center gap-2">
+                <span class="step-badge" [class.active]="activeStep === 0" [class.done]="activeStep > 0">
+                    <i class="pi pi-file-edit"></i> {{ 'notificationsManagement.send.step1Label' | translate }}
+                </span>
+                <span class="step-connector"></span>
+                <span class="step-badge" [class.active]="activeStep === 1">
+                    <i class="pi pi-users"></i> {{ 'notificationsManagement.send.step2Label' | translate }}
+                </span>
+            </div>
+        </div>
+
+        <!-- Step 1: Content -->
+        <div *ngIf="activeStep === 0" class="step-content">
+            <div class="text-center mt-2 mb-4 text-xl font-semibold">{{ 'notificationsManagement.send.notificationContent' | translate }}</div>
+
+            <div *ngIf="showTemplateDropdown" class="field mb-3">
+                <label for="templateId">{{ 'notificationsManagement.send.useAsTemplate' | translate }}</label>
+                <p-dropdown id="templateId" [options]="templateList" optionLabel="title" optionValue="id"
+                    [(ngModel)]="templateNotificationId" [placeholder]="'notificationsManagement.send.selectNotificationToCopy' | translate"
+                    [showClear]="true" (onChange)="onTemplateChange()" styleClass="w-full">
+                </p-dropdown>
+            </div>
+
+            <div class="field mb-3">
+                <label for="categoryId">{{ 'notificationsManagement.send.category' | translate }} <span class="text-red-500">*</span></label>
+                <p-dropdown id="categoryId" [options]="displayCategories" optionLabel="Title" optionValue="Category_ID"
+                    [(ngModel)]="categoryId" [placeholder]="'notificationsManagement.send.selectCategory' | translate" styleClass="w-full">
+                </p-dropdown>
+                <small *ngIf="!isCategorySelectedAndValid" class="text-red-500 block mt-1">
+                    {{ 'notificationsManagement.send.categoryRequiredMessage' | translate }}
+                </small>
+            </div>
+
+            <div class="field mb-3">
+                <label for="title">{{ 'notificationsManagement.send.titleLabel' | translate }} <span class="text-red-500">*</span></label>
+                <input id="title" type="text" pInputText [(ngModel)]="title" [placeholder]="'notificationsManagement.send.titlePlaceholder' | translate"
+                    class="w-full" />
+            </div>
+
+            <div class="field mb-3">
+                <label for="message">{{ 'notificationsManagement.send.messageLabel' | translate }} <span class="text-red-500">*</span></label>
+                <textarea id="message" pInputTextarea [(ngModel)]="message" rows="5"
+                    [placeholder]="'notificationsManagement.send.messagePlaceholder' | translate" class="w-full"></textarea>
+            </div>
+
+            <div class="grid">
+                <div class="col-12 md:col-6">
+                    <div class="field mb-3">
+                        <label for="referenceType">{{ 'notificationsManagement.send.referenceType' | translate }}</label>
+                        <p-dropdown id="referenceType" [options]="referenceTypes" optionLabel="label"
+                            optionValue="value" [(ngModel)]="referenceType" [placeholder]="'notificationsManagement.send.none' | translate" styleClass="w-full">
+                        </p-dropdown>
+                    </div>
+                </div>
+                <div class="col-12 md:col-6">
+                    <div class="field mb-3">
+                        <label for="referenceId">{{ 'notificationsManagement.send.referenceId' | translate }}</label>
+                        <input id="referenceId" type="number" pInputText [(ngModel)]="referenceId"
+                            [placeholder]="'notificationsManagement.send.referenceIdPlaceholder' | translate" [disabled]="!referenceType" class="w-full" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex pt-4 justify-content-end">
+                <p-button [label]="'notificationsManagement.send.next' | translate" icon="pi pi-arrow-right" iconPos="right" (onClick)="goToStep(1)"
+                    [disabled]="!isStep1Valid">
+                </p-button>
+            </div>
+        </div>
+
+        <!-- Step 2: Recipients -->
+        <div *ngIf="activeStep === 1" class="step-content">
+            <div class="text-center mt-2 mb-4 text-xl font-semibold">{{ 'notificationsManagement.send.selectWhoReceives' | translate }}</div>
+
+            <div class="target-selection-card" [style.position]="'relative'">
+                <!-- Skeleton: exact same layout as Step 2 (title + Send To label + 5 buttons + Select Accounts block + table 3 cols + paginator) -->
+                <div *ngIf="targetSelectionLoading" class="target-selection-skeleton">
+                    <div class="text-center mt-2 mb-4"><p-skeleton width="20rem" height="1.5rem" class="mx-auto"></p-skeleton></div>
+                    <div class="block mb-3 text-600 font-semibold"><p-skeleton width="5rem" height="1rem"></p-skeleton></div>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <p-skeleton width="120px" height="2.5rem" styleClass="rounded" *ngFor="let i of [1,2,3,4,5]"></p-skeleton>
+                    </div>
+                    <div class="selection-table-container mb-4">
+                        <div class="flex align-items-center justify-content-between mb-3">
+                            <p-skeleton width="10rem" height="1rem"></p-skeleton>
+                        </div>
+                        <div class="mb-3">
+                            <p-skeleton width="100%" height="2.5rem"></p-skeleton>
+                        </div>
+                        <div class="target-selection-skeleton-table">
+                            <table class="datatable-skeleton">
+                                <colgroup>
+                                    <col style="width: 50px">
+                                    <col>
+                                    <col>
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th><p-skeleton height="1.25rem"></p-skeleton></th>
+                                        <th><p-skeleton height="1.25rem"></p-skeleton></th>
+                                        <th><p-skeleton height="1.25rem"></p-skeleton></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let i of [1,2,3,4,5,6,7,8,9,10]">
+                                        <td><p-skeleton height="2rem"></p-skeleton></td>
+                                        <td><p-skeleton height="2rem"></p-skeleton></td>
+                                        <td><p-skeleton height="2rem"></p-skeleton></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="datatable-skeleton-paginator">
+                                <p-skeleton width="280px" height="2.5rem"></p-skeleton>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="!targetSelectionLoading">
+                    <label class="block mb-3 text-600 font-semibold">{{ 'notificationsManagement.send.sendTo' | translate }}</label>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <p-button [label]="'notificationsManagement.send.accounts' | translate" [icon]="'pi pi-user'"
+                            [class]="selectedTargetType === 'accounts' ? 'p-button-primary' : 'p-button-outlined'"
+                            (onClick)="selectedTargetType = 'accounts'; onTargetTypeChange()"
+                            [style]="{'min-width': '120px'}">
+                        </p-button>
+                        <p-button [label]="'notificationsManagement.send.groups' | translate" [icon]="'pi pi-users'"
+                            [class]="selectedTargetType === 'groups' ? 'p-button-primary' : 'p-button-outlined'"
+                            (onClick)="selectedTargetType = 'groups'; onTargetTypeChange()"
+                            [style]="{'min-width': '120px'}">
+                        </p-button>
+                        <p-button [label]="'notificationsManagement.send.roles' | translate" [icon]="'pi pi-shield'"
+                            [class]="selectedTargetType === 'roles' ? 'p-button-primary' : 'p-button-outlined'"
+                            (onClick)="selectedTargetType = 'roles'; onTargetTypeChange()"
+                            [style]="{'min-width': '120px'}">
+                        </p-button>
+                        <p-button [label]="'notificationsManagement.send.entities' | translate" [icon]="'pi pi-building'"
+                            [class]="selectedTargetType === 'entities' ? 'p-button-primary' : 'p-button-outlined'"
+                            (onClick)="selectedTargetType = 'entities'; onTargetTypeChange()"
+                            [style]="{'min-width': '120px'}">
+                        </p-button>
+                        <p-button [label]="'notificationsManagement.send.all' | translate" [icon]="'pi pi-globe'"
+                            [class]="selectedTargetType === 'all' ? 'p-button-primary' : 'p-button-outlined'"
+                            [disabled]="!canSendToAll()" (onClick)="selectedTargetType = 'all'; onTargetTypeChange()"
+                            [style]="{'min-width': '120px'}">
+                        </p-button>
+                    </div>
+
+                    <!-- Accounts -->
+                    <div *ngIf="selectedTargetType === 'accounts'" class="selection-table-container mb-4">
+                        <div class="flex align-items-center justify-content-between mb-3">
+                            <label class="block m-0 font-semibold">{{ 'notificationsManagement.send.selectAccounts' | translate }}</label>
+                            <p-tag *ngIf="selectedAccountIds.length > 0"
+                                [value]="'notificationsManagement.send.selectedCount' | translate: { count: selectedAccountIds.length }" severity="info"></p-tag>
+                        </div>
+                        <div class="mb-3">
+                            <span class="p-input-icon-left w-full">
+                                <i class="pi pi-search"></i>
+                                <input type="text" pInputText [placeholder]="'notificationsManagement.send.searchAccountPlaceholder' | translate"
+                                    [(ngModel)]="accountSearchFilter" (input)="filterAccounts()" class="w-full" />
+                            </span>
+                        </div>
+                        <p-table [value]="filteredAccounts" selectionMode="multiple" [(selection)]="selectedAccountIds"
+                            [dataKey]="'Account_ID'" [paginator]="true" [rows]="10" [loading]="targetSelectionLoading"
+                            styleClass="p-datatable-sm p-datatable-striped">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th style="width: 50px;"><p-tableHeaderCheckbox></p-tableHeaderCheckbox></th>
+                                    <th>{{ 'notificationsManagement.send.tableAccountId' | translate }}</th>
+                                    <th>{{ 'notificationsManagement.send.tableEmail' | translate }}</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-account>
+                                <tr>
+                                    <td><p-tableCheckbox [value]="account"></p-tableCheckbox></td>
+                                    <td><p-tag [value]="'#' + account.Account_ID" severity="info"></p-tag></td>
+                                    <td>{{ account.Email }}</td>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="emptymessage">
+                                <tr>
+                                    <td colspan="3" class="text-center p-4">{{ 'notificationsManagement.send.noAccountsFound' | translate }}</td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+
+                    <!-- Groups -->
+                    <div *ngIf="selectedTargetType === 'groups'" class="selection-table-container mb-4">
+                        <div class="flex align-items-center justify-content-between mb-3">
+                            <label class="block m-0 font-semibold">{{ 'notificationsManagement.send.selectGroups' | translate }}</label>
+                            <p-tag *ngIf="selectedGroupIds.length > 0" [value]="'notificationsManagement.send.selectedCount' | translate: { count: selectedGroupIds.length }"
+                                severity="info"></p-tag>
+                        </div>
+                        <div class="mb-3">
+                            <span class="p-input-icon-left w-full">
+                                <i class="pi pi-search"></i>
+                                <input type="text" pInputText [placeholder]="'notificationsManagement.send.searchPlaceholder' | translate" [(ngModel)]="groupSearchFilter"
+                                    (input)="filterGroups()" class="w-full" />
+                            </span>
+                        </div>
+                        <p-table [value]="filteredGroups" selectionMode="multiple" [(selection)]="selectedGroupIds"
+                            [dataKey]="'id'" [paginator]="true" [rows]="10" [loading]="targetSelectionLoading"
+                            styleClass="p-datatable-sm p-datatable-striped">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th style="width: 50px;"><p-tableHeaderCheckbox></p-tableHeaderCheckbox></th>
+                                    <th>{{ 'notificationsManagement.send.tableId' | translate }}</th>
+                                    <th>{{ 'notificationsManagement.send.tableTitle' | translate }}</th>
+                                    <th>{{ 'notificationsManagement.send.tableDescription' | translate }}</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-group>
+                                <tr>
+                                    <td><p-tableCheckbox [value]="group"></p-tableCheckbox></td>
+                                    <td><p-tag [value]="'#' + group.id" severity="info"></p-tag></td>
+                                    <td>{{ group.title }}</td>
+                                    <td>{{ group.description || '—' }}</td>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="emptymessage">
+                                <tr>
+                                    <td colspan="4" class="text-center p-4">{{ 'notificationsManagement.send.noGroupsFound' | translate }}</td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+
+                    <!-- Roles -->
+                    <div *ngIf="selectedTargetType === 'roles'" class="selection-table-container mb-4">
+                        <div class="flex align-items-center justify-content-between mb-3">
+                            <label class="block m-0 font-semibold">{{ 'notificationsManagement.send.selectRoles' | translate }}</label>
+                            <p-tag *ngIf="selectedRoleIds.length > 0" [value]="'notificationsManagement.send.selectedCount' | translate: { count: selectedRoleIds.length }"
+                                severity="info"></p-tag>
+                        </div>
+                        <div class="mb-3">
+                            <span class="p-input-icon-left w-full">
+                                <i class="pi pi-search"></i>
+                                <input type="text" pInputText [placeholder]="'notificationsManagement.send.searchPlaceholder' | translate" [(ngModel)]="roleSearchFilter"
+                                    (input)="filterRoles()" class="w-full" />
+                            </span>
+                        </div>
+                        <p-table [value]="filteredRoles" selectionMode="multiple" [(selection)]="selectedRoleIds"
+                            [dataKey]="'id'" [paginator]="true" [rows]="10" [loading]="targetSelectionLoading"
+                            styleClass="p-datatable-sm p-datatable-striped">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th style="width: 50px;"><p-tableHeaderCheckbox></p-tableHeaderCheckbox></th>
+                                    <th>{{ 'notificationsManagement.send.tableRoleId' | translate }}</th>
+                                    <th>{{ 'notificationsManagement.send.tableTitle' | translate }}</th>
+                                    <th>{{ 'notificationsManagement.send.tableDescription' | translate }}</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-role>
+                                <tr>
+                                    <td><p-tableCheckbox [value]="role"></p-tableCheckbox></td>
+                                    <td><p-tag [value]="'#' + role.id" severity="info"></p-tag></td>
+                                    <td>{{ role.title }}</td>
+                                    <td>{{ role.description || '—' }}</td>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="emptymessage">
+                                <tr>
+                                    <td colspan="4" class="text-center p-4">{{ 'notificationsManagement.send.noRolesFound' | translate }}</td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+
+                    <!-- Entities -->
+                    <div *ngIf="selectedTargetType === 'entities'" class="selection-table-container mb-4">
+                        <div class="flex align-items-center justify-content-between mb-3">
+                            <label class="block m-0 font-semibold">{{ 'notificationsManagement.send.selectEntities' | translate }}</label>
+                            <p-tag *ngIf="selectedEntityIds.length > 0" [value]="'notificationsManagement.send.selectedCount' | translate: { count: selectedEntityIds.length }"
+                                severity="info"></p-tag>
+                        </div>
+                        <div class="mb-3">
+                            <span class="p-input-icon-left w-full">
+                                <i class="pi pi-search"></i>
+                                <input type="text" pInputText [placeholder]="'notificationsManagement.send.searchPlaceholder' | translate" [(ngModel)]="entitySearchFilter"
+                                    (input)="filterEntities()" class="w-full" />
+                            </span>
+                        </div>
+                        <p-table [value]="filteredEntities" selectionMode="multiple" [(selection)]="selectedEntityIds"
+                            [dataKey]="'id'" [paginator]="true" [rows]="10" [loading]="targetSelectionLoading"
+                            styleClass="p-datatable-sm p-datatable-striped">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th style="width: 50px;"><p-tableHeaderCheckbox></p-tableHeaderCheckbox></th>
+                                    <th>{{ 'notificationsManagement.send.tableEntityId' | translate }}</th>
+                                    <th>{{ 'notificationsManagement.send.tableCode' | translate }}</th>
+                                    <th>{{ 'notificationsManagement.send.tableName' | translate }}</th>
+                                    <th>{{ 'notificationsManagement.send.tableDescription' | translate }}</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-entity>
+                                <tr>
+                                    <td><p-tableCheckbox [value]="entity"></p-tableCheckbox></td>
+                                    <td><p-tag [value]="'#' + entity.id" severity="info"></p-tag></td>
+                                    <td>{{ entity.code }}</td>
+                                    <td>{{ entity.name }}</td>
+                                    <td>{{ entity.description || '—' }}</td>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="emptymessage">
+                                <tr>
+                                    <td colspan="5" class="text-center p-4">{{ 'notificationsManagement.send.noEntitiesFound' | translate }}</td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+
+                    <!-- All -->
+                    <div *ngIf="selectedTargetType === 'all'" class="mb-4 p-3 border-round"
+                        style="background: #fff3cd; border: 1px solid #ffc107;">
+                        <i class="pi pi-exclamation-triangle mr-2" style="color: #856404;"></i>
+                        <span style="color: #856404;">{{ 'notificationsManagement.send.sendToAllWarning' | translate }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex pt-4 justify-content-between">
+                <p-button [label]="'notificationsManagement.send.back' | translate" icon="pi pi-arrow-left" severity="secondary" (onClick)="goToStep(0)">
+                </p-button>
+                <p-button [label]="'notificationsManagement.send.sendNotification' | translate" icon="pi pi-send" (onClick)="send()" [loading]="sending"
+                    [disabled]="sending || !isStep2Valid">
+                </p-button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<p-toast></p-toast>

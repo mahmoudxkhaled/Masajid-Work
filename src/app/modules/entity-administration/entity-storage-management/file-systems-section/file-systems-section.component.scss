@@ -1,0 +1,61 @@
+// Shared file systems section styles (can reuse entity-admin-table / system-admin-table from parent if needed)
+.cell-entity {
+  font-weight: 500;
+}
+
+.list-none {
+  list-style: none;
+}
+
+// File system details dialog (same layout as drive details)
+.drive-details-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.drive-details-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  gap: 1rem;
+
+  &.drive-details-name {
+    padding-top: 0;
+    .drive-details-value {
+      font-size: 1.05rem;
+    }
+  }
+
+  &.drive-details-status-row {
+    align-items: center;
+  }
+}
+
+.drive-details-label {
+  color: var(--text-color-secondary);
+  font-size: 0.875rem;
+  flex-shrink: 0;
+}
+
+.drive-details-value {
+  text-align: right;
+  font-weight: 500;
+}
+
+.drive-details-divider {
+  height: 1px;
+  background: var(--surface-border);
+  margin: 0.25rem 0;
+}
+
+:host ::ng-deep {
+  .p-datatable .p-datatable-tbody > tr.file-systems-row-clickable {
+    transition: background-color 0.2s ease;
+  }
+
+  .p-datatable .p-datatable-tbody > tr.file-systems-row-clickable:hover {
+    background-color: var(--surface-hover);
+  }
+}

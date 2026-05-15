@@ -1,0 +1,83 @@
+<ng-container *ngIf="loading; else fieldsBlock">
+    <div class="grid">
+        <div class="col-12 md:col-6 setting-item" *ngFor="let _ of skeletonPlaceholders()">
+            <div class="setting-header">
+                <p-skeleton height="1rem" width="45%" class="setting-header-label-skeleton"></p-skeleton>
+                <div class="setting-actions">
+                    <span class="setting-action-placeholder" aria-hidden="true"></span>
+                </div>
+            </div>
+            <div class="setting-control">
+                <p-skeleton height="2.5rem" width="100%" borderRadius="6px"></p-skeleton>
+            </div>
+        </div>
+    </div>
+</ng-container>
+
+<ng-template #fieldsBlock>
+    <div class="grid">
+        <div class="col-12 md:col-6 setting-item" *ngFor="let key of sortedActiveKeys">
+            <div class="setting-header">
+                <label class="setting-header-label block text-sm font-medium">
+                    <ng-container *ngIf="getSchemaEntry(key) as schemaEntry; else unknownLabel">
+                        {{ translate.getInstant(schemaEntry.labelKey) }}
+                    </ng-container>
+                    <ng-template #unknownLabel>
+                        {{ 'settings.sharedPanel.keys.unknownKey' | translate: { key: key } }}
+                    </ng-template>
+                </label>
+                <div class="setting-actions">
+                    <p-button
+                        *ngIf="showRefreshButton(key)"
+                        type="button"
+                        icon="pi pi-refresh"
+                        severity="secondary"
+                        [text]="true"
+                        [rounded]="true"
+                        [pTooltip]="getResetTooltipKey(key) | translate"
+                        tooltipPosition="top"
+                        [attr.aria-label]="getResetAriaKey(key) | translate"
+                        (onClick)="onResetClick(key)"
+                    ></p-button>
+                    <p-button
+                        *ngIf="!showRefreshButton(key) && showRemoveButton(key)"
+                        type="button"
+                        icon="pi pi-trash"
+                        severity="danger"
+                        [text]="true"
+                        [rounded]="true"
+                        [pTooltip]="'settings.sharedPanel.removeKeyTooltip' | translate"
+                        tooltipPosition="top"
+                        [attr.aria-label]="'settings.sharedPanel.removeKeyAria' | translate"
+                        (onClick)="onRemoveClick(key)"
+                    ></p-button>
+                    <span
+                        *ngIf="!showRefreshButton(key) && !showRemoveButton(key)"
+                        class="setting-action-placeholder"
+                        aria-hidden="true"
+                    ></span>
+                </div>
+            </div>
+            <div class="setting-control">
+                <ng-container [ngSwitch]="getFieldKind(key)">
+                    <p-dropdown *ngSwitchCase="'select'" class="w-full p-fluid setting-control-field" [options]="getSelectOptions(key)"
+                        [ngModel]="values[key]" (ngModelChange)="onScalarChange(key, $event)" optionValue="value">
+                        <ng-template let-item pTemplate="selectedItem">
+                            <span>{{ item?.labelKey ? translate.getInstant(item.labelKey) : values[key] }}</span>
+                        </ng-template>
+                        <ng-template let-item pTemplate="item">
+                            <span>{{ item?.labelKey ? translate.getInstant(item.labelKey) : '' }}</span>
+                        </ng-template>
+                    </p-dropdown>
+
+                    <p-inputNumber *ngSwitchCase="'number'" class="w-full p-fluid setting-control-field" [ngModel]="getNumberValue(key)"
+                        (ngModelChange)="onNumberChange(key, $event)" [min]="1" [max]="525600"
+                        [useGrouping]="false"></p-inputNumber>
+
+                    <input *ngSwitchDefault pInputText class="w-full setting-control-field" [ngModel]="values[key]"
+                        (ngModelChange)="onScalarChange(key, $event)" />
+                </ng-container>
+            </div>
+        </div>
+    </div>
+</ng-template>

@@ -1,0 +1,57 @@
+<p-dialog [(visible)]="visible" [modal]="true" [closable]="true" [draggable]="false" [resizable]="false"
+    (onClose)="closeDialog()" [style]="{ width: '520px' }">
+    <ng-template pTemplate="header">
+        <div class="dialog-header">
+            <i class="pi pi-user-plus mr-2 text-primary"></i>
+            <div>
+                <div class="title">{{ 'entityRoles.assignToAccount.title' | translate }}</div>
+                <small class="subtitle">{{ roleTitle || ('entityRoles.assignToAccount.selectRole' | translate) }}</small>
+            </div>
+        </div>
+    </ng-template>
+
+    <form [formGroup]="form" class="form-grid" (ngSubmit)="submit()">
+        <!-- Account ID Input -->
+        <div class="field">
+            <label for="accountId">{{ 'entityRoles.assignToAccount.accountId' | translate }} <span class="text-red-500">*</span></label>
+            <input pInputText id="accountId" type="number" formControlName="accountId" [placeholder]="'entityRoles.assignToAccount.accountIdPlaceholder' | translate"
+                [class.p-invalid]="form.controls['accountId'].invalid && form.controls['accountId'].touched" />
+            <small *ngIf="form.controls['accountId'].invalid && form.controls['accountId'].touched" class="p-error">
+                {{ 'entityRoles.assignToAccount.accountIdRequired' | translate }}
+            </small>
+        </div>
+
+        <!-- Role Selection Dropdown -->
+        <div class="field">
+            <label for="roleId">{{ 'entityRoles.assignToAccount.role' | translate }} <span class="text-red-500">*</span></label>
+            <p-dropdown id="roleId" formControlName="roleId" [options]="roleOptions" optionLabel="label"
+                optionValue="value" [placeholder]="'entityRoles.assignToAccount.selectRolePlaceholder' | translate" [disabled]="!!roleId || loadingRoles">
+            </p-dropdown>
+            <small *ngIf="form.controls['roleId'].invalid && form.controls['roleId'].touched" class="p-error">
+                {{ 'entityRoles.assignToAccount.roleRequired' | translate }}
+            </small>
+            <small *ngIf="loadingRoles" class="text-500">{{ 'entityRoles.assignToAccount.loadingRoles' | translate }}</small>
+        </div>
+    </form>
+
+    <ng-template pTemplate="footer">
+        <div class="dialog-footer">
+            <p-button [label]="'entityRoles.assignToAccount.cancel' | translate" icon="pi pi-times" styleClass="p-button-text" (onClick)="closeDialog()"
+                [disabled]="saving"></p-button>
+            <p-button type="submit" [disabled]="saving || form.invalid" (onClick)="submit()">
+                <ng-container *ngIf="saving">
+                    <span class="indicator-progress" [style.display]="'block'">
+                        <i class="pi pi-spin pi-spinner" style="font-size: 1rem"></i>
+                        {{ 'entityRoles.assignToAccount.assigning' | translate }}
+                    </span>
+                </ng-container>
+                <ng-container *ngIf="saving === false">
+                    <i class="pi pi-check mx-1" style="font-size: 1rem"></i>
+                    <span>{{ 'entityRoles.assignToAccount.assignRole' | translate }}</span>
+                </ng-container>
+            </p-button>
+        </div>
+    </ng-template>
+</p-dialog>
+
+<p-toast></p-toast>

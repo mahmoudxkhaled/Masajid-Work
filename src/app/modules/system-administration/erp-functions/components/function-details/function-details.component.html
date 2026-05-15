@@ -1,0 +1,266 @@
+<div class="function-details-card">
+    <div class="details-header">
+        <div class="details-header-left">
+            <span class="details-icon" *ngIf="!functionLogoUrl">
+                <i class="pi pi-puzzle-piece"></i>
+            </span>
+            <img *ngIf="functionLogoUrl" [src]="functionLogoUrl" alt="" class="details-logo" />
+            <h2 class="details-title">
+                {{ 'systemAdministration.erpFunctions.functionDetails.title' | translate }}<span
+                    *ngIf="functionDetails">: {{ (isRegional && functionDetails.nameRegional) ?
+                    functionDetails.nameRegional : functionDetails.name }}</span>
+            </h2>
+        </div>
+        <div class="details-header-actions">
+            <!-- <p-button [label]="(dialogMode ? 'systemAdministration.erpFunctions.functionDetails.actions.close' : 'systemAdministration.erpFunctions.functionDetails.actions.backToList') | translate"
+                icon="pi pi-arrow-left" class="p-button-secondary p-button-outlined" (onClick)="navigateBack()" [disabled]="loading">
+            </p-button> -->
+            <p-button [label]="'systemAdministration.erpFunctions.functionDetails.actions.editFunction' | translate"
+                icon="pi pi-pencil" (onClick)="editFunction()" [disabled]="loading">
+            </p-button>
+        </div>
+    </div>
+
+    <p-tabView *ngIf="!loading && functionDetails" styleClass="function-details-tabs" (onChange)="onTabChange($event)">
+        <p-tabPanel [header]="'systemAdministration.erpFunctions.functionDetails.tabs.basicInfo' | translate">
+            <div class="details-profile-panel">
+                <div class="profile-section">
+                    <h3 class="profile-section-title">{{ 'systemAdministration.erpFunctions.functionDetails.profile' |
+                        translate }}</h3>
+                    <div class="profile-grid">
+                        <div class="profile-col">
+                            <div class="detail-field">
+                                <span class="detail-label">{{
+                                    'systemAdministration.erpFunctions.functionDetails.fields.functionId' | translate
+                                    }}</span>
+                                <span class="detail-value">#{{ functionDetails.id }}</span>
+                            </div>
+                            <div class="detail-field">
+                                <span class="detail-label">{{
+                                    'systemAdministration.erpFunctions.functionDetails.fields.code' | translate
+                                    }}</span>
+                                <span class="detail-value detail-value-emphasis">{{ functionDetails.code }}</span>
+                            </div>
+                            <div class="detail-field">
+                                <span class="detail-label">{{
+                                    'systemAdministration.erpFunctions.functionDetails.fields.name' | translate
+                                    }}</span>
+                                <span class="detail-value detail-value-emphasis">{{ functionDetails.name }}</span>
+                            </div>
+                            <div *ngIf="functionDetails.nameRegional" class="detail-field">
+                                <span class="detail-label">{{
+                                    'systemAdministration.erpFunctions.functionDetails.fields.nameRegional' | translate
+                                    }}</span>
+                                <span class="detail-value">{{ functionDetails.nameRegional }}</span>
+                            </div>
+                        </div>
+                        <div class="profile-col">
+                            <div class="detail-field">
+                                <span class="detail-label">{{
+                                    'systemAdministration.erpFunctions.functionDetails.fields.defaultOrder' | translate
+                                    }}</span>
+                                <span class="detail-value">{{ functionDetails.defaultOrder || '—' }}</span>
+                            </div>
+                            <div class="detail-field">
+                                <span class="detail-label">{{
+                                    'systemAdministration.erpFunctions.functionDetails.fields.url' | translate }}</span>
+                                <span class="detail-value detail-value-url">{{ functionDetails.url || '—' }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </p-tabPanel>
+        <p-tabPanel [header]="'systemAdministration.erpFunctions.functionDetails.tabs.modules' | translate">
+            <ng-container *ngTemplateOutlet="modulesTabContent"></ng-container>
+        </p-tabPanel>
+    </p-tabView>
+
+    <div *ngIf="loading" class="function-details-skeleton">
+        <div class="details-skeleton-panel">
+            <p-skeleton width="10rem" height="1.75rem" class="mb-4"></p-skeleton>
+            <div class="grid p-4">
+                <div class="col-12 md:col-6">
+                    <div class="flex flex-column gap-3">
+                        <div><p-skeleton width="6rem" height="0.875rem" class="mb-1"></p-skeleton><p-skeleton
+                                width="4rem" height="1.25rem"></p-skeleton></div>
+                        <div><p-skeleton width="4rem" height="0.875rem" class="mb-1"></p-skeleton><p-skeleton
+                                width="5rem" height="1.25rem"></p-skeleton></div>
+                        <div><p-skeleton width="4rem" height="0.875rem" class="mb-1"></p-skeleton><p-skeleton
+                                width="8rem" height="1.25rem"></p-skeleton></div>
+                    </div>
+                </div>
+                <div class="col-12 md:col-6">
+                    <div class="flex flex-column gap-3">
+                        <div><p-skeleton width="8rem" height="0.875rem" class="mb-1"></p-skeleton><p-skeleton
+                                width="3rem" height="1.25rem"></p-skeleton></div>
+                        <div><p-skeleton width="3rem" height="0.875rem" class="mb-1"></p-skeleton><p-skeleton
+                                width="100%" height="1.25rem"></p-skeleton></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <ng-template #modulesTabContent>
+        <div class="modules-tab-content">
+            <div class="flex flex-wrap align-items-center gap-2 mb-3">
+                <p-button [label]="'systemAdministration.erpFunctions.functionDetails.modulesTab.addModule' | translate"
+                    icon="pi pi-plus" (onClick)="showAddForm = !showAddForm"></p-button>
+                <p-button
+                    [label]="'systemAdministration.erpFunctions.functionDetails.modulesTab.moveModuleHere' | translate"
+                    icon="pi pi-arrow-down" (onClick)="openMoveFromDialog()"></p-button>
+            </div>
+            <div *ngIf="showAddForm" class="add-module-form p-3 mb-3 surface-ground border-round">
+                <div class="grid align-items-end gap-2">
+                    <div class="col-12 md:col-3">
+                        <label class="block mb-1">{{ 'systemAdministration.erpFunctions.functionDetails.modulesTab.code'
+                            | translate }}</label>
+                        <input type="text" pInputText [(ngModel)]="newModuleCode" [maxlength]="10" class="w-full" />
+                    </div>
+                    <div class="col-12 md:col-3">
+                        <label class="block mb-1">{{ 'systemAdministration.erpFunctions.functionDetails.modulesTab.name'
+                            | translate }}</label>
+                        <input type="text" pInputText [(ngModel)]="newModuleName" [maxlength]="30" class="w-full" />
+                    </div>
+                    <div class="col-12 md:col-2">
+                        <label class="block mb-1">{{
+                            'systemAdministration.erpFunctions.functionDetails.modulesTab.order' | translate }}</label>
+                        <p-inputNumber [(ngModel)]="newModuleOrder" [min]="1" inputId="newModuleOrder"></p-inputNumber>
+                    </div>
+                    <div class="col-12 md:col-2">
+                        <p-button
+                            [label]="'systemAdministration.erpFunctions.functionDetails.modulesTab.addFormSubmit' | translate"
+                            icon="pi pi-check" (onClick)="submitAddModule()" [loading]="addingModule"></p-button>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="loadingModules" class="modules-table-skeleton">
+                <div class="skeleton-table-header">
+                    <p-skeleton width="5rem" height="1.25rem"></p-skeleton>
+                    <p-skeleton width="8rem" height="1.25rem"></p-skeleton>
+                    <p-skeleton width="4rem" height="1.25rem"></p-skeleton>
+                    <p-skeleton width="6rem" height="1.25rem"></p-skeleton>
+                </div>
+                <div class="skeleton-table-row" *ngFor="let i of [1,2,3,4,5]">
+                    <p-skeleton width="4rem" height="1.5rem"></p-skeleton>
+                    <p-skeleton width="10rem" height="1.5rem"></p-skeleton>
+                    <p-skeleton width="3rem" height="1.5rem"></p-skeleton>
+                    <p-skeleton width="6rem" height="1.5rem"></p-skeleton>
+                </div>
+            </div>
+            <p-table *ngIf="!loadingModules" [value]="modulesForFunction" [tableStyle]="{ 'table-layout': 'auto' }"
+                styleClass="p-datatable-sm p-datatable-gridlines">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>{{ 'systemAdministration.erpFunctions.functionDetails.modulesTab.code' | translate }}</th>
+                        <th>{{ 'systemAdministration.erpFunctions.functionDetails.modulesTab.name' | translate }}</th>
+                        <th>{{ 'systemAdministration.erpFunctions.functionDetails.modulesTab.status' | translate }}</th>
+                        <th>{{ 'systemAdministration.erpFunctions.functionDetails.modulesTab.actions' | translate }}
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-m>
+                    <tr>
+                        <td>{{ m.code }}</td>
+                        <td>{{ m.name }}</td>
+                        <td>{{ m.isActive ? ('systemAdministration.erpFunctions.functionDetails.modulesTab.active' |
+                            translate) : ('systemAdministration.erpFunctions.functionDetails.modulesTab.inactive' |
+                            translate) }}</td>
+                        <td>
+                            <p-inputSwitch [ngModel]="!!m.isActive"
+                                (onChange)="onModuleStatusChange(m, $event)"></p-inputSwitch>
+                            <p-button styleClass="mx-3" icon="pi pi-arrow-right"
+                                [pTooltip]="'systemAdministration.erpFunctions.functionDetails.modulesTab.moveToFunction' | translate"
+                                class="p-button-text p-button-sm ml-2" (onClick)="openMoveToDialog(m)"></p-button>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="4">{{ 'systemAdministration.erpFunctions.functionDetails.modulesTab.noModules' |
+                            translate }}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </ng-template>
+</div>
+
+<p-dialog [(visible)]="activateModuleDialog" [modal]="true" [style]="{ width: '400px' }" [closable]="true"
+    (onHide)="activateModuleDialog = false">
+    <ng-template pTemplate="header">
+        <span
+            [innerHTML]="(moduleForActivation?.isActive ? 'systemAdministration.erpFunctions.functionDetails.modulesTab.activationDialog.deactivateTitle' : 'systemAdministration.erpFunctions.functionDetails.modulesTab.activationDialog.activateTitle') | translate: { name: moduleForActivation?.name || '' }"></span>
+    </ng-template>
+    <p
+        [innerHTML]="(moduleForActivation?.isActive ? 'systemAdministration.erpFunctions.functionDetails.modulesTab.activationDialog.deactivateMessage' : 'systemAdministration.erpFunctions.functionDetails.modulesTab.activationDialog.activateMessage') | translate: { name: moduleForActivation?.name || '' }">
+    </p>
+    <ng-template pTemplate="footer">
+        <p-button
+            [label]="'systemAdministration.erpFunctions.functionDetails.modulesTab.activationDialog.cancel' | translate"
+            class="p-button-text" (onClick)="activateModuleDialog = false"></p-button>
+        <p-button
+            [label]="(moduleForActivation?.isActive ? 'systemAdministration.erpFunctions.functionDetails.modulesTab.activationDialog.deactivate' : 'systemAdministration.erpFunctions.functionDetails.modulesTab.activationDialog.activate') | translate"
+            (onClick)="confirmActivation()" [loading]="activationInProgress"></p-button>
+    </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="moveDialogVisible" [modal]="true" [style]="{ width: '500px' }" [closable]="true"
+    (onHide)="closeMoveDialog()">
+    <ng-template pTemplate="header">
+        <span [innerHTML]="getMoveDialogHeader()"></span>
+    </ng-template>
+    <div class="flex flex-column gap-3">
+        <p *ngIf="moveStep === 1" [innerHTML]="getMoveStep1Message()"></p>
+        <p-table *ngIf="moveStep === 1" [value]="functionsForMove" [(selection)]="selectedFunctionForMove" dataKey="id"
+            styleClass="p-datatable-sm" selectionMode="single">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th pSortableColumn="name">{{ 'systemAdministration.erpFunctions.functionDetails.modulesTab.name' |
+                        translate }}</th>
+                    <th pColumn="code">{{ 'systemAdministration.erpFunctions.functionDetails.modulesTab.code' |
+                        translate }}</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-f>
+                <tr [pSelectableRow]="f" (dblclick)="onMoveStep1Next()">
+                    <td>{{ f.name }}</td>
+                    <td>{{ f.code }}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+        <p *ngIf="moveStep === 2 && moveMode === 'fromOther'" [innerHTML]="getMoveStep2Message()"></p>
+        <p-table *ngIf="moveStep === 2 && moveMode === 'fromOther'" [value]="modulesInSelectedFunction"
+            [(selection)]="selectedModuleForMove" dataKey="id" styleClass="p-datatable-sm" selectionMode="single">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>{{ 'systemAdministration.erpFunctions.functionDetails.modulesTab.name' | translate }}</th>
+                    <th>{{ 'systemAdministration.erpFunctions.functionDetails.modulesTab.code' | translate }}</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-m>
+                <tr [pSelectableRow]="m" (dblclick)="onMoveStep2Next()">
+                    <td>{{ m.name }}</td>
+                    <td>{{ m.code }}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+        <p *ngIf="(moveStep === 2 && moveMode === 'toOther') || moveStep === 3" class="font-medium"
+            [innerHTML]="getMoveConfirmMessage()"></p>
+    </div>
+    <ng-template pTemplate="footer">
+        <p-button *ngIf="moveStep > 1"
+            [label]="'systemAdministration.erpFunctions.functionDetails.modulesTab.moveDialog.back' | translate"
+            class="p-button-text" (onClick)="moveStepBack()"></p-button>
+        <p-button *ngIf="moveStep < 3 && (moveStep !== 2 || moveMode === 'fromOther')"
+            [label]="'systemAdministration.erpFunctions.functionDetails.modulesTab.moveDialog.next' | translate"
+            (onClick)="moveStepNext()"
+            [disabled]="(moveStep === 1 && !selectedFunctionForMove) || (moveStep === 2 && !selectedModuleForMove)"></p-button>
+        <p-button *ngIf="(moveStep === 2 && moveMode === 'toOther') || moveStep === 3"
+            [label]="'systemAdministration.erpFunctions.functionDetails.modulesTab.moveDialog.confirm' | translate"
+            (onClick)="confirmMove()" [loading]="moveInProgress"></p-button>
+        <p-button [label]="'systemAdministration.erpFunctions.functionDetails.modulesTab.moveDialog.cancel' | translate"
+            class="p-button-text" (onClick)="closeMoveDialog()"></p-button>
+    </ng-template>
+</p-dialog>

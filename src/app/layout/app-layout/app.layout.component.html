@@ -1,0 +1,77 @@
+<p-toast></p-toast>
+<div class="layout-container" [ngClass]="containerClass">
+    <app-topbar></app-topbar>
+    <app-rightmenu></app-rightmenu>
+    <app-sidebar></app-sidebar>
+
+    <div class="layout-content-wrapper">
+        <app-breadcrumb></app-breadcrumb>
+
+        <div class="layout-content">
+            <ng-container *ngIf="isInternetWork; else noInternetTemplate">
+                <router-outlet></router-outlet>
+            </ng-container>
+
+            <ng-template #noInternetTemplate>
+                <app-no-internet-overlay></app-no-internet-overlay>
+            </ng-template>
+        </div>
+
+
+        <app-footer></app-footer>
+    </div>
+    <!-- <app-config *ngIf="hasPermission(actions.themeBtn)"></app-config> -->
+    <!-- <app-support-tabmenu *ngIf="hasPermission(actions.supportBtn)"></app-support-tabmenu> -->
+
+    <app-transfer-progress-overlay></app-transfer-progress-overlay>
+    <div *ngIf="layoutService.state.staticMenuMobileActive" class="layout-mask"></div>
+</div>
+
+<p-toast [style]="{ width:'30%', height:'10%', display: quoteDialog ? 'block' : 'none'}" position="top-right"
+    key="quote" [baseZIndex]="5000">
+    <ng-template let-message pTemplate="message">
+        <div class="p-toast-message-container">
+            <div class="p-toast-content">
+                <div class="p-toast-header">
+                    <i class="p-toast-icon pi pi-megaphone mt-1"></i>
+                    <div class="p-toast-summary" [innerHTML]="message.summary"></div>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+</p-toast>
+
+<div *ngIf="showSessionWarning" class="session-warning">
+    <p>{{ sessionWarningMessage }}</p>
+    <button (click)="closeOtherTabs()">Close Other Tabs</button>
+</div>
+
+<style>
+    .p-toast-message-container {
+        display: flex;
+        align-items: center;
+        width: 100%;
+    }
+
+    .p-toast-content {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .p-toast-header {
+        display: flex;
+        align-items: center;
+    }
+
+    .p-toast-icon {
+        font-size: 20px;
+        margin-right: 8px;
+    }
+
+    .p-toast-summary {
+        font-weight: bold;
+        font-size: 16px;
+        color: black;
+    }
+</style>

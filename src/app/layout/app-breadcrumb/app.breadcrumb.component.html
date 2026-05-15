@@ -1,0 +1,23 @@
+<div class="layout-breadcrumb-container">
+    <nav class="layout-breadcrumb">
+        <ol>
+            <li><a routerLink="/"><i class="pi pi-home"></i></a> </li>
+            <ng-template ngFor let-item let-last="last" let-index="index" [ngForOf]="breadcrumbs$ | async">
+                <li><i class="pi pi-angle-right"></i></li>
+                <li>
+                    <a *ngIf="!isBreadcrumbDisabled(index, last)" [routerLink]="item.url"
+                        (click)="onBreadcrumbClick($event, item.url || '')">
+                        {{getTranslationItem(item.label)}}
+                    </a>
+                    <span *ngIf="isBreadcrumbDisabled(index, last)" class="breadcrumb-disabled">
+                        {{getTranslationItem(item.label)}}
+                    </span>
+                </li>
+            </ng-template>
+        </ol>
+    </nav>
+    <!-- <div class="layout-breadcrumb-buttons">
+        <button pButton pRipple type="button" icon="pi pi-cloud-upload" class="p-button-rounded p-button-text p-button-plain"></button>
+        <button pButton pRipple type="button" icon="pi pi-bookmark" class="p-button-rounded p-button-text p-button-plain"></button>
+    </div> -->
+</div>

@@ -1,0 +1,41 @@
+<div class="layout-menu-profile">
+    <button class="p-link border-noround" (click)="toggleMenu()"
+        pTooltip="{{'layout.app-menuProfile.profile' | translate }}" [tooltipDisabled]="isTooltipDisabled">
+        <img [src]="imageUrl" alt="avatar" style="width: 32px; height: 32px; vertical-align: middle; border-radius: 50%;
+            border: 1px solid gray; object-fit: cover;" />
+        <span>
+            <strong>{{userName}}</strong>
+        </span>
+        <i class="layout-menu-profile-toggler pi pi-fw" [ngClass]="{
+                'pi-angle-down':
+                    menuProfilePosition === 'start' || isHorizontal,
+                'pi-angle-up': menuProfilePosition === 'end' && !isHorizontal
+            }"></i>
+    </button>
+
+    <ul *ngIf="menuProfileActive" [@menu]="isHorizontal ? 'overlay' : 'inline'">
+        <li pTooltip="Settings" [tooltipDisabled]="isTooltipDisabled">
+            <button class="p-link" [routerLink]="['/summary/profile']">
+                <i class="pi pi-user pi-fw"></i>
+                <span>{{
+                    ('layout.app-menuProfile.profile' | translate) }}</span>
+            </button>
+        </li>
+        <li pTooltip="Settings" [tooltipDisabled]="isTooltipDisabled">
+            <button class="p-link" [routerLink]="['/summary/settings']">
+                <i class="pi pi-cog pi-fw"></i>
+                <span>{{
+                    ('layout.app-menuProfile.settings' | translate) }}</span>
+            </button>
+        </li>
+        <li pTooltip="Logout" [tooltipDisabled]="isTooltipDisabled" (click)="logOut()">
+            <button class="p-link">
+                <i class="pi pi-power-off pi-fw"></i>
+                <span>{{'layout.app-menuProfile.logout' | translate}}</span>
+            </button>
+        </li>
+    </ul>
+</div>
+
+<!-- Logout Confirmation Dialog -->
+<!-- <app-logout [(visible)]="showLogoutDialog" (onConfirm)="onLogoutConfirm()" (onCancel)="onLogoutCancel()"></app-logout> -->

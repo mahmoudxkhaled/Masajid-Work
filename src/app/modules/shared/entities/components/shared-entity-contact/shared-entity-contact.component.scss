@@ -1,0 +1,43 @@
+// Entity Contact Component Styles
+
+.contact-panel {
+    :host ::ng-deep .p-panel-header {
+      background: var(--surface-ground);
+      border-bottom: 1px solid var(--surface-border);
+    }
+  }
+
+  .contact-grid {
+    // gap: 2rem;
+  }
+
+  .contact-field {
+    background: var(--surface-50);
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid var(--surface-200);
+  }
+
+  .field-label {
+    display: flex;
+    align-items: center;
+    color: var(--text-color-secondary);
+  }
+
+  .edit-btn {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+
+  ::ng-deep .contact-edit-dialog {
+    .p-dialog-header {
+      padding: 1.5rem 1.5rem 0;
+    }
+    .p-dialog-content {
+      padding: 0 1.5rem 1.5rem;
+    }
+  }
+
+  ::ng-deep .custom-spinner {
+    width: 50px;
+    height: 50px;
+  }

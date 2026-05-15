@@ -1,0 +1,52 @@
+.card {
+    padding: 2rem;
+}
+
+// Text truncation for code
+.code-text {
+    display: inline-block;
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+// Text truncation for name
+.name-text {
+    display: inline-block;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+// Text truncation for description
+.description-text {
+    display: inline-block;
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.entity-logo-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: none;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+}
+
+.entity-logo-btn:disabled {
+    cursor: default;
+    opacity: 0.6;
+}
+
+::ng-deep .entity-logo-avatar.p-avatar {
+    width: 2rem;
+    height: 2rem;
+}

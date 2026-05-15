@@ -1,0 +1,11 @@
+:host {
+    display: block;
+}
+
+:host ::ng-deep .selected-row {
+    background-color: var(--primary-50) !important;
+}
+
+:host ::ng-deep .selected-row:hover {
+    background-color: var(--primary-100) !important;
+}

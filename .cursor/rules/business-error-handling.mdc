@@ -1,0 +1,56 @@
+---
+description: Business/API error handling in feature components — private handleBusinessError + per-operation switch on codes; no shared error helper files, maps, or arrays.
+alwaysApply: true
+---
+
+# Business error handling (feature components)
+
+When implementing or changing **feature** code that calls the API and handles **`success: false`** (or equivalent business failures), follow the same pattern as **`virtual-drives-section.component.ts`**: one private orchestrator and **private** `get…ErrorMessage` methods with **`switch` on string codes**. Do **not** introduce separate shared modules, helpers, records, maps, or arrays that centralize ERP error codes for the feature.
+
+## Reference
+
+`src/app/modules/system-administration/system-storage-management/virtual-drives-section/virtual-drives-section.component.ts` — `handleBusinessError`, `getListErrorMessage`, `getCreateErrorMessage`, etc.
+
+## Mandatory pattern
+
+### 1. Call site (subscribe / async handler)
+
+When the response is a business failure (e.g. `!response?.success`), call the component’s private handler and return early:
+
+```ts
+this.handleBusinessError('list', response);
+return;
+```
+
+Use a **string literal union** for the first argument — one variant per **operation** (list, create, update, …) that needs distinct code→message mapping.
+
+### 2. `handleBusinessError(context, response)`
+
+- **`private`** method on the **same** component (or the primary screen component for that feature).
+- Read the code: `const code = String(response?.message || '');` (or the same shape the API uses in that feature if documented elsewhere — stay consistent within the component).
+- **`switch (context)`** and call exactly one **`this.get{Operation}ErrorMessage(code)`**-style method per branch.
+- If the returned detail is non-empty, show **`MessageService.add`** with `severity: 'error'`, **`summary`** from **`common.error`** (or equivalent shared key), and **`detail`** from **`TranslationService.getInstant('…')`** / **`TranslateService.instant`** — every string must exist in **`en.json`** and **`ar.json`**. Do **not** hardcode English (or Arabic) in the component for toasts.
+- Perform **context-specific UI cleanup** in this method when needed (e.g. turn off table loading for `'list'`), same idea as the reference.
+
+### 3. Per-operation message methods
+
+- **`private get{Operation}ErrorMessage(code: string): string | null`**
+- Body is a **`switch (code)`** with **`case 'ERPxxxxx':`** (or the project’s code format) and **`return this.translate.getInstant('module.feature.key')`** — **no string literals** for user-visible message text inside the `switch`.
+- **`default: return null;`** when the code is unknown or should stay silent.
+
+Add a **new** private getter for each operation that has its own set of codes; do **not** fold unrelated operations into one giant shared list unless they truly share the **same** messages and the reference would use one getter for both contexts.
+
+## Forbidden
+
+- New files whose **primary** job is error-code lookup (e.g. `*-errors.ts`, `error-messages.ts`, shared `ERROR_MESSAGES` records).
+- **`Record<string, string>`**, **`Map`**, or **arrays** used as the **catalog** of code → message for the feature (the reference uses **`switch` only**).
+- Duplicating the same **`handleBusinessError` / `get*ErrorMessage` pattern in a root `core/` service **for feature-specific** ERP codes — keep feature business messages **on the feature component** as private methods.
+
+HTTP-level errors remain handled by existing interceptors unless the task says otherwise.
+
+## Checklist
+
+- [ ] On business failure, a single **`handleBusinessError(context, response)`** (or the same name used in that file) is used consistently.
+- [ ] Context type is a **literal union**; each operation maps to a **dedicated** `get…ErrorMessage` with **`switch (code)`**.
+- [ ] No new shared error-registry files, maps, or arrays for code lists.
+- [ ] All toast **`summary`** and **`detail`** values use translation keys and **`en.json` / `ar.json`** are updated together (**`i18n-translations`**).

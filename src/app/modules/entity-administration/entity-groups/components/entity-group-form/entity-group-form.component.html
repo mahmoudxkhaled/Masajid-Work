@@ -1,0 +1,44 @@
+<p-dialog [(visible)]="visible" [modal]="true" [style]="{ width: '600px' }" [closable]="true" [draggable]="false"
+    [resizable]="false" (onHide)="closeDialog()">
+    <ng-template pTemplate="header">
+        <h3>{{ (isEdit ? 'entityGroups.form.editTitle' : 'entityGroups.form.createTitle') | translate }}</h3>
+    </ng-template>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+        <div class="grid">
+            <div class="col-12">
+                <div class="field p-fluid">
+                    <label for="title">{{ 'entityGroups.form.groupTitle' | translate }} <span class="text-red-500">*</span></label>
+                    <input id="title" type="text" pInputText formControlName="title"
+                        [class.ng-invalid]="submitted && f['title'].invalid" [placeholder]="'entityGroups.form.placeholderTitle' | translate" />
+                    <small class="p-error" *ngIf="submitted && f['title'].invalid && titleError">
+                        {{ titleError }}
+                    </small>
+                </div>
+            </div>
+
+            <div class="col-12">
+                <div class="field p-fluid">
+                    <label for="description">{{ 'entityGroups.form.description' | translate }} <span class="text-red-500">*</span></label>
+                    <textarea id="description" pInputTextarea formControlName="description" rows="4"
+                        [class.ng-invalid]="submitted && f['description'].invalid"
+                        [placeholder]="'entityGroups.form.placeholderDescription' | translate"></textarea>
+                    <small class="p-error" *ngIf="submitted && f['description'].invalid && descriptionError">
+                        {{ descriptionError }}
+                    </small>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <ng-template pTemplate="footer">
+        <p-button [label]="'entityGroups.form.cancel' | translate" icon="pi pi-times" class="p-button-secondary" (onClick)="cancel()"
+            [disabled]="loading">
+        </p-button>
+        <p-button [label]="(isEdit ? 'entityGroups.form.update' : 'entityGroups.form.save') | translate" icon="pi pi-check" (onClick)="submit()" [loading]="loading"
+            [disabled]="loading">
+        </p-button>
+    </ng-template>
+</p-dialog>
+
+<p-toast></p-toast>

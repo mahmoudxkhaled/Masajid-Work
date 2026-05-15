@@ -1,0 +1,58 @@
+<div class="body">
+    <div class="wave"></div>
+    <div class="wave"></div>
+    <div class="wave"></div>
+    <div class="login-container">
+        <app-auth-brand></app-auth-brand>
+        <div class="mb-4"></div>
+        <div *ngIf="loginBannerKey" class="login-banner-notice" [class.login-banner-notice--error]="loginBannerIsError">
+            <span>
+                <i class="pi" [ngClass]="loginBannerIsError ? 'pi-exclamation-circle' : 'pi-info-circle'"
+                    style="margin-right: 10px"></i>
+                {{ loginBannerKey | translate: (loginBannerParams || {}) }}
+            </span>
+        </div>
+        <form [formGroup]="loginCreditials" (ngSubmit)="submit()">
+            <div class="form-group ">
+                <input type="email" id="username" name="username" placeholder=" " formControlName="email" required
+                    [ngClass]="{ 'is-invalid': email?.touched && email?.invalid }" />
+                <label for="username">Username (email)</label>
+                <div *ngIf="email?.touched && email?.errors" class="error">
+                    <small *ngIf="email?.errors?.['required']">Email is required</small>
+                    <small *ngIf="email?.errors?.['email']">Invalid email address</small>
+                </div>
+            </div>
+            <div class="form-group password-group">
+                <input [type]="showPassword ? 'text' : 'password'" id="password" name="password" placeholder=" "
+                    formControlName="password" required
+                    [ngClass]="{ 'is-invalid': password?.touched && password?.invalid }" />
+                <label for="password">Password</label>
+                <!-- Eye Icon to Toggle Password -->
+                <i class="pi" [ngClass]="showPassword ? 'pi-eye-slash' : 'pi-eye'" (click)="togglePasswordVisibility()">
+                </i>
+                <div *ngIf="password?.touched && password?.errors" class="error">
+                    <small *ngIf="password?.errors?.['required']">Password is required</small>
+                </div>
+            </div>
+            <div class="flex align-items-center justify-content-center mt-4 gap-3">
+                <button class="login-btn" type="submit" [disabled]="(isLoading$ | async)">
+                    <ng-container *ngIf="isLoading$ | async">
+                        <span class="indicator-progress" [style.display]="'block'">
+                            {{ 'auth.login.pleaseWait' | translate }}
+                            <i class="pi pi-spin pi-spinner" style="font-size: 1rem"></i>
+                        </span>
+                    </ng-container>
+                    <ng-container *ngIf="(isLoading$ | async) === false">
+                        <span>{{ 'auth.login.submit' | translate }}</span>
+                    </ng-container>
+                </button>
+            </div>
+        </form>
+        <div class="links">
+            <a routerLink="/auth/forget-password">Forgot Password?</a>
+        </div>
+        <div class="footer">
+            © {{ yearNow }} Promatech LLC. All rights reserved.
+        </div>
+    </div>
+</div>

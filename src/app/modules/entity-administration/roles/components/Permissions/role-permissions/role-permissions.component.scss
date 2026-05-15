@@ -1,0 +1,36 @@
+.dialog-header {
+    display: flex;
+    align-items: center;
+}
+
+.dialog-header .title {
+    font-weight: 600;
+}
+
+.dialog-header .subtitle {
+    color: #6c757d;
+}
+
+.permissions-content {
+    min-height: 400px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.field label {
+    font-weight: 500;
+}
+
+.selected-items {
+    margin-top: 1rem;
+}
+
+.dialog-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}

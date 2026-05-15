@@ -1,0 +1,133 @@
+// Selected row highlight
+::ng-deep .selected-row {
+    background-color: var(--primary-50) !important;
+}
+
+::ng-deep .selected-row:hover {
+    background-color: var(--primary-100) !important;
+}
+
+:host ::ng-deep {
+    .admin-list-table {
+        .p-datatable-table {
+            table-layout: fixed;
+            width: 100%;
+        }
+
+        .p-datatable-thead > tr > th.admin-list-th,
+        .p-datatable-tbody > tr > td.admin-list-td {
+            overflow: hidden;
+            vertical-align: middle;
+        }
+
+        .p-datatable-tbody > tr.admin-list-row-clickable {
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .p-datatable-tbody > tr.admin-list-row-clickable:hover {
+            background-color: var(--surface-hover);
+        }
+
+        .admin-list-th--id {
+            width: 6.5rem;
+            min-width: 6.5rem;
+            max-width: 6.5rem;
+        }
+
+        .admin-list-th--userId {
+            width: 6.5rem;
+            min-width: 6.5rem;
+            max-width: 6.5rem;
+        }
+
+        .admin-list-th--email {
+            width: 25%;
+            min-width: 12rem;
+        }
+
+        .admin-list-th--entityRole {
+            width: 9.5rem;
+            min-width: 9.5rem;
+            max-width: 9.5rem;
+        }
+
+        .admin-list-th--state {
+            width: 7.5rem;
+            min-width: 7.5rem;
+            max-width: 7.5rem;
+        }
+
+        .admin-list-th--login {
+            width: 10.5rem;
+            min-width: 10.5rem;
+            max-width: 10.5rem;
+        }
+
+        .admin-list-th--actions {
+            width: 5.5rem;
+            min-width: 5.5rem;
+            max-width: 6rem;
+        }
+
+        .admin-list-ellipsis {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            min-width: 0;
+        }
+
+        .admin-list-ellipsis--start {
+            display: block;
+            width: 100%;
+        }
+
+        .admin-list-ellipsis--center {
+            display: inline-block;
+            max-width: 100%;
+            vertical-align: middle;
+        }
+
+        .admin-list-tag-clip {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 0;
+            width: 100%;
+            overflow: hidden;
+
+            .p-tag {
+                min-width: 0;
+                max-width: 100%;
+                min-inline-size: 4rem;
+                justify-content: center;
+            }
+
+            .p-tag-value {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                display: block;
+            }
+        }
+
+        .admin-list-skeleton-line {
+            width: 100%;
+            max-width: 100%;
+        }
+
+        .admin-list-actions-skeleton {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            width: 2.5rem;
+            height: 2.5rem;
+            flex-shrink: 0;
+        }
+
+        td.admin-list-td--actions {
+            min-width: 3rem;
+            white-space: nowrap;
+        }
+    }
+}

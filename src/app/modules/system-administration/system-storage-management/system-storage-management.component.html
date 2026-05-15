@@ -1,0 +1,148 @@
+<div class="system-admin-view card p-4">
+    <div class="system-admin-top flex flex-col gap-3">
+        <div class="page-header">
+            <h1 class="page-title">{{ 'fileSystem.systemAdmin.title' | translate }}</h1>
+            <p class="page-description">{{ 'fileSystem.systemAdmin.description' | translate }}</p>
+        </div>
+    </div>
+
+    <div class="kpi-section">
+        <h2 class="block-title">{{ 'fileSystem.systemAdmin.overview' | translate }}</h2>
+        <div class="grid">
+            <div class="col-12 md:col-6 lg:col-4">
+                <div class="stat-card stat-card--no-trend surface-card border-round-xl h-full under-dev-full">
+                    <div class="stat-card__main flex align-items-start gap-3 md:gap-4">
+                        <div class="stat-card__icon" aria-hidden="true">
+                            <i class="pi pi-key"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="stat-card__label">{{ 'fileSystem.systemAdmin.activeLicenses' | translate }}</div>
+                            <div class="stat-card__value">{{ licenses.length | number }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 md:col-6 lg:col-4">
+                <div class="stat-card stat-card--no-trend surface-card border-round-xl h-full under-dev-full">
+                    <div class="stat-card__main flex align-items-start gap-3 md:gap-4">
+                        <div class="stat-card__icon" aria-hidden="true">
+                            <i class="pi pi-chart-bar"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="stat-card__label">{{ 'fileSystem.systemAdmin.capacityUsed' | translate }}</div>
+                            <div class="stat-card__value">{{ capacityUsedPercent | number }}%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 md:col-6 lg:col-4">
+                <div class="stat-card stat-card--no-trend surface-card border-round-xl h-full">
+                    <div class="stat-card__main flex align-items-start gap-3 md:gap-4">
+                        <div class="stat-card__icon" aria-hidden="true">
+                            <i class="pi pi-server"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="stat-card__label">{{ 'fileSystem.systemAdmin.virtualDrives' | translate }}</div>
+                            <div class="stat-card__value">{{ virtualDrivesCount | number }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="block-section under-dev-full">
+        <h2 class="block-title">{{ 'fileSystem.admin.licenses' | translate }}</h2>
+        <div class="block-card">
+            <p-table [value]="licenses" [paginator]="false"
+                styleClass="p-datatable-sm p-datatable-gridlines system-admin-table" responsiveLayout="scroll">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>{{ 'fileSystem.admin.product' | translate }}</th>
+                        <th>{{ 'fileSystem.admin.count' | translate }}</th>
+                        <th>{{ 'fileSystem.admin.expiry' | translate }}</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-row>
+                    <tr>
+                        <td class="cell-product">{{ getProductLabel(row) }}</td>
+                        <td>{{ row.count }}</td>
+                        <td><span class="expiry-badge">{{ row.expiry }}</span></td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+
+    <div class="block-section under-dev-full">
+        <h2 class="block-title">{{ 'fileSystem.admin.capacityUsage' | translate }}</h2>
+        <div class="block-card">
+            <div class="capacity-block">
+                <p-progressBar [value]="capacityUsedPercent" [showValue]="true"
+                    styleClass="capacity-bar"></p-progressBar>
+                <p class="capacity-summary">{{ capacityUsedLabel }}</p>
+                <div class="capacity-detail">
+                    <div class="capacity-row">
+                        <span class="capacity-label">{{ 'fileSystem.systemAdmin.used' | translate }}</span>
+                        <span class="capacity-value">325 GB</span>
+                    </div>
+                    <div class="capacity-row">
+                        <span class="capacity-label">{{ 'fileSystem.systemAdmin.total' | translate }}</span>
+                        <span class="capacity-value">500 GB</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <app-virtual-drives-section (virtualDrivesCountChange)="virtualDrivesCount = $event"></app-virtual-drives-section>
+
+    <div class="block-section under-dev-full">
+        <h2 class="block-title">{{ 'fileSystem.admin.trafficMonitoring' | translate }}</h2>
+        <div class="block-card">
+            <p class="mb-3">{{ 'fileSystem.admin.trafficDescription' | translate }}</p>
+            <div class="grid">
+                <div class="col-12 md:col-6 lg:col-4">
+                    <div class="stat-card stat-card--no-trend surface-card border-round-xl h-full">
+                        <div class="stat-card__main flex align-items-start gap-3 md:gap-4">
+                            <div class="stat-card__icon" aria-hidden="true">
+                                <i class="pi pi-upload"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="stat-card__label">{{ 'fileSystem.admin.totalUploads' | translate }}</div>
+                                <div class="stat-card__value stat-card__value--md">{{ totalUploads }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 md:col-6 lg:col-4">
+                    <div class="stat-card stat-card--no-trend surface-card border-round-xl h-full">
+                        <div class="stat-card__main flex align-items-start gap-3 md:gap-4">
+                            <div class="stat-card__icon" aria-hidden="true">
+                                <i class="pi pi-download"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="stat-card__label">{{ 'fileSystem.admin.totalDownloads' | translate }}</div>
+                                <div class="stat-card__value stat-card__value--md">{{ totalDownloads }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 md:col-6 lg:col-4">
+                    <div class="stat-card stat-card--no-trend surface-card border-round-xl h-full">
+                        <div class="stat-card__main flex align-items-start gap-3 md:gap-4">
+                            <div class="stat-card__icon" aria-hidden="true">
+                                <i class="pi pi-file"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="stat-card__label">{{ 'fileSystem.admin.totalFilesTraffic' | translate }}</div>
+                                <div class="stat-card__value stat-card__value--md">{{ totalFilesTraffic }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

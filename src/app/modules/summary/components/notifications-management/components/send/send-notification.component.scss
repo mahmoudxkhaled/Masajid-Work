@@ -1,0 +1,181 @@
+// Send Notification Page Styles
+
+.send-notification-page {
+    padding: 1.5rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.page-header {
+    background: var(--surface-card);
+    border: 1px solid var(--surface-border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.send-notification-stepper {
+    min-height: 200px;
+}
+
+.step-indicator {
+    .step-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-weight: 600;
+        color: var(--text-color-secondary);
+        background: var(--surface-100);
+        transition: background-color 0.2s, color 0.2s;
+
+        &.active {
+            color: var(--primary-color);
+            background: var(--surface-0);
+            border: 1px solid var(--primary-color);
+        }
+
+        &.done {
+            color: var(--green-600);
+            background: var(--green-50);
+        }
+    }
+
+    .step-connector {
+        display: inline-block;
+        width: 2rem;
+        height: 2px;
+        background: var(--surface-300);
+        margin: 0 0.25rem;
+    }
+}
+
+.step-content {
+    padding: 0.5rem 0;
+}
+
+.send-notification-content {
+    min-height: 300px;
+}
+
+.notification-details-card {
+    background: var(--surface-ground);
+    border: 1px solid var(--surface-border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    transition: box-shadow 0.2s;
+
+    &:hover {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .notification-detail-value {
+        background: var(--surface-card);
+        border: 1px solid var(--surface-border);
+        border-radius: 6px;
+        padding: 0.75rem 1rem;
+        min-height: 2.5rem;
+        display: flex;
+        align-items: center;
+        word-break: break-word;
+    }
+}
+
+.target-selection-card {
+    background: var(--surface-ground);
+    border: 1px solid var(--surface-border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    position: relative;
+}
+
+/* Skeleton: same layout as stepper + step content */
+.send-loading-skeleton {
+    min-height: 200px;
+}
+
+.send-loading-skeleton--short {
+    min-height: 120px;
+}
+
+/* Skeleton: same layout as target selection (Send To + buttons + table) */
+.target-selection-skeleton {
+    width: 100%;
+}
+
+.target-selection-skeleton-table {
+    width: 100%;
+    overflow: auto;
+    border: 1px solid var(--surface-border);
+    border-radius: var(--border-radius);
+
+    .datatable-skeleton {
+        width: 100%;
+        table-layout: fixed;
+        border-collapse: collapse;
+        border-spacing: 0;
+
+        thead > tr > th {
+            padding: 1rem;
+            text-align: left;
+            border: 0 none;
+            border-bottom: 1px solid var(--surface-border);
+            background: var(--surface-ground);
+            font-weight: 600;
+        }
+
+        tbody > tr > td {
+            padding: 1rem;
+            border: 0 none;
+            border-bottom: 1px solid var(--surface-border);
+            background: var(--surface-card);
+        }
+
+        tbody > tr:last-child > td {
+            border-bottom: none;
+        }
+    }
+
+    .datatable-skeleton-paginator {
+        padding: 0.75rem 1rem;
+        border-top: 1px solid var(--surface-border);
+        background: var(--surface-ground);
+    }
+}
+
+.selection-table-container {
+    background: var(--surface-card);
+    border: 1px solid var(--surface-border);
+    border-radius: 8px;
+    padding: 1.25rem;
+    margin-top: 1rem;
+
+    ::ng-deep .p-datatable {
+        .p-datatable-thead > tr > th {
+            background: var(--surface-50);
+            font-weight: 600;
+            border-bottom: 2px solid var(--surface-border);
+        }
+
+        .p-datatable-tbody > tr {
+            transition: background-color 0.2s;
+
+            &:hover {
+                background: var(--surface-hover);
+            }
+        }
+    }
+}
+
+.all-target-warning {
+    margin-top: 1rem;
+    border-radius: 8px;
+}
+
+.empty-state {
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

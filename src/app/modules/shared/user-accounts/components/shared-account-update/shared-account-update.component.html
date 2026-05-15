@@ -1,0 +1,166 @@
+<!-- Update Account Entity Dialog -->
+<p-dialog [(visible)]="visible" [modal]="true" [style]="{ width: '520px' }" [closable]="true" [draggable]="false"
+    [resizable]="false" (onHide)="onCloseDialog()">
+    <ng-template pTemplate="header">
+        <h3>{{ 'entityAccounts.update.title' | translate }}</h3>
+    </ng-template>
+
+    <form *ngIf="updateEntityForm" [formGroup]="updateEntityForm" (ngSubmit)="saveAccountEntity()">
+        <div class="flex flex-column gap-3">
+            <ng-container *ngIf="loadingAccountDetails; else updateEntityFormLoaded">
+                <div class="account-details-content">
+                    <div class="account-details-row account-details-name">
+                        <span class="account-details-label">{{ 'entityAccounts.update.email' | translate }}</span>
+                        <span class="account-details-value"><p-skeleton width="12rem" height="1.05rem"></p-skeleton></span>
+                    </div>
+                    <div class="account-details-divider"></div>
+                </div>
+                <div class="field p-fluid">
+                    <label for="selectedEntitySk">{{ 'entityAccounts.update.entity' | translate }} <span class="text-red-500">*</span></label>
+                    <div class="p-inputgroup">
+                        <div class="flex-1 min-w-0">
+                            <p-skeleton width="100%" height="2.75rem" borderRadius="6px"></p-skeleton>
+                        </div>
+                        <p-skeleton width="2.75rem" height="2.75rem" borderRadius="6px"></p-skeleton>
+                    </div>
+                </div>
+                <div class="field p-fluid">
+                    <label for="entityRoleIdSk">{{ 'entityAccounts.update.entityRole' | translate }} <span class="text-red-500">*</span></label>
+                    <p-skeleton width="100%" height="2.75rem" borderRadius="6px"></p-skeleton>
+                </div>
+            </ng-container>
+            <ng-template #updateEntityFormLoaded>
+                <div class="account-details-content">
+                    <div class="account-details-row account-details-name">
+                        <span class="account-details-label">{{ 'entityAccounts.update.email' | translate }}</span>
+                        <span class="account-details-value account-details-description-value font-semibold">{{ updateEntityForm.get('email')?.value || ('entityAccounts.details.na' | translate) }}</span>
+                    </div>
+                    <div class="account-details-divider"></div>
+                </div>
+
+                <div class="field p-fluid">
+                    <label for="selectedEntity">{{ 'entityAccounts.update.entity' | translate }} <span class="text-red-500">*</span></label>
+                    <div class="p-inputgroup">
+                        <input id="selectedEntity" type="text" pInputText [value]="getSelectedEntityDisplayText()" readonly
+                            [placeholder]="'entityAccounts.update.selectEntityPlaceholder' | translate" (click)="openEntitySelectionDialog()" style="cursor: pointer;" />
+                        <p-button icon="pi pi-search" (onClick)="openEntitySelectionDialog()"
+                            [disabled]="savingAccountEntity" class="p-button-secondary">
+                        </p-button>
+                    </div>
+                    <small class="p-error"
+                        *ngIf="updateEntityForm.get('entityId')?.invalid && updateEntityForm.get('entityId')?.touched">
+                        {{ 'entityAccounts.update.entityRequired' | translate }}
+                    </small>
+                </div>
+
+                <div class="field p-fluid">
+                    <label for="entityRoleId">{{ 'entityAccounts.update.entityRole' | translate }} <span class="text-red-500">*</span></label>
+                    <p-dropdown appendTo="body" id="entityRoleId" formControlName="entityRoleId"
+                        [options]="entityRoleOptions" optionLabel="label" optionValue="value"
+                        [placeholder]="'entityAccounts.update.selectEntityRolePlaceholder' | translate" [disabled]="!selectedEntityForUpdate || loadingRoles">
+                    </p-dropdown>
+                    <small class="p-error"
+                        *ngIf="updateEntityForm.get('entityRoleId')?.invalid && updateEntityForm.get('entityRoleId')?.touched">
+                        {{ 'entityAccounts.update.entityRoleRequired' | translate }}
+                    </small>
+                    <small class="text-500" *ngIf="!selectedEntityForUpdate">
+                        {{ 'entityAccounts.update.selectEntityFirst' | translate }}
+                    </small>
+                    <small class="text-500" *ngIf="selectedEntityForUpdate && loadingRoles">
+                        {{ 'entityAccounts.update.loadingRoles' | translate }}
+                    </small>
+                </div>
+            </ng-template>
+        </div>
+    </form>
+
+    <!-- Action Buttons -->
+    <ng-template pTemplate="footer">
+        <div class="flex justify-content-end gap-2">
+            <p-button [label]="'entityAccounts.update.cancel' | translate" icon="pi pi-times" class="p-button-text" (onClick)="onCancelClick()"
+                [disabled]="savingAccountEntity || loadingAccountDetails">
+            </p-button>
+            <p-button [label]="'entityAccounts.update.updateEntity' | translate" icon="pi pi-check" (onClick)="saveAccountEntity()"
+                [loading]="savingAccountEntity" [disabled]="savingAccountEntity || loadingAccountDetails || updateEntityForm.invalid">
+            </p-button>
+        </div>
+    </ng-template>
+</p-dialog>
+
+<!-- Entity Selection Dialog -->
+<p-dialog [(visible)]="entitySelectionDialogVisible" [modal]="true" [style]="{ width: '800px' }" [closable]="true"
+    [draggable]="false" [resizable]="false" (onHide)="closeEntitySelectionDialog()">
+    <ng-template pTemplate="header">
+        <h3>{{ 'entityAccounts.update.selectDialog.title' | translate }}</h3>
+    </ng-template>
+
+    <div class="flex flex-column gap-3">
+        <!-- Search Bar -->
+        <span class="p-input-icon-left w-full">
+            <i class="pi pi-search"></i>
+            <input pInputText type="text" [placeholder]="'entityAccounts.update.selectDialog.searchPlaceholder' | translate" class="w-full"
+                [value]="entityTableTextFilter" (input)="onEntityTableSearchInput($event)" />
+        </span>
+
+        <!-- Entities Table (skeleton inside cells when loadingEntitiesTable) -->
+        <div style="position: relative; min-height: 400px;">
+            <p-table [value]="entityTableValue" [paginator]="true" [first]="entityTableFirst"
+                [rows]="entityTableRows" [rowsPerPageOptions]="[10, 25, 50, 100]"
+                [totalRecords]="entityTableTotalRecords" [showCurrentPageReport]="true" [lazy]="true"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                (onLazyLoad)="onEntityTablePageChange($event)"
+                styleClass="p-datatable-sm">
+
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 150px;">{{ 'entityAccounts.update.selectDialog.code' | translate }}</th>
+                        <th>{{ 'entityAccounts.update.selectDialog.name' | translate }}</th>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="body" let-entity>
+                    <tr [class.selected-row]="isEntitySelected(entity)" (click)="selectEntityForUpdate(entity)"
+                        style="cursor: pointer;">
+                        <td>
+                            <ng-container *ngIf="loadingEntitiesTable; else codeContent">
+                                <p-skeleton height="1.25rem" width="5rem"></p-skeleton>
+                            </ng-container>
+                            <ng-template #codeContent>
+                                <span class="font-semibold">{{ entity.code }}</span>
+                            </ng-template>
+                        </td>
+                        <td>
+                            <ng-container *ngIf="loadingEntitiesTable; else nameContent">
+                                <p-skeleton height="1.25rem" width="12rem"></p-skeleton>
+                            </ng-container>
+                            <ng-template #nameContent>
+                                <span class="font-semibold">{{ entity.name }}</span>
+                            </ng-template>
+                        </td>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="2" class="text-center p-4">
+                            <i class="pi pi-inbox text-4xl text-gray-400 mb-2"></i>
+                            <p class="text-gray-500">{{ 'entityAccounts.update.selectDialog.noEntities' | translate }}</p>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <ng-template pTemplate="footer">
+        <div class="flex justify-content-end gap-2">
+            <p-button [label]="'entityAccounts.update.selectDialog.cancel' | translate" icon="pi pi-times" class="p-button-text" (onClick)="closeEntitySelectionDialog()"
+                [disabled]="loadingEntitiesTable">
+            </p-button>
+            <p-button [label]="'entityAccounts.update.selectDialog.select' | translate" icon="pi pi-check" (onClick)="closeEntitySelectionDialog()"
+                [disabled]="loadingEntitiesTable">
+            </p-button>
+        </div>
+    </ng-template>
+</p-dialog>

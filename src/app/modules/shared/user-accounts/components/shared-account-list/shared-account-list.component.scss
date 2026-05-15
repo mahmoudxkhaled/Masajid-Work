@@ -1,0 +1,196 @@
+::ng-deep .selected-row {
+    background-color: var(--primary-50) !important;
+}
+
+::ng-deep .selected-row:hover {
+    background-color: var(--primary-100) !important;
+}
+
+:host ::ng-deep {
+    .account-list-table {
+        .p-datatable-table {
+            table-layout: fixed;
+            width: 100%;
+        }
+
+        .p-datatable-thead > tr > th.account-list-th,
+        .p-datatable-tbody > tr > td.account-list-td {
+            overflow: hidden;
+            vertical-align: middle;
+        }
+
+        .p-datatable-tbody > tr.account-list-row-clickable {
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .p-datatable-tbody > tr.account-list-row-clickable:hover {
+            background-color: var(--surface-hover);
+        }
+
+        .account-list-th--id {
+            width: 6.5rem;
+            min-width: 6.5rem;
+            max-width: 6.5rem;
+        }
+
+        .account-list-th--email {
+            width: 18%;
+            min-width: 12rem;
+        }
+
+        .account-list-th--entity {
+            width: 16%;
+            min-width: 10rem;
+        }
+
+        .account-list-th--entityRole {
+            width: 9.5rem;
+            min-width: 9.5rem;
+            max-width: 9.5rem;
+        }
+
+        .account-list-th--state {
+            width: 7.5rem;
+            min-width: 7.5rem;
+            max-width: 7.5rem;
+        }
+
+        .account-list-th--login {
+            width: 10.5rem;
+            min-width: 10.5rem;
+            max-width: 10.5rem;
+        }
+
+        .account-list-th--actions {
+            width: 5.5rem;
+            min-width: 5.5rem;
+            max-width: 6rem;
+        }
+
+        .account-list-ellipsis {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            min-width: 0;
+        }
+
+        .account-list-ellipsis--start {
+            display: block;
+            width: 100%;
+        }
+
+        .account-list-ellipsis--center {
+            display: inline-block;
+            max-width: 100%;
+            vertical-align: middle;
+        }
+
+        .account-list-tag-clip {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 0;
+            width: 100%;
+            overflow: hidden;
+
+            .p-tag {
+                min-width: 0;
+                max-width: 100%;
+                min-inline-size: 4rem;
+                justify-content: center;
+            }
+
+            .p-tag-value {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                display: block;
+            }
+        }
+
+        .account-list-skeleton-line {
+            width: 100%;
+            max-width: 100%;
+        }
+
+        .account-list-actions-skeleton {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            width: 2.5rem;
+            height: 2.5rem;
+            flex-shrink: 0;
+        }
+
+        td.account-list-td--actions {
+            min-width: 3rem;
+            white-space: nowrap;
+        }
+    }
+
+    .account-list-footer-primary-btn.p-button {
+        min-width: auto;
+        min-height: auto;
+    }
+
+    .account-list-footer-primary-inner {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        min-height: auto;
+        box-sizing: border-box;
+    }
+
+    .account-details-content {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .account-details-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5rem 0;
+        gap: 1rem;
+
+        &.account-details-name {
+            padding-top: 0;
+
+            .account-details-value {
+                font-size: 1.05rem;
+            }
+        }
+    }
+
+    .account-details-label {
+        color: var(--text-color-secondary);
+        font-size: 0.875rem;
+        flex-shrink: 0;
+    }
+
+    .account-details-value {
+        text-align: right;
+        font-weight: 500;
+        min-width: 0;
+    }
+
+    .account-details-description-value {
+        max-width: 65%;
+        word-break: break-word;
+    }
+
+    .account-details-divider {
+        height: 1px;
+        background: var(--surface-border);
+        margin: 0.25rem 0;
+    }
+
+    .account-details-description-edit {
+        .account-details-label {
+            font-weight: 600;
+        }
+    }
+}

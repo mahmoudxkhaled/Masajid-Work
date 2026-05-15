@@ -1,0 +1,34 @@
+<main class="under-dev-page" [class.under-dev-rtl]="isRtl" role="status"
+    [attr.aria-label]="'underDevelopment.ariaLabel' | translate">
+    <div class="under-dev-background" aria-hidden="true">
+        <div class="under-dev-watermark">
+            <img src="assets/media/logo/PMAT_Logo_(Small)_No_Bkgnd.png" alt="" />
+        </div>
+        <div class="under-dev-watermark-brand-bottom" aria-hidden="true">
+            <span>{{ 'underDevelopment.brandName' | translate }}</span>
+        </div>
+        <div class="under-dev-pattern"></div>
+        <div class="under-dev-glow under-dev-glow-1"></div>
+        <div class="under-dev-glow under-dev-glow-2"></div>
+    </div>
+
+    <div class="under-dev-content">
+        <h1 class="under-dev-heading">{{ 'underDevelopment.heading' | translate }}</h1>
+        <p class="under-dev-tagline">{{ 'underDevelopment.tagline' | translate }}</p>
+        <p class="under-dev-description">
+            {{ 'underDevelopment.description' | translate }}
+        </p>
+        <div class="under-dev-actions">
+            <button pButton pRipple type="button" (click)="goBack()"
+                [attr.aria-label]="'underDevelopment.back' | translate" [label]="'underDevelopment.back' | translate"
+                [icon]="isRtl ? 'pi pi-arrow-right' : 'pi pi-arrow-left'" [iconPos]="isRtl ? 'right' : 'left'"
+                class="under-dev-button-back">
+            </button>
+            <button pButton pRipple type="button" [routerLink]="['/']"
+                [attr.aria-label]="'underDevelopment.goToDashboard' | translate"
+                [label]="'underDevelopment.goToDashboard' | translate" icon="pi pi-home"
+                [iconPos]="isRtl ? 'right' : 'left'" class="under-dev-button-home">
+            </button>
+        </div>
+    </div>
+</main>

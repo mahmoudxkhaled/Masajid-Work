@@ -1,0 +1,50 @@
+<div class="card">
+    <div class="flex justify-content-between align-items-center mb-4">
+        <h2>{{ 'notificationsManagement.main.title' | translate }}</h2>
+        <!-- Toggle between System and Entity -->
+        <div class="flex align-items-center gap-3" *ngIf="canSwitchToSystem() || canSwitchToEntity()">
+            <label class="text-600 font-medium">{{ 'notificationsManagement.main.mode' | translate }}</label>
+            <div class="flex align-items-center gap-2">
+                <p-button 
+                    *ngIf="canSwitchToSystem()"
+                    [label]="'notificationsManagement.main.system' | translate" 
+                    [icon]="notificationMode === 'system' ? 'pi pi-check-circle' : 'pi pi-circle'"
+                    [class]="notificationMode === 'system' ? 'p-button-primary' : 'p-button-outlined'"
+                    (onClick)="notificationMode = 'system'; onModeChange()">
+                </p-button>
+                <p-button 
+                    *ngIf="canSwitchToEntity()"
+                    [label]="'notificationsManagement.main.entity' | translate" 
+                    [icon]="notificationMode === 'entity' ? 'pi pi-check-circle' : 'pi pi-circle'"
+                    [class]="notificationMode === 'entity' ? 'p-button-primary' : 'p-button-outlined'"
+                    (onClick)="notificationMode = 'entity'; onModeChange()">
+                </p-button>
+            </div>
+        </div>
+    </div>
+
+    <p-tabView [(activeIndex)]="activeTabIndex">
+        <!-- Notifications Tab -->
+        <p-tabPanel [header]="'notificationsManagement.main.tabNotifications' | translate">
+            <!-- System Notifications -->
+            <app-system-notifications-list *ngIf="notificationMode === 'system'"></app-system-notifications-list>
+            <!-- Entity Notifications -->
+            <app-entity-notifications-list *ngIf="notificationMode === 'entity'"></app-entity-notifications-list>
+        </p-tabPanel>
+
+        <!-- Categories Tab -->
+        <p-tabPanel [header]="'notificationsManagement.main.tabCategories' | translate">
+            <!-- System Categories -->
+            <app-system-categories-list *ngIf="notificationMode === 'system'"></app-system-categories-list>
+            <!-- Entity Categories -->
+            <app-entity-categories-list *ngIf="notificationMode === 'entity'"></app-entity-categories-list>
+        </p-tabPanel>
+
+        <!-- Types Tab -->
+        <p-tabPanel [header]="'notificationsManagement.main.tabTypes' | translate">
+            <app-types-list></app-types-list>
+        </p-tabPanel>
+    </p-tabView>
+</div>
+
+<p-toast></p-toast>

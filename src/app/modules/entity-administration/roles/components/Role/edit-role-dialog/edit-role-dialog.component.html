@@ -1,0 +1,74 @@
+<p-dialog [visible]="visible" (visibleChange)="onVisibleChange($event)" [modal]="true" [closable]="true"
+    [draggable]="false" [resizable]="false" [style]="{ width: '520px' }">
+    <ng-template pTemplate="header">
+        <div class="dialog-header">
+            <!-- <i [ngClass]="mode === 'create' ? 'pi pi-plus' : 'pi pi-pencil'" class="mr-2 text-primary"></i> -->
+            <div>
+                <div class="title" *ngIf="entityName; else roleDialogHeaderFallback">
+                    <ng-container *ngIf="mode === 'create'">
+                        {{ 'entityRoles.editDialog.createTitleWithEntity' | translate: { entity: entityName } }}
+                    </ng-container>
+                    <ng-container *ngIf="mode === 'edit'">
+                        {{ 'entityRoles.editDialog.editTitleWithEntity' | translate: { entity: entityName } }}
+                    </ng-container>
+                </div>
+                <ng-template #roleDialogHeaderFallback>
+                    <div class="title">
+                        <ng-container *ngIf="mode === 'create'">{{ 'entityRoles.form.createTitle' | translate
+                            }}</ng-container>
+                        <ng-container *ngIf="mode === 'edit'">{{ 'entityRoles.editDialog.title' | translate
+                            }}</ng-container>
+                    </div>
+                    <small *ngIf="mode === 'edit'" class="subtitle">{{ roleTitle ||
+                        ('entityRoles.editDialog.currentRole' | translate) }}</small>
+                </ng-template>
+            </div>
+        </div>
+    </ng-template>
+
+    <form [formGroup]="form" class="form-grid" (ngSubmit)="submit()">
+        <div class="field">
+            <label for="title">{{ 'entityRoles.editDialog.titleLabel' | translate }}</label>
+            <input pInputText id="title" type="text" formControlName="title"
+                [placeholder]="'entityRoles.editDialog.titlePlaceholder' | translate"
+                [class.p-invalid]="form.controls['title'].invalid && form.controls['title'].touched" />
+            <small *ngIf="form.controls['title'].invalid && form.controls['title'].touched && titleError"
+                class="p-error">
+                {{ titleError }}
+            </small>
+        </div>
+
+        <div class="field">
+            <label for="description">{{ 'entityRoles.editDialog.descriptionLabel' | translate }}</label>
+            <textarea pInputTextarea id="description" rows="3" formControlName="description"
+                [placeholder]="'entityRoles.editDialog.descriptionPlaceholder' | translate"
+                [class.p-invalid]="form.controls['description'].invalid && form.controls['description'].touched"></textarea>
+            <small
+                *ngIf="form.controls['description'].invalid && form.controls['description'].touched && descriptionError"
+                class="p-error">
+                {{ descriptionError }}
+            </small>
+        </div>
+    </form>
+
+    <ng-template pTemplate="footer">
+        <div class="dialog-footer">
+            <p-button [label]="'entityRoles.editDialog.cancel' | translate" icon="pi pi-times" (onClick)="closeDialog()"
+                [disabled]="saving"></p-button>
+            <p-button type="submit" [disabled]="saving || (mode === 'edit' && loadingDetails)" (onClick)="submit()">
+                <ng-container *ngIf="saving">
+                    <span class="indicator-progress" [style.display]="'block'">
+                        <i class="pi pi-spin pi-spinner" style="font-size: 1rem"></i>
+                        {{ mode === 'create' ? ('entityRoles.form.save' | translate) :
+                        ('entityRoles.editDialog.saveChanges' | translate) }}
+                    </span>
+                </ng-container>
+                <ng-container *ngIf="saving === false">
+                    <i class="pi pi-check mx-1" style="font-size: 1rem"></i>
+                    <span>{{ mode === 'create' ? ('entityRoles.form.save' | translate) :
+                        ('entityRoles.editDialog.saveChanges' | translate) }}</span>
+                </ng-container>
+            </p-button>
+        </div>
+    </ng-template>
+</p-dialog>

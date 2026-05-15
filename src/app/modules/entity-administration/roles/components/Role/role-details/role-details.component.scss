@@ -1,0 +1,86 @@
+// Styles for role details component
+// Follow entity-details component styling patterns
+
+.functions-list,
+.modules-list {
+    .list-item {
+        &:last-child {
+            div {
+                border-bottom: none !important;
+            }
+        }
+
+        div {
+            transition: background-color 0.2s;
+
+            &:hover {
+                background-color: var(--surface-hover);
+                border-radius: var(--border-radius);
+            }
+        }
+    }
+}
+
+// Role Profile Vertical Layout
+.role-profile-vertical {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    max-width: 600px;
+}
+
+.info-item {
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--surface-border);
+
+    &:last-child {
+        border-bottom: none;
+    }
+
+    .info-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .info-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 2rem;
+        height: 2rem;
+        border-radius: 50%;
+        background: var(--primary-color);
+        color: white;
+        flex-shrink: 0;
+
+        i {
+            font-size: 0.875rem;
+        }
+    }
+
+    .info-label {
+        color: var(--text-color-secondary);
+        font-size: 0.875rem;
+        font-weight: 400;
+    }
+
+    .info-value {
+        margin: 0;
+        color: var(--text-color);
+        font-size: 1rem;
+        font-weight: 500;
+        word-break: break-word;
+        line-height: 1.5;
+        padding-left: 2.75rem;
+    }
+
+    &.description-item {
+        .info-value.description-text {
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+    }
+}

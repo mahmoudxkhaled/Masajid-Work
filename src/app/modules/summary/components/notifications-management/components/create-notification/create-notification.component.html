@@ -1,0 +1,87 @@
+<div class="card">
+    <div class="flex justify-content-between align-items-center mb-4">
+        <h3>{{ 'notificationsManagement.createNotification.title' | translate }}</h3>
+        <div class="flex align-items-center gap-2" *ngIf="canSwitchMode()">
+            <label class="text-600 font-medium">{{ 'notificationsManagement.createNotification.mode' | translate }}</label>
+            <p-button [label]="'notificationsManagement.createNotification.system' | translate" [icon]="isSystemNotification ? 'pi pi-check-circle' : 'pi pi-circle'"
+                [class]="isSystemNotification ? 'p-button-primary' : 'p-button-outlined'"
+                (onClick)="setNotificationMode(true)">
+            </p-button>
+            <p-button [label]="'notificationsManagement.createNotification.entity' | translate" [icon]="!isSystemNotification ? 'pi pi-check-circle' : 'pi pi-circle'"
+                [class]="!isSystemNotification ? 'p-button-primary' : 'p-button-outlined'"
+                (onClick)="setNotificationMode(false)">
+            </p-button>
+        </div>
+        <p-tag *ngIf="!canSwitchMode()" [value]="isSystemNotification ? ('notificationsManagement.createNotification.system' | translate) : ('notificationsManagement.createNotification.entity' | translate)"
+            [severity]="isSystemNotification ? 'info' : 'warning'">
+        </p-tag>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+        <div class="grid">
+            <div class="col-12">
+                <div class="field p-fluid">
+                    <label for="categoryId">{{ 'notificationsManagement.createNotification.category' | translate }} <span class="text-red-500">*</span></label>
+                    <p-dropdown id="categoryId" formControlName="categoryId" [options]="displayCategories" 
+                        optionLabel="Title" optionValue="Category_ID" [placeholder]="'notificationsManagement.createNotification.selectCategory' | translate"
+                        [class.ng-invalid]="submitted && f['categoryId'].invalid">
+                    </p-dropdown>
+                    <small class="p-error" *ngIf="submitted && f['categoryId'].invalid">
+                        {{ 'notificationsManagement.createNotification.categoryRequired' | translate }}
+                    </small>
+                </div>
+            </div>
+
+            <div class="col-12">
+                <div class="field p-fluid">
+                    <label for="title">{{ 'notificationsManagement.createNotification.titleLabel' | translate }} <span class="text-red-500">*</span></label>
+                    <input id="title" type="text" pInputText formControlName="title"
+                        [class.ng-invalid]="submitted && f['title'].invalid" [placeholder]="'notificationsManagement.createNotification.titlePlaceholder' | translate" />
+                    <small class="p-error" *ngIf="submitted && f['title'].invalid && titleError">
+                        {{ titleError }}
+                    </small>
+                </div>
+            </div>
+
+            <div class="col-12">
+                <div class="field p-fluid">
+                    <label for="message">{{ 'notificationsManagement.createNotification.message' | translate }} <span class="text-red-500">*</span></label>
+                    <textarea id="message" pInputTextarea formControlName="message" rows="5"
+                        [class.ng-invalid]="submitted && f['message'].invalid"
+                        [placeholder]="'notificationsManagement.createNotification.messagePlaceholder' | translate"></textarea>
+                    <small class="p-error" *ngIf="submitted && f['message'].invalid && messageError">
+                        {{ messageError }}
+                    </small>
+                </div>
+            </div>
+
+            <div class="col-12 md:col-6">
+                <div class="field p-fluid">
+                    <label for="referenceType">{{ 'notificationsManagement.createNotification.referenceType' | translate }}</label>
+                    <p-dropdown id="referenceType" formControlName="referenceType" [options]="referenceTypes" 
+                        optionLabel="label" optionValue="value" [placeholder]="'notificationsManagement.createNotification.selectReferenceType' | translate">
+                    </p-dropdown>
+                </div>
+            </div>
+
+            <div class="col-12 md:col-6">
+                <div class="field p-fluid">
+                    <label for="referenceId">{{ 'notificationsManagement.createNotification.referenceId' | translate }}</label>
+                    <input id="referenceId" type="number" pInputText formControlName="referenceId" 
+                        [placeholder]="'notificationsManagement.createNotification.referenceIdPlaceholder' | translate" 
+                        [disabled]="!form.get('referenceType')?.value" />
+                </div>
+            </div>
+
+            <div class="col-12">
+                <div class="flex justify-content-end">
+                    <p-button [label]="'notificationsManagement.createNotification.createButton' | translate" icon="pi pi-check" (onClick)="submit()" 
+                        [loading]="loading" [disabled]="loading || form.invalid">
+                    </p-button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<p-toast></p-toast>

@@ -1,0 +1,72 @@
+:host {
+    display: block;
+}
+
+.setting-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    min-height: 2.5rem;
+    margin-bottom: 0.25rem;
+}
+
+.setting-header-label {
+    flex: 1;
+    min-width: 0;
+}
+
+.setting-header-label-skeleton {
+    flex: 1;
+    min-width: 0;
+}
+
+.setting-actions {
+    width: 2.5rem;
+    min-height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-shrink: 0;
+}
+
+.setting-action-placeholder {
+    display: block;
+    width: 2.5rem;
+    height: 2.5rem;
+    flex-shrink: 0;
+}
+
+.setting-control {
+    width: 100%;
+}
+
+:host ::ng-deep .setting-control .setting-control-field.p-dropdown,
+:host ::ng-deep .setting-control .setting-control-field.p-inputnumber {
+    width: 100%;
+}
+
+:host ::ng-deep .setting-control input.setting-control-field.p-inputtext {
+    width: 100%;
+    min-height: 2.5rem;
+    box-sizing: border-box;
+}
+
+:host ::ng-deep .setting-control .setting-control-field.p-dropdown .p-dropdown {
+    min-height: 2.5rem;
+    width: 100%;
+}
+
+:host ::ng-deep .setting-control .setting-control-field.p-inputnumber .p-inputnumber {
+    width: 100%;
+}
+
+:host ::ng-deep .setting-control .setting-control-field.p-inputnumber .p-inputnumber-input {
+    min-height: 2.5rem;
+    box-sizing: border-box;
+}
+
+:host ::ng-deep .setting-actions .p-button.p-button-icon-only {
+    width: 2.5rem;
+    height: 2.5rem;
+}

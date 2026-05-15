@@ -1,0 +1,555 @@
+<div class="system-dashboard card p-4">
+    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-start gap-4 mb-4">
+        <div>
+            <h1 class="text-2xl font-semibold m-0 mb-2">{{ 'systemAdministration.dashboard.title' | translate }}</h1>
+            <p class="text-600 text-sm m-0" *ngIf="lastUpdated">
+                {{ 'systemAdministration.dashboard.lastUpdated' | translate }}:
+                {{ lastUpdated | date: 'short' }}
+            </p>
+        </div>
+        <div class="flex flex-column sm:flex-row gap-3 align-items-stretch sm:align-items-end">
+            <div class="flex flex-column gap-2">
+                <label class="text-sm text-600" for="dashboardDateRange">{{
+                    'systemAdministration.dashboard.filters.dateRange' | translate
+                    }}</label>
+                <p-calendar inputId="dashboardDateRange" [(ngModel)]="rangeDates" selectionMode="range"
+                    [readonlyInput]="true" [showIcon]="true" [numberOfMonths]="1" dateFormat="yy-mm-dd"
+                    [placeholder]="'systemAdministration.dashboard.filters.dateRangePlaceholder' | translate"></p-calendar>
+            </div>
+            <p-button [label]="'systemAdministration.dashboard.filters.apply' | translate" icon="pi pi-filter"
+                (onClick)="applyFilters()" [disabled]="loadingStats || loadingApi"></p-button>
+        </div>
+    </div>
+
+    <p-tabView [(activeIndex)]="activeTabIndex">
+        <p-tabPanel [header]="'systemAdministration.dashboard.tabs.general' | translate">
+            <ng-container *ngIf="loadingStats; else generalContent">
+                <div class="grid">
+                    <div class="col-12 md:col-6 lg:col-3" *ngFor="let _ of [1, 2, 3, 4]">
+                        <div class="stat-card stat-card--has-trend stat-card--skeleton surface-card border-round-xl h-full">
+                            <div class="stat-card__main flex align-items-start gap-3 md:gap-4">
+                                <div class="stat-card__icon stat-card__icon--skeleton" aria-hidden="true">
+                                    <p-skeleton width="3.5rem" height="3.5rem" borderRadius="14px"></p-skeleton>
+                                </div>
+                                <div class="flex flex-column gap-2 flex-1 min-w-0 stat-card__skeleton-body">
+                                    <p-skeleton width="72%" height="0.8125rem" borderRadius="4px"></p-skeleton>
+                                    <p-skeleton width="58%" height="2.25rem" borderRadius="6px"></p-skeleton>
+                                </div>
+                            </div>
+                            <div class="stat-card__trend-row">
+                                <div class="stat-card__trend stat-card__trend--up">
+                                    <p-skeleton width="0.75rem" height="0.75rem" borderRadius="2px"></p-skeleton>
+                                    <span class="inline-flex align-items-center gap-2 flex-wrap">
+                                        <p-skeleton width="3.25rem" height="0.875rem" borderRadius="4px"></p-skeleton>
+                                        <span>{{ 'systemAdministration.dashboard.stats.vsPrevious' | translate }}</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <p-card [header]="'systemAdministration.dashboard.charts.operationsTrendTitle' | translate"
+                            styleClass="dashboard-panel">
+                            <div class="chart-panel">
+                                <p-skeleton width="100%" height="320px" borderRadius="8px"></p-skeleton>
+                            </div>
+                        </p-card>
+                    </div>
+                </div>
+            </ng-container>
+            <ng-template #generalContent>
+                <div class="grid" *ngIf="generalStats">
+                    <div class="col-12 md:col-6 lg:col-3">
+                        <div class="stat-card stat-card--has-trend surface-card border-round-xl h-full">
+                            <div class="stat-card__main flex align-items-start gap-3 md:gap-4">
+                                <div class="stat-card__icon" aria-hidden="true">
+                                    <i class="pi pi-users"></i>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="stat-card__label">{{ 'systemAdministration.dashboard.stats.totalUsers' |
+                                        translate }}</div>
+                                    <div class="stat-card__value">{{ generalStats.totalUsers | number }}</div>
+                                </div>
+                            </div>
+                            <div class="stat-card__trend-row">
+                                <div class="stat-card__trend" [ngClass]="
+                                        generalStats.usersTrendPercent >= 0 ? 'stat-card__trend--up' : 'stat-card__trend--down'
+                                    ">
+                                    <i class="pi"
+                                        [ngClass]="generalStats.usersTrendPercent >= 0 ? 'pi-arrow-up-right' : 'pi-arrow-down-right'"></i>
+                                    <span>
+                                        {{ generalStats.usersTrendPercent >= 0 ? '+' : '' }}{{
+                                        generalStats.usersTrendPercent | number: '1.1-1' }}%
+                                        {{ 'systemAdministration.dashboard.stats.vsPrevious' | translate }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 md:col-6 lg:col-3">
+                        <div class="stat-card stat-card--has-trend surface-card border-round-xl h-full">
+                            <div class="stat-card__main flex align-items-start gap-3 md:gap-4">
+                                <div class="stat-card__icon" aria-hidden="true">
+                                    <i class="pi pi-key"></i>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="stat-card__label">{{
+                                        'systemAdministration.dashboard.stats.totalAccounts' | translate }}</div>
+                                    <div class="stat-card__value">{{ generalStats.totalAccounts | number }}</div>
+                                </div>
+                            </div>
+                            <div class="stat-card__trend-row">
+                                <div class="stat-card__trend" [ngClass]="
+                                        generalStats.accountsTrendPercent >= 0 ? 'stat-card__trend--up' : 'stat-card__trend--down'
+                                    ">
+                                    <i class="pi"
+                                        [ngClass]="generalStats.accountsTrendPercent >= 0 ? 'pi-arrow-up-right' : 'pi-arrow-down-right'"></i>
+                                    <span>
+                                        {{ generalStats.accountsTrendPercent >= 0 ? '+' : '' }}{{
+                                        generalStats.accountsTrendPercent | number: '1.1-1' }}%
+                                        {{ 'systemAdministration.dashboard.stats.vsPrevious' | translate }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 md:col-6 lg:col-3">
+                        <div class="stat-card stat-card--has-trend surface-card border-round-xl h-full">
+                            <div class="stat-card__main flex align-items-start gap-3 md:gap-4">
+                                <div class="stat-card__icon" aria-hidden="true">
+                                    <i class="pi pi-building"></i>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="stat-card__label">{{
+                                        'systemAdministration.dashboard.stats.totalEntities' | translate }}</div>
+                                    <div class="stat-card__value">{{ generalStats.totalEntities | number }}</div>
+                                </div>
+                            </div>
+                            <div class="stat-card__trend-row">
+                                <div class="stat-card__trend" [ngClass]="
+                                        generalStats.entitiesTrendPercent >= 0 ? 'stat-card__trend--up' : 'stat-card__trend--down'
+                                    ">
+                                    <i class="pi"
+                                        [ngClass]="generalStats.entitiesTrendPercent >= 0 ? 'pi-arrow-up-right' : 'pi-arrow-down-right'"></i>
+                                    <span>
+                                        {{ generalStats.entitiesTrendPercent >= 0 ? '+' : '' }}{{
+                                        generalStats.entitiesTrendPercent | number: '1.1-1' }}%
+                                        {{ 'systemAdministration.dashboard.stats.vsPrevious' | translate }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 md:col-6 lg:col-3">
+                        <div class="stat-card stat-card--has-trend surface-card border-round-xl h-full">
+                            <div class="stat-card__main flex align-items-start gap-3 md:gap-4">
+                                <div class="stat-card__icon" aria-hidden="true">
+                                    <i class="pi pi-bolt"></i>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="stat-card__label">{{
+                                        'systemAdministration.dashboard.stats.totalOperations' | translate }}</div>
+                                    <div class="stat-card__value">{{ generalStats.totalOperations | number }}</div>
+                                </div>
+                            </div>
+                            <div class="stat-card__trend-row">
+                                <div class="stat-card__trend stat-card__trend--up">
+                                    <i class="pi pi-arrow-up-right"></i>
+                                    <span>
+                                        +{{ generalStats.operationsTrendPercent | number: '1.1-1' }}%
+                                        {{ 'systemAdministration.dashboard.stats.vsPrevious' | translate }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <p-card [header]="'systemAdministration.dashboard.charts.operationsTrendTitle' | translate"
+                            styleClass="dashboard-panel">
+                            <div class="chart-panel" *ngIf="operationsTrendChartData">
+                                <p-chart type="line" [data]="operationsTrendChartData"
+                                    [options]="operationsTrendChartOptions" [height]="chartHeightMain"></p-chart>
+                            </div>
+                        </p-card>
+                    </div>
+                </div>
+                <div *ngIf="!generalStats && !loadingStats" class="text-center text-600 py-6">
+                    {{ 'systemAdministration.dashboard.empty.general' | translate }}
+                </div>
+            </ng-template>
+        </p-tabPanel>
+
+        <p-tabPanel [header]="'systemAdministration.dashboard.tabs.apiOverview' | translate">
+            <ng-container *ngIf="loadingApi; else apiContent">
+                <div class="grid mb-4">
+                    <div class="col-12 md:col-3" *ngFor="let _ of [1, 2, 3, 4]">
+                        <div
+                            class="stat-card stat-card--skeleton stat-card--skeleton-compact surface-card border-round-xl h-full">
+                            <div class="flex align-items-start gap-3 md:gap-4">
+                                <div class="stat-card__icon stat-card__icon--skeleton" aria-hidden="true">
+                                    <p-skeleton width="3.5rem" height="3.5rem" borderRadius="14px"></p-skeleton>
+                                </div>
+                                <div
+                                    class="flex flex-column gap-2 flex-1 min-w-0 stat-card__skeleton-body stat-card__skeleton-body--compact">
+                                    <p-skeleton width="72%" height="0.8125rem" borderRadius="4px"></p-skeleton>
+                                    <p-skeleton width="62%" height="1.9rem" borderRadius="6px"></p-skeleton>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p-card [header]="'systemAdministration.dashboard.charts.trafficByHourTitle' | translate"
+                    styleClass="dashboard-panel mb-4">
+                    <div class="chart-panel">
+                        <p-skeleton width="100%" height="320px" borderRadius="8px"></p-skeleton>
+                    </div>
+                </p-card>
+                <p-card [header]="'systemAdministration.dashboard.apiTable.title' | translate"
+                    styleClass="dashboard-panel">
+                    <div class="chart-panel" style="min-height: 12rem">
+                        <p-skeleton width="100%" height="0.875rem" class="mb-3" borderRadius="4px"></p-skeleton>
+                        <p-skeleton width="100%" height="2.25rem" class="mb-2" borderRadius="4px"></p-skeleton>
+                        <p-skeleton width="100%" height="2.25rem" class="mb-2" borderRadius="4px"></p-skeleton>
+                        <p-skeleton width="100%" height="2.25rem" class="mb-2" borderRadius="4px"></p-skeleton>
+                        <p-skeleton width="72%" height="2.25rem" borderRadius="4px"></p-skeleton>
+                    </div>
+                </p-card>
+            </ng-container>
+            <ng-template #apiContent>
+                <div class="grid mb-4" *ngIf="apiOverviewSummary">
+                    <div class="col-12 md:col-3">
+                        <div class="stat-card surface-card border-round-xl h-full">
+                            <div class="flex align-items-start gap-3 md:gap-4">
+                                <div class="stat-card__icon" aria-hidden="true">
+                                    <i class="pi pi-chart-line"></i>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="stat-card__label">{{
+                                        'systemAdministration.dashboard.apiSummary.totalCalls' | translate }}</div>
+                                    <div class="stat-card__value stat-card__value--md">{{ apiOverviewSummary.totalCalls
+                                        | number }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 md:col-3">
+                        <div class="stat-card surface-card border-round-xl h-full">
+                            <div class="flex align-items-start gap-3 md:gap-4">
+                                <div class="stat-card__icon" aria-hidden="true">
+                                    <i class="pi pi-clock"></i>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="stat-card__label">{{
+                                        'systemAdministration.dashboard.apiSummary.peakHour' | translate }}</div>
+                                    <div class="stat-card__value stat-card__value--md">{{
+                                        apiOverviewSummary.peakHourLabel }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 md:col-3">
+                        <div class="stat-card surface-card border-round-xl h-full">
+                            <div class="flex align-items-start gap-3 md:gap-4">
+                                <div class="stat-card__icon" aria-hidden="true">
+                                    <i class="pi pi-stopwatch"></i>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="stat-card__label">{{
+                                        'systemAdministration.dashboard.apiSummary.avgResponse' | translate }}</div>
+                                    <div class="stat-card__value stat-card__value--md">{{
+                                        apiOverviewSummary.averageResponseTimeMs | number: '1.0-0' }} ms</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 md:col-3">
+                        <div class="stat-card surface-card border-round-xl h-full">
+                            <div class="flex align-items-start gap-3 md:gap-4">
+                                <div class="stat-card__icon" aria-hidden="true">
+                                    <i class="pi pi-exclamation-triangle"></i>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="stat-card__label">{{
+                                        'systemAdministration.dashboard.apiSummary.errorRate' | translate }}</div>
+                                    <div class="stat-card__value stat-card__value--md">{{
+                                        apiOverviewSummary.errorRatePercent | number: '1.2-2' }}%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p-card [header]="'systemAdministration.dashboard.charts.trafficByHourTitle' | translate"
+                    styleClass="dashboard-panel mb-4">
+                    <div class="chart-panel" *ngIf="trafficChartData">
+                        <p-chart type="line" [data]="trafficChartData" [options]="trafficChartOptions"
+                            [height]="chartHeightMain"></p-chart>
+                    </div>
+                </p-card>
+                <p-card [header]="'systemAdministration.dashboard.apiTable.title' | translate"
+                    styleClass="dashboard-panel">
+                    <p-table [value]="endpoints" [sortField]="'totalCalls'" [sortOrder]="-1" [paginator]="true"
+                        [rows]="10" [showCurrentPageReport]="true"
+                        [currentPageReportTemplate]="'systemAdministration.dashboard.table.pageReport' | translate"
+                        responsiveLayout="scroll" styleClass="p-datatable-sm system-dashboard__datatable">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th pSortableColumn="endpoint">
+                                    {{ 'systemAdministration.dashboard.apiTable.endpoint' | translate }}
+                                    <p-sortIcon field="endpoint"></p-sortIcon>
+                                </th>
+                                <th pSortableColumn="totalCalls">
+                                    {{ 'systemAdministration.dashboard.apiTable.totalCalls' | translate }}
+                                    <p-sortIcon field="totalCalls"></p-sortIcon>
+                                </th>
+                                <th pSortableColumn="avgResponseTimeMs">
+                                    {{ 'systemAdministration.dashboard.apiTable.avgResponse' | translate }}
+                                    <p-sortIcon field="avgResponseTimeMs"></p-sortIcon>
+                                </th>
+                                <th pSortableColumn="errorCount">
+                                    {{ 'systemAdministration.dashboard.apiTable.errors' | translate }}
+                                    <p-sortIcon field="errorCount"></p-sortIcon>
+                                </th>
+                                <th pSortableColumn="successRatePercent">
+                                    {{ 'systemAdministration.dashboard.apiTable.successRate' | translate }}
+                                    <p-sortIcon field="successRatePercent"></p-sortIcon>
+                                </th>
+                                <th pSortableColumn="lastCalled">
+                                    {{ 'systemAdministration.dashboard.apiTable.lastCalled' | translate }}
+                                    <p-sortIcon field="lastCalled"></p-sortIcon>
+                                </th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-row>
+                            <tr class="cursor-pointer" (click)="onEndpointRowSelect(row)">
+                                <td>{{ row.endpoint }}</td>
+                                <td>{{ row.totalCalls | number }}</td>
+                                <td>{{ row.avgResponseTimeMs | number: '1.0-0' }} ms</td>
+                                <td>{{ row.errorCount | number }}</td>
+                                <td>{{ row.successRatePercent | number: '1.2-2' }}%</td>
+                                <td>{{ row.lastCalled | date: 'short' }}</td>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="emptymessage">
+                            <tr>
+                                <td colspan="6" class="text-center text-600 py-4">
+                                    {{ 'systemAdministration.dashboard.empty.apiEndpoints' | translate }}
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </p-card>
+            </ng-template>
+        </p-tabPanel>
+
+        <p-tabPanel [header]="'systemAdministration.dashboard.tabs.requestAnalysis' | translate">
+            <div class="mb-4 flex flex-column gap-2" *ngIf="endpoints.length">
+                <label class="text-sm text-600" for="endpointSelect">{{
+                    'systemAdministration.dashboard.requestSelector.label' | translate }}</label>
+                <p-dropdown inputId="endpointSelect" [options]="endpoints" [(ngModel)]="selectedEndpointId"
+                    optionLabel="endpoint" optionValue="id"
+                    [placeholder]="'systemAdministration.dashboard.requestSelector.placeholder' | translate"
+                    (onChange)="onEndpointDropdownChange()"
+                    styleClass="system-dashboard__endpoint-dropdown"></p-dropdown>
+            </div>
+
+            <ng-container *ngIf="loadingRequest; else requestContent">
+                <div class="grid mb-4">
+                    <div class="col-12 md:col-3" *ngFor="let _ of [1, 2, 3, 4]">
+                        <div class="stat-card stat-card--skeleton surface-card border-round-xl h-full">
+                            <div class="flex align-items-start gap-3 md:gap-4">
+                                <div class="stat-card__icon stat-card__icon--skeleton" aria-hidden="true">
+                                    <p-skeleton width="3.5rem" height="3.5rem" borderRadius="14px"></p-skeleton>
+                                </div>
+                                <div class="flex flex-column gap-2 flex-1 min-w-0 stat-card__skeleton-body">
+                                    <p-skeleton width="72%" height="0.8125rem" borderRadius="4px"></p-skeleton>
+                                    <p-skeleton width="58%" height="2.25rem" borderRadius="6px"></p-skeleton>
+                                    <p-skeleton width="88%" height="0.8125rem" borderRadius="4px"></p-skeleton>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid">
+                    <div class="col-12 lg:col-4">
+                        <p-card [header]="'systemAdministration.dashboard.charts.requestCountTitle' | translate"
+                            styleClass="dashboard-panel">
+                            <div class="chart-panel chart-panel--compact">
+                                <p-skeleton width="100%" height="220px" borderRadius="8px"></p-skeleton>
+                            </div>
+                        </p-card>
+                    </div>
+                    <div class="col-12 lg:col-4">
+                        <p-card [header]="'systemAdministration.dashboard.charts.latencyTitle' | translate"
+                            styleClass="dashboard-panel">
+                            <div class="chart-panel chart-panel--compact">
+                                <p-skeleton width="100%" height="220px" borderRadius="8px"></p-skeleton>
+                            </div>
+                        </p-card>
+                    </div>
+                    <div class="col-12 lg:col-4">
+                        <p-card [header]="'systemAdministration.dashboard.charts.errorTrendTitle' | translate"
+                            styleClass="dashboard-panel">
+                            <div class="chart-panel chart-panel--compact">
+                                <p-skeleton width="100%" height="220px" borderRadius="8px"></p-skeleton>
+                            </div>
+                        </p-card>
+                    </div>
+                    <div class="col-12">
+                        <p-card [header]="'systemAdministration.dashboard.samplesTable.title' | translate"
+                            styleClass="dashboard-panel">
+                            <div class="chart-panel" style="min-height: 10rem">
+                                <p-skeleton width="100%" height="0.875rem" class="mb-3" borderRadius="4px"></p-skeleton>
+                                <p-skeleton width="100%" height="2rem" class="mb-2" borderRadius="4px"></p-skeleton>
+                                <p-skeleton width="100%" height="2rem" class="mb-2" borderRadius="4px"></p-skeleton>
+                                <p-skeleton width="55%" height="2rem" borderRadius="4px"></p-skeleton>
+                            </div>
+                        </p-card>
+                    </div>
+                </div>
+            </ng-container>
+            <ng-template #requestContent>
+                <div *ngIf="!selectedEndpointId" class="text-center text-600 py-6">
+                    {{ 'systemAdministration.dashboard.empty.selectEndpoint' | translate }}
+                </div>
+                <div *ngIf="selectedEndpointId && requestMetrics" class="grid mb-4">
+                    <div class="col-12 md:col-3">
+                        <div class="stat-card surface-card border-round-xl h-full">
+                            <div class="flex align-items-start gap-3 md:gap-4">
+                                <div class="stat-card__icon" aria-hidden="true">
+                                    <i class="pi pi-list"></i>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="stat-card__label">{{
+                                        'systemAdministration.dashboard.requestMetrics.totalCalls' | translate }}</div>
+                                    <div class="stat-card__value stat-card__value--md">{{ requestMetrics.totalCalls |
+                                        number }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 md:col-3">
+                        <div class="stat-card surface-card border-round-xl h-full">
+                            <div class="flex align-items-start gap-3 md:gap-4">
+                                <div class="stat-card__icon" aria-hidden="true">
+                                    <i class="pi pi-stopwatch"></i>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="stat-card__label">{{
+                                        'systemAdministration.dashboard.requestMetrics.avgLatency' | translate }}</div>
+                                    <div class="stat-card__value stat-card__value--md">{{ requestMetrics.avgLatencyMs |
+                                        number: '1.0-0' }} ms</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 md:col-3">
+                        <div class="stat-card surface-card border-round-xl h-full">
+                            <div class="flex align-items-start gap-3 md:gap-4">
+                                <div class="stat-card__icon" aria-hidden="true">
+                                    <i class="pi pi-arrow-up"></i>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="stat-card__label">{{
+                                        'systemAdministration.dashboard.requestMetrics.maxLatency' | translate }}</div>
+                                    <div class="stat-card__value stat-card__value--md">{{ requestMetrics.maxLatencyMs |
+                                        number: '1.0-0' }} ms</div>
+                                    <div class="stat-card__sub">
+                                        {{ 'systemAdministration.dashboard.requestMetrics.minLatency' | translate }}:
+                                        {{ requestMetrics.minLatencyMs | number: '1.0-0' }} ms
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 md:col-3">
+                        <div class="stat-card surface-card border-round-xl h-full">
+                            <div class="flex align-items-start gap-3 md:gap-4">
+                                <div class="stat-card__icon" aria-hidden="true">
+                                    <i class="pi pi-chart-pie"></i>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="stat-card__label">{{
+                                        'systemAdministration.dashboard.requestMetrics.errorRate' | translate }}</div>
+                                    <div class="stat-card__value stat-card__value--md">{{
+                                        requestMetrics.errorRatePercent | number: '1.2-2' }}%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid" *ngIf="selectedEndpointId && requestMetrics">
+                    <div class="col-12 lg:col-4">
+                        <p-card [header]="'systemAdministration.dashboard.charts.requestCountTitle' | translate"
+                            styleClass="dashboard-panel">
+                            <div class="chart-panel chart-panel--compact" *ngIf="requestCountChartData">
+                                <p-chart type="line" [data]="requestCountChartData" [options]="requestCountChartOptions"
+                                    [height]="chartHeightCompact"></p-chart>
+                            </div>
+                        </p-card>
+                    </div>
+                    <div class="col-12 lg:col-4">
+                        <p-card [header]="'systemAdministration.dashboard.charts.latencyTitle' | translate"
+                            styleClass="dashboard-panel">
+                            <div class="chart-panel chart-panel--compact" *ngIf="latencyChartData">
+                                <p-chart type="line" [data]="latencyChartData" [options]="latencyChartOptions"
+                                    [height]="chartHeightCompact"></p-chart>
+                            </div>
+                        </p-card>
+                    </div>
+                    <div class="col-12 lg:col-4">
+                        <p-card [header]="'systemAdministration.dashboard.charts.errorTrendTitle' | translate"
+                            styleClass="dashboard-panel">
+                            <div class="chart-panel chart-panel--compact" *ngIf="errorChartData">
+                                <p-chart type="line" [data]="errorChartData" [options]="errorChartOptions"
+                                    [height]="chartHeightCompact"></p-chart>
+                            </div>
+                        </p-card>
+                    </div>
+                    <div class="col-12">
+                        <p-card [header]="'systemAdministration.dashboard.samplesTable.title' | translate"
+                            styleClass="dashboard-panel">
+                            <p-table [value]="requestSamples" [paginator]="true" [rows]="10" responsiveLayout="scroll"
+                                styleClass="p-datatable-sm system-dashboard__datatable">
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                        <th>{{ 'systemAdministration.dashboard.samplesTable.timestamp' | translate }}
+                                        </th>
+                                        <th>{{
+                                            'systemAdministration.dashboard.samplesTable.responseTime' | translate }}
+                                        </th>
+                                        <th>{{ 'systemAdministration.dashboard.samplesTable.status' | translate }}</th>
+                                        <th>{{
+                                            'systemAdministration.dashboard.samplesTable.statusCode' | translate }}</th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-row>
+                                    <tr>
+                                        <td>{{ row.timestamp | date: 'medium' }}</td>
+                                        <td>{{ row.responseTimeMs | number: '1.0-0' }} ms</td>
+                                        <td>
+                                            <p-tag [severity]="row.status === 'success' ? 'success' : 'danger'" [value]="
+                                                    row.status === 'success'
+                                                        ? ('systemAdministration.dashboard.samplesTable.statusSuccess' | translate)
+                                                        : ('systemAdministration.dashboard.samplesTable.statusError' | translate)
+                                                "></p-tag>
+                                        </td>
+                                        <td>{{ row.statusCode }}</td>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="emptymessage">
+                                    <tr>
+                                        <td colspan="4" class="text-center text-600 py-4">
+                                            {{ 'systemAdministration.dashboard.empty.samples' | translate }}
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+                        </p-card>
+                    </div>
+                </div>
+            </ng-template>
+        </p-tabPanel>
+    </p-tabView>
+</div>
+
+<p-toast></p-toast>

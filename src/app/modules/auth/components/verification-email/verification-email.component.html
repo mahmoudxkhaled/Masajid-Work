@@ -1,0 +1,41 @@
+<div class="body">
+    <div class="wave"></div>
+    <div class="wave"></div>
+    <div class="wave"></div>
+    <div class="forgot-container">
+        <app-auth-brand></app-auth-brand>
+        <h2>{{ 'auth.verification-email.title' | translate }}</h2>
+
+        <!-- Loading State -->
+        <div *ngIf="isVerifying">
+            <p style="color: #515C66;">
+                <i class="pi pi-spin pi-spinner" style="font-size: 1.5rem; margin-right: 10px;"></i>
+                Verifying email...
+            </p>
+        </div>
+
+        <!-- Success State -->
+        <div *ngIf="verificationSuccess && !isVerifying" class="success-message">
+            <p style="color: #22c55e; font-weight: bold;">
+                <i class="pi pi-check-circle" style="font-size: 1.5rem; margin-right: 10px;"></i>
+                Email verified successfully. You can now log in.
+            </p>
+            <p style="font-size: 14px; color: #515C66; margin-top: 10px;">
+                You will be redirected to the login page in {{ redirectCountdown }} seconds...
+            </p>
+        </div>
+
+        <!-- Error State -->
+        <div *ngIf="errorMessage && !isVerifying" class="backend-error-message">
+            <i class="pi pi-exclamation-triangle" style="font-size: 1.5rem; margin-right: 10px;"></i>
+            <span>{{ errorMessage }}</span>
+        </div>
+
+        <div class="links">
+            <a routerLink="/auth">Back to Login</a>
+        </div>
+        <div class="footer">
+            © {{ yearNow }} Promatech LLC. All rights reserved.
+        </div>
+    </div>
+</div>

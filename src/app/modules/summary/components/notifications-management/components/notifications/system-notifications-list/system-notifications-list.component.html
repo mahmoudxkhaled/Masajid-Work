@@ -1,0 +1,186 @@
+<div class="card">
+    <div class="flex justify-content-between align-items-center mb-4">
+        <h2>{{ 'notificationsManagement.notificationsList.systemTitle' | translate }}</h2>
+        <div class="flex gap-2">
+            <p-button [label]="'notificationsManagement.notificationsList.addSystemNotification' | translate"
+                icon="pi pi-plus" (onClick)="navigateToNew()" [disabled]="!!(isLoading$ | async)">
+            </p-button>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="grid mb-3">
+        <div class="col-12 md:col-5 mx-3">
+            <label class="block mb-2 font-medium">{{ 'notificationsManagement.notificationsList.textFilter' | translate
+                }}</label>
+            <div class="p-inputgroup w-full p-fluid">
+                <span class="p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input type="text" pInputText
+                        [placeholder]="'notificationsManagement.notificationsList.searchPlaceholder' | translate"
+                        [(ngModel)]="textFilter" (input)="onSearchInput($event)" class="w-full" />
+                </span>
+                <button *ngIf="textFilter" pButton pRipple type="button" icon="pi pi-times"
+                    class="p-button-rounded p-button-text p-button-plain" (click)="clearSearch()"
+                    [pTooltip]="'notificationsManagement.notificationsList.clearSearch' | translate">
+                </button>
+            </div>
+        </div>
+
+        <div class="col-12 md:col-3 p-fluid">
+            <label class="block mb-2 font-medium">{{ 'notificationsManagement.notificationsList.typeFilter' | translate
+                }}</label>
+            <p-multiSelect [options]="notificationTypes" [(ngModel)]="selectedTypeIds" optionLabel="title"
+                optionValue="type_ID"
+                [placeholder]="'notificationsManagement.notificationsList.selectTypes' | translate"
+                (onChange)="onFilterChange()" [showClear]="false" [showToggleAll]="false">
+            </p-multiSelect>
+        </div>
+        <div class="col-12 md:col-3 p-fluid">
+            <label class="block mb-2 font-medium">{{ 'notificationsManagement.notificationsList.categoryFilter' |
+                translate }}</label>
+            <p-multiSelect [options]="notificationCategories" [(ngModel)]="selectedCategoryIds" optionLabel="Title"
+                optionValue="Category_ID"
+                [placeholder]="'notificationsManagement.notificationsList.selectCategories' | translate"
+                (onChange)="onFilterChange()" [showClear]="false" [showToggleAll]="false">
+            </p-multiSelect>
+        </div>
+    </div>
+
+    <div #notificationsTableContainer style="position: relative;">
+        <p-table #notificationsTable [value]="tableValue" [paginator]="true" [first]="first" [rows]="rows"
+            [rowsPerPageOptions]="[10, 25, 50, 100]" [showCurrentPageReport]="true" responsiveLayout="scroll"
+            [lazy]="false" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+            (onLazyLoad)="onPageChange($event)" [sortMode]="'single'" [sortField]="sortField" [sortOrder]="sortOrder"
+            (onSort)="onSort($event)">
+
+            <ng-template pTemplate="header">
+                <tr>
+                    <th pSortableColumn="id">
+                        {{ 'notificationsManagement.notificationsList.tableId' | translate }} <p-sortIcon
+                            field="id"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="title" style="width: 200px;">
+                        {{ 'notificationsManagement.notificationsList.tableTitle' | translate }} <p-sortIcon
+                            field="title"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="message" style="width: 300px;">
+                        {{ 'notificationsManagement.notificationsList.tableMessage' | translate }} <p-sortIcon
+                            field="message"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="createdAt" style="width: 180px;">
+                        {{ 'notificationsManagement.notificationsList.tableCreatedAt' | translate }} <p-sortIcon
+                            field="createdAt"></p-sortIcon>
+                    </th>
+                    <th style="text-align: center;">{{ 'notificationsManagement.notificationsList.send' | translate }}
+                    </th>
+                    <th style="width: 150px; text-align: start !important;">{{
+                        'notificationsManagement.notificationsList.actions' | translate }}</th>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-notification>
+                <tr>
+                    <td>
+                        <ng-container *ngIf="tableLoadingSpinner; else normalId">
+                            <p-skeleton height="1.5rem" width="4rem" borderRadius="4px"></p-skeleton>
+                        </ng-container>
+                        <ng-template #normalId>
+                            <p-tag [value]="'#' + notification.id" severity="info"></p-tag>
+                        </ng-template>
+                    </td>
+                    <td>
+                        <ng-container *ngIf="tableLoadingSpinner; else normalTitle">
+                            <p-skeleton height="1rem" width="10rem"></p-skeleton>
+                        </ng-container>
+                        <ng-template #normalTitle>
+                            <span class="font-semibold name-text" style="cursor: pointer;"
+                                (click)="viewDetails(notification)">
+                                {{ notification.title }}
+                            </span>
+                        </ng-template>
+                    </td>
+                    <td>
+                        <ng-container *ngIf="tableLoadingSpinner; else normalMessage">
+                            <p-skeleton height="3rem" width="100%" class="line-height-3"></p-skeleton>
+                        </ng-container>
+                        <ng-template #normalMessage>
+                            <span class="text-600 line-height-3 description-text">{{ notification.message }}</span>
+                        </ng-template>
+                    </td>
+                    <td>
+                        <ng-container *ngIf="tableLoadingSpinner; else normalCreatedAt">
+                            <p-skeleton height="1rem" width="5rem"></p-skeleton>
+                        </ng-container>
+                        <ng-template #normalCreatedAt>
+                            <span>{{ notification.createdAt | date: 'short' }}</span>
+                        </ng-template>
+                    </td>
+                    <td style="text-align: center;">
+                        <ng-container *ngIf="tableLoadingSpinner; else normalSend">
+                            <p-skeleton height="2rem" width="2.5rem" borderRadius="4px"></p-skeleton>
+                        </ng-container>
+                        <ng-template #normalSend>
+                            <p-button *ngIf="canSendNotification()" icon="pi pi-send"
+                                class="p-button-sm p-button-outlined" (onClick)="sendNotification(notification)"
+                                [disabled]="!!(isLoading$ | async)">
+                            </p-button>
+                        </ng-template>
+                    </td>
+                    <td class="text-start">
+                        <ng-container *ngIf="tableLoadingSpinner; else normalActions">
+                            <p-skeleton height="2rem" width="2rem" borderRadius="50%"></p-skeleton>
+                        </ng-container>
+                        <ng-template #normalActions>
+                            <button pButton pRipple type="button" icon="pi pi-ellipsis-v"
+                                class="p-button-rounded p-button-text p-button-plain"
+                                (click)="openMenu(rowMenu, notification, $event)"
+                                [disabled]="!canManageNotification() && !canSendNotification()">
+                            </button>
+                            <p-menu #rowMenu [model]="menuItems" [popup]="true" [appendTo]="'body'"></p-menu>
+                        </ng-template>
+                    </td>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="6" class="text-center">{{ 'notificationsManagement.notificationsList.noNotifications' |
+                        translate }}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>
+
+<!-- Edit Notification Dialog (notification-form) -->
+<app-notification-form [(visible)]="formDialogVisible" [notificationId]="formNotificationId"
+    [isSystemNotification]="true" (saved)="onFormSaved()">
+</app-notification-form>
+
+<!-- Delete Confirmation Dialog -->
+<p-dialog [(visible)]="deleteNotificationDialog" [modal]="true" [style]="{ width: '450px' }" [closable]="true"
+    [draggable]="false" [resizable]="false">
+    <ng-template pTemplate="header">
+        <h3>{{ 'notificationsManagement.notificationsList.deleteDialogTitle' | translate }}</h3>
+    </ng-template>
+
+    <div>
+        <p>{{ 'notificationsManagement.notificationsList.deleteDialogMessage' | translate: { title:
+            currentNotificationForDelete?.title } }}
+        </p>
+        <p class="text-red-500 mt-2">{{ 'notificationsManagement.notificationsList.deleteDialogCannotUndo' | translate
+            }}</p>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <p-button [label]="'notificationsManagement.notificationsList.cancel' | translate" icon="pi pi-times"
+            class="p-button-secondary" (onClick)="deleteNotificationDialog = false">
+        </p-button>
+        <p-button [label]="'notificationsManagement.notificationsList.delete' | translate" icon="pi pi-trash"
+            class="p-button-danger" (onClick)="deleteNotification()" [loading]="!!(isLoading$ | async)">
+        </p-button>
+    </ng-template>
+</p-dialog>
+
+<p-toast></p-toast>

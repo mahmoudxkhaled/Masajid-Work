@@ -1,0 +1,131 @@
+<ng-container *ngIf="!entitySettingsReady; else entitySettingsContent">
+    <div class="p-4">
+        <p-skeleton height="12rem" class="mb-4" borderRadius="6px"></p-skeleton>
+        <div class="field p-fluid mb-4">
+            <label class="block text-sm font-medium mb-2">
+                {{ 'entityAccounts.list.addAccountDialog.entity' | translate }}
+            </label>
+            <div class="flex gap-2">
+                <p-skeleton height="2.5rem" width="100%" borderRadius="6px"></p-skeleton>
+                <p-skeleton height="2.5rem" width="2.5rem" borderRadius="6px"></p-skeleton>
+            </div>
+        </div>
+        <p-skeleton height="12rem" borderRadius="6px"></p-skeleton>
+    </div>
+</ng-container>
+<ng-template #entitySettingsContent>
+    <div class="p-4">
+        <app-settings-section
+            *ngIf="canManageDefault"
+            layer="defaultEntity"
+            titleKey="settings.sections.defaultEntity.title"
+            [ownerId]="selectedEntityId"
+            [syncToEngine]="syncSelectedToRuntimeEngine"
+            [showRemove]="true"
+            [preloadedData]="defaultEntityData"
+            (reloadParentTab)="reloadEntityTab()"
+        ></app-settings-section>
+
+        <div class="field p-fluid mb-4">
+            <label for="entitySettingsSelector" class="block text-sm font-medium mb-2">
+                {{ 'entityAccounts.list.addAccountDialog.entity' | translate }}
+            </label>
+            <div class="flex gap-2 cursor-pointer" (click)="!loading && openEntityDialog()">
+                <input
+                    id="entitySettingsSelector"
+                    pInputText
+                    type="text"
+                    [value]="getEntitySelectorDisplayText()"
+                    readonly
+                    [placeholder]="'entityAccounts.list.addAccountDialog.selectEntity' | translate"
+                    class="w-full"
+                    style="cursor: pointer;"
+                />
+                <p-button icon="pi pi-search" [disabled]="loading" styleClass="cursor-pointer"></p-button>
+            </div>
+        </div>
+
+        <app-settings-section
+            layer="entity"
+            titleKey="settings.sections.entityCustom.title"
+            [ownerId]="selectedEntityId"
+            [syncToEngine]="syncSelectedToRuntimeEngine"
+            [headerContext]="entityDisplayName"
+            [showRemove]="true"
+            [allowCustomKey]="false"
+            [inheritedDefaults]="defaultEntityData"
+            [preloadedData]="entityCustomData"
+            (reloadParentTab)="reloadEntityTab()"
+        ></app-settings-section>
+    </div>
+</ng-template>
+
+<p-dialog [(visible)]="entityDialogVisible" [modal]="true" [style]="{ width: '800px' }" [closable]="true"
+    [draggable]="false" [resizable]="false" (onHide)="closeEntityDialog()">
+    <ng-template pTemplate="header">
+        <h3>{{ 'entityAccounts.list.addAccountDialog.selectEntity' | translate }}</h3>
+    </ng-template>
+
+    <div class="flex flex-column gap-3">
+        <span class="p-input-icon-left w-full">
+            <i class="pi pi-search"></i>
+            <input pInputText type="text" [placeholder]="'entityRoles.form.entityDialog.searchPlaceholder' | translate"
+                class="w-full" [value]="entityTableTextFilter" (input)="onEntityTableSearchInput($event)" />
+        </span>
+
+        <div style="position: relative; min-height: 400px;">
+            <p-table
+                [value]="entityTableValue"
+                [paginator]="true"
+                [first]="entityTableFirst"
+                [rows]="entityTableRows"
+                [rowsPerPageOptions]="[10, 25, 50, 100]"
+                [totalRecords]="entityTableTotalRecords"
+                [showCurrentPageReport]="true"
+                [lazy]="true"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                (onLazyLoad)="onEntityTablePageChange($event)"
+                styleClass="p-datatable-sm"
+            >
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 150px;">{{ 'entityRoles.form.entityDialog.code' | translate }}</th>
+                        <th>{{ 'entityRoles.form.entityDialog.name' | translate }}</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-entity>
+                    <tr [class.selected-row]="isPendingEntitySelected(entity)" (click)="selectPendingEntity(entity)" style="cursor: pointer;">
+                        <td>
+                            <ng-container *ngIf="loadingEntitiesTable; else entityCodeContent">
+                                <p-skeleton height="1.25rem" width="5rem"></p-skeleton>
+                            </ng-container>
+                            <ng-template #entityCodeContent>
+                                <span class="font-semibold">{{ entity.code }}</span>
+                            </ng-template>
+                        </td>
+                        <td>
+                            <ng-container *ngIf="loadingEntitiesTable; else entityNameContent">
+                                <p-skeleton height="1.25rem" width="12rem"></p-skeleton>
+                            </ng-container>
+                            <ng-template #entityNameContent>
+                                <span class="font-semibold">{{ entity.name }}</span>
+                            </ng-template>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="2" class="text-center p-4">{{ 'entityRoles.form.entityDialog.noEntities' | translate }}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <p-button [label]="'common.cancel' | translate" icon="pi pi-times" class="p-button-text"
+            (onClick)="closeEntityDialog()"></p-button>
+        <p-button [label]="'common.select' | translate" icon="pi pi-check" (onClick)="confirmEntitySelection()"
+            [disabled]="!pendingSelectedEntity"></p-button>
+    </ng-template>
+</p-dialog>

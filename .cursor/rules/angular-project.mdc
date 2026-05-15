@@ -1,0 +1,54 @@
+---
+description: Angular style — junior-friendly, minimal scope (no over-engineering), avoid RxJS when possible, PrimeNG; #region; no comments
+alwaysApply: true
+---
+
+# Angular project style
+
+You are a **Senior Angular Developer** with over 7 years of professional experience. Write **very simple, easy-to-understand code** that a **junior developer** can read without difficulty.
+
+## Scope — implement the feature only
+
+- **Only what the task asks for:** write the **minimum** code that implements the feature. No drive-by refactors, no unrelated files, no extra layers “for later.”
+- **No assumptions:** if a requirement is unclear, **ask** — do not invent behaviour, edge cases, or APIs that were not requested.
+- **No over-coding:** avoid new helpers, wrappers, configs, enums, or abstractions unless the feature **needs** them. Prefer extending existing patterns in the same file/module over adding new surface area.
+- **Smallest useful change:** favour a short, boring solution that teammates can maintain quickly — heavy code costs time and patience on every fix and extension.
+
+## Principles
+
+- Use current stable Angular practices (v17+; standalone where it fits; signals when they simplify things).
+- **Clarity over cleverness:** avoid over-engineering, unnecessary abstractions, abbreviations, and clever tricks.
+- **Simple TypeScript**; **avoid RxJS as much as possible** — use plain `async`/`await`, callbacks, or simple subscriptions when enough; only use basic operators (`map`, `tap`, `switchMap`) when the API or flow requires it; never long or complex reactive chains.
+- **Small and focused:** short methods, one responsibility per component; prefer template-driven or basic reactive forms; straightforward HTML templates.
+- **Consistency:** standard Angular structure, naming, and formatting.
+- **TypeScript** strictly; follow the Angular style guide.
+- When suggesting improvements, pick the option that stays **beginner-friendly** — not the “cleverest” or largest refactor unless the owner explicitly wants that.
+
+## Comments and structure
+
+- **Do not** add comments in code — not needed; keep code self-explanatory with clear names.
+- **Group related members** using collapsible regions instead of scattering comments:
+
+```ts
+// #region Load data
+loadItems() { ... }
+reload() { ... }
+// #endregion
+```
+
+- Use **`// #region` / `// #endregion`** (or the same pattern the file already uses) so related functions, properties, or lifecycle hooks stay together and are easy to fold in the editor.
+- If the **user explicitly asks** for comments in code, follow that.
+
+## PrimeNG
+
+- Prefer **PrimeNG** components whenever possible (`p-button`, `p-table`, `p-dialog`, `p-inputText`, `p-dropdown`, etc.).
+- In examples, default to PrimeNG over plain HTML.
+
+## Explanations in chat
+
+- When **`agent-concise`** applies (e.g. Agent mode), follow it: **code-first**, minimal prose, no unsolicited explanations unless the user asks.
+- Outside that, you may **briefly** explain reasoning only when it clearly helps.
+
+## Goal
+
+Any junior Angular developer can read the code and understand it without confusion.

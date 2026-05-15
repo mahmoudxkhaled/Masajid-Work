@@ -1,0 +1,346 @@
+.erp-profile-canvas {
+    min-height: 100vh;
+    padding: 3rem !important;
+    font-family: 'Inter', sans-serif;
+
+    .identity-banner {
+        background: linear-gradient(to right, var(--surface-card), var(--surface-50));
+        border-left: 6px solid var(--primary-color);
+    }
+
+    .avatar-container {
+        width: 150px;
+        height: 150px;
+
+        &:has(.avatar-loading) {
+            height: auto;
+            min-height: 150px;
+        }
+    }
+
+    .avatar-with-status {
+        position: relative;
+        width: 150px;
+        height: 150px;
+    }
+
+    .avatar-with-status .status-ring {
+        position: absolute;
+        bottom: 8px;
+        right: 8px;
+    }
+
+    .avatar-loading {
+        width: 150px;
+        min-height: 150px;
+        height: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 0.5rem;
+        padding-bottom: 0.125rem;
+    }
+
+    .avatar-skeleton-circle {
+        width: 150px;
+        height: 150px;
+        flex-shrink: 0;
+        border-radius: 50%;
+        overflow: hidden;
+
+        ::ng-deep .p-skeleton {
+            width: 150px !important;
+            height: 150px !important;
+            border-radius: 50% !important;
+        }
+    }
+
+    .avatar-loading-text {
+        font-size: 0.75rem;
+        color: var(--text-color-secondary);
+        font-weight: 500;
+    }
+
+    .status-ring {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        border: 4px solid #fff;
+    }
+
+    .profile-picture-wrapper {
+        position: relative;
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        overflow: visible;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        cursor: pointer;
+        transition: transform 0.3s ease;
+
+        &:hover {
+            transform: scale(1.05);
+        }
+
+        .profile-picture-inner {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--surface-200, #e8e8e8);
+
+            img {
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+            }
+        }
+
+        .picture-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            border-radius: 50%;
+            backdrop-filter: blur(4px);
+            overflow: visible;
+        }
+
+        &:hover .picture-overlay {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .picture-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            align-items: center;
+            padding: 0 0.5rem;
+
+            ::ng-deep button,
+            ::ng-deep .p-button {
+                pointer-events: auto;
+            }
+        }
+
+        .picture-recommended-size {
+            font-size: 0.75rem;
+        }
+
+        .picture-actions-row {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            align-items: center;
+        }
+
+        ::ng-deep .picture-upload-button.p-button {
+            background: transparent;
+            color: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            border-radius: 8px;
+            padding: 0.5rem 0.75rem;
+            font-weight: 500;
+            transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+
+            &:hover {
+                background: rgba(255, 255, 255, 0.15);
+                border-color: rgba(255, 255, 255, 0.95);
+                color: #fff;
+                transform: translateY(-1px);
+            }
+        }
+
+        .picture-remove-button.p-button {
+            background: rgba(220, 53, 69, 0.85);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            padding: 0.5rem 0.75rem;
+            font-weight: 500;
+            transition: background 0.2s ease, transform 0.15s ease;
+
+            &:hover:not(:disabled) {
+                background: rgba(220, 53, 69, 1);
+                transform: translateY(-1px);
+            }
+
+            &:disabled {
+                opacity: 0.6;
+            }
+        }
+
+        .picture-loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            z-index: 10;
+        }
+
+        .picture-upload-indicator {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .picture-upload-text {
+            color: rgba(255, 255, 255, 0.95);
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+    }
+
+    .crop-area {
+        width: 200px;
+        height: 200px;
+        margin: 0 auto;
+        cursor: grab;
+        user-select: none;
+
+        &:active {
+            cursor: grabbing;
+        }
+    }
+
+    .crop-circle {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        overflow: hidden;
+        position: relative;
+        background-color: var(--surface-200, #e8e8e8);
+        border: 2px solid black;
+
+        img {
+            position: absolute;
+            display: block;
+            pointer-events: none;
+        }
+    }
+
+    .surface-card {
+        border: 1px solid #e2e8f0; // Clean, thin borders
+        transition: box-shadow 0.2s;
+        
+        &:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
+        }
+    }
+
+    label {
+        letter-spacing: 0.025em;
+    }
+
+    .surface-ground {
+        background-color: #f1f5f9 !important;
+    }
+
+    .edit-profile-btn {
+        .p-button-label {
+            color: #ffffff !important;
+        }
+    }
+
+    .profile-accounts-table-wrapper {
+        border: 1px solid var(--surface-border);
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        background: var(--surface-ground);
+    }
+
+    ::ng-deep .profile-accounts-table {
+        .p-datatable-thead > tr > th {
+            background: var(--surface-100);
+            color: var(--text-color);
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 0.875rem 1rem;
+            border-bottom: 1px solid var(--surface-border);
+        }
+        .p-datatable-tbody > tr > td {
+            padding: 0.875rem 1rem;
+            border-bottom: 1px solid var(--surface-border);
+            vertical-align: middle;
+        }
+        .p-datatable-tbody > tr:last-child > td {
+            border-bottom: none;
+        }
+        .p-datatable-tbody > tr:hover {
+            background: var(--surface-50);
+        }
+        .col-account-id {
+            width: 7rem;
+            min-width: 6rem;
+        }
+        .col-entity {
+            min-width: 10rem;
+        }
+        .col-actions {
+            width: 5rem;
+            min-width: 5rem;
+            text-align: center;
+        }
+    }
+}
+
+.account-details-content {
+    padding: 0.25rem 0;
+}
+
+.account-details-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--surface-border);
+
+    &:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+    &:first-child {
+        padding-top: 0;
+    }
+}
+
+.account-details-label {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-color-secondary);
+}
+
+.account-details-value {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--text-color);
+    word-break: break-word;
+}

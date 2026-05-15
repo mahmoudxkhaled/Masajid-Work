@@ -1,0 +1,43 @@
+<div class="overflow-hidden m-0 relative h-screen bg-cover bg-center" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+    <div class="text-center text-5xl pt-5 font-bold text-white">
+        <div class="inline-block py-1 px-2 text-white surface-900">
+            <span>Coming</span>
+        </div>
+        <span class="text-color">Soon</span>
+    </div>
+    
+    <div class="w-full absolute bottom-0 text-center surface-900 h-14rem">
+        <div class="w-full absolute text-center z-1" style="top: -36px">
+            <i class="pi pi-clock text-6xl text-white"></i>
+        </div>
+        
+        <div class="w-29rem relative text-white" style="margin-left: -200px; left: 50%; top: 30px;">
+            <div class="p-3">
+                <h3 class="m-0 mb-2 text-white">We're Working on Something Amazing!</h3>
+                <p class="m-0 mb-3">This feature is currently under development and will be available soon.</p>
+                <p class="m-0 text-sm opacity-80">Stay tuned for updates!</p>
+            </div>
+            
+            <div class="flex gap-2 justify-content-center">
+                <button pButton pRipple type="button" [routerLink]="['/']" 
+                        label="Go To Dashboard" 
+                        icon="pi pi-home" 
+                        class="p-button-outlined"></button>
+                <button pButton pRipple type="button" 
+                        label="Contact Support" 
+                        icon="pi pi-envelope" 
+                        class="p-button-outlined"></button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Animated background elements -->
+    <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+        <div class="floating-element" style="top: 20%; left: 10%; animation-delay: 0s;"></div>
+        <div class="floating-element" style="top: 60%; left: 80%; animation-delay: 2s;"></div>
+        <div class="floating-element" style="top: 40%; left: 70%; animation-delay: 4s;"></div>
+        <div class="floating-element" style="top: 80%; left: 20%; animation-delay: 1s;"></div>
+    </div>
+</div>
+
+

@@ -1,0 +1,281 @@
+<div class="p-4 card">
+    <p-toast></p-toast>
+
+    <!-- Page Header -->
+    <div class="flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="text-3xl font-bold mb-2">{{ 'dashboard.profile' | translate }}{{ 'profile.edit.titleSuffix' |
+                translate }}</h1>
+            <p class="text-gray-600 m-0">{{ 'profile.description' | translate }}</p>
+        </div>
+        <p-button [label]="'profile.edit.backToOverview' | translate" icon="pi pi-arrow-left"
+            (onClick)="navigateBack()"></p-button>
+    </div>
+
+    <!-- Profile Form -->
+    <form [formGroup]="profileForm" (ngSubmit)="saveProfileInfo()" *ngIf="profileForm">
+        <div class="grid mt-4">
+
+            <!-- Personal Information Panel -->
+            <div class="col-12">
+                <p-panel [header]="'profile.personalInfo' | translate" class="h-full">
+                    <div class="grid">
+                        <!-- Prefix -->
+                        <div class="col-12 md:col-6">
+                            <div class="field">
+                                <label class="block text-sm font-medium mb-2">
+                                    <i class="pi pi-user mr-2 text-blue-500"></i>
+                                    {{ 'profile.fields.prefix' | translate }}
+                                </label>
+                                <input pInputText formControlName="Prefix"
+                                    [placeholder]="'profile.placeholders.prefix' | translate" class="w-full"
+                                    [ngClass]="{'ng-invalid ng-dirty': profileForm.get('Prefix')?.invalid && profileForm.get('Prefix')?.touched}">
+                                <small class="p-error block mt-1"
+                                    *ngIf="profileForm.get('Prefix')?.invalid && profileForm.get('Prefix')?.touched">
+                                    {{ getPrefixError() }}
+                                </small>
+                            </div>
+                        </div>
+
+                        <!-- First Name -->
+                        <div class="col-12 md:col-6">
+                            <div class="field">
+                                <label class="block text-sm font-medium mb-2">
+                                    <i class="pi pi-user mr-2 text-blue-500"></i>
+                                    {{ 'profile.fields.firstName' | translate }}
+                                    <span class="text-red-500">*</span>
+                                </label>
+                                <input pInputText formControlName="First_Name"
+                                    [placeholder]="'profile.placeholders.firstName' | translate" class="w-full"
+                                    [ngClass]="{'ng-invalid ng-dirty': profileForm.get('First_Name')?.invalid && profileForm.get('First_Name')?.touched}">
+                                <small class="p-error block mt-1"
+                                    *ngIf="profileForm.get('First_Name')?.invalid && profileForm.get('First_Name')?.touched">
+                                    {{ getFirstNameError() }}
+                                </small>
+                            </div>
+                        </div>
+
+                        <!-- Middle Name -->
+                        <div class="col-12 md:col-6">
+                            <div class="field">
+                                <label class="block text-sm font-medium mb-2">
+                                    <i class="pi pi-user mr-2 text-blue-500"></i>
+                                    {{ 'profile.fields.middleName' | translate }}
+                                </label>
+                                <input pInputText formControlName="Middle_Name"
+                                    [placeholder]="'profile.placeholders.middleName' | translate" class="w-full"
+                                    [ngClass]="{'ng-invalid ng-dirty': profileForm.get('Middle_Name')?.invalid && profileForm.get('Middle_Name')?.touched}">
+                                <small class="p-error block mt-1"
+                                    *ngIf="profileForm.get('Middle_Name')?.invalid && profileForm.get('Middle_Name')?.touched">
+                                    {{ getMiddleNameError() }}
+                                </small>
+                            </div>
+                        </div>
+
+                        <!-- Last Name -->
+                        <div class="col-12 md:col-6">
+                            <div class="field">
+                                <label class="block text-sm font-medium mb-2">
+                                    <i class="pi pi-user mr-2 text-blue-500"></i>
+                                    {{ 'profile.fields.lastName' | translate }}
+                                    <span class="text-red-500">*</span>
+                                </label>
+                                <input pInputText formControlName="Last_Name"
+                                    [placeholder]="'profile.placeholders.lastName' | translate" class="w-full"
+                                    [ngClass]="{'ng-invalid ng-dirty': profileForm.get('Last_Name')?.invalid && profileForm.get('Last_Name')?.touched}">
+                                <small class="p-error block mt-1"
+                                    *ngIf="profileForm.get('Last_Name')?.invalid && profileForm.get('Last_Name')?.touched">
+                                    {{ getLastNameError() }}
+                                </small>
+                            </div>
+                        </div>
+
+                        <!-- Gender -->
+                        <div class="col-12 md:col-6">
+                            <div class="field">
+                                <label class="block text-sm font-medium mb-2">
+                                    <i class="pi pi-users mr-2 text-blue-500"></i>
+                                    {{ 'profile.fields.gender' | translate }}
+                                </label>
+                                <p-dropdown [options]="genderOptions" formControlName="Gender" optionLabel="label"
+                                    optionValue="value" [placeholder]="'profile.placeholders.selectGender' | translate"
+                                    class="w-full"
+                                    [ngClass]="{'ng-invalid ng-dirty': profileForm.get('Gender')?.invalid && profileForm.get('Gender')?.touched}">
+                                </p-dropdown>
+                                <small class="p-error block mt-1"
+                                    *ngIf="profileForm.get('Gender')?.invalid && profileForm.get('Gender')?.touched">
+                                    {{ 'profile.edit.genderRequired' | translate }}
+                                </small>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="flex justify-content-end gap-3 my-1">
+                                <p-button (onClick)="saveProfileInfo()" [disabled]="saving || !!(isLoading$ | async)">
+                                    <ng-container *ngIf="saving || (isLoading$ | async)">
+                                        <span class="indicator-progress" [style.display]="'block'">
+                                            {{ 'profile.edit.pleaseWait' | translate }}
+                                            <i class="pi pi-spin pi-spinner" style="font-size: 1rem"></i>
+                                        </span>
+                                    </ng-container>
+                                    <ng-container *ngIf="(isLoading$ | async) === false && !saving">
+                                        <span>{{ 'profile.actions.save' | translate }}</span>
+                                    </ng-container>
+                                </p-button>
+                            </div>
+                        </div>
+                    </div>
+                </p-panel>
+            </div>
+
+            <!-- Contact Information Panel -->
+            <div class="col-12 mt-4">
+                <p-panel [header]="'profile.edit.contactInformation' | translate" class="h-full">
+                    <div *ngIf="loadingContactInfo" class="flex justify-content-center align-items-center p-4">
+                        <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+                    </div>
+                    <form [formGroup]="contactInfoForm" (ngSubmit)="saveContactInfo()"
+                        *ngIf="!loadingContactInfo && contactInfoForm">
+                        <div class="grid">
+                            <!-- Address -->
+                            <div class="col-12">
+                                <div class="field">
+                                    <label class="block text-sm font-medium mb-2">
+                                        <i class="pi pi-map-marker mr-2 text-blue-500"></i>
+                                        {{ 'profile.edit.address' | translate }}
+                                    </label>
+                                    <textarea pInputTextarea formControlName="address" rows="3"
+                                        [placeholder]="'profile.edit.enterAddress' | translate" class="w-full"
+                                        [ngClass]="{'ng-invalid ng-dirty': contactInfoForm.get('address')?.invalid && contactInfoForm.get('address')?.touched}"></textarea>
+                                    <small class="p-error block mt-1"
+                                        *ngIf="contactInfoForm.get('address')?.invalid && contactInfoForm.get('address')?.touched">
+                                        {{ getAddressError() }}
+                                    </small>
+                                </div>
+                            </div>
+
+                            <!-- Phone Numbers -->
+                            <div class="col-12">
+                                <div class="flex justify-content-between align-items-center mb-2">
+                                    <label class="block text-sm font-medium">
+                                        {{ 'profile.edit.phoneNumbers' | translate }} <span
+                                            class="text-red-500">*</span>
+                                    </label>
+                                    <p-button [label]="'profile.edit.addPhone' | translate" icon="pi pi-plus"
+                                        size="small" (onClick)="addPhoneNumber()" type="button"></p-button>
+                                </div>
+                                <div formArrayName="phoneNumbers" class="flex flex-column gap-2">
+                                    <div *ngFor="let phoneGroup of phoneNumbersFormArray.controls; let i = index"
+                                        [formGroupName]="i" class="flex flex-column gap-1">
+                                        <div class="flex align-items-center gap-2">
+                                            <input type="text" pInputText formControlName="number"
+                                                [placeholder]="'profile.edit.enterPhoneNumber' | translate"
+                                                class="flex-1"
+                                                [ngClass]="{'ng-invalid ng-dirty': phoneGroup.get('number')?.invalid && phoneGroup.get('number')?.touched}" />
+                                            <button pButton pRipple type="button" icon="pi pi-times"
+                                                class="p-button-rounded p-button-danger p-button-text"
+                                                (click)="removePhoneNumber(i)" *ngIf="phoneNumbersFormArray.length > 1">
+                                            </button>
+                                        </div>
+                                        <small class="p-error block mt-1"
+                                            *ngIf="phoneGroup.get('number')?.invalid && phoneGroup.get('number')?.touched">
+                                            {{ getPhoneNumberError(i) }}
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Social Media Links -->
+                            <div class="col-12 md:col-6">
+                                <div class="field">
+                                    <label class="block text-sm font-medium mb-2">
+                                        <i class="pi pi-linkedin mr-2 text-blue-500"></i>
+                                        {{ 'profile.edit.linkedinPage' | translate }}
+                                    </label>
+                                    <input type="url" pInputText formControlName="linkedinPage"
+                                        [placeholder]="'profile.edit.linkedinPlaceholder' | translate"
+                                        class="w-full social-input"
+                                        [ngClass]="{'ng-invalid ng-dirty': contactInfoForm.get('linkedinPage')?.invalid && contactInfoForm.get('linkedinPage')?.touched}">
+                                    <small class="p-error block mt-1"
+                                        *ngIf="contactInfoForm.get('linkedinPage')?.invalid && contactInfoForm.get('linkedinPage')?.touched">
+                                        {{ 'profile.edit.invalidUrl' | translate }}
+                                    </small>
+                                </div>
+                            </div>
+
+                            <div class="col-12 md:col-6">
+                                <div class="field">
+                                    <label class="block text-sm font-medium mb-2">
+                                        <i class="pi pi-facebook mr-2 text-blue-500"></i>
+                                        {{ 'profile.edit.facebookPage' | translate }}
+                                    </label>
+                                    <input type="url" pInputText formControlName="facebookPage"
+                                        [placeholder]="'profile.edit.facebookPlaceholder' | translate"
+                                        class="w-full social-input"
+                                        [ngClass]="{'ng-invalid ng-dirty': contactInfoForm.get('facebookPage')?.invalid && contactInfoForm.get('facebookPage')?.touched}">
+                                    <small class="p-error block mt-1"
+                                        *ngIf="contactInfoForm.get('facebookPage')?.invalid && contactInfoForm.get('facebookPage')?.touched">
+                                        {{ 'profile.edit.invalidUrl' | translate }}
+                                    </small>
+                                </div>
+                            </div>
+
+                            <div class="col-12 md:col-6">
+                                <div class="field">
+                                    <label class="block text-sm font-medium mb-2">
+                                        <i class="pi pi-instagram mr-2 text-blue-500"></i>
+                                        {{ 'profile.edit.instagramPage' | translate }}
+                                    </label>
+                                    <input type="url" pInputText formControlName="instagramPage"
+                                        [placeholder]="'profile.edit.instagramPlaceholder' | translate"
+                                        class="w-full social-input"
+                                        [ngClass]="{'ng-invalid ng-dirty': contactInfoForm.get('instagramPage')?.invalid && contactInfoForm.get('instagramPage')?.touched}">
+                                    <small class="p-error block mt-1"
+                                        *ngIf="contactInfoForm.get('instagramPage')?.invalid && contactInfoForm.get('instagramPage')?.touched">
+                                        {{ 'profile.edit.invalidUrl' | translate }}
+                                    </small>
+                                </div>
+                            </div>
+
+                            <div class="col-12 md:col-6">
+                                <div class="field">
+                                    <label class="block text-sm font-medium mb-2">
+                                        <i class="pi pi-twitter mr-2 text-blue-500"></i>
+                                        {{ 'profile.edit.twitterPage' | translate }}
+                                    </label>
+                                    <input type="url" pInputText formControlName="twitterPage"
+                                        [placeholder]="'profile.edit.twitterPlaceholder' | translate"
+                                        class="w-full social-input"
+                                        [ngClass]="{'ng-invalid ng-dirty': contactInfoForm.get('twitterPage')?.invalid && contactInfoForm.get('twitterPage')?.touched}">
+                                    <small class="p-error block mt-1"
+                                        *ngIf="contactInfoForm.get('twitterPage')?.invalid && contactInfoForm.get('twitterPage')?.touched">
+                                        {{ 'profile.edit.invalidUrl' | translate }}
+                                    </small>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="flex justify-content-end gap-3 my-1">
+                                    <p-button (onClick)="saveContactInfo()"
+                                        [disabled]="savingContactInfo || !!(isLoading$ | async)">
+                                        <ng-container *ngIf="savingContactInfo || (isLoading$ | async)">
+                                            <span class="indicator-progress" [style.display]="'block'">
+                                                {{ 'profile.edit.pleaseWait' | translate }}
+                                                <i class="pi pi-spin pi-spinner" style="font-size: 1rem"></i>
+                                            </span>
+                                        </ng-container>
+                                        <ng-container *ngIf="(isLoading$ | async) === false && !savingContactInfo">
+                                            <span>{{ 'profile.edit.saveContactInfo' | translate }}</span>
+                                        </ng-container>
+                                    </p-button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </p-panel>
+            </div>
+
+        </div>
+    </form>
+
+</div>

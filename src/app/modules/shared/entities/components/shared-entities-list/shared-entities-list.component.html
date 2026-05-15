@@ -1,0 +1,247 @@
+<div class="card">
+    <div class="flex justify-content-between align-items-center mb-4">
+        <h2>{{ 'entities.title' | translate }}</h2>
+        <p-button (onClick)="navigateToNew()" [disabled]="tableLoadingSpinner">
+            <ng-container *ngIf="tableLoadingSpinner">
+                <span class="indicator-progress flex align-items-center gap-2">
+                    {{ 'entities.list.pleaseWait' | translate }}
+                    <p-skeleton width="1rem" height="1rem" shape="circle"></p-skeleton>
+                </span>
+            </ng-container>
+            <ng-container *ngIf="!tableLoadingSpinner">
+                <span>{{ 'entities.list.addNewEntity' | translate }}</span>
+            </ng-container>
+        </p-button>
+    </div>
+
+    <div class=" " style="position: relative;">
+        <p-table #entitiesTable [value]="tableValue" [paginator]="true" [first]="first" [rows]="rows"
+            [rowsPerPageOptions]="[10, 25, 50, 100]" [totalRecords]="totalRecords" [showCurrentPageReport]="true"
+            responsiveLayout="scroll" [lazy]="true"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+            [globalFilterFields]="['code', 'name', 'description', 'parentEntityId']"
+            (onLazyLoad)="onPageChange($event)">
+
+            <ng-template pTemplate="caption">
+                <div class="flex justify-content-between align-items-center">
+                    <span class="p-input-icon-left">
+                        <i class="pi pi-search"></i>
+                        <input pInputText type="text" [placeholder]="'entities.list.searchPlaceholder' | translate"
+                            #searchInput (input)="onSearchInput($event)" />
+                    </span>
+                </div>
+            </ng-template>
+
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>{{ 'entities.list.table.id' | translate }}</th>
+                    <th style="width: 70px; text-align: center !important;">{{ 'entities.list.table.logo' | translate }}
+                    </th>
+                    <th style="width: 100px;">{{ 'entities.list.table.code' | translate }}</th>
+                    <th style="width: 200px;">{{ 'entities.list.table.name' | translate }}</th>
+                    <th style="width: 300px;">{{ 'entities.list.table.description' | translate }}</th>
+                    <th style=" text-align: center !important;">{{ 'entities.list.table.type' | translate }}</th>
+                    <th style=" text-align: center !important;">{{ 'entities.list.table.status' | translate }}</th>
+                    <th style="width: 150px; text-align: start !important;">{{ 'entities.list.table.actions' | translate
+                        }}</th>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-entity>
+                <tr>
+                    <td>
+                        <div>
+                            <ng-container *ngIf="tableLoadingSpinner; else normalId">
+                                <p-skeleton height="1.5rem" width="4rem" borderRadius="4px"></p-skeleton>
+                            </ng-container>
+                            <ng-template #normalId>
+                                <span class="cursor-pointer" (click)="viewDetails(entity)">
+                                    <p-tag [value]="'#' + entity.id" severity="info"></p-tag>
+                                </span>
+                            </ng-template>
+                        </div>
+                    </td>
+                    <td class="text-center">
+                        <ng-container *ngIf="tableLoadingSpinner; else normalLogo">
+                            <p-skeleton width="2rem" height="2rem" borderRadius="50%"></p-skeleton>
+                        </ng-container>
+                        <ng-template #normalLogo>
+                            <button type="button" class="entity-logo-btn" (click)="viewDetails(entity)"
+                                [disabled]="!entity?.id">
+                                <ng-container *ngIf="isEntityLogoLoading(entity); else logoContent">
+                                    <p-skeleton shape="circle" size="2rem" aria-hidden="true"></p-skeleton>
+                                </ng-container>
+                                <ng-template #logoContent>
+                                    <p-avatar *ngIf="getEntityLogoUrl(entity); else placeholderLogo"
+                                        [image]="getEntityLogoUrl(entity)!" shape="circle" size="large"
+                                        styleClass="entity-logo-avatar">
+                                    </p-avatar>
+                                    <ng-template #placeholderLogo>
+                                        <p-avatar icon="pi pi-building" shape="circle" size="large"
+                                            styleClass="entity-logo-avatar"></p-avatar>
+                                    </ng-template>
+                                </ng-template>
+                            </button>
+                        </ng-template>
+                    </td>
+                    <td>
+                        <div class="flex align-items-center gap-2">
+                            <ng-container *ngIf="tableLoadingSpinner; else normalCode">
+                                <p-skeleton height="1.5rem" width="6rem"></p-skeleton>
+                            </ng-container>
+                            <ng-template #normalCode>
+                                <span class="font-semibold text-lg code-text cursor-pointer"
+                                    (click)="viewDetails(entity)">
+                                    {{ entity.code }}
+                                </span>
+                            </ng-template>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="flex flex-column">
+                            <ng-container *ngIf="tableLoadingSpinner; else normalName">
+                                <p-skeleton height="1rem" width="10rem" class="mb-1"></p-skeleton>
+                                <p-skeleton height="0.875rem" width="8rem"></p-skeleton>
+                            </ng-container>
+                            <ng-template #normalName>
+                                <span style="cursor: pointer;" class="font-semibold name-text"
+                                    (click)="viewDetails(entity)">
+                                    {{ entity.name }}</span>
+                                <small class="text-500">{{ getParentLabel(entity) }}</small>
+                            </ng-template>
+                        </div>
+                    </td>
+                    <td>
+                        <ng-container *ngIf="tableLoadingSpinner; else normalDescription">
+                            <p-skeleton height="3rem" width="100%" class="line-height-3"></p-skeleton>
+                        </ng-container>
+                        <ng-template #normalDescription>
+                            <span class="text-600 line-height-3 description-text cursor-pointer"
+                                (click)="viewDetails(entity)">
+                                {{ entity.description || ('entities.list.noDescription' | translate) }}
+                            </span>
+                        </ng-template>
+                    </td>
+                    <td class="text-center">
+                        <ng-container *ngIf="tableLoadingSpinner; else normalType">
+                            <p-skeleton height="1.5rem" width="5rem" borderRadius="4px"></p-skeleton>
+                        </ng-container>
+                        <ng-template #normalType>
+                            <p-tag [value]="getTypeLabel(entity)" [severity]="getTypeSeverity(entity)"></p-tag>
+                        </ng-template>
+                    </td>
+
+                    <td class="text-center">
+                        <ng-container *ngIf="tableLoadingSpinner; else normalStatus">
+                            <p-skeleton height="1.5rem" width="3rem" borderRadius="30px"></p-skeleton>
+                        </ng-container>
+                        <ng-template #normalStatus>
+                            <p-inputSwitch [formControl]="activationControls[entity.id]"
+                                (onChange)="onStatusToggle(entity)">
+                            </p-inputSwitch>
+                        </ng-template>
+                    </td>
+                    <td class="text-start">
+                        <ng-container *ngIf="tableLoadingSpinner; else normalActions">
+                            <p-skeleton height="2rem" width="2rem" borderRadius="50%"></p-skeleton>
+                        </ng-container>
+                        <ng-template #normalActions>
+                            <button pButton pRipple type="button" icon="pi pi-ellipsis-v"
+                                class="p-button-rounded p-button-text p-button-plain"
+                                (click)="openMenu(rowMenu, entity, $event)" [disabled]="menuItems.length === 0">
+                            </button>
+                            <p-menu #rowMenu [model]="menuItems" [popup]="true" [appendTo]="'body'"></p-menu>
+                        </ng-template>
+                    </td>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="8" class="text-center">{{ 'entities.list.noEntities' | translate }}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>
+
+<p-toast></p-toast>
+
+<p-dialog [(visible)]="activationEntityDialog" [modal]="true" [style]="{ width: '500px' }" [closable]="true"
+    [draggable]="false" [resizable]="false" (onHide)="onCancelActivationDialog()">
+    <ng-template pTemplate="header">
+        <h3>{{ (currentEntityForActivation?.active ? 'entities.list.activationDialog.deactivateTitle' :
+            'entities.list.activationDialog.activateTitle') | translate }}</h3>
+    </ng-template>
+    <div class="flex flex-column gap-3">
+        <ng-container *ngIf="!currentEntityForActivation?.active">
+            <p>{{ 'entities.list.activationDialog.activateMessage' | translate: { name: currentEntityForActivation?.name
+                } }}</p>
+        </ng-container>
+
+        <ng-container *ngIf="currentEntityForActivation?.active">
+            <p>{{ 'entities.list.activationDialog.deactivateMessage' | translate: { name:
+                currentEntityForActivation?.name } }}</p>
+            <div class="p-3 border-round surface-border"
+                style="background: var(--red-50); border-left: 4px solid var(--red-500);">
+                <div class="flex align-items-start gap-2">
+                    <i class="pi pi-exclamation-triangle text-red-500 mt-1" style="font-size: 1.5rem;"></i>
+                    <div class="flex flex-column gap-2">
+                        <p class="text-red-700 font-semibold m-0" style="font-size: 1rem;">
+                            <strong>{{ 'entities.list.activationDialog.criticalWarning' | translate }}</strong>
+                        </p>
+                        <p class="text-red-600 m-0 line-height-3" style="font-size: 0.95rem;">
+                            {{ 'entities.list.activationDialog.criticalMessage' | translate }}
+                        </p>
+
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+    </div>
+    <ng-template pTemplate="footer">
+        <p-button [label]="'entities.list.activationDialog.cancel' | translate" icon="pi pi-times" class="p-button-text"
+            (onClick)="onCancelActivationDialog()" [disabled]="!!(isLoading$ | async)">
+        </p-button>
+        <p-button [severity]="currentEntityForActivation?.active ? 'danger' : 'success'"
+            (onClick)="activation(!currentEntityForActivation?.active)" [disabled]="!!(isLoading$ | async)">
+            <ng-container *ngIf="isLoading$ | async">
+                <span class="indicator-progress flex align-items-center gap-2">
+                    {{ 'entities.list.pleaseWait' | translate }}
+                    <p-skeleton width="1rem" height="1rem" shape="circle"></p-skeleton>
+                </span>
+            </ng-container>
+            <ng-container *ngIf="(isLoading$ | async) === false">
+                <span>{{ (currentEntityForActivation?.active ? 'entities.list.activationDialog.deactivate' :
+                    'entities.list.activationDialog.activate') | translate }}</span>
+            </ng-container>
+        </p-button>
+    </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="deleteEntityDialog" [modal]="true" [style]="{ width: '450px' }" [closable]="true"
+    [draggable]="false" [resizable]="false">
+    <ng-template pTemplate="header">
+        <h3>{{ 'entities.list.deleteDialog.title' | translate }}</h3>
+    </ng-template>
+    <div class="flex flex-column gap-3">
+        <p>{{ 'entities.list.deleteDialog.message' | translate: { name: currentEntityForDelete?.name } }}</p>
+        <p class="text-red-500 font-semibold">{{ 'entities.list.deleteDialog.cannotUndo' | translate }}</p>
+    </div>
+    <ng-template pTemplate="footer">
+        <p-button [label]="'entities.list.deleteDialog.cancel' | translate" icon="pi pi-times" class="p-button-text"
+            (onClick)="onCancelDeleteDialog()" [disabled]="!!(isLoading$ | async)">
+        </p-button>
+        <p-button class="p-button-danger" (onClick)="deleteEntity()" [disabled]="!!(isLoading$ | async)">
+            <ng-container *ngIf="isLoading$ | async">
+                <span class="indicator-progress flex align-items-center gap-2">
+                    {{ 'entities.list.pleaseWait' | translate }}
+                    <p-skeleton width="1rem" height="1rem" shape="circle"></p-skeleton>
+                </span>
+            </ng-container>
+            <ng-container *ngIf="(isLoading$ | async) === false">
+                <span>{{ 'entities.list.deleteDialog.delete' | translate }}</span>
+            </ng-container>
+        </p-button>
+    </ng-template>
+</p-dialog>

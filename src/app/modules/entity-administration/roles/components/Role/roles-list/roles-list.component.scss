@@ -1,0 +1,115 @@
+:host ::ng-deep {
+    .account-list-table {
+        .p-datatable-table {
+            table-layout: fixed;
+            width: 100%;
+        }
+
+        .p-datatable-thead > tr > th.account-list-th,
+        .p-datatable-tbody > tr > td.account-list-td {
+            overflow: hidden;
+            vertical-align: middle;
+        }
+
+        .p-datatable-tbody > tr.account-list-row-clickable {
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .p-datatable-tbody > tr.account-list-row-clickable:hover {
+            background-color: var(--surface-hover);
+        }
+
+        .account-list-th--id {
+            width: 6.5rem;
+            min-width: 6.5rem;
+            max-width: 6.5rem;
+        }
+
+        .roles-list-th--title {
+            width: 14rem;
+            min-width: 14rem;
+            max-width: 14rem;
+        }
+
+        .roles-list-th--description {
+            width: auto;
+            min-width: 0;
+        }
+
+        .roles-list-td--title {
+            width: 14rem;
+            min-width: 14rem;
+            max-width: 14rem;
+        }
+
+        .roles-list-td--description {
+            min-width: 0;
+            max-width: 100%;
+        }
+
+        .roles-list-cell-clip {
+            min-width: 0;
+            width: 100%;
+            max-width: 100%;
+            overflow: hidden;
+        }
+
+        .account-list-th--actions {
+            width: 5.5rem;
+            min-width: 5.5rem;
+            max-width: 6rem;
+        }
+
+        .account-list-ellipsis {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            min-width: 0;
+        }
+
+        .account-list-ellipsis--start {
+            display: block;
+            width: 100%;
+        }
+
+        .account-list-ellipsis--center {
+            display: inline-block;
+            max-width: 100%;
+            vertical-align: middle;
+        }
+
+        .account-list-skeleton-line {
+            width: 100%;
+            max-width: 100%;
+        }
+
+        .account-list-actions-skeleton {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            width: 2.5rem;
+            height: 2.5rem;
+            flex-shrink: 0;
+        }
+
+        td.account-list-td--actions {
+            min-width: 3rem;
+            white-space: nowrap;
+        }
+    }
+
+    .account-list-footer-primary-btn.p-button {
+        min-width: auto;
+        min-height: auto;
+    }
+
+    .account-list-footer-primary-inner {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        min-height: auto;
+        box-sizing: border-box;
+    }
+}

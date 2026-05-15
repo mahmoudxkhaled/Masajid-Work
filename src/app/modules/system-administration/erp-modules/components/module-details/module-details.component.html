@@ -1,0 +1,96 @@
+<div class="module-details-card">
+    <div class="details-header">
+        <div class="details-header-left">
+            <span class="details-icon" *ngIf="!moduleLogoUrl">
+                <i class="pi pi-cubes"></i>
+            </span>
+            <img *ngIf="moduleLogoUrl" [src]="moduleLogoUrl" alt="" class="details-logo" />
+            <h2 class="details-title">{{ 'systemAdministration.erpModules.moduleDetails.title' | translate }}</h2>
+        </div>
+        <div class="details-header-actions">
+            <!-- <p-button [label]="(dialogMode ? 'systemAdministration.erpModules.moduleDetails.actions.close' : 'systemAdministration.erpModules.moduleDetails.actions.backToList') | translate"
+                icon="pi pi-arrow-left" class="p-button-secondary p-button-outlined" (onClick)="navigateBack()" [disabled]="loading">
+            </p-button> -->
+            <p-button [label]="'systemAdministration.erpModules.moduleDetails.actions.editModule' | translate"
+                icon="pi pi-pencil" (onClick)="editModule()" [disabled]="loading">
+            </p-button>
+        </div>
+    </div>
+
+    <div *ngIf="loading" class="module-details-skeleton">
+        <div class="details-skeleton-panel">
+            <p-skeleton width="10rem" height="1.75rem" class="mb-4"></p-skeleton>
+            <div class="grid p-4">
+                <div class="col-12 md:col-6">
+                    <div class="flex flex-column gap-3">
+                        <div><p-skeleton width="6rem" height="0.875rem" class="mb-1"></p-skeleton><p-skeleton
+                                width="4rem" height="1.25rem"></p-skeleton></div>
+                        <div><p-skeleton width="4rem" height="0.875rem" class="mb-1"></p-skeleton><p-skeleton
+                                width="5rem" height="1.25rem"></p-skeleton></div>
+                        <div><p-skeleton width="7rem" height="0.875rem" class="mb-1"></p-skeleton><p-skeleton
+                                width="10rem" height="1.25rem"></p-skeleton></div>
+                    </div>
+                </div>
+                <div class="col-12 md:col-6">
+                    <div class="flex flex-column gap-3">
+                        <div><p-skeleton width="8rem" height="0.875rem" class="mb-1"></p-skeleton><p-skeleton
+                                width="3rem" height="1.25rem"></p-skeleton></div>
+                        <div><p-skeleton width="3rem" height="0.875rem" class="mb-1"></p-skeleton><p-skeleton
+                                width="100%" height="1.25rem"></p-skeleton></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="!loading && moduleDetails" class="details-profile-panel">
+        <div class="profile-section">
+            <h3 class="profile-section-title">{{ 'systemAdministration.erpModules.moduleDetails.profile' | translate }}
+            </h3>
+            <div class="profile-grid">
+                <div class="profile-col">
+                    <div class="detail-field">
+                        <span class="detail-label">{{ 'systemAdministration.erpModules.moduleDetails.fields.moduleId' |
+                            translate }}</span>
+                        <span class="detail-value">#{{ moduleDetails.id }}</span>
+                    </div>
+                    <div class="detail-field">
+                        <span class="detail-label">{{ 'systemAdministration.erpModules.moduleDetails.fields.code' |
+                            translate }}</span>
+                        <span class="detail-value detail-value-emphasis">{{ moduleDetails.code }}</span>
+                    </div>
+                    <div class="detail-field">
+                        <span class="detail-label">{{ 'systemAdministration.erpModules.moduleDetails.fields.name' |
+                            translate }}</span>
+                        <span class="detail-value detail-value-emphasis">{{ moduleDetails.name }}</span>
+                    </div>
+                    <div *ngIf="moduleDetails.nameRegional" class="detail-field">
+                        <span class="detail-label">{{
+                            'systemAdministration.erpModules.moduleDetails.fields.nameRegional' | translate }}</span>
+                        <span class="detail-value">{{ moduleDetails.nameRegional }}</span>
+                    </div>
+                    <div class="detail-field">
+                        <span class="detail-label">{{ 'systemAdministration.erpModules.moduleDetails.fields.function' |
+                            translate }}</span>
+                        <span class="detail-value">
+                            {{ functionDetails ? (functionDetails.name + ' (' + functionDetails.code + ')') :
+                            ('systemAdministration.erpModules.moduleDetails.fields.loading' | translate) }}
+                        </span>
+                    </div>
+                </div>
+                <div class="profile-col">
+                    <div class="detail-field">
+                        <span class="detail-label">{{
+                            'systemAdministration.erpModules.moduleDetails.fields.defaultOrder' | translate }}</span>
+                        <span class="detail-value">{{ moduleDetails.defaultOrder || '—' }}</span>
+                    </div>
+                    <div class="detail-field">
+                        <span class="detail-label">{{ 'systemAdministration.erpModules.moduleDetails.fields.url' |
+                            translate }}</span>
+                        <span class="detail-value detail-value-url">{{ moduleDetails.url || '—' }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

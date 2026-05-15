@@ -1,0 +1,13 @@
+// Notification Details Styles
+
+/* Skeleton: same size/layout as Basic Information panel */
+.details-skeleton {
+    min-height: 200px;
+}
+
+.details-skeleton-panel {
+    padding: 1.25rem;
+    border: 1px solid var(--surface-border);
+    border-radius: var(--border-radius);
+    background: var(--surface-card);
+}

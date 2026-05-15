@@ -1,0 +1,15 @@
+tableLoadingSpinner: boolean = true;
+
+private tableLoadingService: TableLoadingService
+
+this.tableLoadingService.show();
+
+this.tableLoadingService.hide();
+
+this.tableLoadingService.loading$.subscribe((isLoading) => { this.tableLoadingSpinner= isLoading; });
+
+
+
+<div class="iAware-loading-table-container" style="position: relative;">
+    <app-table-loading-spinner *ngIf="tableLoadingSpinner"></app-table-loading-spinner>
+</div>

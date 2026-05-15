@@ -1,0 +1,909 @@
+<div class="folder-management-container card" *ngIf="fileSystemId > 0">
+    <div class="toolbar mb-3">
+        <div class="flex align-items-center gap-2">
+            <p-button *ngIf="canModify" [label]="'fileSystem.folderManagement.createFolder' | translate"
+                icon="pi pi-plus" (onClick)="showCreateFolderDialog()"></p-button>
+            <p-button *ngIf="canFull" [label]="'fileSystem.folderManagement.recycleBin' | translate" icon="pi pi-replay"
+                styleClass="p-button-outlined" (onClick)="showRecycleBinDialog()"></p-button>
+        </div>
+    </div>
+
+    <div class="folder-layout flex gap-3">
+        <!-- Left Panel: Folder Tree -->
+        <div class="tree-panel flex-1">
+            <div class="card folders-panel-card">
+                <div class="folders-panel-header">
+                    <div class="folders-panel-title-wrap">
+                        <span class="folders-panel-icon">
+                            <i class="pi pi-folder"></i>
+                        </span>
+                        <h3 class="folders-panel-title">{{ 'fileSystem.folderManagement.folders' | translate }}</h3>
+                    </div>
+                </div>
+                <div class="card-body folders-panel-body">
+                    <ng-container *ngIf="treeLoading; else folderTreeLoaded">
+                        <div class="folder-tree-skeleton flex flex-column" role="status"
+                            [attr.aria-label]="'fileSystem.folderManagement.loadingFolders' | translate">
+                            <div class="folder-tree-skeleton__filter-wrap">
+                                <p-skeleton width="100%" height="2.5rem" borderRadius="6px"></p-skeleton>
+                            </div>
+                            <div class="folder-tree-skeleton__rows flex flex-column">
+                                <div class="folder-tree-skeleton__row folder-tree-skeleton__row--depth-0">
+                                    <div class="folder-tree-skeleton__toggler-slot">
+                                        <p-skeleton width="2rem" height="2rem" borderRadius="4px"></p-skeleton>
+                                    </div>
+                                    <div class="folder-tree-skeleton__mid flex flex-1 align-items-center min-w-0 gap-2">
+                                        <div class="folder-tree-skeleton__folder-slot">
+                                            <p-skeleton width="1rem" height="1rem" borderRadius="4px"></p-skeleton>
+                                        </div>
+                                        <div class="folder-tree-skeleton__label-slot flex-1 min-w-0">
+                                            <p-skeleton width="100%" height="0.95rem" borderRadius="4px"></p-skeleton>
+                                        </div>
+                                    </div>
+                                    <div class="folder-tree-skeleton__action-slot">
+                                        <p-skeleton width="1.5rem" height="1.75rem" borderRadius="6px"></p-skeleton>
+                                    </div>
+                                </div>
+                                <div class="folder-tree-skeleton__row folder-tree-skeleton__row--depth-1">
+                                    <div class="folder-tree-skeleton__toggler-slot">
+                                        <p-skeleton width="2rem" height="2rem" borderRadius="4px"></p-skeleton>
+                                    </div>
+                                    <div class="folder-tree-skeleton__mid flex flex-1 align-items-center min-w-0 gap-2">
+                                        <div class="folder-tree-skeleton__folder-slot">
+                                            <p-skeleton width="1rem" height="1rem" borderRadius="4px"></p-skeleton>
+                                        </div>
+                                        <div class="folder-tree-skeleton__label-slot flex-1 min-w-0">
+                                            <p-skeleton width="100%" height="0.95rem" borderRadius="4px"></p-skeleton>
+                                        </div>
+                                    </div>
+                                    <div class="folder-tree-skeleton__action-slot">
+                                        <p-skeleton width="1.5rem" height="1.75rem" borderRadius="6px"></p-skeleton>
+                                    </div>
+                                </div>
+                                <div class="folder-tree-skeleton__row folder-tree-skeleton__row--depth-1">
+                                    <div class="folder-tree-skeleton__toggler-slot">
+                                        <p-skeleton width="2rem" height="2rem" borderRadius="4px"></p-skeleton>
+                                    </div>
+                                    <div class="folder-tree-skeleton__mid flex flex-1 align-items-center min-w-0 gap-2">
+                                        <div class="folder-tree-skeleton__folder-slot">
+                                            <p-skeleton width="1rem" height="1rem" borderRadius="4px"></p-skeleton>
+                                        </div>
+                                        <div class="folder-tree-skeleton__label-slot flex-1 min-w-0">
+                                            <p-skeleton width="100%" height="0.95rem" borderRadius="4px"></p-skeleton>
+                                        </div>
+                                    </div>
+                                    <div class="folder-tree-skeleton__action-slot">
+                                        <p-skeleton width="1.5rem" height="1.75rem" borderRadius="6px"></p-skeleton>
+                                    </div>
+                                </div>
+                                <div class="folder-tree-skeleton__row folder-tree-skeleton__row--depth-2">
+                                    <div class="folder-tree-skeleton__toggler-slot">
+                                        <p-skeleton width="2rem" height="2rem" borderRadius="4px"></p-skeleton>
+                                    </div>
+                                    <div class="folder-tree-skeleton__mid flex flex-1 align-items-center min-w-0 gap-2">
+                                        <div class="folder-tree-skeleton__folder-slot">
+                                            <p-skeleton width="1rem" height="1rem" borderRadius="4px"></p-skeleton>
+                                        </div>
+                                        <div class="folder-tree-skeleton__label-slot flex-1 min-w-0">
+                                            <p-skeleton width="100%" height="0.95rem" borderRadius="4px"></p-skeleton>
+                                        </div>
+                                    </div>
+                                    <div class="folder-tree-skeleton__action-slot">
+                                        <p-skeleton width="1.5rem" height="1.75rem" borderRadius="6px"></p-skeleton>
+                                    </div>
+                                </div>
+                                <div class="folder-tree-skeleton__row folder-tree-skeleton__row--depth-0">
+                                    <div class="folder-tree-skeleton__toggler-slot">
+                                        <p-skeleton width="2rem" height="2rem" borderRadius="4px"></p-skeleton>
+                                    </div>
+                                    <div class="folder-tree-skeleton__mid flex flex-1 align-items-center min-w-0 gap-2">
+                                        <div class="folder-tree-skeleton__folder-slot">
+                                            <p-skeleton width="1rem" height="1rem" borderRadius="4px"></p-skeleton>
+                                        </div>
+                                        <div class="folder-tree-skeleton__label-slot flex-1 min-w-0">
+                                            <p-skeleton width="100%" height="0.95rem" borderRadius="4px"></p-skeleton>
+                                        </div>
+                                    </div>
+                                    <div class="folder-tree-skeleton__action-slot">
+                                        <p-skeleton width="1.5rem" height="1.75rem" borderRadius="6px"></p-skeleton>
+                                    </div>
+                                </div>
+                                <div class="folder-tree-skeleton__row folder-tree-skeleton__row--depth-1">
+                                    <div class="folder-tree-skeleton__toggler-slot">
+                                        <p-skeleton width="2rem" height="2rem" borderRadius="4px"></p-skeleton>
+                                    </div>
+                                    <div class="folder-tree-skeleton__mid flex flex-1 align-items-center min-w-0 gap-2">
+                                        <div class="folder-tree-skeleton__folder-slot">
+                                            <p-skeleton width="1rem" height="1rem" borderRadius="4px"></p-skeleton>
+                                        </div>
+                                        <div class="folder-tree-skeleton__label-slot flex-1 min-w-0">
+                                            <p-skeleton width="100%" height="0.95rem" borderRadius="4px"></p-skeleton>
+                                        </div>
+                                    </div>
+                                    <div class="folder-tree-skeleton__action-slot">
+                                        <p-skeleton width="1.5rem" height="1.75rem" borderRadius="6px"></p-skeleton>
+                                    </div>
+                                </div>
+                                <div class="folder-tree-skeleton__row folder-tree-skeleton__row--depth-1">
+                                    <div class="folder-tree-skeleton__toggler-slot">
+                                        <p-skeleton width="2rem" height="2rem" borderRadius="4px"></p-skeleton>
+                                    </div>
+                                    <div class="folder-tree-skeleton__mid flex flex-1 align-items-center min-w-0 gap-2">
+                                        <div class="folder-tree-skeleton__folder-slot">
+                                            <p-skeleton width="1rem" height="1rem" borderRadius="4px"></p-skeleton>
+                                        </div>
+                                        <div class="folder-tree-skeleton__label-slot flex-1 min-w-0">
+                                            <p-skeleton width="100%" height="0.95rem" borderRadius="4px"></p-skeleton>
+                                        </div>
+                                    </div>
+                                    <div class="folder-tree-skeleton__action-slot">
+                                        <p-skeleton width="1.5rem" height="1.75rem" borderRadius="6px"></p-skeleton>
+                                    </div>
+                                </div>
+                                <div class="folder-tree-skeleton__row folder-tree-skeleton__row--depth-2">
+                                    <div class="folder-tree-skeleton__toggler-slot">
+                                        <p-skeleton width="2rem" height="2rem" borderRadius="4px"></p-skeleton>
+                                    </div>
+                                    <div class="folder-tree-skeleton__mid flex flex-1 align-items-center min-w-0 gap-2">
+                                        <div class="folder-tree-skeleton__folder-slot">
+                                            <p-skeleton width="1rem" height="1rem" borderRadius="4px"></p-skeleton>
+                                        </div>
+                                        <div class="folder-tree-skeleton__label-slot flex-1 min-w-0">
+                                            <p-skeleton width="100%" height="0.95rem" borderRadius="4px"></p-skeleton>
+                                        </div>
+                                    </div>
+                                    <div class="folder-tree-skeleton__action-slot">
+                                        <p-skeleton width="1.5rem" height="1.75rem" borderRadius="6px"></p-skeleton>
+                                    </div>
+                                </div>
+                                <div class="folder-tree-skeleton__row folder-tree-skeleton__row--depth-2">
+                                    <div class="folder-tree-skeleton__toggler-slot">
+                                        <p-skeleton width="2rem" height="2rem" borderRadius="4px"></p-skeleton>
+                                    </div>
+                                    <div class="folder-tree-skeleton__mid flex flex-1 align-items-center min-w-0 gap-2">
+                                        <div class="folder-tree-skeleton__folder-slot">
+                                            <p-skeleton width="1rem" height="1rem" borderRadius="4px"></p-skeleton>
+                                        </div>
+                                        <div class="folder-tree-skeleton__label-slot flex-1 min-w-0">
+                                            <p-skeleton width="100%" height="0.95rem" borderRadius="4px"></p-skeleton>
+                                        </div>
+                                    </div>
+                                    <div class="folder-tree-skeleton__action-slot">
+                                        <p-skeleton width="1.5rem" height="1.75rem" borderRadius="6px"></p-skeleton>
+                                    </div>
+                                </div>
+                                <div class="folder-tree-skeleton__row folder-tree-skeleton__row--depth-0">
+                                    <div class="folder-tree-skeleton__toggler-slot">
+                                        <p-skeleton width="2rem" height="2rem" borderRadius="4px"></p-skeleton>
+                                    </div>
+                                    <div class="folder-tree-skeleton__mid flex flex-1 align-items-center min-w-0 gap-2">
+                                        <div class="folder-tree-skeleton__folder-slot">
+                                            <p-skeleton width="1rem" height="1rem" borderRadius="4px"></p-skeleton>
+                                        </div>
+                                        <div class="folder-tree-skeleton__label-slot flex-1 min-w-0">
+                                            <p-skeleton width="100%" height="0.95rem" borderRadius="4px"></p-skeleton>
+                                        </div>
+                                    </div>
+                                    <div class="folder-tree-skeleton__action-slot">
+                                        <p-skeleton width="1.5rem" height="1.75rem" borderRadius="6px"></p-skeleton>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+                    <ng-template #folderTreeLoaded>
+                        <p-tree [value]="folderTreeNodes" selectionMode="single" [(selection)]="selectedFolderNode"
+                            (onNodeSelect)="onFolderNodeSelect($event)" styleClass="w-full border-0 folder-tree"
+                            [filter]="true"
+                            [filterPlaceholder]="'fileSystem.folderManagement.searchFoldersPlaceholder' | translate">
+                            <ng-template pTemplate="default" let-node>
+                                <div class="tree-node-row flex align-items-center justify-content-between">
+                                    <span class="tree-node-content flex-1 flex align-items-center gap-2">
+                                        <i class="pi pi-folder tree-node-folder-icon"></i>
+                                        <span class="tree-node-label">{{ node.label }}</span>
+                                    </span>
+                                    <span class="tree-node-actions">
+                                        <button *ngIf="canModify" pButton type="button" icon="pi pi-ellipsis-v"
+                                            class="p-button-rounded p-button-text p-button-plain p-button-sm"
+                                            (click)="openFolderMenu(folderRowMenu, node, $event)"
+                                            [pTooltip]="'fileSystem.folderManagement.actions' | translate"></button>
+                                    </span>
+                                </div>
+                            </ng-template>
+                        </p-tree>
+                    </ng-template>
+                    <p-menu #folderRowMenu [model]="folderMenuItems" [popup]="true" [appendTo]="'body'"></p-menu>
+                    <p-menu #fileRowMenu [model]="fileMenuItems" [popup]="true" [appendTo]="'body'"></p-menu>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Folder Contents Table -->
+        <div class="contents-panel flex-2">
+            <div class="card contents-panel-card">
+                <div class="contents-panel-header">
+                    <div class="contents-panel-title-wrap">
+                        <span class="contents-panel-icon">
+                            <i class="pi pi-inbox"></i>
+                        </span>
+                        <h3 class="contents-panel-title">{{ 'fileSystem.folderManagement.contents' | translate }}</h3>
+                    </div>
+                </div>
+                <div class="card-body contents-panel-body p-0">
+                    <p-table #contentsTable [value]="folderContentsTableValue" [paginator]="false"
+                        styleClass="p-datatable-sm p-datatable-gridlines p-datatable-striped" responsiveLayout="scroll"
+                        [globalFilterFields]="['name']">
+                        <ng-template pTemplate="caption">
+                            <div class="contents-table-caption flex flex-column gap-2">
+                                <div class="folder-breadcrumb w-full min-w-0">
+                                    <ng-container *ngIf="tableLoadingSpinner; else folderBreadcrumbLoaded">
+                                        <p-skeleton width="100%" height="1.75rem" borderRadius="6px"></p-skeleton>
+                                    </ng-container>
+                                    <ng-template #folderBreadcrumbLoaded>
+                                        <nav class="folder-breadcrumb__nav flex min-w-0"
+                                            [attr.aria-label]="'fileSystem.folderManagement.breadcrumbAriaLabel' | translate">
+                                            <ng-container
+                                                *ngFor="let piece of folderBreadcrumbNavPieces; let i = index">
+                                                <i *ngIf="i > 0"
+                                                    class="pi pi-angle-right folder-breadcrumb__sep flex-shrink-0"
+                                                    aria-hidden="true"></i>
+                                                <button *ngIf="piece.kind === 'ellipsis'" type="button"
+                                                    class="folder-breadcrumb__ellipsis folder-breadcrumb__crumb--link"
+                                                    [attr.aria-label]="'fileSystem.folderManagement.breadcrumbEllipsisAria' | translate"
+                                                    [pTooltip]="'fileSystem.folderManagement.breadcrumbEllipsisTooltip' | translate"
+                                                    tooltipPosition="top" tooltipEvent="hover"
+                                                    (click)="openBreadcrumbEllipsisMenu($event, piece.hidden)">
+                                                    …
+                                                </button>
+                                                <button *ngIf="piece.kind === 'segment' && !piece.isLast" type="button"
+                                                    class="folder-breadcrumb__crumb folder-breadcrumb__crumb--link"
+                                                    [class.folder-breadcrumb__crumb--truncatable]="piece.folderId !== 0"
+                                                    [attr.aria-label]="piece.folderId === 0 ? ('fileSystem.folderManagement.breadcrumbRoot' | translate) : piece.label"
+                                                    [pTooltip]="piece.folderId === 0 ? ('fileSystem.folderManagement.breadcrumbRoot' | translate) : piece.label"
+                                                    tooltipPosition="top"
+                                                    (click)="navigateBreadcrumbTo(piece.folderId)">
+                                                    <i *ngIf="piece.folderId === 0"
+                                                        class="pi pi-home folder-breadcrumb__home-icon"
+                                                        aria-hidden="true"></i>
+                                                    <span *ngIf="piece.folderId !== 0"
+                                                        class="folder-breadcrumb__crumb-text">{{ piece.label }}</span>
+                                                </button>
+                                                <span *ngIf="piece.kind === 'segment' && piece.isLast"
+                                                    class="folder-breadcrumb__crumb folder-breadcrumb__crumb--current"
+                                                    [class.folder-breadcrumb__crumb--truncatable]="piece.folderId !== 0"
+                                                    [attr.aria-label]="piece.folderId === 0 ? ('fileSystem.folderManagement.breadcrumbRoot' | translate) : null"
+                                                    [pTooltip]="piece.folderId === 0 ? ('fileSystem.folderManagement.breadcrumbRoot' | translate) : piece.label"
+                                                    tooltipPosition="top">
+                                                    <i *ngIf="piece.folderId === 0"
+                                                        class="pi pi-home folder-breadcrumb__home-icon"
+                                                        aria-hidden="true"></i>
+                                                    <span *ngIf="piece.folderId !== 0"
+                                                        class="folder-breadcrumb__crumb-text">{{ piece.label }}</span>
+                                                </span>
+                                            </ng-container>
+                                        </nav>
+                                    </ng-template>
+                                </div>
+                                <div class="flex align-items-center justify-content-between">
+                                    <span class="p-input-icon-left flex-1 max-w-md">
+                                        <i class="pi pi-search"></i>
+                                        <input pInputText type="text"
+                                            (input)="contentsTable.filterGlobal($any($event.target).value, 'contains')"
+                                            [placeholder]="'fileSystem.folderManagement.searchPlaceholder' | translate"
+                                            class="w-full" />
+                                    </span>
+                                </div>
+                                <div class="flex align-items-center justify-content-between gap-2 flex-wrap">
+                                    <button *ngIf="currentFolderId !== 0" pButton type="button"
+                                        [label]="'fileSystem.folderManagement.back' | translate" icon="pi pi-arrow-left"
+                                        class="p-button-sm p-button-outlined" (click)="goBack()"></button>
+                                    <span *ngIf="currentFolderId === 0"></span>
+                                    <div class="flex gap-2 ml-auto">
+                                        <button *ngIf="canModify" pButton type="button"
+                                            [label]="'fileSystem.folderManagement.uploadHere' | translate"
+                                            icon="pi pi-upload" class="p-button-sm p-button-outlined"
+                                            (click)="showUploadDialog()"></button>
+                                        <button *ngIf="canModify" pButton type="button"
+                                            [label]="'fileSystem.folderManagement.createFolder' | translate"
+                                            icon="pi pi-plus" class="p-button-sm p-button-outlined"
+                                            (click)="showCreateFolderDialogInCurrentFolder()"></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-template>
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th style="width: 3rem"></th>
+                                <th style="width: 20rem">{{ 'fileSystem.folderManagement.name' | translate }}</th>
+                                <th style="width: 5rem; text-align: center;">{{ 'fileSystem.folderManagement.size' |
+                                    translate }}</th>
+                                <th style="width: 12rem">{{ 'fileSystem.folderManagement.createdAt' | translate }}</th>
+                                <th style="width: 4rem; text-align: center;">{{ 'fileSystem.folderManagement.actions' |
+                                    translate }}</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-row>
+                            <!-- Content rows -->
+                            <tr [class.cursor-pointer]="row.isFolder" (click)="onContentRowDoubleClick(row)">
+                                <td class="text-center">
+                                    <ng-container *ngIf="tableLoadingSpinner; else normalIcon">
+                                        <p-skeleton height="1.5rem" width="1.5rem" borderRadius="4px"></p-skeleton>
+                                    </ng-container>
+                                    <ng-template #normalIcon>
+                                        <i
+                                            [class]="row.isFolder ? 'pi pi-folder file-type-icon icon-folder' : 'pi pi-file file-type-icon icon-file'"></i>
+                                    </ng-template>
+                                </td>
+                                <td>
+                                    <ng-container *ngIf="tableLoadingSpinner; else normalName">
+                                        <p-skeleton height="1.25rem" width="14rem"></p-skeleton>
+                                    </ng-container>
+                                    <ng-template #normalName>
+                                        <span class="font-semibold">{{ getContentRowName(row) }}</span>
+                                    </ng-template>
+                                </td>
+                                <td class="text-center">
+                                    <ng-container *ngIf="tableLoadingSpinner; else normalSize">
+                                        <p-skeleton height="1.25rem" width="5rem"></p-skeleton>
+                                    </ng-container>
+                                    <ng-template #normalSize>
+                                        <ng-container *ngIf="row.isFolder">
+                                            <span *ngIf="folderSizeLoading.has(row.id)"
+                                                class="flex align-items-center justify-content-center"
+                                                [pTooltip]="'fileSystem.folderManagement.calculatingSize' | translate">
+                                                <p-skeleton width="1.25rem" height="1.25rem"
+                                                    borderRadius="4px"></p-skeleton>
+                                            </span>
+                                            <span
+                                                *ngIf="!folderSizeLoading.has(row.id) && folderSizeCache.get(row.id) as cached">{{
+                                                cached }}</span>
+                                            <button
+                                                *ngIf="!folderSizeLoading.has(row.id) && !folderSizeCache.get(row.id)"
+                                                pButton type="button" icon="pi pi-calculator"
+                                                class="p-button-rounded p-button-text p-button-plain p-button-sm"
+                                                (click)="onCalculateFolderSize(row); $event.stopPropagation()"
+                                                [pTooltip]="'fileSystem.folderManagement.calculateFolderSize' | translate"></button>
+                                        </ng-container>
+                                        <span *ngIf="!row.isFolder">{{ row.size || '—' }}</span>
+                                    </ng-template>
+                                </td>
+                                <td>
+                                    <ng-container *ngIf="tableLoadingSpinner; else normalCreated">
+                                        <p-skeleton height="1.25rem" width="8rem"></p-skeleton>
+                                    </ng-container>
+                                    <ng-template #normalCreated>
+                                        <span>{{ row.created ? (row.created | date:'MMM dd, y, hh:mm a') : '—'
+                                            }}</span>
+                                    </ng-template>
+                                </td>
+                                <td class="text-center">
+                                    <ng-container *ngIf="tableLoadingSpinner; else normalActions" class="text-center">
+                                        <p-skeleton height="1.5rem" width="2rem" borderRadius="4px"></p-skeleton>
+                                    </ng-container>
+                                    <ng-template #normalActions>
+                                        <button *ngIf="row.isFolder && canModify" pButton type="button"
+                                            icon="pi pi-ellipsis-v"
+                                            class="p-button-rounded p-button-text p-button-plain p-button-sm"
+                                            (click)="openFolderMenuForContentRow(folderRowMenu, row, $event)"
+                                            [pTooltip]="'fileSystem.folderManagement.actions' | translate">
+                                        </button>
+                                        <button *ngIf="!row.isFolder && (canRead || canModify)" pButton type="button"
+                                            icon="pi pi-ellipsis-v"
+                                            class="p-button-rounded p-button-text p-button-plain p-button-sm"
+                                            (click)="openFileMenu(fileRowMenu, row, $event)"
+                                            [pTooltip]="'fileSystem.folderManagement.actions' | translate">
+                                        </button>
+                                    </ng-template>
+                                </td>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="emptymessage">
+                            <tr>
+                                <td colspan="5" class="text-center">
+                                    {{ 'fileSystem.folderManagement.noContents' | translate }}
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <span #breadcrumbEllipsisTeleportHost class="folder-breadcrumb__ellipsis-teleport-host" aria-hidden="true"></span>
+    <div #breadcrumbEllipsisPanel [hidden]="!breadcrumbEllipsisOpen"
+        class="folder-breadcrumb__ellipsis-panel p-component" role="menu"
+        [attr.aria-label]="'fileSystem.folderManagement.breadcrumbEllipsisAria' | translate" [ngStyle]="{
+            position: 'fixed',
+            top: breadcrumbEllipsisPanelTop + 'px',
+            left: breadcrumbEllipsisPanelLeft + 'px',
+            zIndex: 12000,
+            minWidth: '240px'
+        }">
+        <div *ngIf="breadcrumbEllipsisHiddenFolders.length" class="folder-breadcrumb__ellipsis-panel-header">
+            {{ 'fileSystem.folderManagement.breadcrumbEllipsisPanelTitle' | translate }}
+        </div>
+        <ul class="folder-breadcrumb__ellipsis-tree-root p-reset" role="none">
+            <ng-container
+                *ngTemplateOutlet="breadcrumbEllipsisPath; context: { segs: breadcrumbEllipsisHiddenFolders }"></ng-container>
+        </ul>
+    </div>
+
+    <ng-template #breadcrumbEllipsisPath let-segs="segs">
+        <ng-container *ngIf="segs?.length">
+            <li class="folder-breadcrumb__ellipsis-tree-node" role="menuitem">
+                <button type="button" class="folder-breadcrumb__ellipsis-tree-row p-menuitem-link"
+                    (click)="onEllipsisFolderClick(segs[0].folderId)">
+                    <i class="pi pi-folder folder-breadcrumb__ellipsis-tree-icon" aria-hidden="true"></i>
+                    <span class="folder-breadcrumb__ellipsis-tree-label">{{ segs[0].label }}</span>
+                    <i *ngIf="segs.length > 1" class="pi pi-angle-right folder-breadcrumb__ellipsis-tree-chev"
+                        aria-hidden="true"></i>
+                </button>
+                <ul *ngIf="segs.length > 1" class="folder-breadcrumb__ellipsis-tree-children p-reset" role="none">
+                    <ng-container
+                        *ngTemplateOutlet="breadcrumbEllipsisPath; context: { segs: ellipsisTailSegments(segs) }"></ng-container>
+                </ul>
+            </li>
+        </ng-container>
+    </ng-template>
+</div>
+
+<div class="card" *ngIf="fileSystemId <= 0">
+    <p class="text-500 m-0">{{ 'fileSystem.folderManagement.selectFileSystem' | translate }}</p>
+</div>
+
+<!-- Upload Files Dialog -->
+<p-dialog
+    [header]="'fileSystem.folderManagement.uploadDialogTitleInFolder' | translate: { name: uploadDialogDestinationDisplayLabel }"
+    [(visible)]="uploadDialogVisible"
+    [modal]="true" [style]="{ width: '700px' }" (onHide)="hideUploadDialog()" [draggable]="false" [resizable]="false"
+    [closable]="!uploadInProgress">
+    <div class="p-fluid">
+        <div class="field mb-3">
+            <label class="block mb-2 font-semibold">{{ 'fileSystem.folderManagement.upload' | translate }}</label>
+            <!-- Hidden file input -->
+            <input #fileInput type="file" multiple (change)="onFilesSelected($event)" accept="*/*"
+                style="display: none;" />
+            <!-- Drop zone with drag and drop support -->
+            <div class="file-drop-zone border-2 border-dashed border-round p-4 text-center"
+                [class.drag-over]="isDragOver" [class.disabled]="uploadInProgress" (dragover)="onDragOver($event)"
+                (dragleave)="onDragLeave($event)" (drop)="onDrop($event)">
+                <i class="pi pi-cloud-upload text-4xl text-primary mb-3 block"></i>
+                <p class="text-lg font-semibold mb-2">
+                    {{ 'fileSystem.folderManagement.dropFilesHere' | translate }}
+                </p>
+                <p class="text-500 mb-3">
+                    {{ 'fileSystem.folderManagement.or' | translate }}
+                </p>
+                <!-- Custom button to trigger file selection -->
+                <p-button [label]="'fileSystem.folderManagement.selectFiles' | translate" icon="pi pi-file"
+                    styleClass="p-button-outlined" (onClick)="triggerFileInput()" [disabled]="uploadInProgress">
+                </p-button>
+            </div>
+            <small class="text-500 block mt-2">{{ 'fileSystem.folderManagement.selectFilesToUpload' | translate
+                }}</small>
+        </div>
+
+        <!-- Selected Files List -->
+        <div *ngIf="selectedFiles.length > 0" class="mb-3">
+            <label class="block mb-2 font-semibold">{{ 'fileSystem.folderManagement.selectedFiles' | translate
+                }}</label>
+            <div class="selected-files-list border-1 surface-border border-round p-3"
+                style="max-height: 200px; overflow-y: auto;">
+                <div *ngFor="let file of selectedFiles; let i = index"
+                    class="flex align-items-center justify-content-between mb-2 pb-2 border-bottom-1 surface-border"
+                    [class.border-bottom-0]="i === selectedFiles.length - 1">
+                    <div class="flex align-items-center gap-2 flex-1">
+                        <!-- File icon or status icon -->
+                        <i *ngIf="getFileUploadStatus(file.name) === 'pending'" class="pi pi-file text-primary"></i>
+                        <i *ngIf="getFileUploadStatus(file.name) === 'uploading'"
+                            class="pi pi-spin pi-spinner text-primary"></i>
+                        <i *ngIf="getFileUploadStatus(file.name) === 'completed'"
+                            class="pi pi-check-circle text-green-500"></i>
+                        <i *ngIf="getFileUploadStatus(file.name) === 'error'"
+                            class="pi pi-times-circle text-red-500"></i>
+                        <span class="text-sm flex-1" [title]="file.name"
+                            [class.text-green-600]="getFileUploadStatus(file.name) === 'completed'"
+                            [class.text-red-600]="getFileUploadStatus(file.name) === 'error'">
+                            {{ file.name }}
+                        </span>
+                    </div>
+                    <div class="flex align-items-center gap-2">
+                        <span class="text-xs text-500">{{ formatFileSize(file.size) }}</span>
+                        <!-- Remove button - hide when upload is in progress or file is completed -->
+                        <button
+                            *ngIf="!uploadInProgress && getFileUploadStatus(file.name) !== 'uploading' && getFileUploadStatus(file.name) !== 'completed'"
+                            type="button" class="p-button p-button-text p-button-rounded p-button-danger p-button-sm"
+                            (click)="removeFile(file)" [title]="'fileSystem.folderManagement.removeFile' | translate">
+                            <i class="pi pi-times"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <small class="text-500 block mt-2">
+                {{ selectedFiles.length }} {{ 'fileSystem.folderManagement.filesSelected' | translate }}
+            </small>
+        </div>
+
+        <!-- Upload Progress -->
+        <!-- <div *ngIf="uploadInProgress" class="field mb-3">
+            <label class="block mb-2 font-semibold">{{ 'fileSystem.folderManagement.uploadProgress' | translate
+                }}</label>
+            <p-progressBar [value]="uploadProgressPercent" [showValue]="true" styleClass="mt-2"></p-progressBar>
+            <small class="text-500 block mt-1">{{ uploadProgressPercent }}% {{ 'fileSystem.folderManagement.complete' |
+                translate }}</small>
+        </div> -->
+
+        <!-- Error Message -->
+        <div *ngIf="uploadError" class="p-3 mb-3 surface-100 border-round border-1 border-red-300">
+            <div class="flex align-items-center gap-2 text-red-500">
+                <i class="pi pi-exclamation-triangle"></i>
+                <span>{{ uploadError }}</span>
+            </div>
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        <p-button [label]="'fileSystem.companyStorage.close' | translate" styleClass="p-button-secondary"
+            (onClick)="hideUploadDialog()" [disabled]="uploadInProgress"></p-button>
+        <p-button [label]="'fileSystem.folderManagement.upload' | translate" icon="pi pi-upload"
+            (onClick)="onUploadConfirm()" [disabled]="uploadInProgress || selectedFiles.length === 0"></p-button>
+    </ng-template>
+</p-dialog>
+
+<!-- Create Folder Dialog -->
+<p-dialog
+    [header]="'fileSystem.folderManagement.createFolderDialogTitleInParent' | translate: { name: createFolderParentDisplayLabel }"
+    [(visible)]="createFolderDialogVisible" [modal]="true" [style]="{ width: '440px' }"
+    (onHide)="hideCreateFolderDialog()" [draggable]="false" [resizable]="false">
+    <div class="p-fluid">
+        <div class="field mb-3">
+            <label for="newFolderName">{{ 'fileSystem.folderManagement.folderName' | translate }}</label>
+            <input pInputText id="newFolderName" [(ngModel)]="newFolderName" class="w-full mt-2"
+                [class.ng-invalid]="createFolderNameError" />
+            <small class="p-error block mt-1" *ngIf="createFolderNameError">{{ createFolderNameError }}</small>
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        <p-button [label]="'fileSystem.companyStorage.close' | translate" styleClass="p-button-secondary"
+            (onClick)="hideCreateFolderDialog()"></p-button>
+        <p-button [label]="'fileSystem.companyStorage.create' | translate"
+            (onClick)="onCreateFolderConfirm()"></p-button>
+    </ng-template>
+</p-dialog>
+
+<!-- Rename Folder Dialog -->
+<p-dialog [header]="'fileSystem.folderManagement.renameFolderDialogTitle' | translate"
+    [(visible)]="renameFolderDialogVisible" [modal]="true" [style]="{ width: '400px' }"
+    (onHide)="hideRenameFolderDialog()" [draggable]="false" [resizable]="false">
+    <div class="p-fluid">
+        <div class="field">
+            <label for="renameFolderName">{{ 'fileSystem.folderManagement.newFolderName' | translate }}</label>
+            <input pInputText id="renameFolderName" [(ngModel)]="renameFolderName" class="w-full mt-2"
+                [class.ng-invalid]="renameFolderNameError" />
+            <small class="p-error block mt-1" *ngIf="renameFolderNameError">{{ renameFolderNameError }}</small>
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        <p-button [label]="'fileSystem.companyStorage.close' | translate" styleClass="p-button-secondary"
+            (onClick)="hideRenameFolderDialog()"></p-button>
+        <p-button [label]="'fileSystem.companyStorage.save' | translate" (onClick)="onRenameFolderSave()"></p-button>
+    </ng-template>
+</p-dialog>
+
+<!-- Move Folder Dialog -->
+<p-dialog [header]="'fileSystem.folderManagement.moveFolderDialogTitle' | translate"
+    [(visible)]="moveFolderDialogVisible" [modal]="true" [style]="{ width: '520px', height: '100vh' }"
+    (onHide)="hideMoveFolderDialog()" [draggable]="false" [resizable]="false">
+    <div class="p-fluid">
+        <div class="flex flex-column gap-3 mb-3">
+            <label class="font-semibold">{{ 'fileSystem.folderManagement.selectDestination' | translate }}</label>
+            <div class="flex flex-column gap-2">
+                <div class="flex align-items-center gap-2">
+                    <p-radioButton name="moveDestinationKind" value="root" [(ngModel)]="moveDestinationKind"
+                        [inputId]="'moveToRoot'"></p-radioButton>
+                    <label for="moveToRoot" class="cursor-pointer mb-0">{{ 'fileSystem.folderManagement.moveToRoot' |
+                        translate }}</label>
+                </div>
+                <div class="flex align-items-center gap-2">
+                    <p-radioButton name="moveDestinationKind" value="folder" [(ngModel)]="moveDestinationKind"
+                        [inputId]="'moveIntoFolder'"></p-radioButton>
+                    <label for="moveIntoFolder" class="cursor-pointer mb-0">{{
+                        'fileSystem.folderManagement.moveIntoFolder' | translate }}</label>
+                </div>
+            </div>
+        </div>
+        <div class="move-dialog-tree-wrap" [class.move-dialog-tree-disabled]="moveDestinationKind === 'root'">
+            <div class="card folders-panel-card">
+                <div class="folders-panel-header">
+                    <div class="folders-panel-title-wrap">
+                        <span class="folders-panel-icon">
+                            <i class="pi pi-folder"></i>
+                        </span>
+                        <h3 class="folders-panel-title">{{ 'fileSystem.folderManagement.folders' | translate }}</h3>
+                    </div>
+                </div>
+                <div class="card-body folders-panel-body">
+                    <p-tree [value]="folderTreeNodes" selectionMode="single" [(selection)]="moveDestinationNode"
+                        styleClass="w-full border-0 folder-tree" [filter]="true"
+                        [filterPlaceholder]="'fileSystem.folderManagement.searchFoldersPlaceholder' | translate">
+                        <ng-template pTemplate="default" let-node>
+                            <div class="tree-node-row flex align-items-center gap-2">
+                                <i class="pi pi-folder tree-node-folder-icon"></i>
+                                <span class="tree-node-label">{{ node.label }}</span>
+                            </div>
+                        </ng-template>
+                    </p-tree>
+                </div>
+            </div>
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        <p-button [label]="'fileSystem.companyStorage.close' | translate" styleClass="p-button-secondary"
+            (onClick)="hideMoveFolderDialog()"></p-button>
+        <p-button [label]="'fileSystem.folderManagement.move' | translate" (onClick)="onMoveFolderConfirm()"
+            [disabled]="isMoveFolderButtonDisabled"></p-button>
+    </ng-template>
+</p-dialog>
+
+<!-- Delete Folder Confirmation Dialog -->
+<p-dialog [header]="'fileSystem.folderManagement.deleteFolder' | translate" [(visible)]="deleteFolderConfirmVisible"
+    [modal]="true" [style]="{ width: '450px' }" (onHide)="hideDeleteFolderConfirm()" [draggable]="false"
+    [resizable]="false">
+    <div class="flex align-items-center gap-3 mb-3">
+        <i class="pi pi-exclamation-triangle text-2xl text-yellow-500"></i>
+        <p class="mb-0" *ngIf="selectedFolderForDelete">
+            {{ 'fileSystem.folderManagement.confirmDeleteFolder' | translate: { name:
+            selectedFolderForDelete.data.folderName } }}
+        </p>
+    </div>
+    <ng-template pTemplate="footer">
+        <p-button [label]="'fileSystem.companyStorage.close' | translate" styleClass="p-button-secondary"
+            (onClick)="hideDeleteFolderConfirm()"></p-button>
+        <p-button [label]="'fileSystem.companyStorage.delete' | translate" severity="danger"
+            (onClick)="onDeleteFolderConfirm()"></p-button>
+    </ng-template>
+</p-dialog>
+
+<!-- Recycle Bin Dialog (deleted folders + files) -->
+<p-dialog [header]="'fileSystem.folderManagement.recycleBinDialogTitle' | translate"
+    [(visible)]="recycleBinDialogVisible" [modal]="true" [style]="{ width: '800px', height: '100vh' }"
+    (onHide)="hideRecycleBinDialog()" [draggable]="false" [resizable]="false">
+    <div class="p-fluid">
+        <div *ngIf="recycleBinLoading" class="recycle-bin-skeleton">
+            <p-panel [header]="'fileSystem.folderManagement.recycleBinDescription' | translate" [toggleable]="false">
+                <div class="recycle-bin-skeleton-tabs">
+                    <p-skeleton width="8rem" height="2.5rem" borderRadius="4px"
+                        class="recycle-bin-skeleton-tab"></p-skeleton>
+                    <p-skeleton width="7rem" height="2.5rem" borderRadius="4px"
+                        class="recycle-bin-skeleton-tab"></p-skeleton>
+                </div>
+                <div class="recycle-bin-skeleton-content">
+                    <div class="mb-2">
+                        <p-skeleton width="100%" height="2.5rem" borderRadius="6px"></p-skeleton>
+                    </div>
+                    <div class="recycle-bin-skeleton-table p-datatable p-datatable-sm p-datatable-striped">
+                        <table class="p-datatable-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 3rem"><p-skeleton height="1rem" width="1rem"
+                                            borderRadius="4px"></p-skeleton></th>
+                                    <th><p-skeleton height="1rem" width="6rem" borderRadius="4px"></p-skeleton></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let i of [1,2,3,4,5]">
+                                    <td style="width: 3rem"><p-skeleton height="1.25rem" width="1rem"
+                                            borderRadius="4px"></p-skeleton></td>
+                                    <td><p-skeleton height="1.25rem" width="100%" borderRadius="4px"></p-skeleton></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </p-panel>
+        </div>
+        <div *ngIf="!recycleBinLoading">
+            <p-panel [header]="'fileSystem.folderManagement.recycleBinDescription' | translate" [toggleable]="false">
+                <p-tabView>
+                    <p-tabPanel [header]="'fileSystem.folderManagement.deletedFiles' | translate">
+                        <div class="mb-2">
+                            <span class="p-input-icon-left" style="width: 100%;">
+                                <i class="pi pi-search"></i>
+                                <input pInputText type="text" [(ngModel)]="recycleBinFileSearch"
+                                    [placeholder]="'fileSystem.folderManagement.searchFilesPlaceholder' | translate"
+                                    class="w-full" />
+                            </span>
+                        </div>
+                        <div *ngIf="deletedFiles.length === 0"
+                            class="text-center text-500 py-2 surface-50 border-round">
+                            {{ 'fileSystem.folderManagement.noDeletedFiles' | translate }}
+                        </div>
+                        <p-table *ngIf="deletedFiles.length > 0" [value]="filteredDeletedFiles" [paginator]="true"
+                            [rows]="5" [rowsPerPageOptions]="[5, 10, 20]" selectionMode="multiple"
+                            [(selection)]="selectedFilesToRestore" dataKey="file_id">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th style="width: 3rem"><p-tableHeaderCheckbox></p-tableHeaderCheckbox></th>
+                                    <th>{{ 'fileSystem.folderManagement.fileName' | translate }}</th>
+                                    <th>{{ 'fileSystem.folderManagement.folderName' | translate }}</th>
+                                    <th>{{ 'fileSystem.folderManagement.size' | translate }}</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-file>
+                                <tr class="cursor-pointer" [class.recycle-bin-skipped-row]="isSkippedFile(file)"
+                                    (click)="toggleRecycleBinFileSelection(file)">
+                                    <td (click)="$event.stopPropagation()"><p-tableCheckbox
+                                            [value]="file"></p-tableCheckbox></td>
+                                    <td>
+                                        <span class="flex align-items-center gap-2">
+                                            <i *ngIf="isSkippedFile(file)"
+                                                class="pi pi-exclamation-triangle text-orange-500"
+                                                [pTooltip]="'fileSystem.folderManagement.cannotRestoreDuplicateName' | translate"></i>
+                                            {{ file.file_name }}
+                                        </span>
+                                    </td>
+                                    <td>{{ file.folder_name || '—' }}</td>
+                                    <td>{{ formatFileSize(file.size) }}</td>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="emptymessage">
+                                <tr>
+                                    <td colspan="4" class="text-center text-500">{{
+                                        'fileSystem.folderManagement.noDeletedFiles'
+                                        | translate }}</td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </p-tabPanel>
+                    <p-tabPanel [header]="'fileSystem.folderManagement.deletedFolders' | translate">
+                        <div class="mb-2">
+                            <span class="p-input-icon-left" style="width: 100%;">
+                                <i class="pi pi-search"></i>
+                                <input pInputText type="text" [(ngModel)]="recycleBinFolderSearch"
+                                    [placeholder]="'fileSystem.folderManagement.searchFoldersPlaceholder' | translate"
+                                    class="w-full" />
+                            </span>
+                        </div>
+                        <div *ngIf="deletedFolders.length === 0"
+                            class="text-center text-500 py-2 surface-50 border-round">
+                            {{ 'fileSystem.folderManagement.noDeletedFolders' | translate }}
+                        </div>
+                        <p-table *ngIf="deletedFolders.length > 0" [value]="filteredDeletedFolders" [paginator]="true"
+                            [rows]="5" [rowsPerPageOptions]="[5, 10, 20]" selectionMode="multiple"
+                            [(selection)]="selectedFoldersToRestore" dataKey="folder_ID">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th style="width: 3rem"><p-tableHeaderCheckbox></p-tableHeaderCheckbox></th>
+                                    <th>{{ 'fileSystem.folderManagement.folderName' | translate }}</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-folder>
+                                <tr class="cursor-pointer" (click)="toggleRecycleBinFolderSelection(folder)">
+                                    <td (click)="$event.stopPropagation()"><p-tableCheckbox
+                                            [value]="folder"></p-tableCheckbox></td>
+                                    <td>{{ folder.folder_Name || folder.Folder_Name }}</td>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="emptymessage">
+                                <tr>
+                                    <td colspan="2" class="text-center text-500">{{
+                                        'fileSystem.folderManagement.noDeletedFolders' | translate }}</td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </p-tabPanel>
+
+                </p-tabView>
+            </p-panel>
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        <p-button [label]="'fileSystem.companyStorage.close' | translate" styleClass="p-button-secondary"
+            (onClick)="hideRecycleBinDialog()"></p-button>
+        <p-button [label]="'fileSystem.folderManagement.restoreSelected' | translate"
+            (onClick)="onRestoreRecycleBinConfirm()" [disabled]="!canRestoreRecycleBin"></p-button>
+    </ng-template>
+</p-dialog>
+
+<!-- File Details Dialog -->
+<p-dialog [header]="'fileSystem.folderManagement.fileDetailsDialogTitle' | translate"
+    [(visible)]="fileDetailsDialogVisible" [modal]="true" [style]="{ width: '520px' }"
+    (onHide)="hideFileDetailsDialog()" [draggable]="false" [resizable]="false" styleClass="file-details-dialog">
+    <div class="file-details-dialog-content" *ngIf="fileDetails">
+        <div class="file-details-header">
+            <div class="file-details-icon-wrap">
+                <i class="pi pi-file text-4xl text-primary"></i>
+            </div>
+            <div class="file-details-title-wrap">
+                <span class="file-details-name" [title]="fileDetails.name">
+                    {{ fileDetails.name || '—' }}
+                </span>
+            </div>
+        </div>
+        <div class="file-details-list">
+            <div class="file-details-row">
+                <i class="pi pi-tag file-details-row-icon"></i>
+                <div class="file-details-row-content">
+                    <span class="file-details-row-label">{{ 'fileSystem.folderManagement.fileName' | translate }}</span>
+                    <span class="file-details-row-value">{{ fileDetails.name || '—' }}</span>
+                </div>
+            </div>
+            <div class="file-details-row">
+                <i class="pi pi-file-edit file-details-row-icon"></i>
+                <div class="file-details-row-content">
+                    <span class="file-details-row-label">{{ 'fileSystem.folderManagement.fileType' | translate }}</span>
+                    <span class="file-details-row-value">{{ fileDetails.fileType || '—' }}</span>
+                </div>
+            </div>
+            <div class="file-details-row">
+                <i class="pi pi-database file-details-row-icon"></i>
+                <div class="file-details-row-content">
+                    <span class="file-details-row-label">{{ 'fileSystem.folderManagement.fileSize' | translate }}</span>
+                    <span class="file-details-row-value">{{ fileDetails.size || '—' }}</span>
+                </div>
+            </div>
+            <div class="file-details-row">
+                <i class="pi pi-calendar file-details-row-icon"></i>
+                <div class="file-details-row-content">
+                    <span class="file-details-row-label">{{ 'fileSystem.folderManagement.lastModified' | translate
+                        }}</span>
+                    <span class="file-details-row-value">{{ formatDateTime(fileDetails.modified) }}</span>
+                </div>
+            </div>
+            <div class="file-details-row" *ngIf="fileDetails.created">
+                <i class="pi pi-clock file-details-row-icon"></i>
+                <div class="file-details-row-content">
+                    <span class="file-details-row-label">{{ 'fileSystem.folderManagement.createdAt' | translate
+                        }}</span>
+                    <span class="file-details-row-value">{{ formatDateTime(fileDetails.created) }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        <p-button [label]="'fileSystem.companyStorage.close' | translate" styleClass="p-button-secondary"
+            (onClick)="hideFileDetailsDialog()"></p-button>
+    </ng-template>
+</p-dialog>
+
+<!-- Rename File Dialog -->
+<p-dialog [header]="'fileSystem.folderManagement.renameFileDialogTitle' | translate"
+    [(visible)]="renameFileDialogVisible" [modal]="true" [style]="{ width: '400px' }" (onHide)="hideRenameFileDialog()"
+    [draggable]="false" [resizable]="false">
+    <div class="p-fluid">
+        <div class="field mb-3">
+            <label for="renameFileName">{{ 'fileSystem.folderManagement.fileName' | translate }}</label>
+            <input pInputText id="renameFileName" [(ngModel)]="renameFileName" class="w-full mt-2" />
+        </div>
+        <!-- <div class="field mb-3">
+            <label for="renameFileType">{{ 'fileSystem.folderManagement.fileType' | translate }}</label>
+            <input pInputText id="renameFileType" [(ngModel)]="renameFileType" class="w-full mt-2" />
+        </div> -->
+    </div>
+    <ng-template pTemplate="footer">
+        <p-button [label]="'fileSystem.companyStorage.close' | translate" styleClass="p-button-secondary"
+            (onClick)="hideRenameFileDialog()"></p-button>
+        <p-button [label]="'fileSystem.companyStorage.save' | translate" (onClick)="onRenameFileSave()"></p-button>
+    </ng-template>
+</p-dialog>
+
+<!-- Delete File Confirmation Dialog -->
+<p-dialog [header]="'fileSystem.folderManagement.deleteFileDialogTitle' | translate"
+    [(visible)]="deleteFileConfirmVisible" [modal]="true" [style]="{ width: '450px' }"
+    (onHide)="hideDeleteFileConfirm()" [draggable]="false" [resizable]="false">
+    <div class="flex align-items-center gap-3 mb-3">
+        <i class="pi pi-exclamation-triangle text-2xl text-yellow-500"></i>
+        <p class="mb-0" *ngIf="selectedFileForDelete">
+            {{ 'fileSystem.folderManagement.confirmDeleteFile' | translate: { name: selectedFileForDelete.name } }}
+        </p>
+    </div>
+    <ng-template pTemplate="footer">
+        <p-button [label]="'fileSystem.companyStorage.close' | translate" styleClass="p-button-secondary"
+            (onClick)="hideDeleteFileConfirm()"></p-button>
+        <p-button [label]="'fileSystem.companyStorage.delete' | translate" severity="danger"
+            (onClick)="onDeleteFileConfirm()"></p-button>
+    </ng-template>
+</p-dialog>
+
+<!-- Toast for messages -->
+<p-toast></p-toast>

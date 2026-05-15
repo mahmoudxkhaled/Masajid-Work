@@ -1,0 +1,315 @@
+/* You can add global styles to this file, and also import other style files */
+$gutter: 1rem; //for primeflex grid system
+
+/* Layout */
+@import 'assets/layout/styles/layout/layout.scss';
+
+/* PrimeNG */
+@import '../node_modules/primeng/resources/primeng.min.css';
+@import '../node_modules/primeflex/primeflex.scss';
+@import '../node_modules/primeicons/primeicons.css';
+
+/* Quill Text Editor for p-editor */
+@import '../node_modules/quill/dist/quill.core.css';
+@import '../node_modules/quill/dist/quill.snow.css';
+
+/* Demos */
+@import 'assets/demo/styles/flags/flags.css';
+@import 'assets/demo/styles/badges.scss';
+@import 'assets/demo/styles/code.scss';
+
+.ui-dialog {
+    z-index: 10000 !important;
+}
+
+.my-code-editor {
+    .editor-container {
+        height: calc(100vh - 100px);
+    }
+}
+
+.unread-notification {
+    background-color: #80808054;
+    /* Light gray background for unread notifications */
+    border-left: 4px solid #6f42c1;
+    /* Blue border to indicate unread */
+  }
+  
+  .read-notification {
+    background-color: var(color-scheme);
+    /* White background for read notifications */
+    border-left: 4px solid transparent;
+    /* No border for read */
+  }
+  
+  .disabled-link {
+    pointer-events: none;
+    cursor: default;
+    color: gray;
+  }
+  
+  .layout-topbar-middel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+    gap: 1rem;
+    font-size: 1.25rem;
+    padding: 0.5rem;
+    border-radius: 50%;
+    background-color: var(--topbar-item-bg);
+    color: var(--topbar-item-text-color);
+  }
+  
+  .ng-hidden-temp {
+    display: none !important;
+  }
+  
+  .hidden-temp {
+    min-width: 13rem !important;
+    padding: 0px !important;
+  }
+  
+  .iaware-logo {
+    display: none !important;
+    /* Hide the start logo by default (for desktop view) */
+  }
+  
+  .layout-topbar-middel img {
+    display: block;
+    /* Show the middle logo by default */
+  }
+  
+  @media (max-width: 960px) {
+  
+    /* For tablets and mobile screens */
+    .layout-topbar-start img {
+      display: block !important;
+      /* Show the start logo on smaller screens */
+    }
+  
+    .layout-topbar-middel img {
+      display: none !important;
+      /* Hide the middle logo on smaller screens */
+    }
+  
+    .iaware-logo {
+      display: block !important;
+      /* Show the iAware logo on smaller screens */
+    }
+  }
+  
+  /* Main container for notifications */
+  .ng-hidden {
+    margin-top: 9px;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+  }
+  
+  /* Notification Item Styling */
+  .notification-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+  
+  .notification-item:hover {
+    /* Light background on hover */
+    background-color: #f7f7f7;
+    color: #666;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Styling for unread and read notifications */
+  .unread-notification {
+    // background-color: #fafafa;
+    font-weight: bold;
+  }
+  
+  // .read-notification {
+  //   background-color: #fff;
+  // }
+  
+  /* Campaign and Lesson Notification Styles */
+  .campaign-notification {
+    border-left: 5px solid #007bff;
+    /* Blue color for campaign notifications */
+  }
+  
+  .lesson-notification {
+    border-left: 5px solid #28a745;
+    /* Green color for lesson notifications */
+  }
+  
+  /* Image Style */
+  .notification-image {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    border: 1px solid #ddd;
+    object-fit: cover;
+    margin-right: 10px;
+  }
+  
+  /* Message styling */
+  .notification-msg {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .notification-title {
+    font-weight: bold;
+    font-size: 1rem;
+    // color: #333;
+  }
+  
+  .notification-text {
+    font-size: 0.9rem;
+    // color: #666;
+  }
+  
+  /* Date styling */
+  .notification-time {
+    font-size: 0.8rem;
+    // color: #888;
+  }
+  
+  /* Mark All as Read Button */
+  .mark-all-btn {
+    display: flex;
+    justify-content: flex-end;
+    cursor: pointer;
+    padding: 10px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  
+  .mark-all-btn:hover {
+    color: var(--primary-color);
+  }
+  
+  .mark-all-btn i {
+    font-size: 1rem;
+    margin-right: 5px;
+  }
+  
+  /* No notifications message */
+  .no-notifications {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #999;
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+  
+  p-autoComplete {
+    margin: 0 10px;
+  
+    .ui-autocomplete {
+      border-radius: 4px;
+      font-size: 14px;
+    }
+  
+    .ui-autocomplete-items {
+      max-height: 250px;
+      overflow-y: auto;
+    }
+  }
+  
+  .company-info-desktop {
+    display: flex;
+  }
+  
+  @media (max-width: 960px) {
+    .company-info-desktop {
+      display: none !important;
+    }
+  }
+  
+
+
+.iAware-loading-table-container {
+    position: relative;
+    min-height: 300px;
+}
+
+.ltr {
+    direction: ltr;
+}
+
+.rtl {
+    direction: rtl;
+}
+
+.p-button, .layout-topbar, .layout-footer{
+    // background: linear-gradient(90deg, #001f3f, #0059b3) !important;
+    // color: white !important;
+}
+
+/* Under-dev overlay: apply this class on any container div.
+   - The container must be position: relative (either via another class or inline style).
+   - The overlay will cover the full size of that container with 50% opacity and show "Under dev" centered.
+   Usage example:
+     <div class="position-relative under-dev-full">
+       ... content ...
+     </div>
+*/
+.under-dev-full {
+  position: relative;
+}
+
+.under-dev-full::after {
+  content: 'Under Development';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.2); /* 50% opacity overlay */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: 600;
+  z-index: 10;
+}
+
+@media screen and (min-width: 992px) {
+  .ltr-layout .layout-drawer .layout-sidebar .layout-menu-container .layout-menu .layout-root-menuitem > .layout-menuitem-root-text > span {
+      margin-left: auto;
+      opacity: 0;
+      transition: all 0.1s;
+  }
+}
+
+
+
+ .p-menuitem-icon
+  {
+  margin-right: 0.5rem !important;
+}
+.rtl-layout .p-menuitem-icon
+  {
+  margin-left: 0.5rem !important;
+}
+
+
+ 
+
+// .rtl-layout .layout-drawer .layout-sidebar .layout-menu-container .layout-menu .layout-root-menuitem > .layout-menuitem-root-text > span {
+//   margin-left: -46px;
+//   opacity: 0;
+//   transition: all 0.1s;
+// }
+  
+//   .ltr-layout .see-more h1, .ltr-layout .see-more h2, .ltr-layout .see-more h3, 
+//   .ltr-layout .see-more h4, .ltr-layout .see-more h5, .ltr-layout .see-more h6,
+//   .rtl-layout .see-more h1, .rtl-layout .see-more h2, .rtl-layout .see-more h3, 
+//   .rtl-layout .see-more h4, .rtl-layout .see-more h5, .rtl-layout .see-more h6 {
+//       margin: 0; /* Removes margin when inside .see-more for both LTR and RTL */
+//   }

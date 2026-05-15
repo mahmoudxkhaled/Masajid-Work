@@ -1,0 +1,89 @@
+<div class="card">
+    <div class="flex justify-content-between align-items-center mb-4">
+        <h2>{{ 'summaryNotifications.details.pageTitle' | translate }}</h2>
+        <div class="flex gap-2">
+            <p-button *ngIf="notification" [label]="'summaryNotifications.details.send' | translate" icon="pi pi-send" (onClick)="sendNotification()"></p-button>
+            <p-button [label]="'summaryNotifications.details.back' | translate" icon="pi pi-arrow-left" class="p-button-secondary" (onClick)="navigateBack()"></p-button>
+        </div>
+    </div>
+
+    <!-- Skeleton: same layout as Basic Information panel (grid with fields) -->
+    <div *ngIf="loading" class="details-skeleton">
+        <div class="details-skeleton-panel">
+            <p-skeleton width="12rem" height="1.75rem" class="mb-3"></p-skeleton>
+            <div class="grid">
+                <div class="col-12 md:col-6">
+                    <p-skeleton width="8rem" height="1rem" class="mb-2"></p-skeleton>
+                    <p-skeleton width="5rem" height="1.25rem"></p-skeleton>
+                </div>
+                <div class="col-12 md:col-6">
+                    <p-skeleton width="6rem" height="1rem" class="mb-2"></p-skeleton>
+                    <p-skeleton width="6rem" height="1.25rem"></p-skeleton>
+                </div>
+                <div class="col-12">
+                    <p-skeleton width="5rem" height="1rem" class="mb-2"></p-skeleton>
+                    <p-skeleton width="100%" height="1.25rem"></p-skeleton>
+                </div>
+                <div class="col-12">
+                    <p-skeleton width="7rem" height="1rem" class="mb-2"></p-skeleton>
+                    <p-skeleton width="100%" height="3rem"></p-skeleton>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="!loading && notification" class="grid">
+        <div class="col-12">
+            <p-panel [header]="'summaryNotifications.details.basicInformation' | translate">
+                <div class="grid">
+                    <div class="col-12 md:col-6">
+                        <div class="field">
+                            <label class="font-semibold">{{ 'summaryNotifications.details.notificationId' | translate }}</label>
+                            <p>{{ notification.id }}</p>
+                        </div>
+                    </div>
+                    <div class="col-12 md:col-6">
+                        <div class="field">
+                            <label class="font-semibold">{{ 'summaryNotifications.details.type' | translate }}</label>
+                            <p-tag [value]="notification.isSystemNotification ? ('summaryNotifications.details.system' | translate) : ('summaryNotifications.details.entity' | translate)" 
+                                [severity]="notification.isSystemNotification ? 'info' : 'warning'">
+                            </p-tag>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="field">
+                            <label class="font-semibold">{{ 'summaryNotifications.details.title' | translate }}</label>
+                            <p>{{ notification.title }}</p>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="field">
+                            <label class="font-semibold">{{ 'summaryNotifications.details.message' | translate }}</label>
+                            <p>{{ notification.message }}</p>
+                        </div>
+                    </div>
+                    <div class="col-12 md:col-6" *ngIf="notification.referenceType">
+                        <div class="field">
+                            <label class="font-semibold">{{ 'summaryNotifications.details.referenceType' | translate }}</label>
+                            <p-tag [value]="notification.referenceType" severity="info"></p-tag>
+                        </div>
+                    </div>
+                    <div class="col-12 md:col-6" *ngIf="notification.referenceId">
+                        <div class="field">
+                            <label class="font-semibold">{{ 'summaryNotifications.details.referenceId' | translate }}</label>
+                            <p>{{ notification.referenceId }}</p>
+                        </div>
+                    </div>
+                    <div class="col-12 md:col-6" *ngIf="notification.createdAt">
+                        <div class="field">
+                            <label class="font-semibold">{{ 'summaryNotifications.details.createdAt' | translate }}</label>
+                            <p>{{ notification.createdAt | date: 'short' }}</p>
+                        </div>
+                    </div>
+                </div>
+            </p-panel>
+        </div>
+    </div>
+</div>
+
+<p-toast></p-toast>

@@ -1,0 +1,47 @@
+---
+description: Regional API data display pattern — keep raw fields and remap on language changes
+globs: src/app/**/*.ts
+alwaysApply: false
+---
+
+# Regional Data Remapping
+
+When API data includes both default and regional fields, keep the raw API data and rebuild displayed data from it whenever language changes.
+
+Applies to fields like:
+
+- `Name` / `Name_Regional`
+- `Description` / `Description_Regional`
+- `Title` / `Title_Regional`
+- `Message` / `Message_Regional`
+- lower-case backend variants like `title_Regional`
+
+## Required Pattern
+
+1. Store raw API rows/details unchanged, e.g. `rawEntities`, `rawRoles`, `rawDetails`.
+2. Map displayed UI models in a small method, e.g. `mapRawEntities()`.
+3. Use `LocalStorageService.getPreferredLanguageCode() === 'ar'` for the current regional state.
+4. Subscribe to `LanguageDirService.userLanguageCode$` and re-run the mapping method.
+5. Do not reload the API just because language changed, unless the backend returned only one language.
+
+## Avoid
+
+- Do not calculate `isRegional` once inside `load...()` and permanently map `name`, `description`, `title`, or `message`.
+- Do not keep only final displayed text when raw regional fields are available.
+- Do not let request signature / duplicate-load guards block local remapping.
+- Do not remap active edit form inputs while the user may have unsaved changes.
+
+## Example
+
+```ts
+private rawEntities: EntityBackend[] = [];
+
+private mapRawEntities(): void {
+  const isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
+  this.entities = this.rawEntities.map((item) => ({
+    id: String(item.Entity_ID || ''),
+    name: isRegional ? (item.Name_Regional || item.Name || '') : (item.Name || ''),
+    description: isRegional ? (item.Description_Regional || item.Description || '') : (item.Description || '')
+  }));
+}
+```

@@ -1,0 +1,168 @@
+<div class="entity-admin-view card p-4">
+    <div class="entity-admin-top flex flex-col gap-3">
+
+        <div class="page-header">
+            <h1 class="page-title">{{ 'fileSystem.entityAdmin.title' | translate }}</h1>
+            <p class="page-description">{{ 'fileSystem.entityAdmin.description' | translate }}</p>
+        </div>
+    </div>
+
+    <div class="kpi-section">
+        <h2 class="block-title">{{ 'fileSystem.entityAdmin.overview' | translate }}</h2>
+        <div class="grid">
+            <div class="col-12 md:col-6 lg:col-3">
+                <div class="stat-card stat-card--no-trend surface-card border-round-xl h-full under-dev-full">
+                    <div class="stat-card__main flex align-items-start gap-3 md:gap-4">
+                        <div class="stat-card__icon" aria-hidden="true">
+                            <i class="pi pi-server"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="stat-card__label">{{ 'fileSystem.entityAdmin.ownedVirtualDrives' | translate }}
+                            </div>
+                            <div class="stat-card__value">{{ ownedVirtualDrivesCount | number }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 md:col-6 lg:col-3">
+                <div class="stat-card stat-card--no-trend surface-card border-round-xl h-full">
+                    <div class="stat-card__main flex align-items-start gap-3 md:gap-4">
+                        <div class="stat-card__icon" aria-hidden="true">
+                            <i class="pi pi-database"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="stat-card__label">{{ 'fileSystem.entityAdmin.fileSystems' | translate }}</div>
+                            <div class="stat-card__value">{{ entityFileSystemsCount | number }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 md:col-6 lg:col-3">
+                <div class="stat-card stat-card--no-trend surface-card border-round-xl h-full under-dev-full">
+                    <div class="stat-card__main flex align-items-start gap-3 md:gap-4">
+                        <div class="stat-card__icon" aria-hidden="true">
+                            <i class="pi pi-upload"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="stat-card__label">{{ 'fileSystem.systemAdmin.uploads' | translate }}</div>
+                            <div class="stat-card__value">{{ trafficUploads }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 md:col-6 lg:col-3">
+                <div class="stat-card stat-card--no-trend surface-card border-round-xl h-full under-dev-full">
+                    <div class="stat-card__main flex align-items-start gap-3 md:gap-4">
+                        <div class="stat-card__icon" aria-hidden="true">
+                            <i class="pi pi-download"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="stat-card__label">{{ 'fileSystem.systemAdmin.downloads' | translate }}</div>
+                            <div class="stat-card__value">{{ trafficDownloads }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <app-file-systems-section (fileSystemsCountChange)="entityFileSystemsCount = $event"></app-file-systems-section>
+
+    <div class="block-section under-dev-full">
+        <h2 class="block-title">{{ 'fileSystem.entityAdmin.synchronization' | translate }}</h2>
+        <div class="block-card">
+            <p class="mb-3">{{ 'fileSystem.entityAdmin.syncDescription' | translate }}</p>
+            <div class="flex flex-wrap gap-2">
+                <p-button [label]="'fileSystem.entityAdmin.uploadSync' | translate" icon="pi pi-upload"
+                    styleClass="p-button-outlined" (onClick)="showSyncUnderDevDialog()"></p-button>
+                <p-button [label]="'fileSystem.entityAdmin.downloadSync' | translate" icon="pi pi-download"
+                    styleClass="p-button-outlined" (onClick)="showSyncUnderDevDialog()"></p-button>
+                <p-button [label]="'fileSystem.entityAdmin.fullSync' | translate" icon="pi pi-sync"
+                    styleClass="p-button-outlined" (onClick)="showSyncUnderDevDialog()"></p-button>
+            </div>
+        </div>
+    </div>
+
+    <div class="block-section under-dev-full">
+        <h2 class="block-title">{{ 'fileSystem.entityAdmin.entityStorageSettings' | translate }}</h2>
+        <div class="block-card">
+            <p class="mb-3">{{ 'fileSystem.entityAdmin.entityStorageSettingsDescription' | translate }}</p>
+            <div class="flex flex-col gap-3">
+                <div class="flex align-items-center gap-2">
+                    <p-checkbox [(ngModel)]="allowShareInternally" [binary]="true"
+                        inputId="shareInternally"></p-checkbox>
+                    <label for="shareInternally">{{ 'fileSystem.entityAdmin.allowShareInternally' | translate }}</label>
+                </div>
+                <div class="flex align-items-center gap-2">
+                    <p-checkbox [(ngModel)]="allowShareExternally" [binary]="true"
+                        inputId="shareExternally"></p-checkbox>
+                    <label for="shareExternally">{{ 'fileSystem.entityAdmin.allowShareExternally' | translate }}</label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+<p-dialog [header]="'fileSystem.entityAdmin.addPermissionDialogTitle' | translate"
+    [(visible)]="addPermissionDialogVisible" [modal]="true" [style]="{ width: '450px' }"
+    (onHide)="hideAddPermissionDialog()" [draggable]="false" [resizable]="false">
+    <div class="p-fluid">
+        <div class="field mb-3">
+            <label>{{ 'fileSystem.entityAdmin.role' | translate }}</label>
+            <p-dropdown [options]="roleOptions" [(ngModel)]="newPermissionRoleKey" optionLabel="label"
+                optionValue="value" [style]="{ width: '100%' }" class="mt-2"></p-dropdown>
+        </div>
+        <div class="field mb-3">
+            <label>{{ 'fileSystem.entityAdmin.folderPath' | translate }}</label>
+            <input pInputText [(ngModel)]="newPermissionPath" class="w-full mt-2" />
+        </div>
+        <div class="field">
+            <label>{{ 'fileSystem.entityAdmin.access' | translate }}</label>
+            <p-dropdown [options]="accessOptions" [(ngModel)]="newPermissionAccessKey" optionLabel="label"
+                optionValue="value" [style]="{ width: '100%' }" class="mt-2"></p-dropdown>
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        <p-button [label]="'fileSystem.companyStorage.close' | translate" styleClass="p-button-secondary"
+            (onClick)="hideAddPermissionDialog()"></p-button>
+        <p-button [label]="'fileSystem.entityAdmin.addPermission' | translate"
+            (onClick)="onAddPermissionConfirm()"></p-button>
+    </ng-template>
+</p-dialog>
+
+<p-dialog [header]="'fileSystem.entityAdmin.editPermissionDialogTitle' | translate"
+    [(visible)]="editPermissionDialogVisible" [modal]="true" [style]="{ width: '450px' }"
+    (onHide)="hideEditPermissionDialog()" [draggable]="false" [resizable]="false">
+    <div class="p-fluid">
+        <div class="field mb-3">
+            <label>{{ 'fileSystem.entityAdmin.role' | translate }}</label>
+            <input pInputText [(ngModel)]="editPermissionRoleKey" class="w-full mt-2" readonly />
+        </div>
+        <div class="field mb-3">
+            <label>{{ 'fileSystem.entityAdmin.folderPath' | translate }}</label>
+            <input pInputText [(ngModel)]="editPermissionPath" class="w-full mt-2" />
+        </div>
+        <div class="field">
+            <label>{{ 'fileSystem.entityAdmin.access' | translate }}</label>
+            <p-dropdown [options]="accessOptions" [(ngModel)]="editPermissionAccessKey" optionLabel="label"
+                optionValue="value" [style]="{ width: '100%' }" class="mt-2"></p-dropdown>
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        <p-button [label]="'fileSystem.companyStorage.close' | translate" styleClass="p-button-secondary"
+            (onClick)="hideEditPermissionDialog()"></p-button>
+        <p-button [label]="'fileSystem.companyStorage.save' | translate" (onClick)="onEditPermissionSave()"></p-button>
+    </ng-template>
+</p-dialog>
+
+<p-dialog [header]="'fileSystem.admin.syncUnderDevelopmentTitle' | translate" [(visible)]="syncUnderDevDialogVisible"
+    [modal]="true" [style]="{ width: '400px' }" (onHide)="hideSyncUnderDevDialog()" [draggable]="false"
+    [resizable]="false">
+    <p>{{ 'fileSystem.admin.syncUnderDevelopmentMessage' | translate }}</p>
+    <ng-template pTemplate="footer">
+        <p-button [label]="'fileSystem.companyStorage.close' | translate"
+            (onClick)="hideSyncUnderDevDialog()"></p-button>
+    </ng-template>
+</p-dialog>

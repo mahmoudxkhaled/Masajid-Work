@@ -1,0 +1,50 @@
+<p-dialog [(visible)]="visible" [modal]="true" [style]="{ width: '520px' }" [contentStyle]="{ overflow: 'visible' }"
+    [closable]="true" [draggable]="false" [resizable]="false" (onHide)="onDialogHide()"
+    styleClass="function-logo-dialog">
+    <ng-template pTemplate="header">
+        <div class="flex align-items-center gap-2">
+            <span class="dialog-icon"><i class="pi pi-image"></i></span>
+            <span class="dialog-title">{{ (functionName ?
+                ('systemAdministration.erpFunctions.functionLogo.titleWithName' | translate:{ name: functionName }) :
+                ('systemAdministration.erpFunctions.functionLogo.title' | translate)) }}</span>
+        </div>
+    </ng-template>
+
+    <div class="function-logo-content">
+        <div class="logo-preview-wrapper">
+            <div class="logo-preview-container">
+                <img [src]="functionLogo" alt="Function Logo" class="logo-image" />
+                <div *ngIf="loading || loadingLogo" class="logo-loading-overlay">
+                    <i class="pi pi-spin pi-spinner" style="font-size: 2rem; color: var(--primary-500);"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="upload-section">
+            <label class="upload-label">{{ 'systemAdministration.erpFunctions.functionLogo.uploadLogo' | translate
+                }}</label>
+            <div class="upload-button-wrapper">
+                <p-fileUpload #logoUploader mode="basic" name="logo" accept="image/*" (onSelect)="onLogoUpload($event)"
+                    [maxFileSize]="2097152"
+                    [chooseLabel]="'systemAdministration.erpFunctions.functionLogo.chooseLogo' | translate"
+                    [disabled]="loading || loadingLogo">
+                </p-fileUpload>
+            </div>
+            <small class="upload-hint">
+                <span style="color: red; font-size:1rem;">*</span>{{
+                'systemAdministration.erpFunctions.functionLogo.allowedFormats' | translate }}
+            </small>
+            <small class="upload-hint"> <span style="color: red; font-size:1rem;">*</span>{{
+                'systemAdministration.erpFunctions.functionLogo.recommendedSize' | translate
+                }}</small>
+        </div>
+
+        <div *ngIf="hasLogo" class="remove-section">
+            <p-button [label]="'systemAdministration.erpFunctions.functionLogo.removeLogo' | translate"
+                icon="pi pi-trash" severity="danger" [outlined]="true" (onClick)="removeLogo()"
+                [disabled]="loading || loadingLogo" />
+        </div>
+    </div>
+
+
+</p-dialog>

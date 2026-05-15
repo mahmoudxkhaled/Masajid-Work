@@ -1,0 +1,25 @@
+{
+  "singleQuote": true,
+  "bracketSameLine": true,
+  "endOfLine": "auto",
+  "overrides": [
+    {
+      "files": ["*.html", "*.ts"],
+      "options": {
+        "printWidth": 120
+      }
+    },
+    {
+      "files": "*.html",
+      "options": {
+        "parser": "html"
+      }
+    },
+    {
+      "files": "*.component.html",
+      "options": {
+        "parser": "angular"
+      }
+    }
+  ]
+}

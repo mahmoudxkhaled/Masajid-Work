@@ -1,0 +1,198 @@
+<div class="card">
+
+
+    <div class="flex justify-content-between align-items-center mb-4">
+        <!-- Search Bar -->
+        <div class="  col-12 md:col-5 p-fluid">
+            <div class="p-inputgroup w-full p-fluid">
+                <span class="p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input type="text" pInputText [placeholder]="'summaryGroups.members.searchPlaceholder' | translate" [value]="searchText"
+                        (input)="onSearchInput($event)" class="w-full" />
+                </span>
+                <button *ngIf="searchText" pButton pRipple type="button" icon="pi pi-times"
+                    class="p-button-rounded p-button-text p-button-plain" (click)="clearSearch()"
+                    [pTooltip]="'summaryGroups.members.clearSearch' | translate">
+                </button>
+            </div>
+        </div>
+        <p-button [label]="'summaryGroups.members.addMembers' | translate" icon="pi pi-user-plus" (onClick)="openAddMembersDialog()" [disabled]="loading">
+        </p-button>
+    </div>
+
+
+
+    <!-- Members Table (table-skeleton: one p-table, [value]="tableValue", skeleton only inside <td>) -->
+    <div #membersTableContainer style="position: relative;">
+        <p-table [value]="tableValue" [paginator]="true" [first]="first" [rows]="rows"
+            [rowsPerPageOptions]="[10, 25, 50, 100]" [showCurrentPageReport]="true" responsiveLayout="scroll"
+            [lazy]="false" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+            (onLazyLoad)="onPageChange($event)">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>{{ 'summaryGroups.members.table.accountId' | translate }}</th>
+                    <th>{{ 'summaryGroups.members.table.email' | translate }}</th>
+                    <th>{{ 'summaryGroups.members.table.entity' | translate }}</th>
+                    <th style="width: 150px; text-align: start;">{{ 'summaryGroups.members.table.actions' | translate }}</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-member>
+                <tr>
+                    <td>
+                        <ng-container *ngIf="loadingMembers; else normalAccountId">
+                            <p-skeleton height="1.5rem" width="4rem" borderRadius="4px"></p-skeleton>
+                        </ng-container>
+                        <ng-template #normalAccountId>
+                            <p-tag [value]="'#' + member.accountId" severity="info"></p-tag>
+                        </ng-template>
+                    </td>
+                    <td>
+                        <ng-container *ngIf="loadingMembers; else normalEmail">
+                            <p-skeleton height="1.5rem" width="12rem"></p-skeleton>
+                        </ng-container>
+                        <ng-template #normalEmail>
+                            <span class="text-600">{{ member.email || ('summaryGroups.members.na' | translate) }}</span>
+                        </ng-template>
+                    </td>
+                    <td>
+                        <ng-container *ngIf="loadingMembers; else normalEntity">
+                            <p-skeleton height="1.5rem" width="10rem"></p-skeleton>
+                        </ng-container>
+                        <ng-template #normalEntity>
+                            <span class="text-600">{{ member.entityName || ('summaryGroups.members.na' | translate) }}</span>
+                        </ng-template>
+                    </td>
+                    <td class="text-start">
+                        <ng-container *ngIf="loadingMembers; else normalActions">
+                            <p-skeleton height="2rem" width="2.5rem"></p-skeleton>
+                        </ng-container>
+                        <ng-template #normalActions>
+                            <p-button icon="pi pi-trash" severity="danger" [text]="true" [disabled]="loading"
+                                (onClick)="removeMember(member)" [pTooltip]="'summaryGroups.members.removeMemberTooltip' | translate">
+                            </p-button>
+                        </ng-template>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="4" class="text-center">{{ 'summaryGroups.members.noMembers' | translate }}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+
+    <!-- Add Members Dialog -->
+    <p-dialog [(visible)]="addMembersDialogVisible" [modal]="true" [style]="{ width: '800px' }" [closable]="true"
+        [draggable]="false" [resizable]="false" (onHide)="closeAddMembersDialog()">
+        <ng-template pTemplate="header">
+            <h3>{{ 'summaryGroups.members.addDialog.title' | translate }}</h3>
+        </ng-template>
+
+        <div class="flex flex-column gap-3">
+            <!-- Entity Filter -->
+            <div class="flex align-items-center gap-3">
+                <div class="flex align-items-center gap-2">
+                    <label for="includeSubentities" class="text-600">{{ 'summaryGroups.members.addDialog.includeSubentities' | translate }}</label>
+                    <p-inputSwitch id="includeSubentities" [(ngModel)]="includeSubentities"
+                        (onChange)="onEntityFilterChange()" [disabled]="loadingAccountsTable"></p-inputSwitch>
+                </div>
+            </div>
+
+            <!-- Search Bar -->
+            <span class="p-input-icon-left w-full">
+                <i class="pi pi-search"></i>
+                <input pInputText type="text" [placeholder]="'summaryGroups.members.addDialog.searchPlaceholder' | translate" class="w-full"
+                    [value]="accountTableTextFilter" (input)="onAccountTableSearchInput($event)" />
+            </span>
+
+            <!-- Accounts Table (skeleton inside cells when loadingAccountsTable) -->
+            <div style="position: relative; min-height: 400px;">
+                <p-table [value]="accountTableValue" [paginator]="true" [first]="accountTableFirst"
+                    [rows]="accountTableRows" [rowsPerPageOptions]="[10, 25, 50, 100]"
+                    [totalRecords]="accountTableTotalRecords" [showCurrentPageReport]="true" [lazy]="true"
+                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                    (onLazyLoad)="onAccountTablePageChange($event)" [(selection)]="selectedAccounts"
+                    selectionMode="multiple" styleClass="p-datatable-sm">
+
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th style="width: 50px;"></th>
+                            <th>{{ 'summaryGroups.members.addDialog.accountId' | translate }}</th>
+                            <th>{{ 'summaryGroups.members.addDialog.email' | translate }}</th>
+                            <th style="text-align: center;">{{ 'summaryGroups.members.addDialog.userId' | translate }}</th>
+                            <th style="text-align: center;">{{ 'summaryGroups.members.addDialog.accountState' | translate }}</th>
+                        </tr>
+                    </ng-template>
+
+                    <ng-template pTemplate="body" let-account>
+                        <tr>
+                            <td>
+                                <ng-container *ngIf="loadingAccountsTable; else checkboxContent">
+                                    <p-skeleton height="1.25rem" width="1.25rem"></p-skeleton>
+                                </ng-container>
+                                <ng-template #checkboxContent>
+                                    <p-tableCheckbox [value]="account"></p-tableCheckbox>
+                                </ng-template>
+                            </td>
+                            <td>
+                                <ng-container *ngIf="loadingAccountsTable; else accountIdContent">
+                                    <p-skeleton height="1.5rem" width="5rem"></p-skeleton>
+                                </ng-container>
+                                <ng-template #accountIdContent>
+                                    <p-tag [value]="'#' + account.accountId" severity="info"></p-tag>
+                                </ng-template>
+                            </td>
+                            <td>
+                                <ng-container *ngIf="loadingAccountsTable; else emailContent">
+                                    <p-skeleton height="1.25rem" width="12rem"></p-skeleton>
+                                </ng-container>
+                                <ng-template #emailContent>
+                                    <span class="font-semibold">{{ account.email }}</span>
+                                </ng-template>
+                            </td>
+                            <td style="text-align: center;">
+                                <ng-container *ngIf="loadingAccountsTable; else userIdContent">
+                                    <p-skeleton height="1.25rem" width="4rem"></p-skeleton>
+                                </ng-container>
+                                <ng-template #userIdContent>
+                                    <span class="text-600">{{ account.userId }}</span>
+                                </ng-template>
+                            </td>
+                            <td style="text-align: center;">
+                                <ng-container *ngIf="loadingAccountsTable; else stateContent">
+                                    <p-skeleton height="1.5rem" width="5rem"></p-skeleton>
+                                </ng-container>
+                                <ng-template #stateContent>
+                                    <p-tag [value]="getAccountStateLabel(account.accountState)"
+                                        [severity]="getAccountStateSeverity(account.accountState)"></p-tag>
+                                </ng-template>
+                            </td>
+                        </tr>
+                    </ng-template>
+
+                    <ng-template pTemplate="emptymessage">
+                        <tr>
+                            <td colspan="5" class="text-center p-4">
+                                <i class="pi pi-inbox text-4xl text-gray-400 mb-2"></i>
+                                <p class="text-gray-500">{{ 'summaryGroups.members.addDialog.noAccounts' | translate }}</p>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
+
+        <ng-template pTemplate="footer">
+            <div class="flex justify-content-end gap-2">
+                <p-button [label]="'summaryGroups.members.addDialog.cancel' | translate" icon="pi pi-times" class="p-button-text" (onClick)="closeAddMembersDialog()"
+                    [disabled]="loading">
+                </p-button>
+                <p-button [label]="'summaryGroups.members.addDialog.addSelected' | translate" icon="pi pi-check" (onClick)="addSelectedMembers()" [loading]="loading"
+                    [disabled]="loading || selectedAccounts.length === 0">
+                </p-button>
+            </div>
+        </ng-template>
+    </p-dialog>
+
+    <p-toast></p-toast>

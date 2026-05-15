@@ -1,0 +1,73 @@
+<div class="card">
+    <div class="flex justify-content-between align-items-center mb-4">
+        <h3>{{ 'notificationsManagement.typesList.title' | translate }}</h3>
+    </div>
+
+    <div style="position: relative;">
+        <p-table #typesTable [value]="tableValue" [paginator]="false" responsiveLayout="scroll">
+
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>{{ 'notificationsManagement.typesList.tableId' | translate }}</th>
+                    <th style="width: 200px;">{{ 'notificationsManagement.typesList.tableTitle' | translate }}</th>
+                    <th style="width: 300px;">{{ 'notificationsManagement.typesList.tableDescription' | translate }}</th>
+                    <th style="width: 150px;">{{ 'notificationsManagement.typesList.tableUrgency' | translate }}</th>
+                    <th style="width: 250px;">{{ 'notificationsManagement.typesList.tableExample' | translate }}</th>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-type>
+                <tr>
+                    <td>
+                        <ng-container *ngIf="tableLoadingSpinner; else normalId">
+                            <p-skeleton height="1.5rem" width="4rem" borderRadius="4px"></p-skeleton>
+                        </ng-container>
+                        <ng-template #normalId>
+                            <p-tag [value]="'#' + type.id" severity="info"></p-tag>
+                        </ng-template>
+                    </td>
+                    <td>
+                        <ng-container *ngIf="tableLoadingSpinner; else normalTitle">
+                            <p-skeleton height="1rem" width="10rem"></p-skeleton>
+                        </ng-container>
+                        <ng-template #normalTitle>
+                            <span class="font-semibold">{{ type.name }}</span>
+                        </ng-template>
+                    </td>
+                    <td>
+                        <ng-container *ngIf="tableLoadingSpinner; else normalDescription">
+                            <p-skeleton height="3rem" width="100%"></p-skeleton>
+                        </ng-container>
+                        <ng-template #normalDescription>
+                            <span class="text-600">{{ type.nameRegional || ('notificationsManagement.typesList.noDescription' | translate) }}</span>
+                        </ng-template>
+                    </td>
+                    <td>
+                        <ng-container *ngIf="tableLoadingSpinner; else normalUrgency">
+                            <p-skeleton height="1.5rem" width="5rem" borderRadius="4px"></p-skeleton>
+                        </ng-container>
+                        <ng-template #normalUrgency>
+                            <p-tag [value]="type.urgency || 'N/A'" [severity]="getUrgencySeverity(type.urgency)"></p-tag>
+                        </ng-template>
+                    </td>
+                    <td>
+                        <ng-container *ngIf="tableLoadingSpinner; else normalExample">
+                            <p-skeleton height="1.5rem" width="12rem"></p-skeleton>
+                        </ng-container>
+                        <ng-template #normalExample>
+                            <span class="text-600 font-italic">{{ type.example || ('notificationsManagement.typesList.noExample' | translate) }}</span>
+                        </ng-template>
+                    </td>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="5" class="text-center">{{ 'notificationsManagement.typesList.noTypesFound' | translate }}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>
+
+<p-toast></p-toast>

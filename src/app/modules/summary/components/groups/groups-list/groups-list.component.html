@@ -1,0 +1,194 @@
+<div class="card">
+    <div class="flex justify-content-between align-items-center mb-4">
+        <h2>{{ 'summaryGroups.list.title' | translate }}</h2>
+        <p-button (onClick)="navigateToNew()" [disabled]="!!(isLoading$ | async)">
+            <ng-container *ngIf="isLoading$ | async">
+                <span class="indicator-progress" [style.display]="'block'">
+                    {{ 'summaryGroups.list.pleaseWait' | translate }}
+                    <i class="pi pi-spin pi-spinner" style="font-size: 1rem"></i>
+                </span>
+            </ng-container>
+            <ng-container *ngIf="(isLoading$ | async) === false">
+                <span>{{ 'summaryGroups.list.addNew' | translate }}</span>
+            </ng-container>
+        </p-button>
+    </div>
+
+    <div class="flex justify-content-between align-items-center mb-3">
+
+        <!-- Search Bar -->
+        <div class="  col-12 md:col-5 ">
+            <div class="p-inputgroup w-full  p-fluid">
+                <span class="p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input type="text" pInputText [placeholder]="'summaryGroups.list.searchPlaceholder' | translate"
+                        [value]="searchText" (input)="onSearchInput($event)" class="w-full" />
+                </span>
+                <button *ngIf="searchText" pButton pRipple type="button" icon="pi pi-times"
+                    class="p-button-rounded p-button-text p-button-plain" (click)="clearSearch()"
+                    [pTooltip]="'summaryGroups.list.clearSearch' | translate">
+                </button>
+            </div>
+        </div>
+
+        <div class="flex align-items-center gap-2 col-12 md:col-3 p-fluid">
+            <label class="font-medium">{{ 'summaryGroups.list.showActiveOnly' | translate }}</label>
+            <p-inputSwitch [(ngModel)]="activeOnlyFilter" (onChange)="onActiveFilterChange()"></p-inputSwitch>
+        </div>
+
+    </div>
+
+
+
+    <div #groupsTableContainer style="position: relative;">
+        <p-table #groupsTable [value]="tableValue" [paginator]="true" [first]="first" [rows]="rows"
+            [rowsPerPageOptions]="[10, 25, 50, 100]" [showCurrentPageReport]="true" responsiveLayout="scroll"
+            [lazy]="false" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+            (onLazyLoad)="onPageChange($event)">
+
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>{{ 'summaryGroups.list.table.id' | translate }}</th>
+                    <th style="width: 200px;">{{ 'summaryGroups.list.table.title' | translate }}</th>
+                    <th style="width: 300px;">{{ 'summaryGroups.list.table.description' | translate }}</th>
+                    <th style="text-align: center !important;">{{ 'summaryGroups.list.table.status' | translate }}</th>
+                    <th style="width: 150px; text-align: start !important;">{{ 'summaryGroups.list.table.actions' | translate }}</th>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-group>
+                <tr>
+                    <td>
+                        <div>
+                            <ng-container *ngIf="isLoading$ | async; else normalId">
+                                <p-skeleton height="1.5rem" width="4rem" borderRadius="4px"></p-skeleton>
+                            </ng-container>
+                            <ng-template #normalId>
+                                <p-tag [value]="'#' + group.id" severity="info"></p-tag>
+                            </ng-template>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="flex flex-column">
+                            <ng-container *ngIf="isLoading$ | async; else normalTitle">
+                                <p-skeleton height="1rem" width="10rem"></p-skeleton>
+                            </ng-container>
+                            <ng-template #normalTitle>
+                                <span style="cursor: pointer;" class="font-semibold name-text"
+                                    routerLink="/summary/groups/{{ group.id }}">
+                                    {{ group.title }}</span>
+                            </ng-template>
+                        </div>
+                    </td>
+                    <td>
+                        <ng-container *ngIf="isLoading$ | async; else normalDescription">
+                            <p-skeleton height="3rem" width="100%" class="line-height-3"></p-skeleton>
+                        </ng-container>
+                        <ng-template #normalDescription>
+                            <span class="text-600 line-height-3 description-text">{{ group.description || ('summaryGroups.list.noDescription' | translate) }}</span>
+                        </ng-template>
+                    </td>
+
+                    <td class="text-center">
+                        <ng-container *ngIf="isLoading$ | async; else normalStatus">
+                            <p-skeleton height="1.5rem" width="3rem" borderRadius="30px"></p-skeleton>
+                        </ng-container>
+                        <ng-template #normalStatus>
+                            <p-inputSwitch [formControl]="activationControls[group.id]" (onChange)="onStatusToggle(group)">
+                            </p-inputSwitch>
+                        </ng-template>
+                    </td>
+                    <td class="text-start">
+                        <ng-container *ngIf="isLoading$ | async; else normalActions">
+                            <p-skeleton height="2rem" width="2rem" borderRadius="50%"></p-skeleton>
+                        </ng-container>
+                        <ng-template #normalActions>
+                            <button pButton pRipple type="button" icon="pi pi-ellipsis-v"
+                                class="p-button-rounded p-button-text p-button-plain"
+                                (click)="openMenu(rowMenu, group, $event)">
+                            </button>
+                            <p-menu #rowMenu [model]="menuItems" [popup]="true" [appendTo]="'body'"></p-menu>
+                        </ng-template>
+                    </td>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="5" class="text-center">{{ 'summaryGroups.list.noGroups' | translate }}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>
+
+<p-toast></p-toast>
+
+<p-dialog [(visible)]="activationGroupDialog" [modal]="true" [style]="{ width: '500px' }" [closable]="true"
+    [draggable]="false" [resizable]="false" (onHide)="onCancelActivationDialog()">
+    <ng-template pTemplate="header">
+        <h3>{{ (currentGroupForActivation?.active ? 'summaryGroups.list.activationDialog.deactivateTitle' : 'summaryGroups.list.activationDialog.activateTitle') | translate }}</h3>
+    </ng-template>
+    <div class="flex flex-column gap-3">
+        <!-- Activation Message -->
+        <ng-container *ngIf="!currentGroupForActivation?.active">
+            <p>{{ 'summaryGroups.list.activationDialog.activateMessage' | translate: { title: currentGroupForActivation?.title } }}</p>
+        </ng-container>
+
+        <!-- Deactivation Message -->
+        <ng-container *ngIf="currentGroupForActivation?.active">
+            <p>{{ 'summaryGroups.list.activationDialog.deactivateMessage' | translate: { title: currentGroupForActivation?.title } }}</p>
+        </ng-container>
+    </div>
+    <ng-template pTemplate="footer">
+        <p-button [label]="'summaryGroups.list.activationDialog.cancel' | translate" icon="pi pi-times" class="p-button-text" (onClick)="onCancelActivationDialog()"
+            [disabled]="!!(isLoading$ | async)">
+        </p-button>
+        <p-button [severity]="currentGroupForActivation?.active ? 'danger' : 'success'"
+            (onClick)="activation(!currentGroupForActivation?.active)" [disabled]="!!(isLoading$ | async)">
+            <ng-container *ngIf="isLoading$ | async">
+                <span class="indicator-progress" [style.display]="'block'">
+                    {{ 'summaryGroups.list.pleaseWait' | translate }}
+                    <i class="pi pi-spin pi-spinner" style="font-size: 1rem"></i>
+                </span>
+            </ng-container>
+            <ng-container *ngIf="(isLoading$ | async) === false">
+                <span>{{ (currentGroupForActivation?.active ? 'summaryGroups.list.activationDialog.deactivate' : 'summaryGroups.list.activationDialog.activate') | translate }}</span>
+            </ng-container>
+        </p-button>
+    </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="deleteGroupDialog" [modal]="true" [style]="{ width: '450px' }" [closable]="true"
+    [draggable]="false" [resizable]="false">
+    <ng-template pTemplate="header">
+        <h3>{{ 'summaryGroups.list.deleteDialog.title' | translate }}</h3>
+    </ng-template>
+    <div class="flex flex-column gap-3">
+        <p>{{ 'summaryGroups.list.deleteDialog.message' | translate: { title: currentGroupForDelete?.title } }}</p>
+        <p class="text-red-500 font-semibold">{{ 'summaryGroups.list.deleteDialog.cannotUndo' | translate }}</p>
+    </div>
+    <ng-template pTemplate="footer">
+        <p-button [label]="'summaryGroups.list.deleteDialog.cancel' | translate" icon="pi pi-times" class="p-button-text" (onClick)="onCancelDeleteDialog()"
+            [disabled]="!!(isLoading$ | async)">
+        </p-button>
+        <p-button class="p-button-danger" (onClick)="deleteGroup()" [disabled]="!!(isLoading$ | async)">
+            <ng-container *ngIf="isLoading$ | async">
+                <span class="indicator-progress" [style.display]="'block'">
+                    {{ 'summaryGroups.list.pleaseWait' | translate }}
+                    <i class="pi pi-spin pi-spinner" style="font-size: 1rem"></i>
+                </span>
+            </ng-container>
+            <ng-container *ngIf="(isLoading$ | async) === false">
+                <span>{{ 'summaryGroups.list.deleteDialog.delete' | translate }}</span>
+            </ng-container>
+        </p-button>
+    </ng-template>
+</p-dialog>
+
+<!-- Group Form Dialog -->
+<app-group-form [(visible)]="formDialogVisible" [groupId]="formGroupId" (saved)="onFormSaved()"
+    (visibleChange)="onFormDialogClose()">
+</app-group-form>
+
+<p-toast></p-toast>

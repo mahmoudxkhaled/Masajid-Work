@@ -1,0 +1,46 @@
+.download-progress-container {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  z-index: 1100;
+  padding: 1rem;
+  pointer-events: none;
+
+  .download-progress-card {
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: 0;
+    pointer-events: all;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    animation: slideUpRight 0.3s ease-out;
+  }
+}
+
+.upload-progress-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  z-index: 1100;
+  padding: 1rem;
+  pointer-events: none;
+
+  .upload-progress-card {
+    max-width: 480px;
+    margin-right: auto;
+    margin-left: 0;
+    pointer-events: all;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    animation: slideUpRight 0.3s ease-out;
+  }
+}
+
+@keyframes slideUpRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}

@@ -1,0 +1,17 @@
+---
+description: Use Storage/File System API spec when working on upload, download, file-system, or storage features
+globs: "**/file-system*/**","**/file-system-lib/**","**/document-control/**","**/system-storage-management/**","**/entity-storage-management/**"
+alwaysApply: false
+---
+
+# Storage & File System API Reference
+
+When working on **file upload, download, file systems, folders, file allocations, or virtual drives**, use the project API spec as the single source of truth.
+
+**Reference document:** `Docs/storage-management-file-system-api.md`
+
+- Use it for endpoint contracts, request/response shapes, query vs form vs body, and error codes.
+- Upload uses **Upload_Request** (get token) then **Upload_File_Chunk** (query: token; form: Current_Chunk, Offset, Hash; file: chunk). File ID is returned only on the **last** chunk when all chunks succeed.
+- Download uses **Download_Request** (get token + chunk count) then **Download_File_Chunk** (query: token; form: Chunk_ID); response body is the chunk stream.
+- For ERP, use **Delete_File_Allocation** instead of **Delete_File**.
+- Match error codes (ERP12xxx) and permission matrix (roles) from the doc when handling errors and access.

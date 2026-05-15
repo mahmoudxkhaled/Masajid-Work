@@ -1,0 +1,40 @@
+---
+description: Project overview so the AI understands the codebase in every new chat
+alwaysApply: true
+---
+
+# ERP Frontend – Project Context
+
+This workspace is **pmat** (ERP frontend): Angular 17, PrimeNG 17, TypeScript 5.2. Main app lives under `src/app/`.
+
+## Tech stack
+
+- **Angular 17** (standalone-friendly; some NgModules still used). Style: **SCSS**. Prefix: **app**.
+- **UI library:** PrimeNG — use **`angular-project`** for conventions and component preference.
+- **i18n:** **`i18n-translations`** (authoritative: pipes, keys, `en.json` / `ar.json`, toasts).
+- **Auth:** `AuthGuard` in `core/Guards/auth.guard.ts`; auth routes under `/auth` (login, 2FA, reset-password, etc.).
+
+## App structure
+
+- **`core/`** – Guards, interceptors, shared services; standalone routes: `landing`, `notfound`, `under-development`.
+- **`layout/`** – Main shell: `AppLayoutComponent`, breadcrumb, sidebar (routes under this are protected).
+- **`Shared/`** – Reusable UI (e.g. table-loading-spinner, erp-variables).
+- **`modules/`** – Feature modules, lazy-loaded via `app-routing.module.ts`:
+    - **dashboard** – `/`
+    - **summary** – `/summary` (actions, notifications, notifications-management, profile, settings, groups)
+    - **system-administration** – `/system-administration` (default → `dashboard`; also `erp-modules`, `erp-functions`, `system-storage-management`, `system-entities`, `user-accounts`)
+    - **entity-administration** – `/entity-administration` (entities, roles, `entity-user-accounts`, entity-groups, workflows, entity-storage-management)
+    - **document-control** – `/document-control` (file-system landing; `storage-content-management`)
+    - **finance-accounting** – `/financials` (invoices)
+    - **auth** – `/auth` (and `GetQuote`; no layout, no guard)
+
+## Conventions (pointers — avoid duplicating other rules)
+
+- **Code style:** **`angular-project`** (junior-friendly; **minimal scope** — no over-engineering or assumed requirements; only code needed for the feature; avoid RxJS when possible; PrimeNG; `#region`; no comments).
+- **Strings & toasts:** **`i18n-translations`**. **Loading / skeleton UI:** **`ui-defaults`**.
+- **Regional API fields:** **`regional-data-remapping`** (keep raw data; rebuild displayed data on language changes).
+- **List tables (`p-table`):** **`table-defaults`** (canonical layout + skeleton row count = `[rows]`).
+- **Business API failures (`success: false`):** **`business-error-handling`** (component-local `handleBusinessError` + `switch` on codes).
+- **File-system / document-control APIs:** **`storage-file-system-api`** and **Docs/storage-management-file-system-api.md**.
+
+When starting a new task, use this context to locate the right module, routing, and existing patterns.

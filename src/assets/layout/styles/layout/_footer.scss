@@ -1,0 +1,33 @@
+// .ltr-layout {
+    .layout-footer {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem;
+        color: var(--topbar-item-text-color);
+        background-color: var(--topbar-bg);
+        // background-color: var(--surface-card);
+
+        .footer-company-link {
+            font-weight: bold;
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .footer-company-link:hover {
+            text-decoration: underline;
+        }
+    }
+// }
+
+// .rtl-layout {
+//     .layout-footer {
+//         direction: rtl; // Apply RTL direction to the layout
+//         text-align: right; // Align text to the right
+//         display: flex;
+//         align-items: center;
+//         justify-content: center;
+//         padding: 1.5rem;
+//         background-color: var(--surface-card);
+//     }
+// }

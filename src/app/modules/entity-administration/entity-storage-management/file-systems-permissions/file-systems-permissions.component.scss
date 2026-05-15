@@ -1,0 +1,77 @@
+#effective-access-by-account {
+  scroll-margin-top: 1rem;
+}
+
+.permissions-cell-ellipsis {
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.permissions-admin-view {
+  margin: 0 auto;
+
+  .page-top {
+    margin-bottom: 0.5rem;
+  }
+
+  .page-header {
+    margin-bottom: 1.5rem;
+    text-align: start;
+    width: 100%;
+  }
+  .page-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--p-text-color);
+    margin: 0 0 0.5rem 0;
+  }
+  .page-description {
+    font-size: 0.9375rem;
+    color: var(--p-text-muted-color);
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  .block-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--p-text-color);
+    margin: 0 0 0.75rem 0;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--p-surface-200);
+  }
+
+  .block-section {
+    margin-bottom: 2rem;
+  }
+  .block-card {
+    background: var(--p-surface-0);
+    border: 1px solid var(--p-surface-200);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  }
+}
+
+::ng-deep .permissions-admin-view .permissions-admin-table.p-datatable .p-datatable-tbody > tr > td {
+  padding: 0.875rem 1rem;
+}
+::ng-deep .permissions-admin-view .permissions-admin-table.p-datatable .p-datatable-thead > tr > th {
+  padding: 0.875rem 1rem;
+  background: var(--p-surface-50);
+  font-weight: 600;
+  color: var(--p-text-color);
+}
+
+::ng-deep .permissions-admin-view .permissions-admin-table .permissions-access-right-cell .permissions-access-right-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 6.5rem;
+  box-sizing: border-box;
+}
+

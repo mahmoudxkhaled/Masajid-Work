@@ -1,0 +1,110 @@
+h1 {
+    text-align: center;
+    color: #444;
+    margin-bottom: 30px;
+}
+
+.color-box {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 15px 20px;
+    border-radius: 8px;
+    color: white;
+    font-size: 1rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.icon {
+    font-size: 1.8rem;
+    margin-right: 15px;
+    margin-left: 15px;
+}
+
+.text {
+    flex: 1;
+}
+
+.title {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.description {
+    font-size: medium;
+    color: #eaeaea;
+}
+
+.advice {
+    background: linear-gradient(135deg, #4FC3F7, #0288D1);
+}
+
+.warning {
+    background: linear-gradient(135deg, #FFC107, #FF9800);
+    color: #333;
+}
+
+.error {
+    background: linear-gradient(135deg, #F44336, #D32F2F);
+}
+
+.success {
+    background: linear-gradient(135deg, #4CAF50, #2E7D32);
+}
+
+.info {
+    background: linear-gradient(135deg, #03A9F4, #0288D1);
+}
+
+.nice-to-have {
+    background: linear-gradient(135deg, #4DB6AC, #00796B);
+}
+
+.neutral {
+    background: linear-gradient(135deg, #BDBDBD, #757575);
+}
+
+.critical {
+    background: linear-gradient(135deg, #D32F2F, #C62828);
+}
+
+.pending {
+    background: linear-gradient(135deg, #FFB74D, #F57C00);
+    color: #333;
+}
+
+.maintenance {
+    background: linear-gradient(135deg, #3F51B5, #283593);
+}
+
+.live-status {
+    background: linear-gradient(135deg, #8BC34A, #558B2F);
+}
+
+.offline {
+    background: linear-gradient(135deg, #9E9E9E, #616161);
+}
+
+.icon {
+    font-size: 1.8rem;
+    cursor: pointer;
+    position: relative;
+    margin-right: 15px;
+    margin-left: 15px;
+}
+
+.icon:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    z-index: 1000;
+}

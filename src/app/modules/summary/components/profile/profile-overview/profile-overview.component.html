@@ -1,0 +1,373 @@
+<div class="erp-profile-canvas card">
+    <p-toast></p-toast>
+
+    <div class="profile-top-bar flex justify-content-between align-items-end mb-5">
+        <div class="identity-context">
+            <span class="text-primary font-bold text-xs uppercase tracking-widest mb-2 block">{{ 'dashboard.profile' |
+                translate }}</span>
+            <h1 class="text-900 text-4xl font-extrabold m-0 tracking-tight">{{ getUserDisplayName() }}</h1>
+        </div>
+        <div class="actions">
+            <div class="flex align-items-center gap-2">
+                <p-button
+                    [label]="'layout.app-breadcrumb.editProfile' | translate"
+                    icon="pi pi-pencil"
+                    styleClass="p-button-primary font-bold edit-profile-btn"
+                    (onClick)="navigateToEdit()"
+                >
+                </p-button>
+                <p-button
+                    [label]="'layout.app-breadcrumb.editPreferences' | translate"
+                    icon="pi pi-sliders-h"
+                    severity="secondary"
+                    styleClass="font-bold"
+                    (onClick)="navigateToPreferences()"
+                >
+                </p-button>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid p-fluid">
+        <div class="col-12 mb-4">
+            <div
+                class="identity-banner surface-card shadow-1 border-round-xl flex flex-column md:flex-row align-items-center p-5 gap-6">
+                <div class="avatar-container relative">
+                    <div *ngIf="loadingProfilePicture" class="avatar-loading">
+                        <div class="avatar-skeleton-circle">
+                            <p-skeleton shape="circle" size="150px"></p-skeleton>
+                        </div>
+                        <span class="avatar-loading-text">{{ 'profile.overview.loading' | translate }}</span>
+                    </div>
+                    <ng-container *ngIf="!loadingProfilePicture">
+                        <div class="avatar-with-status">
+                            <div class="profile-picture-wrapper" role="button" tabindex="0"
+                                aria-label="Upload profile picture" (click)="onProfilePictureAreaClick()"
+                                (keydown.enter)="onProfilePictureKeydown($event)"
+                                (keydown.space)="onProfilePictureKeydown($event)">
+                                <div class="profile-picture-inner">
+                                    <img [src]="profilePictureUrl || getDefaultAvatarUrl()"
+                                        [alt]="'profile.overview.profilePictureAlt' | translate"
+                                        style="width: 100%; height: 100%; object-fit: contain;">
+                                </div>
+                                <div class="picture-overlay">
+                                    <div class="picture-actions">
+                                        <p-fileUpload #profilePictureUploader
+                                            *ngIf="!hasProfilePicture && !uploadingPicture" mode="basic"
+                                            name="profilePicture" accept="image/*"
+                                            (onSelect)="uploadProfilePicture($event)" [maxFileSize]="2097152"
+                                            styleClass="picture-upload-button p-button-outlined p-button-sm">
+                                        </p-fileUpload>
+                                        <div *ngIf="hasProfilePicture && !uploadingPicture" class="picture-actions-row">
+                                            <p-fileUpload #profilePictureUploader2 mode="basic" name="profilePicture2"
+                                                accept="image/*" (onSelect)="uploadProfilePicture($event)"
+                                                [maxFileSize]="2097152"
+                                                styleClass="picture-upload-button p-button-outlined p-button-sm">
+                                            </p-fileUpload>
+                                            <p-button icon="pi pi-trash" iconPos="left"
+                                                class="picture-remove-button p-button-sm"
+                                                (onClick)="removeProfilePicture()" [disabled]="uploadingPicture">
+                                            </p-button>
+                                        </div>
+                                        <small *ngIf="!uploadingPicture"
+                                            class="text-white-alpha-90 mt-2 text-center picture-recommended-size">
+                                            {{ 'profile.edit.recommendedSize' | translate }}
+                                        </small>
+                                    </div>
+                                </div>
+                                <div *ngIf="uploadingPicture" class="picture-loading-overlay">
+                                    <div class="picture-upload-indicator">
+                                        <p-skeleton shape="circle" size="2.5rem"></p-skeleton>
+                                        <span class="picture-upload-text">
+                                            {{ 'profile.edit.uploading' | translate }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="status-ring"
+                                [style.background]="getStatusSeverity() === 'success' ? '#10b981' : '#f59e0b'"></div>
+                        </div>
+                    </ng-container>
+                </div>
+
+                <div class="identity-info flex-1">
+                    <div class="flex align-items-center gap-3 mb-4">
+                        <p-tag [value]="getStatusLabel()" [severity]="getStatusSeverity()"
+                            styleClass="text-xs font-bold uppercase px-3"></p-tag>
+                        <span class="text-500 font-mono text-sm">
+                            {{ 'profile.labels.userId' | translate }}: {{ userDetails?.User_ID }}
+                        </span>
+                    </div>
+
+                    <div class="grid">
+                        <!-- <div class="col-12 md:col-6">
+                            <span class="text-500 text-xs font-bold uppercase block mb-1">{{ 'profile.overview.fullName'
+                                | translate }}</span>
+                            <span class="text-900 font-bold text-lg">{{ getFirstName() }} {{ getMiddleName() }} {{
+                                getLastName() }}</span>
+                        </div> -->
+
+                        <div class="col-12 md:col-6">
+                            <span class="text-500 text-xs font-bold uppercase block mb-1">{{
+                                'profile.labels.emailAddress' | translate }}</span>
+                            <span class="text-900 font-bold text-lg">{{ accountDetails?.Email || '—' }}</span>
+                        </div>
+                        <div class="col-12 md:col-6">
+                            <span class="text-500 text-xs font-bold uppercase block mb-1">{{ 'profile.labels.company' |
+                                translate }}</span>
+                            <span class="text-900 font-bold text-lg">{{ isRegional ? (entityDetails?.Name_Regional ||
+                                entityDetails?.Name || '') : (entityDetails?.Name || '—') }}</span>
+                        </div>
+                        <div class="col-12 md:col-6 ">
+                            <span class="text-500 text-xs font-bold uppercase block mb-1">{{
+                                'profile.labels.accountTitle' | translate }}</span>
+                            <span class="text-900 font-bold text-lg">{{ isRegional ?
+                                (accountDetails?.Description_Regional || accountDetails?.Description || '—') :
+                                (accountDetails?.Description || '—') }}</span>
+                        </div>
+                        <div class="col-12 md:col-6">
+                            <span class="text-500 text-xs font-bold uppercase block mb-1">{{ 'profile.fields.gender' |
+                                translate }}</span>
+                            <span class="text-900 font-bold text-lg">{{ getGenderLabel() }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 lg:col-8">
+            <div class="surface-card p-5 border-round-xl shadow-1 h-full">
+                <h3 class="text-900 font-bold text-xl mb-4 flex align-items-center gap-2">
+                    <i class="pi pi-users text-primary"></i> {{ 'profile.labels.account' | translate }}
+                </h3>
+                <div class="grid">
+                    <div class="col-12">
+                        <div class="profile-accounts-table-wrapper">
+                            <p-table [value]="userAccounts" responsiveLayout="scroll"
+                                styleClass="p-datatable-sm p-datatable-striped profile-accounts-table">
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                        <th class="col-account-id">{{ 'profile.labels.accountId' | translate }}</th>
+                                        <th class="col-account-title">{{ 'profile.labels.accountTitle' | translate }}
+                                        </th>
+                                        <th class="col-entity">{{ 'profile.labels.entity' | translate }}</th>
+                                        <th class="col-actions">{{ 'common.actions' | translate }}</th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-account>
+                                    <tr>
+                                        <td class="col-account-id font-medium text-900">{{ account.Account_ID }}</td>
+                                        <td class="col-account-title">{{ isRegional ? (account.Description_Regional ||
+                                            account.Description) : account.Description }}</td>
+                                        <td class="col-entity">{{ getEntityNameForAccount(account.Entity_ID) }}</td>
+                                        <td class="col-actions">
+                                            <button pButton pRipple type="button" icon="pi pi-ellipsis-v"
+                                                class="p-button-rounded p-button-text p-button-plain p-button-sm"
+                                                (click)="openAccountMenu(accountMenu, account, $event)"></button>
+                                            <p-menu #accountMenu [model]="accountMenuItems" [popup]="true"
+                                                [appendTo]="'body'"></p-menu>
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="emptymessage">
+                                    <tr>
+                                        <td colspan="4" class="text-center text-500 p-4">{{
+                                            'profile.overview.noAccounts' | translate }}</td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 lg:col-4">
+            <div class="surface-card p-5 border-round-xl shadow-1 mb-4">
+                <h3 class="text-900 font-bold text-lg mb-4">{{ 'profile.overview.contactInformation' | translate }}</h3>
+                <ng-container *ngIf="loadingContactInfo; else contactInfoLoaded">
+                    <div class="flex flex-column gap-4">
+                        <div class="flex align-items-start gap-3">
+                            <i class="pi pi-map-marker text-primary mt-1"></i>
+                            <div>
+                                <span class="text-xs text-500 font-bold uppercase block">{{ 'profile.overview.address' | translate }}</span>
+                                <div class="flex flex-column gap-1">
+                                    <p-skeleton height="1rem" width="100%"></p-skeleton>
+                                    <p-skeleton height="1rem" width="85%"></p-skeleton>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex align-items-start gap-3">
+                            <i class="pi pi-phone text-primary mt-1"></i>
+                            <div class="flex-1">
+                                <span class="text-xs text-500 font-bold uppercase block mb-2">{{ 'profile.fields.phone' | translate }}</span>
+                                <div class="flex flex-column gap-2">
+                                    <p-skeleton height="1.25rem" width="10rem" borderRadius="6px"></p-skeleton>
+                                    <p-skeleton height="1.25rem" width="9rem" borderRadius="6px"></p-skeleton>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+                <ng-template #contactInfoLoaded>
+                <div class="flex flex-column gap-4">
+                    <div class="flex align-items-start gap-3" *ngIf="userContactInfo && userContactInfo.address">
+                        <i class="pi pi-map-marker text-primary mt-1"></i>
+                        <div>
+                            <span class="text-xs text-500 font-bold uppercase block">{{ 'profile.overview.address' |
+                                translate }}</span>
+                            <span class="text-900 font-medium">{{ userContactInfo.address }}</span>
+                        </div>
+                    </div>
+                    <div class="flex align-items-start gap-3"
+                        *ngIf="userContactInfo && userContactInfo.phoneNumbers && userContactInfo.phoneNumbers.length > 0">
+                        <i class="pi pi-phone text-primary mt-1"></i>
+                        <div class="flex-1">
+                            <span class="text-xs text-500 font-bold uppercase block mb-2">{{ 'profile.fields.phone' |
+                                translate }}</span>
+                            <ul class="list-none p-0 m-0 flex flex-column gap-2">
+                                <li *ngFor="let phone of userContactInfo.phoneNumbers" class="text-900 font-medium">
+                                    {{ phone }}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div *ngIf="!userContactInfo || (!userContactInfo?.address && (!userContactInfo?.phoneNumbers || userContactInfo.phoneNumbers.length === 0))"
+                        class="text-center text-500 p-3">
+                        {{ 'profile.overview.noContactInfoAvailable' | translate }}
+                    </div>
+                </div>
+                </ng-template>
+            </div>
+
+            <div class="surface-card p-5 border-round-xl shadow-1 mb-4" *ngIf="loadingContactInfo">
+                <h3 class="text-900 font-bold text-lg mb-4">{{ 'profile.overview.socialMedia' | translate }}</h3>
+                <div class="flex gap-2">
+                    <p-skeleton shape="circle" size="2.5rem"></p-skeleton>
+                    <p-skeleton shape="circle" size="2.5rem"></p-skeleton>
+                    <p-skeleton shape="circle" size="2.5rem"></p-skeleton>
+                    <p-skeleton shape="circle" size="2.5rem"></p-skeleton>
+                </div>
+            </div>
+
+            <div class="surface-card p-5 border-round-xl shadow-1"
+                *ngIf="!loadingContactInfo && userContactInfo && (userContactInfo.linkedinPage || userContactInfo.facebookPage || userContactInfo.instagramPage || userContactInfo.twitterPage)">
+                <h3 class="text-900 font-bold text-lg mb-4">{{ 'profile.overview.socialMedia' | translate }}</h3>
+                <div class="flex gap-2">
+                    <p-button *ngIf="userContactInfo?.linkedinPage" icon="pi pi-linkedin"
+                        [pTooltip]="userContactInfo.linkedinPage" tooltipPosition="top"
+                        styleClass="p-button-rounded p-button-text"
+                        (onClick)="openSocialLink(userContactInfo.linkedinPage)"></p-button>
+                    <p-button *ngIf="userContactInfo?.facebookPage" icon="pi pi-facebook"
+                        [pTooltip]="userContactInfo.facebookPage" tooltipPosition="top"
+                        styleClass="p-button-rounded p-button-text"
+                        (onClick)="openSocialLink(userContactInfo.facebookPage)"></p-button>
+                    <p-button *ngIf="userContactInfo?.instagramPage" icon="pi pi-instagram"
+                        [pTooltip]="userContactInfo.instagramPage" tooltipPosition="top"
+                        styleClass="p-button-rounded p-button-text"
+                        (onClick)="openSocialLink(userContactInfo.instagramPage)"></p-button>
+                    <p-button *ngIf="userContactInfo?.twitterPage" icon="pi pi-twitter"
+                        [pTooltip]="userContactInfo.twitterPage" tooltipPosition="top"
+                        styleClass="p-button-rounded p-button-text"
+                        (onClick)="openSocialLink(userContactInfo.twitterPage)"></p-button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <p-dialog [(visible)]="editAccountTitleDialogVisible"
+        [header]="'profile.overview.editAccountTitleDialogTitle' | translate" [modal]="true"
+        [style]="{ width: '450px' }" [closable]="true" [draggable]="false" [resizable]="false"
+        (onHide)="cancelEditAccountTitle()">
+        <div class="flex flex-column gap-3">
+            <label class="font-semibold" for="editAccountTitleInput">{{ 'profile.labels.accountTitle' | translate
+                }}</label>
+            <input id="editAccountTitleInput" type="text" pInputText class="w-full" [(ngModel)]="editAccountTitleValue"
+                [placeholder]="'profile.overview.editAccountTitlePlaceholder' | translate" />
+            <span class="text-xs text-500" *ngIf="isRegional">{{ 'profile.overview.regionalFieldHint' | translate
+                }}</span>
+        </div>
+        <ng-template pTemplate="footer">
+            <p-button [label]="'common.cancel' | translate" styleClass="p-button-text"
+                (onClick)="cancelEditAccountTitle()"></p-button>
+            <p-button [label]="'common.save' | translate" icon="pi pi-check" (onClick)="saveEditAccountTitle()"
+                [loading]="savingAccountTitle"></p-button>
+        </ng-template>
+    </p-dialog>
+
+    <p-dialog [(visible)]="accountDetailsDialogVisible"
+        [header]="'profile.overview.accountDetailsDialogTitle' | translate" [modal]="true" [style]="{ width: '420px' }"
+        [closable]="true" [draggable]="false" [resizable]="false" (onHide)="closeAccountDetailsDialog()"
+        styleClass="account-details-dialog">
+        <div *ngIf="accountForDetails" class="account-details-content">
+            <ng-container *ngIf="loadingAccountDetails; else accountDetailsBody">
+                    <div class="account-details-row">
+                        <span class="account-details-label">{{ 'profile.labels.accountId' | translate }}</span>
+                        <p-skeleton height="0.9375rem" width="40%" borderRadius="4px"></p-skeleton>
+                    </div>
+                    <div class="account-details-row">
+                        <span class="account-details-label">{{ 'profile.labels.accountTitle' | translate }}</span>
+                        <p-skeleton height="0.9375rem" width="85%" borderRadius="4px"></p-skeleton>
+                    </div>
+                    <div class="account-details-row">
+                        <span class="account-details-label">{{ 'profile.labels.entity' | translate }}</span>
+                        <p-skeleton height="0.9375rem" width="60%" borderRadius="4px"></p-skeleton>
+                    </div>
+                    <div class="account-details-row">
+                        <span class="account-details-label">{{ 'profile.labels.emailAddress' | translate }}</span>
+                        <p-skeleton height="0.9375rem" width="90%" borderRadius="4px"></p-skeleton>
+                    </div>
+                    <div class="account-details-row">
+                        <span class="account-details-label">{{ 'profile.overview.roleName' | translate }}</span>
+                        <p-skeleton height="0.9375rem" width="55%" borderRadius="4px"></p-skeleton>
+                    </div>
+            </ng-container>
+            <ng-template #accountDetailsBody>
+                <div class="account-details-row">
+                    <span class="account-details-label">{{ 'profile.labels.accountId' | translate }}</span>
+                    <span class="account-details-value">{{ accountForDetails.Account_ID }}</span>
+                </div>
+                <div class="account-details-row">
+                    <span class="account-details-label">{{ 'profile.labels.accountTitle' | translate }}</span>
+                    <span class="account-details-value">{{ isRegional ? (accountForDetails.Description_Regional ||
+                        accountForDetails.Description) : (accountForDetails.Description || '—') }}</span>
+                </div>
+                <div class="account-details-row">
+                    <span class="account-details-label">{{ 'profile.labels.entity' | translate }}</span>
+                    <span class="account-details-value">{{ getEntityNameForAccount(accountForDetails.Entity_ID)
+                        }}</span>
+                </div>
+                <div class="account-details-row">
+                    <span class="account-details-label">{{ 'profile.labels.emailAddress' | translate }}</span>
+                    <span class="account-details-value">{{ accountForDetails.Email || '—' }}</span>
+                </div>
+                <div class="account-details-row">
+                    <span class="account-details-label">{{ 'profile.overview.roleName' | translate }}</span>
+                    <span class="account-details-value">{{ accountDetailsRoleName || '—' }}</span>
+                </div>
+            </ng-template>
+        </div>
+    </p-dialog>
+
+    <p-dialog [(visible)]="showCropDialog" [header]="'profile.edit.positionPhoto' | translate" [modal]="true"
+        [closable]="true" [style]="{ width: '320px' }" (onHide)="onCropDialogHide()" [draggable]="false"
+        [resizable]="false">
+        <p class="text-600 mb-3">{{ 'profile.edit.positionPhotoHint' | translate }}</p>
+        <div class="crop-area" (mousedown)="onCropMouseDown($event)" (mousemove)="onCropMouseMove($event)"
+            (mouseup)="onCropMouseUp()" (mouseleave)="onCropMouseUp()">
+            <div class="crop-circle">
+                <img #cropImage [src]="pendingCropDataUrl" [alt]="'profile.overview.cropAlt' | translate"
+                    [style.width.px]="cropDisplayWidth" [style.height.px]="cropDisplayHeight"
+                    [style.left.px]="cropPosition.x" [style.top.px]="cropPosition.y" (load)="onCropImageLoad($event)"
+                    draggable="false">
+            </div>
+        </div>
+        <ng-template pTemplate="footer">
+            <p-button [label]="'profile.edit.cancel' | translate" (onClick)="closeCropDialog()" class="p-button-text">
+            </p-button>
+            <p-button [label]="'profile.edit.applyCrop' | translate" (onClick)="applyCropAndUpload()"
+                [loading]="uploadingPicture">
+            </p-button>
+        </ng-template>
+    </p-dialog>
+</div>

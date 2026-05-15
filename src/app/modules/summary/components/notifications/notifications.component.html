@@ -1,0 +1,37 @@
+<div class="notifications-container card">
+    <div class="page-header">
+        <h1>{{ 'dashboard.notifications' | translate }}</h1>
+        <p class="page-description">{{ 'summaryNotifications.page.description' | translate }}</p>
+    </div>
+
+    <div class="notifications-content">
+        <div class="notifications-list">
+            <div class="notification-item">
+                <div class="notification-icon">🔔</div>
+                <div class="notification-content">
+                    <h3>{{ 'summaryNotifications.page.systemUpdate' | translate }}</h3>
+                    <p>{{ 'summaryNotifications.page.systemUpdateMessage' | translate }}</p>
+                    <span class="notification-time">{{ 'summaryNotifications.page.hoursAgo' | translate: { count: 2 } }}</span>
+                </div>
+            </div>
+
+            <div class="notification-item">
+                <div class="notification-icon">📧</div>
+                <div class="notification-content">
+                    <h3>{{ 'summaryNotifications.page.newMessage' | translate }}</h3>
+                    <p>{{ 'summaryNotifications.page.newMessageText' | translate }}</p>
+                    <span class="notification-time">{{ 'summaryNotifications.page.hoursAgo' | translate: { count: 4 } }}</span>
+                </div>
+            </div>
+
+            <div class="notification-item">
+                <div class="notification-icon">📋</div>
+                <div class="notification-content">
+                    <h3>{{ 'summaryNotifications.page.taskReminder' | translate }}</h3>
+                    <p>{{ 'summaryNotifications.page.taskReminderText' | translate }}</p>
+                    <span class="notification-time">{{ 'summaryNotifications.page.dayAgo' | translate }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,298 @@
+.system-dashboard-v2 {
+    .system-dashboard-v2__tippable {
+        cursor: help;
+    }
+
+    .stat-card {
+        position: relative;
+        padding: 1.25rem 1.35rem;
+        border: 1px solid var(--surface-border);
+        background: var(--surface-card);
+        overflow: hidden;
+        transition:
+            box-shadow 0.2s ease,
+            transform 0.2s ease,
+            border-color 0.2s ease;
+
+        &::before {
+            content: '';
+            position: absolute;
+            inset-inline-start: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--primary-color);
+            border-radius: 0;
+        }
+
+        &:hover {
+            border-color: color-mix(in srgb, var(--primary-color) 35%, var(--surface-border));
+            box-shadow: 0 10px 28px color-mix(in srgb, var(--primary-color) 14%, transparent);
+            transform: translateY(-2px);
+        }
+
+        &--skeleton:hover {
+            transform: none;
+            box-shadow: none;
+            border-color: var(--surface-border);
+        }
+
+        &--skeleton {
+            min-height: 9.75rem;
+            box-sizing: border-box;
+            pointer-events: none;
+
+            &::before {
+                background: color-mix(in srgb, var(--primary-color) 35%, var(--surface-border));
+                opacity: 0.65;
+            }
+        }
+
+        &--skeleton-compact {
+            min-height: 7.5rem;
+        }
+
+        &--has-trend {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+
+            .stat-card__main {
+                flex: 1 1 auto;
+                min-height: 0;
+            }
+
+            .stat-card__value {
+                margin-bottom: 0;
+            }
+
+            .stat-card__trend-row {
+                display: flex;
+                justify-content: flex-start;
+                width: 100%;
+                flex-shrink: 0;
+                margin-top: auto;
+                padding-top: 0.75rem;
+            }
+
+            .stat-card__trend {
+                flex-wrap: nowrap;
+                max-width: none;
+
+                span {
+                    white-space: nowrap;
+                }
+            }
+        }
+    }
+
+    :host ::ng-deep .stat-card__icon--skeleton .p-skeleton {
+        display: block;
+    }
+
+    .stat-card__skeleton-body {
+        padding-top: 0.1rem;
+        justify-content: flex-start;
+
+        &--compact {
+            justify-content: center;
+        }
+    }
+
+    .stat-card__label {
+        font-size: 0.8125rem;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+        color: var(--text-color-secondary);
+        margin-bottom: 0.35rem;
+    }
+
+    .stat-card__value {
+        font-size: clamp(1.75rem, 2.8vw, 2.35rem);
+        font-weight: 700;
+        line-height: 1.12;
+        letter-spacing: -0.03em;
+        color: var(--text-color);
+        margin-bottom: 0.65rem;
+        font-variant-numeric: tabular-nums;
+
+        &--md {
+            font-size: clamp(1.35rem, 2.2vw, 1.9rem);
+            margin-bottom: 0;
+        }
+    }
+
+    .stat-card__sub {
+        font-size: 0.8125rem;
+        font-weight: 500;
+        color: var(--text-color-secondary);
+        margin-top: 0.45rem;
+        line-height: 1.35;
+    }
+
+    .stat-card__icon {
+        width: 3.5rem;
+        height: 3.5rem;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        font-size: 1.5rem;
+        line-height: 1;
+        color: var(--primary-color);
+
+        &--skeleton {
+            overflow: hidden;
+            line-height: 0;
+            background: color-mix(in srgb, var(--primary-color) 9%, var(--surface-card));
+            border: 1px solid var(--surface-border);
+        }
+
+        &:not(.stat-card__icon--skeleton) {
+            position: relative;
+            background: linear-gradient(
+                155deg,
+                color-mix(in srgb, var(--primary-color) 28%, var(--surface-card)) 0%,
+                color-mix(in srgb, var(--primary-color) 12%, var(--surface-ground)) 100%
+            );
+            border: 1px solid color-mix(in srgb, var(--primary-color) 34%, var(--surface-border));
+            box-shadow:
+                0 1px 2px color-mix(in srgb, var(--primary-color) 12%, transparent),
+                0 6px 16px color-mix(in srgb, var(--primary-color) 14%, transparent),
+                inset 0 1px 0 color-mix(in srgb, var(--primary-color) 38%, transparent);
+            transition:
+                transform 0.22s ease,
+                box-shadow 0.22s ease,
+                border-color 0.22s ease;
+
+            .pi {
+                filter: drop-shadow(0 1px 1px color-mix(in srgb, var(--primary-color) 28%, transparent));
+            }
+
+            .stat-card:hover & {
+                transform: scale(1.05) translateY(-1px);
+                border-color: color-mix(in srgb, var(--primary-color) 52%, var(--surface-border));
+                box-shadow:
+                    0 2px 8px color-mix(in srgb, var(--primary-color) 18%, transparent),
+                    0 12px 26px color-mix(in srgb, var(--primary-color) 20%, transparent),
+                    inset 0 1px 0 color-mix(in srgb, var(--primary-color) 48%, transparent);
+            }
+        }
+    }
+
+    .stat-card__trend {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        padding: 0.35rem 0.65rem;
+        border-radius: 8px;
+        max-width: 100%;
+        flex-wrap: wrap;
+
+        .pi {
+            font-size: 0.75rem;
+        }
+
+        &--up {
+            color: var(--green-500);
+            background: color-mix(in srgb, var(--green-500) 14%, transparent);
+        }
+
+        &--down {
+            color: var(--orange-500);
+            background: color-mix(in srgb, var(--orange-500) 14%, transparent);
+        }
+    }
+
+    .system-dashboard-v2__endpoint-dropdown {
+        width: 100%;
+        max-width: 30rem;
+    }
+
+    .system-dashboard-v2__toolbar-dropdown {
+        min-width: 11rem;
+    }
+
+    .system-dashboard-v2__health-chip {
+        border: 1px solid var(--surface-border);
+    }
+
+    .system-dashboard-v2__alert {
+        border-inline-start: 4px solid var(--surface-border);
+
+        &--critical {
+            border-inline-start-color: var(--red-500);
+        }
+
+        &--warning {
+            border-inline-start-color: var(--orange-500);
+        }
+
+        &--info {
+            border-inline-start-color: var(--blue-500);
+        }
+    }
+
+    .chart-panel {
+        position: relative;
+        min-height: 320px;
+    }
+
+    .chart-panel--compact {
+        min-height: 220px;
+    }
+
+    :host ::ng-deep .chart-panel .p-chart {
+        display: block;
+    }
+
+    :host ::ng-deep .p-card.dashboard-panel {
+        border: 1px solid var(--surface-border);
+        border-radius: 12px;
+        overflow: hidden;
+        background: var(--surface-card);
+        box-shadow: 0 2px 12px color-mix(in srgb, var(--text-color) 6%, transparent);
+        transition:
+            box-shadow 0.2s ease,
+            border-color 0.2s ease,
+            transform 0.2s ease;
+
+        .p-card-header {
+            padding: 0.85rem 1.25rem;
+            border-bottom: 1px solid var(--surface-border);
+            font-weight: 600;
+        }
+
+        .p-card-body {
+            padding: 1rem 1.25rem 1.25rem;
+        }
+
+        &:hover {
+            border-color: color-mix(in srgb, var(--primary-color) 28%, var(--surface-border));
+            box-shadow: 0 10px 28px color-mix(in srgb, var(--primary-color) 12%, transparent);
+        }
+    }
+
+    tr.cursor-pointer {
+        cursor: pointer;
+    }
+
+    tr.cursor-pointer:hover {
+        background: var(--surface-hover);
+    }
+
+    :host ::ng-deep .system-dashboard-v2__datatable {
+        .p-datatable-thead > tr > th,
+        .p-datatable-tbody > tr > td {
+            text-align: start;
+        }
+
+        .p-paginator {
+            justify-content: start;
+        }
+    }
+}

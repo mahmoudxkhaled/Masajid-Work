@@ -1,0 +1,28 @@
+<ng-container *ngIf="!accountSettingsReady; else accountSettingsContent">
+    <div class="p-4">
+        <p-skeleton height="12rem" class="mb-4" borderRadius="6px"></p-skeleton>
+        <p-skeleton height="12rem" borderRadius="6px"></p-skeleton>
+    </div>
+</ng-container>
+<ng-template #accountSettingsContent>
+    <div class="p-4">
+        <app-settings-section
+            *ngIf="canManageDefault"
+            layer="defaultAccount"
+            titleKey="settings.sections.defaultAccount.title"
+            [showRemove]="true"
+            [preloadedData]="defaultAccountData"
+            (reloadParentTab)="reloadAccountTab()"
+        ></app-settings-section>
+
+        <app-settings-section
+            layer="account"
+            titleKey="settings.sections.accountCustom.title"
+            [showRemove]="true"
+            [allowCustomKey]="false"
+            [inheritedDefaults]="defaultAccountData"
+            [preloadedData]="accountCustomData"
+            (reloadParentTab)="reloadAccountTab()"
+        ></app-settings-section>
+    </div>
+</ng-template>

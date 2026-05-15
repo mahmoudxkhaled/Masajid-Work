@@ -1,0 +1,18 @@
+<div class="card">
+    <!-- Header -->
+    <div class="flex justify-content-between align-items-center mb-4">
+        <h2>{{ 'entityGroups.details.title' | translate }}</h2>
+        <p-button [label]="'entityGroups.details.backToList' | translate" icon="pi pi-arrow-left" class="p-button-secondary" (onClick)="navigateBack()"
+            [disabled]="loading">
+        </p-button>
+    </div>
+
+    <!-- Members Component (shows its own table skeleton while loading) -->
+    <div *ngIf="groupId">
+        <app-entity-group-members [groupId]="getGroupIdAsNumber()" [entityId]="group?.entityId"
+            (membersUpdated)="handleGroupUpdated()">
+        </app-entity-group-members>
+    </div>
+</div>
+
+<p-toast></p-toast>

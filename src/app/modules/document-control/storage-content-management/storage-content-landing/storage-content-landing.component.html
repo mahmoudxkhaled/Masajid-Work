@@ -1,0 +1,28 @@
+<div class="storage-content-landing p-4 card">
+    <div class="storage-content-top flex flex-col gap-3 mb-4">
+        <!-- <a routerLink="/document-control" class="back-link">
+            <i class="pi pi-arrow-left"></i>
+            <span>{{ 'fileSystem.backToHome' | translate }}</span>
+        </a> -->
+        <div class="page-header">
+            <h1 class="page-title">{{ 'fileSystem.landing.storageContentManagementTitle' | translate }}</h1>
+            <p class="page-subtitle">{{ 'fileSystem.landing.storageContentManagementSubtitle' | translate }}</p>
+        </div>
+    </div>
+
+    <div class="flex flex-wrap gap-4 justify-content-center">
+        <div *ngFor="let box of boxes" [id]="'storage-content-box-' + box.id" class="module-glass-card"
+            (click)="onBoxClick(box)">
+            <div class="card-glow"></div>
+            <div class="icon-section">
+                <i [class]="box.icon" class="box-icon"></i>
+            </div>
+            <div class="name-section">
+                <span class="module-text">{{ box.labelKey | translate }}</span>
+                <!-- <span class="module-code">{{ box.codeKey | translate }}</span> -->
+                <!-- <span class="status-indicator">{{ 'fileSystem.landing.ready' | translate }}</span> -->
+            </div>
+            <div class="active-bar"></div>
+        </div>
+    </div>
+</div>

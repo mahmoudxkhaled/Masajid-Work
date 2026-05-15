@@ -1,0 +1,22 @@
+<div class="card">
+    <!-- Header: title shows skeleton while group is loading, then real title -->
+    <div class="flex justify-content-between align-items-center mb-4">
+        <h2>
+            <ng-container *ngIf="loading; else titleContent">
+                <p-skeleton width="18rem" height="2rem"></p-skeleton>
+            </ng-container>
+            <ng-template #titleContent>{{ 'summaryGroups.details.titleOf' | translate: { groupTitle: group?.title } }}</ng-template>
+        </h2>
+        <p-button [label]="'summaryGroups.details.backToList' | translate" icon="pi pi-arrow-left" class="p-button-secondary" (onClick)="navigateBack()"
+            [disabled]="loading">
+        </p-button>
+    </div>
+
+    <!-- Members table (skeleton inside cells is handled by app-group-members via tableValue) -->
+    <div *ngIf="groupId">
+        <app-group-members [groupId]="getGroupIdAsNumber()" (membersUpdated)="handleGroupUpdated()">
+        </app-group-members>
+    </div>
+</div>
+
+<p-toast></p-toast>

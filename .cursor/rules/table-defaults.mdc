@@ -1,0 +1,73 @@
+---
+description: Project-wide table defaults — match file-systems-section list table pattern unless the owner specifies otherwise. Ask when unclear.
+alwaysApply: true
+---
+
+# Table defaults (project-wide)
+
+Use **`src/app/modules/entity-administration/entity-storage-management/file-systems-section/file-systems-section.component.html`** (table inside `.block-card`, roughly lines 16–169) and its **`file-systems-section.component.scss`** row styles as the **canonical layout and behaviour** for new list tables. Replicate the same structure, spacing, skeleton strategy, column widths, row interaction, and toolbar pattern unless the owner gives a different spec.
+
+## `p-table` shell (match reference)
+
+- `responsiveLayout="scroll"`, `styleClass="p-datatable-sm"`.
+- Paginator: `[paginator]="true"`, `[rows]`, `[rowsPerPageOptions]="[10, 25, 50, 100]"` for **new** tables (project pagination standard). If you are editing an existing screen that already uses other options, keep that file consistent unless the owner asks to align.
+- `[showCurrentPageReport]="true"` and `[currentPageReportTemplate]` bound to a **translate** pipe (feature key like the reference, or `common.pagination.report` where that is the project norm).
+- **Global quick filter:** `[globalFilterFields]` for searchable fields; search input uses `(input)="tableRef.filterGlobal($any($event.target).value, 'contains')"` like the reference.
+- **Server-side / lazy lists:** When data is paged on the server, add `[lazy]="true"`, `[totalRecords]`, `[first]`, `(onLazyLoad)="..."`, and cursor-based pagination per project guidelines — keep the **same caption, header, body, skeleton, and column rules** as the reference.
+
+## Caption toolbar (match reference)
+
+- Outer row: `flex align-items-center justify-content-between gap-3 mb-2 flex-wrap`.
+- **Search:** `span.p-input-icon-left` with `flex-1 min-w-200px max-w-md`, icon + `pInputText`, translated `[placeholder]`.
+- **Skeleton for toolbar controls:** While the list is in the initial loading state with **no rows yet** (`loading && items.length === 0` in the reference), show **`p-skeleton`** placeholders that **match the real control size** (e.g. search `height="2.5rem"` `width="100%"` `borderRadius="6px"`; dropdowns `height="2.5rem"` with widths matching `[style.width]` of the real `p-dropdown`, e.g. `10rem` / `12rem`; checkbox row: small square skeleton beside label).
+- **Labels** (filters, checkboxes): stay visible; use **translate** for all user-visible text.
+- Preserve **gaps** (`gap-2`, `gap-3`, `ml-2` on groups) so loaded and skeleton states **do not shift**.
+
+## Header row (match reference)
+
+- Each `<th>` has an explicit **`style="width: …"`** (rem) aligned with the body `<td>` in the same column.
+- Use `class="text-center"` (or `text-start`) on header/body cells consistently per column.
+- All header titles use **`{{ '…' | translate }}`**.
+
+## Body rows (match reference)
+
+- **Clickable / details row:** `<tr class="{feature}-row-clickable">` with `[style.cursor]="loading ? 'default' : 'pointer'"` using the component’s **existing** loading flag (no new flags).
+- **View details:** In the reference, the row uses **`(click)="!loading && showDetailsDialog(row)"`** (or the feature’s equivalent). **Hover** only changes background (SCSS below), not a second conflicting handler. If the owner requires **opening details on hover**, use `(mouseenter)` with a short debounce and clarify close behaviour — **ask** if anything is ambiguous.
+- **Component SCSS (same idea as reference):** in `:host ::ng-deep`, target `.p-datatable .p-datatable-tbody > tr.{feature}-row-clickable` with `transition: background-color 0.2s ease` and `:hover { background-color: var(--surface-hover); }`.
+
+## Cells, skeletons, text overflow (reference + owner requirements)
+
+- **Skeleton row count:** When the table uses **placeholder rows** during initial load (fake rows whose cells contain `<p-skeleton>`, or an equivalent pattern), the **number of body rows** must equal **`p-table`’s `[rows]`** (the same default page size as the paginator). Do **not** use an arbitrary fixed count (e.g. 5) when `[rows]` is 10. Tie the count to the **same** property/value as `[rows]` (e.g. `Array(this.fileSystemsTableRows).fill(null)` in a getter, or an array whose `length` matches `rows`).
+- **Per cell:** `ng-container *ngIf="loading; else …"` with **`<p-skeleton>`** inside the **same `<td>`** as loaded content — same column width, same inner alignment wrappers (`flex`, `justify-content-center`, `gap-2` for icon + text clusters). Skeleton **height/width/borderRadius** should mirror the real control (tag, round icon button, text line).
+- **Long text:** Wrap text that can overflow in a container with **ellipsis** (`text-overflow: ellipsis; overflow: hidden; white-space: nowrap`; add `min-width: 0` inside flex where needed). Use **`[pTooltip]`** with the full value when truncated. The reference uses tooltip on type; apply the same idea to name/drive or other long fields when needed.
+- **Do not** change `td`/`th` padding or add wrappers that alter layout between skeleton and loaded states.
+
+## Row actions (match reference)
+
+- **Menu / extra actions:** `p-menu` popup, `(click)="$event.stopPropagation(); …"` on the trigger so row click / details are not fired.
+- Any other inline **buttons** on the row: **`stopPropagation`** where they should not activate row-level behaviour.
+
+## Sorting, selection, export
+
+- Add **`[sortable]="true"`**, row selection, export, column toggler, etc. **only when** the feature needs them or the owner asks — do not remove them from an existing table without instruction. When adding sort, keep the same column widths and skeleton layout.
+
+## i18n
+
+- Every visible string in caption, headers, tooltips, and empty states: **translate pipe** + keys in **`en.json`** and **`ar.json`**.
+
+## Behaviour rules
+
+- Do not remove or change outer containers (e.g. `.block-card`) or spacing when adding skeletons.
+- Do not create new loading flags; reuse existing ones (`loadingFileSystems`, `tableLoadingSpinner`, `isLoading$`, etc.).
+- Do not hardcode user-visible text.
+- If behaviour differs from server lazy vs client paging, or details should be hover vs click, **ask the owner** — do not assume.
+
+## Short checklist before PR
+
+1. Table shell matches reference (`p-datatable-sm`, scroll layout, paginator, page report template translated, global filter wired like reference).
+2. `rowsPerPageOptions` is `[10, 25, 50, 100]` for new work (unless owner says to match an existing file’s array).
+3. Caption skeletons mirror real controls (heights, widths, gaps, margins); no layout shift.
+4. Header/body column widths aligned; long text ellipsis + tooltip where needed; skeletons per cell match loaded layout; **count of skeleton/placeholder body rows = `[rows]`** on `p-table`.
+5. Row class + hover SCSS + cursor binding; details handler on row as agreed (reference: click); `stopPropagation` on inline actions.
+6. All strings translated in both language files.
+7. Asked owner when in doubt.

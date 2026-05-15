@@ -1,0 +1,136 @@
+<div class="card">
+    <div class="flex justify-content-between align-items-center mb-4">
+        <h2>{{ 'summaryNotifications.inbox.title' | translate }}</h2>
+        <div class="flex align-items-center gap-2">
+            <div class="flex align-items-center gap-2">
+                <label class="block mb-2 font-medium">{{ 'summaryNotifications.inbox.unreadOnly' | translate }}</label>
+                <p-inputSwitch [(ngModel)]="unreadOnly" (onChange)="onUnreadOnlyChange()"></p-inputSwitch>
+            </div>
+            <div class="flex align-items-center gap-2">
+                <p-tag [value]="'summaryNotifications.inbox.unreadCount' | translate: { count: getUnreadCount() }" severity="warning" *ngIf="getUnreadCount() > 0"></p-tag>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="grid mb-3">
+
+        <div class="col-12 md:col-4 p-fluid">
+            <label class="block mb-2 font-medium">{{ 'summaryNotifications.inbox.textFilter' | translate }}</label>
+            <input type="text" pInputText [(ngModel)]="textFilter" [placeholder]="'summaryNotifications.inbox.searchPlaceholder' | translate" (input)="onFilterChange()" />
+        </div>
+
+
+        <div class="col-12 md:col-4 p-fluid">
+            <label class="block mb-2 font-medium">{{ 'summaryNotifications.inbox.typeFilter' | translate }}</label>
+            <p-multiSelect [options]="notificationTypes" [(ngModel)]="selectedTypeIds" optionLabel="title"
+                optionValue="type_ID" [placeholder]="'summaryNotifications.inbox.selectTypes' | translate" (onChange)="onFilterChange()" [showClear]="false"
+                [showToggleAll]="false">
+            </p-multiSelect>
+        </div>
+        <div class="col-12 md:col-4 p-fluid">
+            <label class="block mb-2 font-medium">{{ 'summaryNotifications.inbox.categoryFilter' | translate }}</label>
+            <p-multiSelect [options]="notificationCategories" [(ngModel)]="selectedCategoryIds" optionLabel="Title"
+                optionValue="Category_ID" [placeholder]="'summaryNotifications.inbox.selectCategories' | translate" (onChange)="onFilterChange()"
+                [showClear]="false" [showToggleAll]="false">
+            </p-multiSelect>
+        </div>
+
+    </div>
+
+    <div style="position: relative;">
+        <p-table #notificationsTable [value]="tableValue" [paginator]="false" responsiveLayout="scroll">
+
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="width: 50px;">{{ 'summaryNotifications.inbox.table.status' | translate }}</th>
+                    <th style="width: 120px;">{{ 'summaryNotifications.inbox.table.type' | translate }}</th>
+                    <th style="width: 200px;">{{ 'summaryNotifications.inbox.table.title' | translate }}</th>
+                    <th style="width: 400px;">{{ 'summaryNotifications.inbox.table.message' | translate }}</th>
+                    <th style="width: 150px;">{{ 'summaryNotifications.inbox.table.date' | translate }}</th>
+                    <th style="width: 200px; text-align: start !important;">{{ 'summaryNotifications.inbox.table.actions' | translate }}</th>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-notification>
+                <tr [class.unread]="!notification.isRead">
+                    <td>
+                        <ng-container *ngIf="tableLoadingSpinner; else normalStatus">
+                            <p-skeleton height="1.5rem" width="5rem" borderRadius="4px"></p-skeleton>
+                        </ng-container>
+                        <ng-template #normalStatus>
+                            <p-tag [value]="notification.isRead ? ('summaryNotifications.inbox.read' | translate) : ('summaryNotifications.inbox.unread' | translate)"
+                                [severity]="notification.isRead ? 'success' : 'warning'">
+                            </p-tag>
+                        </ng-template>
+                    </td>
+                    <td>
+                        <ng-container *ngIf="tableLoadingSpinner; else normalType">
+                            <p-skeleton height="1.5rem" width="5rem"></p-skeleton>
+                        </ng-container>
+                        <ng-template #normalType>
+                            <span class="text-600">{{ getTypeName(notification.typeId) }}</span>
+                        </ng-template>
+                    </td>
+                    <td>
+                        <ng-container *ngIf="tableLoadingSpinner; else normalTitle">
+                            <p-skeleton height="1rem" width="10rem"></p-skeleton>
+                        </ng-container>
+                        <ng-template #normalTitle>
+                            <span class="font-semibold">{{ notification.title }}</span>
+                        </ng-template>
+                    </td>
+                    <td>
+                        <ng-container *ngIf="tableLoadingSpinner; else normalMessage">
+                            <p-skeleton height="3rem" width="100%" class="line-height-3"></p-skeleton>
+                        </ng-container>
+                        <ng-template #normalMessage>
+                            <span class="text-600 line-height-3">{{ notification.message }}</span>
+                        </ng-template>
+                    </td>
+                    <td>
+                        <ng-container *ngIf="tableLoadingSpinner; else normalDate">
+                            <p-skeleton height="1.5rem" width="6rem"></p-skeleton>
+                        </ng-container>
+                        <ng-template #normalDate>
+                            <span>{{ notification.createdAt | date: 'short' }}</span>
+                        </ng-template>
+                    </td>
+                    <td class="text-start">
+                        <ng-container *ngIf="tableLoadingSpinner; else normalActions">
+                            <p-skeleton height="2rem" width="8rem"></p-skeleton>
+                        </ng-container>
+                        <ng-template #normalActions>
+                            <div class="flex gap-2">
+                                <p-button *ngIf="!notification.isRead" icon="pi pi-check" [pTooltip]="'summaryNotifications.inbox.markAsRead' | translate"
+                                    class="p-button-sm p-button-text" (onClick)="markAsRead(notification)">
+                                </p-button>
+                                <p-button *ngIf="notification.isRead" icon="pi pi-eye-slash" [pTooltip]="'summaryNotifications.inbox.markAsUnread' | translate"
+                                    class="p-button-sm p-button-text" (onClick)="markAsUnread(notification)">
+                                </p-button>
+                                <p-button icon="pi pi-trash" [pTooltip]="'summaryNotifications.inbox.delete' | translate"
+                                    class="p-button-sm p-button-text p-button-danger"
+                                    (onClick)="deleteNotification(notification)">
+                                </p-button>
+                            </div>
+                        </ng-template>
+                    </td>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="6" class="text-center">{{ 'summaryNotifications.inbox.noNotifications' | translate }}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+
+        <div class="flex justify-content-center mt-3" *ngIf="!tableLoadingSpinner && notifications.length < totalCount">
+            <p-button [label]="'summaryNotifications.inbox.loadMore' | translate" icon="pi pi-arrow-down" (onClick)="loadMore()"
+                [loading]="tableLoadingSpinner">
+            </p-button>
+        </div>
+    </div>
+</div>
+
+<p-toast></p-toast>

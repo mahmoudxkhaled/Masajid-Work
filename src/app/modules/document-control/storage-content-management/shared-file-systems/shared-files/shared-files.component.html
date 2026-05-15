@@ -1,0 +1,142 @@
+<div class="card ">
+
+    <div class="file-sharing-view">
+        <div class="file-sharing-top flex flex-col gap-3">
+            <a routerLink="/document-control/storage-content-management" class="back-link mb-3">
+                <i class="pi pi-arrow-left mr-2"></i>{{ 'fileSystem.backToHome' | translate }}
+            </a>
+            <div class="section-header">
+                <h2 class="section-title">{{ 'fileSystem.fileSharing.title' | translate }}</h2>
+                <p class="section-description">{{ 'fileSystem.fileSharing.description' | translate }}</p>
+            </div>
+        </div>
+        <div class="under-dev-full">
+
+            <div class="content-card mb-4 ">
+                <div class="content-card-header flex align-items-center justify-content-between">
+                    <span class="content-card-title">{{ 'fileSystem.fileSharing.mySharedFileSystems' | translate
+                        }}</span>
+                    <p-button [label]="'fileSystem.fileSharing.createSharedFileSystem' | translate" icon="pi pi-plus"
+                        (onClick)="onCreateSharedFileSystem()"></p-button>
+                </div>
+                <div class="content-card-body">
+                    <p-table [value]="mySharedFileSystems" [paginator]="false"
+                        styleClass="p-datatable-sm p-datatable-gridlines" responsiveLayout="scroll">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>{{ 'fileSystem.entityAdmin.fileSystemName' | translate }}</th>
+                                <th>{{ 'fileSystem.sharedFiles.permission' | translate }}</th>
+                                <th style="width: 12rem">{{ 'fileSystem.companyStorage.actions' | translate }}</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-row>
+                            <tr>
+                                <td>{{ row.name }}</td>
+                                <td><p-tag [value]="row.accessLabel" severity="info"></p-tag></td>
+                                <td>
+                                    <p-button icon="pi pi-link" styleClass="p-button-sm p-button-outlined mr-2"
+                                        [pTooltip]="'fileSystem.fileSharing.copyLink' | translate"
+                                        (onClick)="onCopyLink(row)"></p-button>
+                                </td>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="emptymessage">
+                            <tr>
+                                <td colspan="3" class="text-center p-4 text-500">{{
+                                    'fileSystem.fileSharing.noSharedFileSystems'
+                                    | translate }}</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+            </div>
+
+            <div class="content-card mb-4">
+                <div class="content-card-header">
+                    <i class="pi pi-copy content-card-icon"></i>
+                    <span class="content-card-title">{{ 'fileSystem.fileSharing.copyFromMain' | translate }}</span>
+                </div>
+                <div class="content-card-body">
+                    <p class="mb-3">{{ 'fileSystem.fileSharing.copyFromMainDescription' | translate }}</p>
+                    <div class="flex gap-2">
+                        <p-button [label]="'fileSystem.fileSharing.staticCopy' | translate"
+                            styleClass="p-button-outlined" (onClick)="onCopyFromMain('static')"></p-button>
+                        <p-button [label]="'fileSystem.fileSharing.linkedCopy' | translate"
+                            styleClass="p-button-outlined" (onClick)="onCopyFromMain('linked')"></p-button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card mb-4">
+                <div class="content-card-header">
+                    <i class="pi pi-link content-card-icon"></i>
+                    <span class="content-card-title">{{ 'fileSystem.fileSharing.accessLinks' | translate }}</span>
+                </div>
+                <div class="content-card-body">
+                    <p class="mb-2">{{ 'fileSystem.fileSharing.accessLinksDescription' | translate }}</p>
+                    <p class="text-500 mb-0">{{ 'fileSystem.fileSharing.manageAccessAndExpiryDescription' | translate }}
+                    </p>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <div class="content-card-header">
+                    <i class="pi pi-share-alt content-card-icon"></i>
+                    <span class="content-card-title">{{ 'fileSystem.fileSharing.sharedWithYou' | translate }}</span>
+                </div>
+                <div class="content-card-body">
+                    <p-table [value]="sharedFiles" [paginator]="true" [rows]="5" [rowsPerPageOptions]="[5, 10, 20]"
+                        styleClass="p-datatable-sm p-datatable-gridlines" responsiveLayout="scroll">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>{{ 'fileSystem.sharedFiles.fileName' | translate }}</th>
+                                <th>{{ 'fileSystem.sharedFiles.sharedBy' | translate }}</th>
+                                <th>{{ 'fileSystem.sharedFiles.permission' | translate }}</th>
+                                <th class="text-center" style="width: 11rem">{{ 'fileSystem.sharedFiles.actions' |
+                                    translate
+                                    }}
+                                </th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-row>
+                            <tr>
+                                <td><i class="pi pi-file mr-2 text-500"></i>{{ row.name }}</td>
+                                <td>{{ row.sharedBy }}</td>
+                                <td>
+                                    <p-tag [value]="getPermissionLabel(row.permission)"
+                                        [severity]="getPermissionSeverity(row.permission)"></p-tag>
+                                </td>
+                                <td class="text-center">
+                                    <p-button icon="pi pi-download" styleClass="p-button-sm p-button-outlined mr-2"
+                                        (onClick)="onDownload(row)"></p-button>
+                                    <p-button icon="pi pi-eye" styleClass="p-button-sm p-button-outlined"
+                                        (onClick)="onView(row)"></p-button>
+                                </td>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="emptymessage">
+                            <tr>
+                                <td colspan="4" class="text-center p-4 text-500">{{ 'fileSystem.sharedFiles.noFiles' |
+                                    translate
+                                    }}</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<p-dialog [header]="'fileSystem.sharedFiles.downloadProgressTitle' | translate" [(visible)]="downloadProgressVisible"
+    [modal]="true" [style]="{ width: '400px' }" [closable]="false" [draggable]="false" [resizable]="false">
+    <div class="p-fluid">
+        <p class="mb-2">{{ 'fileSystem.sharedFiles.downloading' | translate }} {{ downloadFileName }}</p>
+        <p-progressBar [value]="50" [showValue]="true"></p-progressBar>
+    </div>
+    <ng-template pTemplate="footer">
+        <p-button [label]="'fileSystem.sharedFiles.downloadComplete' | translate"
+            (onClick)="hideDownloadProgress()"></p-button>
+    </ng-template>
+</p-dialog>

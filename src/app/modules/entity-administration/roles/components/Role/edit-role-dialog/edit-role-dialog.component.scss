@@ -1,0 +1,30 @@
+.dialog-header {
+    display: flex;
+    align-items: center;
+}
+
+.dialog-header .title {
+    font-weight: 600;
+}
+
+.dialog-header .subtitle {
+    color: #6c757d;
+}
+
+.form-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.dialog-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}

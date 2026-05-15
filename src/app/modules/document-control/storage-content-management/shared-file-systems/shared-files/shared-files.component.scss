@@ -1,0 +1,101 @@
+.file-sharing-view {
+    position: relative;
+
+    .under-dev-overlay {
+        position: absolute;
+        inset: 0;
+        z-index: 1000;
+        background: var(--p-surface-300, #dee2e6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 5%;
+    }
+
+    .under-dev-text {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--p-text-color-secondary, #6c757d);
+    }
+    .file-sharing-top {
+        align-items: start;
+    }
+
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        color: var(--p-primary-color);
+        text-decoration: none;
+        font-size: 0.875rem;
+    }
+    .back-link:hover {
+        text-decoration: underline;
+    }
+    .section-header {
+        margin-bottom: 1.5rem;
+        text-align: start;
+        width: 100%;
+    }
+
+    .section-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--p-text-color);
+        margin: 0 0 0.25rem 0;
+    }
+
+    .section-description {
+        color: var(--p-text-muted-color);
+        font-size: 0.9375rem;
+        margin: 0;
+    }
+
+    .access-info-card {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1rem 1.25rem;
+        background: var(--p-surface-50);
+        border: 1px solid var(--p-surface-200);
+        border-radius: var(--p-border-radius);
+        font-size: 0.9375rem;
+        color: var(--p-text-color);
+
+        i {
+            color: var(--p-primary-500);
+            font-size: 1.25rem;
+        }
+    }
+
+    .content-card {
+        background: var(--p-surface-0);
+        border: 1px solid var(--p-surface-200);
+        border-radius: var(--p-border-radius);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+        overflow: hidden;
+    }
+
+    .content-card-header {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.875rem 1rem;
+        background: var(--p-surface-50);
+        border-bottom: 1px solid var(--p-surface-200);
+        font-weight: 600;
+        color: var(--p-text-color);
+    }
+
+    .content-card-icon {
+        color: var(--p-primary-500);
+        font-size: 1.125rem;
+    }
+
+    .content-card-title {
+        font-size: 0.9375rem;
+    }
+
+    .content-card-body {
+        padding: 0;
+    }
+}

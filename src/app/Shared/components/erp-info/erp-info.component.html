@@ -1,0 +1,13 @@
+@if(!isDashboard){
+    <div [class]="boxClass">
+        <span class="icon"><i [class]="icon"></i></span>
+        <div class="text">
+            <div class="description" *ngIf="!isDynamic">{{ description }}</div>
+            <div class="description" *ngIf="isDynamic" [innerHTML]="safeDescription"></div>
+        </div> 
+    </div>
+}@else{
+    <span class="icon" [pTooltip]="description">
+        <i [class]="icon"></i>
+    </span>
+}

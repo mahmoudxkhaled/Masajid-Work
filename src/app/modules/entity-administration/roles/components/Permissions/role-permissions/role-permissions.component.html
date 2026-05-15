@@ -1,0 +1,126 @@
+<div class="permissions-page card">
+    <!-- Page Header -->
+    <div class="page-header mb-4">
+        <div class="flex align-items-center gap-3 mb-3">
+            <p-button icon="pi pi-arrow-left" [label]="'entityRoles.permissions.back' | translate" styleClass="p-button-text" (onClick)="navigateBack()"
+                [disabled]="saving"></p-button>
+            <div class="flex-1">
+                <ng-container *ngIf="loading; else headerContent">
+                    <p-skeleton height="2rem" width="14rem" class="m-0"></p-skeleton>
+                    <p-skeleton height="1.25rem" width="10rem" class="mt-1"></p-skeleton>
+                </ng-container>
+                <ng-template #headerContent>
+                    <h2 class="m-0">{{ 'entityRoles.permissions.title' | translate }}</h2>
+                    <p class="text-500 m-0 mt-1">{{ roleTitle || ('entityRoles.permissions.currentRole' | translate) }}</p>
+                </ng-template>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content: skeleton when loading, real content when loaded -->
+    <div class="permissions-content">
+        <ng-container *ngIf="loading; else realContent">
+            <p-panel [header]="'entityRoles.permissions.panelHeader' | translate" [toggleable]="false">
+                <div class="flex flex-column gap-3">
+                    <div class="p-3 border-round surface-border mb-3" style="background: var(--surface-50);">
+                        <div class="flex align-items-start gap-2">
+                            <p-skeleton shape="circle" size="1.2rem" class="mt-1"></p-skeleton>
+                            <div class="flex-1">
+                                <p-skeleton height="1rem" width="8rem" class="mb-2"></p-skeleton>
+                                <p-skeleton height="0.875rem" width="100%" class="mb-1"></p-skeleton>
+                                <p-skeleton height="0.875rem" width="95%" class="mb-1"></p-skeleton>
+                                <p-skeleton height="0.875rem" width="90%"></p-skeleton>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <p-skeleton height="2rem" width="100%" class="mb-2"></p-skeleton>
+                        <p-skeleton height="2rem" width="98%" class="mb-2"></p-skeleton>
+                        <p-skeleton height="2rem" width="100%" class="mb-2"></p-skeleton>
+                        <p-skeleton height="2rem" width="96%" class="mb-2"></p-skeleton>
+                        <p-skeleton height="2rem" width="92%"></p-skeleton>
+                    </div>
+                </div>
+            </p-panel>
+        </ng-container>
+        <ng-template #realContent>
+        <p-panel *ngIf="!loading" [header]="'entityRoles.permissions.panelHeader' | translate" [toggleable]="false">
+            <div class="flex flex-column gap-3">
+                <!-- Info Message -->
+                <div class="p-3 border-round surface-border mb-3"
+                    style="background: var(--blue-50); border-left: 4px solid var(--blue-500);">
+                    <div class="flex align-items-start gap-2">
+                        <i class="pi pi-info-circle text-blue-500 mt-1" style="font-size: 1.2rem;"></i>
+                        <div class="flex-1">
+                            <p class="text-blue-700 font-semibold m-0 mb-1">{{ 'entityRoles.permissions.selectionModeTitle' | translate }}</p>
+                            <p class="text-blue-600 m-0 text-sm">
+                                {{ 'entityRoles.permissions.selectionModeDescription' | translate }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tree Component -->
+                <div class="field">
+                    <p-tree [value]="treeNodes" selectionMode="checkbox" [(selection)]="selectedTreeNodes"
+                        (onNodeSelect)="onNodeSelect($event)" (onNodeUnselect)="onNodeUnselect($event)" class="w-full"
+                        [ngClass]="{ 'pointer-events-none opacity-50': saving }">
+                    </p-tree>
+                </div>
+
+                <!-- Selection Summary -->
+                <div *ngIf="selectedFunctions.length > 0 || selectedModules.length > 0"
+                    class="p-3 border-round surface-border" style="background: var(--surface-50);">
+                    <p class="font-semibold m-0 mb-2">{{ 'entityRoles.permissions.selectionSummary' | translate }}</p>
+                    <div class="flex flex-column gap-2">
+                        <div *ngIf="selectedFunctions.length > 0">
+                            <small class="text-500 block mb-1">
+                                {{ 'entityRoles.permissions.selectedFunctions' | translate: { count: selectedFunctions.length } }}
+                            </small>
+                            <div class="flex flex-wrap gap-2">
+                                <p-tag *ngFor="let funcId of selectedFunctions" [value]="getFunctionName(funcId)"
+                                    severity="info"></p-tag>
+                            </div>
+                        </div>
+                        <div *ngIf="selectedModules.length > 0">
+                            <small class="text-500 block mb-1">
+                                {{ 'entityRoles.permissions.selectedModules' | translate: { count: selectedModules.length } }}
+                            </small>
+                            <div class="flex flex-wrap gap-2">
+                                <p-tag *ngFor="let moduleId of selectedModules" [value]="getModuleName(moduleId)"
+                                    severity="success"></p-tag>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </p-panel>
+        </ng-template>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex justify-content-end gap-2 mt-4">
+        <ng-container *ngIf="loading; else actionButtons">
+            <p-skeleton height="2.5rem" width="6rem" borderRadius="4px"></p-skeleton>
+            <p-skeleton height="2.5rem" width="10rem" borderRadius="4px"></p-skeleton>
+        </ng-container>
+        <ng-template #actionButtons>
+            <p-button [label]="'entityRoles.permissions.cancel' | translate" icon="pi pi-times" styleClass="p-button-text" (onClick)="navigateBack()"
+                [disabled]="saving"></p-button>
+            <p-button type="submit" [disabled]="saving" (onClick)="savePermissions()">
+                <ng-container *ngIf="saving">
+                    <span class="indicator-progress" [style.display]="'block'">
+                        <i class="pi pi-spin pi-spinner" style="font-size: 1rem"></i>
+                        {{ 'entityRoles.permissions.saving' | translate }}
+                    </span>
+                </ng-container>
+                <ng-container *ngIf="!saving">
+                    <i class="pi pi-check mx-1" style="font-size: 1rem"></i>
+                    <span>{{ 'entityRoles.permissions.savePermissions' | translate }}</span>
+                </ng-container>
+            </p-button>
+        </ng-template>
+    </div>
+</div>
+
+<p-toast></p-toast>

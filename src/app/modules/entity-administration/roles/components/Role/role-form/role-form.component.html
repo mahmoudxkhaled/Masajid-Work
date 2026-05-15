@@ -1,0 +1,135 @@
+<div class="card">
+    <h2>{{ (isEdit ? 'entityRoles.form.editTitle' : 'entityRoles.form.createTitle') | translate }}</h2>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+        <div class="grid">
+            <div class="col-12 md:col-6" *ngIf="!isEdit && !entitySelectionHidden">
+                <div class="field p-fluid">
+                    <label for="entityId">{{ 'entityRoles.form.entity' | translate }} <span class="text-red-500">*</span></label>
+                    <div class="p-inputgroup">
+                        <input id="entityId" type="text" pInputText [value]="getEntityDisplayText()" readonly
+                            [placeholder]="'entityRoles.form.selectEntityPlaceholder' | translate" (click)="openEntityDialog()" style="cursor: pointer;" />
+                        <p-button icon="pi pi-search" (onClick)="openEntityDialog()" [disabled]="loading"
+                            class="p-button-secondary">
+                        </p-button>
+                    </div>
+                    <small class="p-error" *ngIf="submitted && f['entityId'].invalid">
+                        {{ 'entityRoles.form.entityRequired' | translate }}
+                    </small>
+                </div>
+            </div>
+
+            <div class="col-12 md:col-6">
+                <div class="field p-fluid">
+                    <label for="title">{{ 'entityRoles.form.title' | translate }} <span class="text-red-500">*</span></label>
+                    <input id="title" type="text" pInputText formControlName="title"
+                        [class.ng-invalid]="submitted && f['title'].invalid" [placeholder]="'entityRoles.form.placeholderTitle' | translate" />
+                    <small class="p-error" *ngIf="submitted && f['title'].invalid && titleError">
+                        {{ titleError }}
+                    </small>
+                </div>
+            </div>
+
+            <div class="col-12 md:col-6">
+                <div class="field p-fluid">
+                    <label for="description">{{ 'entityRoles.form.description' | translate }} <span class="text-red-500">*</span></label>
+                    <input id="description" type="text" pInputTextarea formControlName="description"
+                        [class.ng-invalid]="submitted && f['description'].invalid"
+                        [placeholder]="'entityRoles.form.placeholderDescription' | translate" />
+                    <small class="p-error" *ngIf="submitted && f['description'].invalid && descriptionError">
+                        {{ descriptionError }}
+                    </small>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex justify-content-end gap-2 mt-4">
+            <p-button [label]="'entityRoles.form.cancel' | translate" icon="pi pi-times" class="p-button-secondary" (onClick)="cancel()"
+                [disabled]="loading">
+            </p-button>
+            <p-button [label]="(isEdit ? 'entityRoles.form.update' : 'entityRoles.form.save') | translate" icon="pi pi-check" type="submit" [loading]="loading"
+                [disabled]="loading">
+            </p-button>
+        </div>
+    </form>
+</div>
+
+<!-- Entity Selection Dialog -->
+<p-dialog [(visible)]="entityDialogVisible" [modal]="true" [style]="{ width: '800px' }" [closable]="true"
+    [draggable]="false" [resizable]="false" (onHide)="closeEntityDialog()">
+    <ng-template pTemplate="header">
+        <h3>{{ 'entityRoles.form.entityDialog.title' | translate }}</h3>
+    </ng-template>
+
+    <div class="flex flex-column gap-3">
+        <!-- Search Bar -->
+        <span class="p-input-icon-left w-full">
+            <i class="pi pi-search"></i>
+            <input pInputText type="text" [placeholder]="'entityRoles.form.entityDialog.searchPlaceholder' | translate" class="w-full"
+                [value]="entityTableTextFilter" (input)="onEntityTableSearchInput($event)" />
+        </span>
+
+        <!-- Entities Table (skeleton inside cells when loadingEntitiesTable) -->
+        <div style="position: relative; min-height: 400px;">
+            <p-table [value]="entityTableValue" [paginator]="true" [first]="entityTableFirst"
+                [rows]="entityTableRows" [rowsPerPageOptions]="[10, 25, 50, 100]"
+                [totalRecords]="entityTableTotalRecords" [showCurrentPageReport]="true" [lazy]="true"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                (onLazyLoad)="onEntityTablePageChange($event)"
+                styleClass="p-datatable-sm">
+
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 150px;">{{ 'entityRoles.form.entityDialog.code' | translate }}</th>
+                        <th>{{ 'entityRoles.form.entityDialog.name' | translate }}</th>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="body" let-entity>
+                    <tr [class.selected-row]="isEntitySelected(entity)" (click)="selectEntity(entity)"
+                        style="cursor: pointer;">
+                        <td>
+                            <ng-container *ngIf="loadingEntitiesTable; else codeContent">
+                                <p-skeleton height="1.25rem" width="5rem"></p-skeleton>
+                            </ng-container>
+                            <ng-template #codeContent>
+                                <span class="font-semibold">{{ entity.code }}</span>
+                            </ng-template>
+                        </td>
+                        <td>
+                            <ng-container *ngIf="loadingEntitiesTable; else nameContent">
+                                <p-skeleton height="1.25rem" width="12rem"></p-skeleton>
+                            </ng-container>
+                            <ng-template #nameContent>
+                                <span class="font-semibold">{{ entity.name }}</span>
+                            </ng-template>
+                        </td>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="2" class="text-center p-4">
+                            <i class="pi pi-inbox text-4xl text-gray-400 mb-2"></i>
+                            <p class="text-gray-500">{{ 'entityRoles.form.entityDialog.noEntities' | translate }}</p>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <ng-template pTemplate="footer">
+        <div class="flex justify-content-end gap-2">
+            <p-button [label]="'entityRoles.form.entityDialog.cancel' | translate" icon="pi pi-times" class="p-button-text" (onClick)="closeEntityDialog()"
+                [disabled]="loadingEntitiesTable">
+            </p-button>
+            <p-button [label]="'entityRoles.form.entityDialog.select' | translate" icon="pi pi-check" (onClick)="closeEntityDialog()"
+                [disabled]="loadingEntitiesTable">
+            </p-button>
+        </div>
+    </ng-template>
+</p-dialog>
+
+<p-toast></p-toast>

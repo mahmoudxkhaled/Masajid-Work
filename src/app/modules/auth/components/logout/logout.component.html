@@ -1,0 +1,16 @@
+<div class="text-center">
+    <p> {{ 'shared.headers.logoutaccount' | translate }}</p>
+</div>
+<div class="w-full flex align-items-center justify-content-center mt-4 gap-3">
+    <button pButton pRipple class="login-btn" (click)="onConfirmLogout()" [disabled]="(isLoading$ | async)">
+        <ng-container *ngIf="isLoading$ | async">
+            <span class="indicator-progress" [style.display]="'block'">
+                {{ 'auth.login.pleaseWait' | translate }}
+                <i class="pi pi-spin pi-spinner" style="font-size: 1rem"></i>
+            </span>
+        </ng-container>
+        <ng-container *ngIf="(isLoading$ | async) === false">
+            <span>{{ 'shared.actions.confirm' | translate | translate }}</span>
+        </ng-container>
+    </button>
+</div>

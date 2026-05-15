@@ -1,0 +1,149 @@
+<div class="card">
+    <div class="flex justify-content-between align-items-center mb-4">
+        <h2>{{ 'summaryNotifications.send.title' | translate }}</h2>
+        <p-button [label]="'summaryNotifications.send.back' | translate" icon="pi pi-arrow-left" class="p-button-secondary" (onClick)="navigateBack()"></p-button>
+    </div>
+
+    <!-- Skeleton: same layout as page (Notification Details panel + Select Target panel) -->
+    <div *ngIf="loading" class="send-page-skeleton">
+        <div class="send-page-skeleton-panel mb-4">
+            <p-skeleton width="10rem" height="1.75rem" class="mb-3"></p-skeleton>
+            <div class="grid">
+                <div class="col-12">
+                    <p-skeleton width="5rem" height="1rem" class="mb-2"></p-skeleton>
+                    <p-skeleton width="100%" height="1.25rem"></p-skeleton>
+                </div>
+                <div class="col-12">
+                    <p-skeleton width="7rem" height="1rem" class="mb-2"></p-skeleton>
+                    <p-skeleton width="100%" height="2.5rem"></p-skeleton>
+                </div>
+            </div>
+        </div>
+        <div class="send-page-skeleton-panel">
+            <p-skeleton width="10rem" height="1.75rem" class="mb-3"></p-skeleton>
+            <p-skeleton width="8rem" height="1rem" class="mb-2"></p-skeleton>
+            <div class="flex gap-2 mb-3">
+                <p-skeleton width="6rem" height="2.5rem"></p-skeleton>
+                <p-skeleton width="5rem" height="2.5rem"></p-skeleton>
+                <p-skeleton width="5rem" height="2.5rem"></p-skeleton>
+            </div>
+            <p-skeleton width="100%" height="200px"></p-skeleton>
+        </div>
+    </div>
+
+    <div *ngIf="!loading && notification">
+        <p-panel [header]="'summaryNotifications.send.notificationDetails' | translate" class="mb-4">
+            <div class="grid">
+                <div class="col-12">
+                    <div class="field">
+                        <label class="font-semibold">{{ 'summaryNotifications.send.titleLabel' | translate }}</label>
+                        <p>{{ notification.title }}</p>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="field">
+                        <label class="font-semibold">{{ 'summaryNotifications.send.messageLabel' | translate }}</label>
+                        <p>{{ notification.message }}</p>
+                    </div>
+                </div>
+            </div>
+        </p-panel>
+
+        <p-panel [header]="'summaryNotifications.send.selectTarget' | translate">
+            <div class="grid mb-3">
+                <div class="col-12">
+                    <label class="block mb-2 font-medium">{{ 'summaryNotifications.send.sendTo' | translate }}</label>
+                    <div class="flex gap-2">
+                        <p-button [label]="'summaryNotifications.send.accounts' | translate" [class]="selectedTargetType === 'accounts' ? 'p-button-primary' : 'p-button-secondary'" 
+                            (onClick)="selectedTargetType = 'accounts'; onTargetTypeChange()"></p-button>
+                        <p-button [label]="'summaryNotifications.send.groups' | translate" [class]="selectedTargetType === 'groups' ? 'p-button-primary' : 'p-button-secondary'" 
+                            (onClick)="selectedTargetType = 'groups'; onTargetTypeChange()"></p-button>
+                        <p-button [label]="'summaryNotifications.send.roles' | translate" [class]="selectedTargetType === 'roles' ? 'p-button-primary' : 'p-button-secondary'" 
+                            (onClick)="selectedTargetType = 'roles'; onTargetTypeChange()"></p-button>
+                        <p-button [label]="'summaryNotifications.send.entities' | translate" [class]="selectedTargetType === 'entities' ? 'p-button-primary' : 'p-button-secondary'" 
+                            (onClick)="selectedTargetType = 'entities'; onTargetTypeChange()"></p-button>
+                        <p-button [label]="'summaryNotifications.send.all' | translate" [class]="selectedTargetType === 'all' ? 'p-button-primary' : 'p-button-secondary'" 
+                            [disabled]="!canSendToAll()" (onClick)="selectedTargetType = 'all'; onTargetTypeChange()"></p-button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Accounts Selection -->
+            <div *ngIf="selectedTargetType === 'accounts'" class="mt-3">
+                <label class="block mb-2 font-medium">{{ 'summaryNotifications.send.selectAccounts' | translate }}</label>
+                <p-table [value]="availableAccounts" selectionMode="multiple" [(selection)]="selectedAccountIds"
+                    [paginator]="true" [rows]="10" [loading]="loading">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th style="width: 50px;">
+                                <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                            </th>
+                            <th>{{ 'summaryNotifications.send.table.accountId' | translate }}</th>
+                            <th>{{ 'summaryNotifications.send.table.email' | translate }}</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-account>
+                        <tr>
+                            <td>
+                                <p-tableCheckbox [value]="account"></p-tableCheckbox>
+                            </td>
+                            <td>{{ account.Account_ID }}</td>
+                            <td>{{ account.Email }}</td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+
+            <!-- Groups Selection -->
+            <div *ngIf="selectedTargetType === 'groups'" class="mt-3">
+                <label class="block mb-2 font-medium">{{ 'summaryNotifications.send.selectGroupsPersonal' | translate }}</label>
+                <p-table [value]="availableGroups" selectionMode="multiple" [(selection)]="selectedGroupIds"
+                    [paginator]="true" [rows]="10" [loading]="loading">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th style="width: 50px;">
+                                <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                            </th>
+                            <th>{{ 'summaryNotifications.send.table.id' | translate }}</th>
+                            <th>{{ 'summaryNotifications.send.table.title' | translate }}</th>
+                            <th>{{ 'summaryNotifications.send.table.description' | translate }}</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-group>
+                        <tr>
+                            <td>
+                                <p-tableCheckbox [value]="group"></p-tableCheckbox>
+                            </td>
+                            <td>{{ group.id }}</td>
+                            <td>{{ group.title }}</td>
+                            <td>{{ group.description }}</td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+
+            <!-- Roles Selection -->
+            <div *ngIf="selectedTargetType === 'roles'" class="mt-3">
+                <label class="block mb-2 font-medium">{{ 'summaryNotifications.send.selectRoles' | translate }}</label>
+                <p>{{ 'summaryNotifications.send.rolesPlaceholder' | translate }}</p>
+            </div>
+
+            <!-- Entities Selection -->
+            <div *ngIf="selectedTargetType === 'entities'" class="mt-3">
+                <label class="block mb-2 font-medium">{{ 'summaryNotifications.send.selectEntities' | translate }}</label>
+                <p>{{ 'summaryNotifications.send.entitiesPlaceholder' | translate }}</p>
+            </div>
+
+            <!-- All -->
+            <div *ngIf="selectedTargetType === 'all'" class="mt-3">
+                <p class="text-orange-500">{{ 'summaryNotifications.send.sendToAllWarning' | translate }}</p>
+            </div>
+        </p-panel>
+
+        <div class="flex justify-content-end mt-4">
+            <p-button [label]="'summaryNotifications.send.send' | translate" icon="pi pi-send" (onClick)="send()" [loading]="sending" [disabled]="sending"></p-button>
+        </div>
+    </div>
+</div>
+
+<p-toast></p-toast>

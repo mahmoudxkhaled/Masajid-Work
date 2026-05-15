@@ -1,0 +1,22 @@
+.card {
+    padding: 2rem;
+}
+
+.field {
+    margin-bottom: 1.5rem;
+}
+
+.field label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+// Selected row highlight for entity selection
+::ng-deep .selected-row {
+    background-color: var(--primary-50) !important;
+}
+
+::ng-deep .selected-row:hover {
+    background-color: var(--primary-100) !important;
+}

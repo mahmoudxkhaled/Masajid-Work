@@ -1,0 +1,75 @@
+<p-dialog [(visible)]="visible" [modal]="true" [style]="{ width: '700px' }" [closable]="true" [draggable]="false"
+    [resizable]="false" (onHide)="closeDialog()">
+    <ng-template pTemplate="header">
+        <h3>{{ (isEdit ? 'summaryNotifications.form.editTitle' : 'summaryNotifications.form.createTitle') | translate }} ({{ (isSystemNotification ? 'summaryNotifications.form.system' : 'summaryNotifications.form.entity') | translate }})</h3>
+    </ng-template>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+        <div class="grid">
+            <div class="col-12">
+                <div class="field p-fluid">
+                    <label for="categoryId">{{ 'summaryNotifications.form.category' | translate }} <span class="text-red-500">*</span></label>
+                    <p-dropdown id="categoryId" formControlName="categoryId" [options]="notificationCategories" 
+                        optionLabel="Title" optionValue="Category_ID" [placeholder]="'summaryNotifications.form.selectCategory' | translate"
+                        [class.ng-invalid]="submitted && f['categoryId'].invalid">
+                    </p-dropdown>
+                    <small class="p-error" *ngIf="submitted && f['categoryId'].invalid">
+                        {{ 'summaryNotifications.form.categoryRequired' | translate }}
+                    </small>
+                </div>
+            </div>
+
+            <div class="col-12">
+                <div class="field p-fluid">
+                    <label for="title">{{ 'summaryNotifications.form.title' | translate }} <span class="text-red-500">*</span></label>
+                    <input id="title" type="text" pInputText formControlName="title"
+                        [class.ng-invalid]="submitted && f['title'].invalid" [placeholder]="'summaryNotifications.form.titlePlaceholder' | translate" />
+                    <small class="p-error" *ngIf="submitted && f['title'].invalid && titleError">
+                        {{ titleError }}
+                    </small>
+                </div>
+            </div>
+
+            <div class="col-12">
+                <div class="field p-fluid">
+                    <label for="message">{{ 'summaryNotifications.form.message' | translate }} <span class="text-red-500">*</span></label>
+                    <textarea id="message" pInputTextarea formControlName="message" rows="5"
+                        [class.ng-invalid]="submitted && f['message'].invalid"
+                        [placeholder]="'summaryNotifications.form.messagePlaceholder' | translate"></textarea>
+                    <small class="p-error" *ngIf="submitted && f['message'].invalid && messageError">
+                        {{ messageError }}
+                    </small>
+                </div>
+            </div>
+
+            <div class="col-12 md:col-6">
+                <div class="field p-fluid">
+                    <label for="referenceType">{{ 'summaryNotifications.form.referenceType' | translate }}</label>
+                    <p-dropdown id="referenceType" formControlName="referenceType" [options]="referenceTypes" 
+                        optionLabel="label" optionValue="value" [placeholder]="'summaryNotifications.form.selectReferenceType' | translate">
+                    </p-dropdown>
+                </div>
+            </div>
+
+            <div class="col-12 md:col-6">
+                <div class="field p-fluid">
+                    <label for="referenceId">{{ 'summaryNotifications.form.referenceId' | translate }}</label>
+                    <input id="referenceId" type="number" pInputText formControlName="referenceId" 
+                        [placeholder]="'summaryNotifications.form.referenceIdPlaceholder' | translate" 
+                        [disabled]="!form.get('referenceType')?.value" />
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <ng-template pTemplate="footer">
+        <p-button [label]="'summaryNotifications.form.cancel' | translate" icon="pi pi-times" class="p-button-secondary" (onClick)="cancel()"
+            [disabled]="loading">
+        </p-button>
+        <p-button [label]="(isEdit ? 'summaryNotifications.form.update' : 'summaryNotifications.form.save') | translate" icon="pi pi-check" (onClick)="submit()" [loading]="loading"
+            [disabled]="loading">
+        </p-button>
+    </ng-template>
+</p-dialog>
+
+<p-toast></p-toast>

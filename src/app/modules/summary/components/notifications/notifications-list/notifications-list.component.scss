@@ -1,0 +1,38 @@
+// Notifications List Styles
+
+/* Table skeleton: same layout as p-table */
+.table-skeleton {
+    width: 100%;
+    border: 1px solid var(--surface-border);
+    border-radius: var(--border-radius);
+
+    .table-skeleton-header,
+    .table-skeleton-row {
+        display: flex;
+        align-items: center;
+        gap: 0;
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid var(--surface-border);
+    }
+
+    .table-skeleton-header {
+        background: var(--surface-ground);
+        font-weight: 600;
+    }
+
+    .table-skeleton-row:last-child {
+        border-bottom: none;
+    }
+
+    .table-skeleton-header > div,
+    .table-skeleton-row > div {
+        flex-shrink: 0;
+        padding-right: 1rem;
+    }
+
+    .table-skeleton-paginator {
+        padding: 0.75rem 1rem;
+        border-top: 1px solid var(--surface-border);
+        background: var(--surface-ground);
+    }
+}

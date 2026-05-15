@@ -1,0 +1,30 @@
+<div class="file-system-landing p-4 card">
+    <div class="page-header mb-4">
+        <h1 class="page-title">{{ 'fileSystem.pageTitle' | translate }}</h1>
+        <p class="page-subtitle">{{ 'fileSystem.pageSubtitle' | translate }}</p>
+    </div>
+
+    <!-- <div class="category-label mb-3">
+        <span class="text-xs font-bold uppercase tracking-wider text-500">{{ 'fileSystem.landing.chooseSection' |
+            translate }}</span>
+        <div class="label-line"></div>
+    </div> -->
+
+    <div class="flex flex-wrap gap-4 justify-content-center">
+        <div *ngFor="let box of boxes" [id]="'file-system-box-' + box.id" class="module-glass-card mt-5"
+            (click)="onBoxClick(box)">
+            <div class="card-glow"></div>
+            <div class="icon-section">
+                <i [class]="box.icon" class="box-icon"></i>
+            </div>
+            <div class="name-section">
+                <span class="module-text">{{ box.labelKey | translate }}</span>
+                <span class="status-indicator">{{ 'fileSystem.landing.ready' | translate }}</span>
+            </div>
+            <div class="active-bar"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast so messages in document-control (landing) are visible -->
+<p-toast></p-toast>

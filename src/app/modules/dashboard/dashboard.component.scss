@@ -1,0 +1,154 @@
+/* Intentionally left empty. PrimeFlex utility classes are used in the template. */
+.dashboard-container {
+    // background-color: var(--surface-ground);
+    min-height: calc(100vh - 70px); // Adjust based on your header height
+
+    .category-label {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        
+        .label-line {
+            height: 1px;
+            flex-grow: 1;
+            background: linear-gradient(90deg, var(--surface-border) 0%, transparent 100%);
+        }
+    }
+
+    .module-glass-card {
+        width: 9.6rem;   // 80% of 12rem
+        height: 9.6rem;  // 80% of 12rem
+        background: var(--surface-card);
+        border: 1px solid var(--surface-border);
+        border-radius: 16px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 1.2rem;
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+
+        .icon-section {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+
+            .emoji-icon { font-size: 2.4rem; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); }
+            .img-icon { width: 2.8rem; height: 2.8rem; object-fit: contain; }
+        }
+
+        .name-section {
+            text-align: center;
+            z-index: 2;
+            
+            .module-text {
+                display: block;
+                font-weight: 600;
+                color: var(--text-color);
+                font-size: 0.95rem;
+                margin-bottom: 4px;
+            }
+
+            .status-indicator {
+                font-size: 0.65rem;
+                color: #10b981; // Success Green
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                font-weight: 700;
+            }
+        }
+
+        .active-bar {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 4px;
+            background: #004a80; // Matching your top bar blue
+            transition: all 0.3s ease;
+            border-radius: 2px 2px 0 0;
+        }
+
+        // Interaction States
+        &:hover:not(.is-locked) {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            border-color: #004a80;
+            // Stronger tint so it stands out in dark theme as well
+            background: rgba(0, 148, 255, 0.1);
+
+            .active-bar {
+                width: 60%;
+                left: 20%;
+            }
+
+            .icon-section { transform: scale(1.1); transition: transform 0.3s; }
+        }
+
+        &.is-locked {
+            opacity: 0.5;
+            background: var(--surface-100);
+            cursor: not-allowed;
+            border-style: dashed;
+            
+            .status-indicator { color: var(--text-color-secondary); content: "Planned"; }
+        }
+
+        // Highlight animation for breadcrumb navigation
+        &.module-highlighted {
+            animation: highlightPulse 0.6s ease-in-out;
+            border-color: #004a80;
+            box-shadow: 0 0 0 4px rgba(0, 74, 128, 0.2), 0 8px 24px rgba(0, 0, 0, 0.15);
+            transform: scale(1.05);
+            z-index: 10;
+
+            .active-bar {
+                width: 100%;
+                left: 0;
+                background: #004a80;
+                animation: barPulse 0.6s ease-in-out;
+            }
+
+            .icon-section {
+                transform: scale(1.15);
+            }
+        }
+    }
+}
+
+:host ::ng-deep .module-logo-skeleton.p-skeleton {
+    flex-shrink: 0;
+}
+
+// Highlight animation keyframes
+@keyframes highlightPulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(0, 74, 128, 0.4);
+        transform: scale(1);
+    }
+    50% {
+        box-shadow: 0 0 0 8px rgba(0, 74, 128, 0.1);
+        transform: scale(1.05);
+    }
+    100% {
+        box-shadow: 0 0 0 4px rgba(0, 74, 128, 0.2), 0 8px 24px rgba(0, 0, 0, 0.15);
+        transform: scale(1.05);
+    }
+}
+
+@keyframes barPulse {
+    0% {
+        width: 0;
+        left: 50%;
+    }
+    100% {
+        width: 100%;
+        left: 0;
+    }
+}
