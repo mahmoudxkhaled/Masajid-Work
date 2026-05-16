@@ -1,4 +1,20 @@
 {
+    "branding": {
+        "platformName": "مركز التبرعات",
+        "technicalName": "DAP",
+        "displayName": "Masajid Work",
+        "donationsPlatform": "منصة التبرعات"
+    },
+    "roles": {
+        "names": {
+            "developer": "مطور",
+            "systemAdministrator": "مسؤول النظام",
+            "entityAdministrator": "ممثل المنشأة",
+            "systemUser": "مستخدم النظام",
+            "guest": "ضيف",
+            "unknown": "غير معروف"
+        }
+    },
     "common": {
         "success": "نجاح",
         "error": "خطأ",
@@ -66,11 +82,10 @@
         "profile": "الملف الشخصي",
         "settings": "الإعدادات",
         "logout": "تسجيل الخروج",
-        "companyAdministration": "إدارة الكيانات",
+        "companyAdministration": "إدارة المنشآت",
         "roles&Permissions": "الأدوار والصلاحيات",
-        "companyDetails": "تفاصيل الشركة",
+        "companyDetails": "تفاصيل المنشأة",
         "usersDetails": "تفاصيل المستخدمين",
-        "workflows": "سير العمل",
         "documentControl": "التحكم في المستندات",
         "sharedDocuments": "المستندات المشتركة",
         "humanResources": "الموارد البشرية",
@@ -86,10 +101,9 @@
         "profile": "الملف الشخصي",
         "settings": "الإعدادات",
         "logout": "تسجيل الخروج",
-        "companyAdministration": "إدارة الكيانات",
-        "companyDetails": "تفاصيل الشركة",
+        "companyAdministration": "إدارة المنشآت",
+        "companyDetails": "تفاصيل المنشأة",
         "usersDetails": "تفاصيل المستخدمين",
-        "workflows": "سير العمل",
         "documentControl": "التحكم في المستندات",
         "sharedDocuments": "المستندات المشتركة",
         "humanResources": "الموارد البشرية",
@@ -113,7 +127,7 @@
             "chooseSection": "اختر قسمًا",
             "ready": "جاهز",
             "ssm": "إدارة تخزين النظام (SSM)",
-            "esm": "إدارة تخزين الكيانات (ESM)",
+            "esm": "إدارة تخزين المنشآت (ESM)",
             "storageContentManagement": "التخزين وإدارة المحتوى",
             "storageContentManagementTitle": "التخزين وإدارة المحتوى",
             "storageContentManagementSubtitle": "التخزين عبر الإنترنت، الملفات المشتركة، التحكم في المستندات، ونظام إدارة المستندات الإلكترونية.",
@@ -130,9 +144,9 @@
         "backToStorageContent": "العودة إلى التخزين وإدارة المحتوى",
         "tabs": {
             "systemAdmin": "مدير النظام",
-            "entityAdmin": "مدير الكيانات",
+            "entityAdmin": "ممثل المنشأةات",
             "fileSharing": "مشاركة الملفات",
-            "companyStorage": "تخزين الشركة"
+            "companyStorage": "تخزين المنشأة"
         },
         "dcs": {
             "subtitle": "نظام التحكم في المستندات.",
@@ -144,7 +158,7 @@
         },
         "systemAdmin": {
             "title": "إدارة تخزين النظام (SSM)",
-            "description": "إدارة الأقراص الافتراضية، وعرض وإدارة أنظمة الملفات عند امتلاكك دور مدير كيان على القرص، ومراقبة التخزين والحركة.",
+            "description": "إدارة الأقراص الافتراضية، وعرض وإدارة أنظمة الملفات عند امتلاكك دور مدير منشأة على القرص، ومراقبة التخزين والحركة.",
             "overview": "نظرة عامة",
             "activeLicenses": "تراخيص نشطة",
             "capacityUsed": "السعة المستخدمة",
@@ -157,19 +171,19 @@
             "filesTraffic": "حركة الملفات"
         },
         "entityAdmin": {
-            "title": "إدارة تخزين الكيانات (ESM)",
-            "description": "إدارة الأقراص الافتراضية وأنظمة الملفات المملوكة للكيان، ومزامنة التخزين المحلي، ومراقبة التخزين والحركة، وإعدادات التخزين والصلاحيات.",
+            "title": "إدارة تخزين المنشآت (ESM)",
+            "description": "إدارة الأقراص الافتراضية وأنظمة الملفات المملوكة للمنشأة، ومزامنة التخزين المحلي، ومراقبة التخزين والحركة، وإعدادات التخزين والصلاحيات.",
             "overview": "نظرة عامة",
             "fileSystems": "أنظمة الملفات",
             "folderStructures": "هياكل المجلدات",
             "permissionRules": "قواعد الصلاحيات",
-            "virtualDrivesOwned": "الأقراص الافتراضية المملوكة للكيان",
-            "fileSystemsHostedInDrives": "أنظمة الملفات المستضافة على أقراص مملوكة للكيان.",
-            "fileSystemsByEntity": "أنظمة الملفات حسب الكيان",
+            "virtualDrivesOwned": "الأقراص الافتراضية المملوكة للمنشأة",
+            "fileSystemsHostedInDrives": "أنظمة الملفات المستضافة على أقراص مملوكة للمنشأة.",
+            "fileSystemsByEntity": "أنظمة الملفات حسب المنشأة",
             "fileSystemsPageReport": "عرض '{first}' إلى '{last}' من أصل '{totalRecords}' نظام ملفات",
             "folderStructure": "هيكل المجلدات",
             "permissions": "الصلاحيات",
-            "entityName": "الكيان",
+            "entityName": "المنشأة",
             "fileSystemName": "نظام الملفات",
             "affectedAccountsColumn": "الحسابات المتأثرة",
             "fileSystemType": "نوع نظام الملفات",
@@ -211,16 +225,16 @@
             "uploadSync": "مزامنة الرفع",
             "downloadSync": "مزامنة التنزيل",
             "fullSync": "مزامنة كاملة",
-            "entityStorageSettings": "إعدادات تخزين الكيان",
-            "entityStorageSettingsDescription": "التحكم في إمكانية مشاركة مستخدمي الكيان للملفات داخلياً أو خارجياً.",
-            "allowShareInternally": "السماح لمستخدمي الكيان بمشاركة الملفات داخلياً",
-            "allowShareExternally": "السماح لمستخدمي الكيان بمشاركة الملفات خارجياً",
+            "entityStorageSettings": "إعدادات تخزين المنشأة",
+            "entityStorageSettingsDescription": "التحكم في إمكانية مشاركة مستخدمي المنشأة للملفات داخلياً أو خارجياً.",
+            "allowShareInternally": "السماح لمستخدمي المنشأة بمشاركة الملفات داخلياً",
+            "allowShareExternally": "السماح لمستخدمي المنشأة بمشاركة الملفات خارجياً",
             "sharingExpiry": "انتهاء المشاركة / الرابط",
             "sharingExpiryDescription": "تعيين انتهاء صلاحية افتراضي لروابط أنظمة الملفات المشتركة.",
             "trafficMonitoring": "مراقبة الحركة",
             "trafficDescription": "الرفعات والتنزيلات وحركة الملفات للأقراص الافتراضية المملوكة.",
             "ownedVirtualDrives": "الأقراص الافتراضية المملوكة",
-            "noOwnedDrives": "لا توجد أقراص افتراضية مملوكة للكيان.",
+            "noOwnedDrives": "لا توجد أقراص افتراضية مملوكة للمنشأة.",
             "permissionsAdmin": {
                 "title": "صلاحيات نظام الملفات",
                 "description": "إدارة الوصول لنظام الملفات الذي فتحته من القائمة. أضف أو احذف القواعد، أو راجع الوصول الفعّال لكل حساب، أو امسح كل الصلاحيات.",
@@ -255,8 +269,8 @@
                 "relatedIdsHint": "أدخل معرّفًا أو أكثر (أرقام) مفصولة بفواصل أو مسافات حسب نوع الوصول.",
                 "relatedTargetsPlaceholder": "اختر جهة واحدة أو أكثر",
                 "relatedTargetsSearchPlaceholder": "ابحث بالمعرّف أو الاسم...",
-                "targetsEntityColumn": "الكيان",
-                "targetsFallbackEntityLabel": "كيان #{{id}}",
+                "targetsEntityColumn": "المنشأة",
+                "targetsFallbackEntityLabel": "منشأة #{{id}}",
                 "targetId": "المعرّف",
                 "targetName": "الاسم",
                 "noRelatedTargetsFound": "لا توجد جهات مطابقة.",
@@ -280,12 +294,12 @@
                 "fileSystemNotFoundMessage": "هذا النظام غير مدرج في القائمة أو غير متاح. حدّث القائمة أو اختر نظامًا آخر.",
                 "relatedTargetsErrors": {
                     "erp11255": "طلب القائمة يستخدم حجم صفحة غير صالح.",
-                    "erp11260": "معرّف الكيان غير صالح.",
-                    "erp11261": "لا يُسمح بهذا الإجراء للكيان المحدد ضمن التسلسل الهرمي.",
-                    "erp11262": "الكيان مفعّل بالفعل.",
-                    "erp11263": "الكيان معطّل بالفعل.",
-                    "erp11270": "ما زال للكيان بيانات مرتبطة ولا يمكن إزالته بهذه الطريقة.",
-                    "erp11287": "معرّف الكيان غير صالح لهذا الطلب.",
+                    "erp11260": "معرّف المنشأة غير صالح.",
+                    "erp11261": "لا يُسمح بهذا الإجراء للمنشأة المحدد ضمن التسلسل الهرمي.",
+                    "erp11262": "المنشأة مفعّل بالفعل.",
+                    "erp11263": "المنشأة معطّل بالفعل.",
+                    "erp11270": "ما زال للمنشأة بيانات مرتبطة ولا يمكن إزالته بهذه الطريقة.",
+                    "erp11287": "معرّف المنشأة غير صالح لهذا الطلب.",
                     "erp11288": "معرّف حساب واحد أو أكثر غير صالح.",
                     "erp11290": "معرّف المجموعة أو الدور غير صالح."
                 }
@@ -296,11 +310,11 @@
                 "account": "حساب",
                 "group": "مجموعة",
                 "role": "دور",
-                "entity": "كيان",
+                "entity": "منشأة",
                 "organization": "منظمة",
                 "all": "الكل",
                 "owner": "المالك",
-                "entityAdmin": "مسؤول الكيان",
+                "entityAdmin": "ممثل المنشأة",
                 "unknown": "غير معروف"
             },
             "accessRight": {
@@ -315,14 +329,14 @@
         },
         "fileSharing": {
             "title": "أنظمة الملفات المشتركة (SFS)",
-            "description": "إنشاء وإدارة أنظمة الملفات المشتركة الخاصة بك (عند السماح بإعدادات الكيان)، والنسخ من أنظمة الملفات الرئيسية، والمشاركة عبر الروابط، وإدارة الوصول وانتهاء الصلاحية.",
+            "description": "إنشاء وإدارة أنظمة الملفات المشتركة الخاصة بك (عند السماح بإعدادات المنشأة)، والنسخ من أنظمة الملفات الرئيسية، والمشاركة عبر الروابط، وإدارة الوصول وانتهاء الصلاحية.",
             "accessControl": "التحكم في الوصول",
             "accessLevels": "قراءة / كتابة / تحميل",
             "mySharedFileSystems": "أنظمة الملفات المشتركة الخاصة بي",
             "createSharedFileSystem": "إنشاء نظام ملفات مشترك",
             "noSharedFileSystems": "لا توجد أنظمة ملفات مشتركة بعد.",
             "copyFromMain": "النسخ من أنظمة الملفات الرئيسية",
-            "copyFromMainDescription": "نسخ ملفات أو مجلدات من أنظمة الملفات الرئيسية (للكيان) إلى نظام ملفات مشترك.",
+            "copyFromMainDescription": "نسخ ملفات أو مجلدات من أنظمة الملفات الرئيسية (للمنشأة) إلى نظام ملفات مشترك.",
             "staticCopy": "نسخة ثابتة",
             "linkedCopy": "نسخة مرتبطة",
             "accessLinks": "روابط الوصول",
@@ -343,7 +357,7 @@
         "companyStorageView": {
             "title": "أنظمة ملفات التخزين عبر الإنترنت (OSFS)",
             "description": "اختر نظام ملفات لإدارة المجلدات والملفات والرفع أو التحميل.",
-            "selectDrive": "القرص الافتراضي (مملوك للكيان)",
+            "selectDrive": "القرص الافتراضي (مملوك للمنشأة)",
             "selectFileSystem": "نظام الملفات في هذا القرص",
             "noFileSystemToSelect": "لا يوجد نظام ملفات للاختيار",
             "selectDriveAndFileSystem": "اختر قرصاً افتراضياً ثم نظام ملفات لإدارة المجلدات والملفات.",
@@ -590,13 +604,13 @@
             "freeSpace": "المساحة الحرة",
             "productEnterprise": "نظام الملفات المؤسسي",
             "productStoragePack": "باقة التخزين",
-            "driveMain": "تخزين الشركة (رئيسي)",
+            "driveMain": "تخزين المنشأة (رئيسي)",
             "driveArchive": "أرشفة",
             "driveProjects": "المشاريع",
-            "entityFilter": "تصفية الكيان",
+            "entityFilter": "تصفية المنشأة",
             "licenseId": "معرّف الترخيص",
             "driveType": "نوع القرص",
-            "driveTypeEntity": "كيان",
+            "driveTypeEntity": "منشأة",
             "driveTypeAccount": "حساب",
             "activeOnly": "النشطة فقط",
             "searchPlaceholder": "بحث بالاسم أو معرّف الترخيص",
@@ -610,7 +624,7 @@
             "updateCapacity": "تحديث السعة",
             "activateDrive": "تفعيل",
             "deactivateDrive": "إلغاء التفعيل",
-            "createDriveDialogTitle": "إنشاء قرص افتراضي للكيان",
+            "createDriveDialogTitle": "إنشاء قرص افتراضي للمنشأة",
             "createDriveSuccess": "تم طلب إنشاء القرص الافتراضي.",
             "renameDriveDialogTitle": "إعادة تسمية القرص الافتراضي",
             "newDriveName": "الاسم الجديد",
@@ -625,7 +639,7 @@
             "virtualDrivesListErrorMissingToken": "رمز وصول التخزين مفقود.",
             "virtualDrivesListErrorInvalidToken": "رمز وصول التخزين غير صالح.",
             "virtualDrivesListErrorDatabase": "حدث خطأ في قاعدة بيانات خادم الملفات أثناء عرض الأقراص.",
-            "virtualDrivesListErrorInvalidEntityFilter": "فلتر الكيان غير صالح لعرض الأقراص.",
+            "virtualDrivesListErrorInvalidEntityFilter": "فلتر المنشأة غير صالح لعرض الأقراص.",
             "virtualDrivesListErrorInvalidDriveId": "معرّف القرص غير صالح.",
             "virtualDrivesListErrorAccessDeniedOwner": "تم رفض الوصول إلى أقراص معرّف المالك هذا.",
             "virtualDrivesCreateErrorInvalidName": "اسم القرص غير صالح.",
@@ -659,14 +673,14 @@
             "capacityMax200Validation": "السعة يجب أن تكون بين 1 و 200 جيجا.",
             "createdAt": "تاريخ الإنشاء",
             "filterAccount": "حساب",
-            "filterEntity": "كيان",
+            "filterEntity": "منشأة",
             "filterBoth": "الاثنان",
             "filterAllDrives": "كل الأقراص",
             "searchPlaceholderFileSystems": "البحث باسم نظام الملفات",
             "listFileSystems": "قائمة أنظمة الملفات",
             "fileSystemsInDrive": "أنظمة الملفات في القرص المحدد",
             "selectDriveToManageFileSystems": "اختر قرصاً أعلاه لعرض وإدارة أنظمة الملفات.",
-            "createFileSystemRequiresEntityAdmin": "إنشاء وإدارة أنظمة الملفات فقط عند امتلاكك دور مدير كيان على القرص المحدد.",
+            "createFileSystemRequiresEntityAdmin": "إنشاء وإدارة أنظمة الملفات فقط عند امتلاكك دور مدير منشأة على القرص المحدد.",
             "trafficMonitoring": "مراقبة الحركة",
             "trafficDescription": "إجمالي الرفعات والتنزيلات وحركة الملفات عبر الأقراص الافتراضية.",
             "totalUploads": "إجمالي الرفعات",
@@ -678,7 +692,7 @@
             "fileSystemNameRequired": "اسم نظام الملفات مطلوب.",
             "fileSystemTypeRequired": "نوع نظام الملفات مطلوب.",
             "scopePersonal": "نظام ملفات شخصي",
-            "scopeEntity": "نظام ملفات للكيان",
+            "scopeEntity": "نظام ملفات للمنشأة",
             "scopeLabel": "النطاق",
             "createFileSystemSuccess": "تم إنشاء نظام الملفات بنجاح.",
             "updateFileSystemSuccess": "تم تحديث نظام الملفات بنجاح.",
@@ -687,7 +701,7 @@
             "errorLoadingDrives": "فشل تحميل محركات الأقراص.",
             "errorLoadingFileSystems": "فشل تحميل أنظمة الملفات.",
             "errorLoadingTypes": "فشل تحميل أنواع أنظمة الملفات.",
-            "errorInvalidEntityFilter": "فلتر الكيان غير صالح.",
+            "errorInvalidEntityFilter": "فلتر المنشأة غير صالح.",
             "errorInvalidFileSystemName": "اسم نظام الملفات غير صالح.",
             "errorInvalidFileSystemType": "نوع نظام الملفات غير صالح.",
             "errorFileSystemInUse": "لا يمكن حذف نظام الملفات، فهو قيد الاستخدام.",
@@ -736,7 +750,7 @@
             "errorFileStorage": "خطأ أثناء تخزين الملف."
         },
         "folders": {
-            "companyStorage": "تخزين الشركة",
+            "companyStorage": "تخزين المنشأة",
             "finance": "المالية",
             "hr": "الموارد البشرية",
             "projects": "المشاريع",
@@ -749,7 +763,7 @@
             "folder": "مجلد"
         },
         "entityAdminFolders": {
-            "companyRoot": "جذر الشركة",
+            "companyRoot": "جذر المنشأة",
             "finance": "المالية",
             "hr": "الموارد البشرية",
             "shared": "مشترك",
@@ -759,12 +773,12 @@
             "templates": "القوالب"
         },
         "entityAdminEntities": {
-            "mainCompany": "الشركة الرئيسية",
+            "mainCompany": "المنشأة الرئيسية",
             "branchOffice": "الفرع",
             "projectAlpha": "مشروع ألفا"
         },
         "entityAdminFileSystemNames": {
-            "companyStorage": "تخزين الشركة",
+            "companyStorage": "تخزين المنشأة",
             "branchStorage": "تخزين الفرع",
             "projectDrive": "قرص المشروع"
         },
@@ -830,7 +844,7 @@
             "layoutTheme": "إعدادات شكل وسمة الحساب",
             "dashboard": "إعدادات لوحة التحكم",
             "incoming": "الإعدادات القادمة",
-            "entitySettings": "إعدادات الكيان",
+            "entitySettings": "إعدادات المنشأة",
             "systemSettings": "إعدادات النظام"
         },
         "account": {
@@ -845,14 +859,14 @@
             }
         },
         "entity": {
-            "title": "إعدادات الكيان",
+            "title": "إعدادات المنشأة",
             "status": {
-                "overridden": "تم تجاوز القيمة على مستوى الكيان",
+                "overridden": "تم تجاوز القيمة على مستوى المنشأة",
                 "inherited": "قيمة موروثة من المستويات الأقل أولوية"
             },
             "messages": {
-                "saveSuccess": "تم حفظ إعدادات الكيان بنجاح",
-                "resetSuccess": "تمت إعادة إعدادات الكيان إلى القيم الموروثة"
+                "saveSuccess": "تم حفظ إعدادات المنشأة بنجاح",
+                "resetSuccess": "تمت إعادة إعدادات المنشأة إلى القيم الموروثة"
             }
         },
         "system": {
@@ -916,16 +930,16 @@
                 "removeSuccess": "تمت إزالة إعداد الحساب المخصص"
             },
             "defaultEntity": {
-                "title": "إعدادات الكيان الافتراضية",
-                "saveConfirmTitle": "حفظ إعدادات الكيان الافتراضية؟",
-                "saveConfirmMessage": "يُحفظ الافتراضي للكيانات التي لا تملك قيمًا خاصة بها. الكيانات ذات التجاوزات تبقى كما هي.",
-                "saveSuccess": "تم حفظ إعدادات الكيان الافتراضية بنجاح",
-                "removeSuccess": "تمت إزالة إعداد الكيان الافتراضي بنجاح"
+                "title": "إعدادات المنشأة الافتراضية",
+                "saveConfirmTitle": "حفظ إعدادات المنشأة الافتراضية؟",
+                "saveConfirmMessage": "يُحفظ الافتراضي للمنشأةات التي لا تملك قيمًا خاصة بها. المنشآت ذات التجاوزات تبقى كما هي.",
+                "saveSuccess": "تم حفظ إعدادات المنشأة الافتراضية بنجاح",
+                "removeSuccess": "تمت إزالة إعداد المنشأة الافتراضي بنجاح"
             },
             "entityCustom": {
-                "title": "إعدادات الكيان",
-                "saveSuccess": "تم حفظ إعدادات الكيان بنجاح",
-                "removeSuccess": "تمت إزالة إعداد الكيان المخصص"
+                "title": "إعدادات المنشأة",
+                "saveSuccess": "تم حفظ إعدادات المنشأة بنجاح",
+                "removeSuccess": "تمت إزالة إعداد المنشأة المخصص"
             },
             "common": {
                 "saveHintTooltip": "لديك تغييرات غير محفوظة. انقر هنا للحفظ.",
@@ -968,15 +982,15 @@
                 "emptyValue": "لا يمكن أن تكون قيمة الإعداد فارغة.",
                 "settingNotFound": "الإعداد غير موجود.",
                 "invalidAccountId": "معرّف الحساب غير صالح.",
-                "invalidEntityId": "معرّف الكيان غير صالح.",
+                "invalidEntityId": "معرّف المنشأة غير صالح.",
                 "generic": "فشل تحديث الإعدادات. يرجى المحاولة مرة أخرى.",
                 "loadFailed": "فشل تحميل الإعدادات."
             }
         },
         "entitySettings": {
-            "title": "إعدادات الكيان",
-            "noSettings": "لا توجد إعدادات كيان",
-            "noSettingsNote": "لا توجد إعدادات كيان مُكوّنة بعد. استخدم الإعدادات المقترحة أدناه كمرجع.",
+            "title": "إعدادات المنشأة",
+            "noSettings": "لا توجد إعدادات منشأة",
+            "noSettingsNote": "لا توجد إعدادات منشأة مُكوّنة بعد. استخدم الإعدادات المقترحة أدناه كمرجع.",
             "recommendedSettings": "الإعدادات المقترحة",
             "recommendedSettingsNote": "هذه الإعدادات مقترحة ولكن لم يتم تنفيذها في الـ API بعد. معطلة حالياً.",
             "defaultLanguage": "اللغة الافتراضية",
@@ -991,7 +1005,7 @@
             "selectDateFormat": "اختر تنسيق التاريخ",
             "selectTimeFormat": "اختر تنسيق الوقت",
             "selectCurrency": "اختر العملة",
-            "saveSuccess": "تم حفظ إعدادات الكيان بنجاح"
+            "saveSuccess": "تم حفظ إعدادات المنشأة بنجاح"
         },
         "systemSettings": {
             "title": "إعدادات النظام",
@@ -1036,8 +1050,8 @@
             "account": "حسابات المستخدمين",
             "accountId": "معرف الحساب",
             "accountTitle": "عنوان الحساب",
-            "entity": "الشركة",
-            "company": "الشركة",
+            "entity": "المنشأة",
+            "company": "المنشأة",
             "userId": "معرف المستخدم"
         },
         "placeholders": {
@@ -1187,15 +1201,15 @@
     },
     "layout": {
         "app-breadcrumb": {
-            "dashboard": "لوحة تحكم ERP",
-            "entitiesList": "قائمة الكيانات",
+            "dashboard": "مركز التبرعات",
+            "entitiesList": "جميع المنشآت",
             "usersList": "قائمة المستخدمين",
             "newUser": "مستخدم جديد",
             "userDetails": "تفاصيل المستخدم",
             "editUser": "تعديل المستخدم",
             "userContactInfo": "معلومات الاتصال",
             "userAccounts": "حسابات المستخدمين",
-            "entityUserAccounts": "حسابات مستخدمي الكيان",
+            "entityUserAccounts": "حسابات مستخدمي المنشأة",
 
             "uikit": "أدوات واجهة المستخدم",
             "utilities": "الأدوات المساعدة",
@@ -1234,9 +1248,9 @@
             "groupDetails": "تفاصيل المجموعة",
             "editGroup": "تعديل المجموعة",
             "entityGroups": "مجموعات الشركات",
-            "newEntityGroup": "مجموعة شركة جديدة",
-            "entityGroupDetails": "تفاصيل مجموعة الشركة",
-            "editEntityGroup": "تعديل مجموعة الشركة",
+            "newEntityGroup": "مجموعة منشأة جديدة",
+            "entityGroupDetails": "تفاصيل مجموعة المنشأة",
+            "editEntityGroup": "تعديل مجموعة المنشأة",
             "wallpaper-libraries": "مكتبات الخلفيات",
             "wallpaper-wizard": "معالج الخلفيات",
             "support": "الدعم",
@@ -1258,7 +1272,7 @@
             "fileSystem": "نظام الملفات",
             "fileSystem.entityAdmin.permissionsAdmin.title": "صلاحيات نظام الملفات",
             "fileSystemSSM": "إدارة تخزين النظام (SSM)",
-            "fileSystemESM": "إدارة تخزين الكيانات (ESM)",
+            "fileSystemESM": "إدارة تخزين المنشآت (ESM)",
             "fileSystemStorageContent": "التخزين وإدارة المحتوى",
             "fileSystemOSFS": "أنظمة ملفات التخزين عبر الإنترنت",
             "fileSystemOsfsExplorer": "المجلدات والملفات",
@@ -1266,13 +1280,14 @@
             "fileSystemDCS": "نظام التحكم في المستندات",
             "fileSystemEDMS": "نظام إدارة المستندات الإلكترونية",
             "fileSystemSystemAdmin": "مدير النظام",
-            "fileSystemEntityAdmin": "مدير الكيانات",
+            "fileSystemEntityAdmin": "ممثل المنشأة",
+            "fileSystemFacilityRepresentative": "ممثل المنشأة",
             "fileSystemFileSharing": "مشاركة الملفات",
-            "fileSystemCompanyStorage": "تخزين الشركة",
+            "fileSystemCompanyStorage": "تخزين المنشأة",
             "humanResources": "الموارد البشرية",
             "financials": "المالية",
             "systemAdministration": "إدارة النظام",
-            "companyAdministration": "إدارة الكيانات",
+            "companyAdministration": "إدارة المنشآت",
             "roles&Permissions": "الأدوار والصلاحيات",
             "actions": "الإجراءات",
             "settings": "الإعدادات",
@@ -1281,14 +1296,13 @@
             "contract": "العقد",
             "invoices": "الفواتير",
             "sharedDocuments": "المستندات المشتركة",
-            "companyDetails": "تفاصيل الشركة",
+            "companyDetails": "تفاصيل المنشأة",
             "usersDetails": "تفاصيل المستخدمين",
-            "workflows": "سير العمل",
-            "newEntity": "شركة جديدة",
-            "entityDetails": "تفاصيل الشركة",
-            "editEntity": "تعديل الشركة",
-            "erpFunctions": "وظائف ERP",
-            "erpModules": "وحدات ERP",
+            "newEntity": "منشأة جديدة",
+            "entityDetails": "تفاصيل المنشأة",
+            "editEntity": "تعديل المنشأة",
+            "erpFunctions": "الميزات",
+            "erpModules": "أقسام التطبيق",
             "systemAdminDashboard": "لوحة إدارة النظام",
             "systemAdminDashboardV2": "لوحة إدارة النظام (المراقبة)",
             "modulesList": "قائمة الوحدات",
@@ -1356,8 +1370,10 @@
             "settingsResetSuccess": "تم إعادة تعيين الإعدادات بنجاح"
         },
         "top-bar": {
-            "companyLogo": "شعار الشركة",
-            "erpSystemSuffix": " - نظام ERP",
+            "facilityPhoto": "صورة المنشأة",
+            "companyLogo": "صورة المنشأة",
+            "platformSuffix": " - {{platformName}}",
+            "erpSystemSuffix": " - {{platformName}}",
             "noNotificationsYet": "لا توجد إشعارات حتى الآن",
             "markAllAsRead": "تعيين الكل كمقروء",
             "viewAll": "عرض الكل",
@@ -1378,7 +1394,7 @@
             },
             "header": {
                 "errors": {
-                    "network": "تعذّر تحميل بيانات ترويسة الكيان. تحقّق من الاتصال ثم أعد المحاولة."
+                    "network": "تعذّر تحميل بيانات ترويسة المنشأة. تحقّق من الاتصال ثم أعد المحاولة."
                 }
             }
         }
@@ -1386,7 +1402,7 @@
 
     "auth": {
         "login": {
-            "title": "تسجيل الدخول إلى ERP",
+            "title": "تسجيل الدخول إلى {{platformName}}",
             "logoAlt": "شعار بروماتك",
             "brandName": "بروماتك",
             "brandTagline": "حزمة الأعمال",
@@ -1406,11 +1422,11 @@
             "sessionExpired": "انتهت صلاحية جلستك. يُرجى تسجيل الدخول مرة أخرى."
         },
         "register": {
-            "title": "التسجيل في ERP",
+            "title": "التسجيل في {{platformName}}",
             "fields": {
                 "firstName": "الاسم الأول",
                 "lastName": "الاسم الأخير",
-                "companyname": "اسم الشركة",
+                "companyname": "اسم المنشأة",
                 "email": "البريد الإلكتروني",
                 "phone": "الهاتف",
                 "currency": "العملة",
@@ -1437,12 +1453,12 @@
                 "lastName": "الاسم الأخير مطلوب",
                 "lastNameMinLength": "الاسم الأخير يجب أن يحتوي على 3 رموز على الأقل",
                 "lastNameMaxLength": "الاسم الأخير يجب أن يحتوي على 100 رمز كحد أقصى",
-                "companyname": "اسم الشركة مطلوب",
-                "companynameMinLength": "اسم الشركة يجب أن يحتوي على 3 رموز على الأقل",
-                "companynameMaxLength": "اسم الشركة يجب أن يحتوي على 100 رمز كحد أقصى",
+                "companyname": "اسم المنشأة مطلوب",
+                "companynameMinLength": "اسم المنشأة يجب أن يحتوي على 3 رموز على الأقل",
+                "companynameMaxLength": "اسم المنشأة يجب أن يحتوي على 100 رمز كحد أقصى",
                 "email": "البريد الإلكتروني مطلوب",
                 "emailTaken": "بريد إلكتروني صحيح مطلوب",
-                "companyEmail": "بريد الشركة الإلكتروني مطلوب (لا Gmail، Outlook، إلخ)",
+                "companyEmail": "بريد المنشأة الإلكتروني مطلوب (لا Gmail، Outlook، إلخ)",
                 "language": "اللغة مطلوبة",
                 "timezone": "المنطقة الزمنية مطلوبة",
                 "phone": "رقم الهاتف مطلوب",
@@ -1487,7 +1503,7 @@
             "waitMessage": "نحن نؤكد بريدك الإلكتروني. يرجى الانتظار لحظة....."
         },
         "verification-email": {
-            "title": "مرحباً بك في خدمتنا",
+            "title": "مرحباً بك في {{platformName}}",
             "message": "تم تسجيل عنوان بريدك الإلكتروني بنجاح في خدمتنا.",
             "messageI": "لإكمال عملية التسجيل والتحقق من بريدك الإلكتروني،",
             "messageII": "يرجى التحقق من صندوق الوارد"
@@ -1495,6 +1511,10 @@
     },
 
     "shared": {
+        "templateVariables": {
+            "title": "متغيرات القالب",
+            "description": "أدرج هذه المتغيرات في محتوى القالب."
+        },
         "actions": {
             "save": "حفظ",
             "submit": "إرسال",
@@ -1546,9 +1566,9 @@
             "delete": "تأكيد الحذف",
             "active": "تأكيد التفعيل",
             "defaultWallpapers": "خلفيات افتراضية",
-            "companyWallpapers": "خلفيات الشركة",
+            "companyWallpapers": "خلفيات المنشأة",
             "defaultBackgrounds": "خلفيات افتراضية",
-            "companyBackgrounds": "خلفيات الشركة",
+            "companyBackgrounds": "خلفيات المنشأة",
             "sessionExpired": "انتهت الجلسة",
             "sessionExpiredMessage": "قام شخص بطردك. يرجى تسجيل الدخول مرة أخرى.",
             "logoutaccount": "هل أنت متأكد من أنك تريد تسجيل الخروج؟",
@@ -1625,7 +1645,7 @@
             "rejected": "مرفوض"
         },
         "projects": {
-            "erpSystem": "نظام ERP",
+            "erpSystem": "منصة التبرعات",
             "hrPortal": "بوابة الموارد البشرية",
             "invoicing": "الفواتير",
             "documentControl": "التحكم في المستندات"
@@ -1636,11 +1656,11 @@
         "description": "الإدارة النظامية - إدارة الشركات والمستخدمين",
         "companies": {
             "title": "الشركات",
-            "addCompany": "إضافة شركة",
-            "editCompany": "تعديل الشركة",
-            "deleteCompany": "حذف الشركة",
+            "addCompany": "إضافة منشأة",
+            "editCompany": "تعديل المنشأة",
+            "deleteCompany": "حذف المنشأة",
             "fields": {
-                "name": "اسم الشركة",
+                "name": "اسم المنشأة",
                 "status": "الحالة",
                 "industry": "الصناعة",
                 "founded": "سنة التأسيس",
@@ -1657,13 +1677,13 @@
                 "name": "الاسم الكامل",
                 "email": "البريد الإلكتروني",
                 "role": "الدور",
-                "company": "الشركة",
+                "company": "المنشأة",
                 "status": "الحالة"
             }
         },
         "roles": {
             "systemAdmin": "مدير النظام",
-            "companyAdmin": "مدير الشركة",
+            "companyAdmin": "مدير المنشأة",
             "supervisor": "مشرف",
             "employee": "موظف"
         },
@@ -1739,7 +1759,7 @@
         "list": {
             "title": "قائمة الشركات",
             "addNew": "إضافة جديدة",
-            "addNewEntity": "إضافة شركة جديدة",
+            "addNewEntity": "إضافة منشأة جديدة",
             "pleaseWait": "يرجى الانتظار",
             "searchPlaceholder": "بحث",
             "table": {
@@ -1755,18 +1775,18 @@
             "noEntities": "لم يتم العثور على شركات",
             "noDescription": "لا يوجد وصف.",
             "activationDialog": {
-                "activateTitle": "تفعيل الشركة",
-                "deactivateTitle": "تعطيل الشركة",
+                "activateTitle": "تفعيل المنشأة",
+                "deactivateTitle": "تعطيل المنشأة",
                 "activateMessage": "هل أنت متأكد من تفعيل {{name}}؟",
                 "deactivateMessage": "هل أنت متأكد من تعطيل {{name}}؟",
                 "criticalWarning": "تحذير هام:",
-                "criticalMessage": "سيؤدي هذا الإجراء إلى تسجيل خروج جميع الحسابات تحت شجرة هذه الشركة، ولن يسمح بأي عملية تسجيل دخول للحسابات المرتبطة.",
+                "criticalMessage": "سيؤدي هذا الإجراء إلى تسجيل خروج جميع الحسابات تحت شجرة هذه المنشأة، ولن يسمح بأي عملية تسجيل دخول للحسابات المرتبطة.",
                 "cancel": "إلغاء",
                 "activate": "تفعيل",
                 "deactivate": "تعطيل"
             },
             "deleteDialog": {
-                "title": "حذف الشركة",
+                "title": "حذف المنشأة",
                 "message": "هل أنت متأكد من حذف {{name}}؟",
                 "cannotUndo": "لا يمكن التراجع عن هذا الإجراء.",
                 "cancel": "إلغاء",
@@ -1774,14 +1794,14 @@
             }
         },
         "form": {
-            "create": "إضافة شركة جديدة",
-            "edit": "تعديل شركة",
-            "entityCode": "كود الشركة",
-            "companyName": "اسم الشركة",
+            "create": "إضافة منشأة جديدة",
+            "edit": "تعديل منشأة",
+            "entityCode": "كود المنشأة",
+            "companyName": "اسم المنشأة",
             "description": "الوصف",
             "descriptionRequired": "الوصف مطلوب",
-            "parentEntity": "الشركة الأم",
-            "personalEntity": "شركة شخصية؟",
+            "parentEntity": "المنشأة الأم",
+            "personalEntity": "منشأة شخصية؟",
             "administratorAccount": "حساب المدير",
             "email": "البريد الإلكتروني",
             "firstName": "الاسم الأول",
@@ -1791,30 +1811,30 @@
             "update": "تحديث",
             "required": "هذا الحقل مطلوب",
             "placeholders": {
-                "entityCode": "أدخل كود الشركة",
-                "companyName": "أدخل اسم الشركة",
-                "description": "أضف وصفاً واضحاً للشركة",
-                "parentEntity": "اختر الشركة الأم",
+                "entityCode": "أدخل كود المنشأة",
+                "companyName": "أدخل اسم المنشأة",
+                "description": "أضف وصفاً واضحاً للمنشأة",
+                "parentEntity": "اختر المنشأة الأم",
                 "email": "أدخل البريد الإلكتروني",
                 "firstName": "أدخل الاسم الأول",
                 "lastName": "أدخل اسم العائلة"
             },
             "parentDialog": {
-                "title": "اختر الشركة الأم",
+                "title": "اختر المنشأة الأم",
                 "searchPlaceholder": "بحث بالاسم أو الكود",
                 "code": "الكود",
                 "name": "الاسم",
                 "noEntities": "لم يتم العثور على شركات",
-                "selectRootEntity": "اختر الشركة الجذرية",
+                "selectRootEntity": "اختر المنشأة الجذرية",
                 "select": "اختيار",
                 "cancel": "إلغاء"
             }
         },
         "details": {
-            "title": "تفاصيل الشركة",
+            "title": "تفاصيل المنشأة",
             "backToList": "العودة للقائمة",
-            "editEntity": "تعديل الشركة",
-            "profile": "ملف الشركة",
+            "editEntity": "تعديل المنشأة",
+            "profile": "ملف المنشأة",
             "tabs": {
                 "basicInfoContacts": "المعلومات الأساسية والاتصال",
                 "accounts": "الحسابات",
@@ -1830,7 +1850,7 @@
                 "uploading": "جاري الرفع..."
             },
             "photo": {
-                "alt": "صورة الشركة",
+                "alt": "صورة المنشأة",
                 "messages": {
                     "uploaded": "تم رفع الصورة بنجاح.",
                     "removed": "تمت إزالة الصورة بنجاح.",
@@ -1843,20 +1863,20 @@
             },
             "fields": {
                 "code": "الكود:",
-                "entityId": "معرف الشركة:",
-                "parentEntity": "الشركة الأم:",
+                "entityId": "معرف المنشأة:",
+                "parentEntity": "المنشأة الأم:",
                 "description": "الوصف"
             },
-            "noDescription": "لم يتم تقديم وصف لهذه الشركة.",
-            "unnamedEntity": "شركة بدون اسم",
-            "invalidEntityId": "معرّف الشركة غير صالح.",
+            "noDescription": "لم يتم تقديم وصف لهذه المنشأة.",
+            "unnamedEntity": "منشأة بدون اسم",
+            "invalidEntityId": "معرّف المنشأة غير صالح.",
             "businessErrors": {
-                "DAP11260": "معرّف الشركة غير صالح",
-                "DAP11277": "معرّف الحساب غير صالح (الحساب غير موجود أو حاول مسؤول الشركة استخدام حساب خارج شجرة شركته).",
-                "DAP11278": "إجراء غير صالح. يجب ربط حساب مسؤول الشركة مباشرة بالشركة (أي أن Entity_ID للحساب يجب أن يساوي Entity_ID للشركة).",
+                "DAP11260": "معرّف المنشأة غير صالح",
+                "DAP11277": "معرّف الحساب غير صالح (الحساب غير موجود أو حاول مسؤول المنشأة استخدام حساب خارج شجرة شركته).",
+                "DAP11278": "إجراء غير صالح. يجب ربط حساب ممثل المنشأة مباشرة بنفس المنشأة.",
                 "DAP11281": "صيغة ملف الصورة غير معروفة",
                 "DAP11282": "محتوى ملف الصورة فارغ",
-                "DAP11279": "معرّف الحساب غير صالح. المعرّف المُدخل ليس من مدراء هذه الشركة"
+                "DAP11279": "معرّف الحساب غير صالح. المعرّف المُدخل ليس من مدراء هذه المنشأة"
             }
         },
         "contact": {
@@ -1894,7 +1914,7 @@
                 "updatedSuccessfully": "تم تحديث معلومات الاتصال بنجاح."
             },
             "errors": {
-                "invalidEntityId": "معرّف الكيان غير صالح",
+                "invalidEntityId": "معرّف المنشأة غير صالح",
                 "invalidAddressFormat": "صيغة العنوان المقدم غير صالحة",
                 "invalidPhoneFormat": "صيغة غير صالحة لأحد أرقام الهاتف أو أكثر (يُسمح بالأرقام فقط؛ دون + أو - أو / أو مسافات)",
                 "invalidFaxFormat": "صيغة غير صالحة لأحد أرقام الفاكس أو أكثر (يُسمح بالأرقام فقط؛ دون + أو - أو / أو مسافات)",
@@ -1908,26 +1928,26 @@
             "cancel": "إلغاء"
         },
         "messages": {
-            "entityCreated": "تم إنشاء الشركة بنجاح",
-            "entityUpdated": "تم تحديث الشركة بنجاح",
-            "entityActivated": "تم تفعيل الشركة",
-            "entityDeactivated": "تم تعطيل الشركة",
+            "entityCreated": "تم إنشاء المنشأة بنجاح",
+            "entityUpdated": "تم تحديث المنشأة بنجاح",
+            "entityActivated": "تم تفعيل المنشأة",
+            "entityDeactivated": "تم تعطيل المنشأة",
             "adminAssigned": "تم تعيين المدير بنجاح",
             "loadError": "فشل تحميل الشركات",
-            "saveError": "فشل حفظ الشركة",
-            "updateError": "فشل تحديث حالة الشركة"
+            "saveError": "فشل حفظ المنشأة",
+            "updateError": "فشل تحديث حالة المنشأة"
         }
     },
     "entityAccounts": {
         "adminList": {
             "title": "المدراء",
-            "description": "إدارة مدراء الشركة",
+            "description": "إدارة مدراء المنشأة",
             "createAdmin": "إضافة مدير",
             "table": {
                 "accountId": "معرف الحساب",
                 "userId": "معرف المستخدم",
                 "email": "البريد الإلكتروني",
-                "entityRole": "دور الشركة",
+                "entityRole": "دور المنشأة",
                 "accountState": "حالة الحساب",
                 "lastLogin": "آخر تسجيل دخول",
                 "actions": "الإجراءات"
@@ -1980,7 +2000,7 @@
                 "viewAccountDetails": "عرض تفاصيل الحساب",
                 "editAccountDescription": "تعديل الوصف",
                 "updateAccountEmail": "تحديث بريد الحساب",
-                "updateAccountEntity": "تحديث شركة الحساب",
+                "updateAccountEntity": "تحديث منشأة الحساب",
                 "activateAccount": "تفعيل الحساب",
                 "deactivateAccount": "إلغاء تفعيل الحساب",
                 "deleteAccount": "حذف الحساب",
@@ -2019,7 +2039,7 @@
                 "email": "البريد الإلكتروني",
                 "entity": "الجهة",
                 "role": "الدور",
-                "entityRole": "دور الشركة",
+                "entityRole": "دور المنشأة",
                 "accountState": "حالة الحساب",
                 "lastLogin": "آخر تسجيل دخول",
                 "actions": "الإجراءات"
@@ -2075,9 +2095,9 @@
                 "deactivate": "تعطيل"
             },
             "assignAdminDialog": {
-                "title": "تعيين كمدير للشركة",
+                "title": "تعيين كممثل للمنشأة",
                 "messagePrefix": "ترقية ",
-                "messageMiddle": " إلى مدير شركة لـ ",
+                "messageMiddle": " كممثل منشأة لـ ",
                 "messageSuffix": "؟ سيحصل على صلاحيات المدير الكاملة.",
                 "cancel": "إلغاء",
                 "assign": "تعيين"
@@ -2114,10 +2134,10 @@
             "userId": "معرف المستخدم",
             "systemRole": "دور النظام",
             "email": "البريد الإلكتروني",
-            "entity": "الشركة",
-            "entityRole": "دور الشركة",
-            "entityId": "معرف الشركة",
-            "entityRoleId": "معرف دور الشركة",
+            "entity": "المنشأة",
+            "entityRole": "دور المنشأة",
+            "entityId": "معرف المنشأة",
+            "entityRoleId": "معرف دور المنشأة",
             "accountState": "حالة الحساب",
             "description": "الوصف",
             "descriptionPlaceholder": "أدخل وصف الحساب",
@@ -2126,20 +2146,20 @@
             "save": "حفظ"
         },
         "update": {
-            "title": "تحديث شركة الحساب",
+            "title": "تحديث منشأة الحساب",
             "email": "البريد الإلكتروني",
-            "entity": "الشركة",
-            "selectEntityPlaceholder": "اختر الشركة",
-            "entityRequired": "الشركة مطلوبة.",
-            "entityRole": "دور الشركة",
-            "selectEntityRolePlaceholder": "اختر دور الشركة",
-            "entityRoleRequired": "دور الشركة مطلوب.",
-            "selectEntityFirst": "يرجى اختيار الشركة أولاً.",
+            "entity": "المنشأة",
+            "selectEntityPlaceholder": "اختر المنشأة",
+            "entityRequired": "المنشأة مطلوبة.",
+            "entityRole": "دور المنشأة",
+            "selectEntityRolePlaceholder": "اختر دور المنشأة",
+            "entityRoleRequired": "دور المنشأة مطلوب.",
+            "selectEntityFirst": "يرجى اختيار المنشأة أولاً.",
             "loadingRoles": "جاري تحميل الأدوار...",
             "cancel": "إلغاء",
-            "updateEntity": "تحديث الشركة",
+            "updateEntity": "تحديث المنشأة",
             "selectDialog": {
-                "title": "اختر الشركة",
+                "title": "اختر المنشأة",
                 "searchPlaceholder": "بحث بالاسم أو الكود",
                 "code": "الكود",
                 "name": "الاسم",
@@ -2206,7 +2226,7 @@
             "table": {
                 "accountId": "معرف الحساب",
                 "email": "البريد الإلكتروني",
-                "entity": "الشركة",
+                "entity": "المنشأة",
                 "actions": "الإجراءات"
             },
             "na": "—",
@@ -2230,7 +2250,7 @@
         "list": {
             "title": "إدارة الأدوار",
             "pleaseWait": "يرجى الانتظار",
-            "noEntityForNewRole": "يرجى اختيار شركة قبل إضافة دور.",
+            "noEntityForNewRole": "يرجى اختيار منشأة قبل إضافة دور.",
             "addNew": "إضافة دور جديد",
             "table": {
                 "id": "المعرف",
@@ -2253,9 +2273,9 @@
         "form": {
             "editTitle": "تعديل الدور",
             "createTitle": "إنشاء دور",
-            "entity": "الشركة",
-            "selectEntityPlaceholder": "اختر الشركة",
-            "entityRequired": "الشركة مطلوبة.",
+            "entity": "المنشأة",
+            "selectEntityPlaceholder": "اختر المنشأة",
+            "entityRequired": "المنشأة مطلوبة.",
             "title": "العنوان",
             "description": "الوصف",
             "placeholderTitle": "أدخل عنوان الدور",
@@ -2264,7 +2284,7 @@
             "update": "تحديث",
             "save": "حفظ",
             "entityDialog": {
-                "title": "اختر الشركة",
+                "title": "اختر المنشأة",
                 "searchPlaceholder": "بحث بالاسم أو الكود",
                 "code": "الكود",
                 "name": "الاسم",
@@ -2316,7 +2336,7 @@
             "editRole": "تعديل الدور",
             "roleId": "معرف الدور",
             "title": "العنوان",
-            "entity": "الشركة",
+            "entity": "المنشأة",
             "loading": "جاري التحميل...",
             "status": "الحالة",
             "active": "نشط",
@@ -2403,7 +2423,7 @@
             "table": {
                 "accountId": "معرف الحساب",
                 "email": "البريد الإلكتروني",
-                "entity": "الشركة",
+                "entity": "المنشأة",
                 "actions": "الإجراءات"
             },
             "na": "—",
@@ -2474,13 +2494,13 @@
             "referenceId": "معرف المرجع",
             "createdAt": "تاريخ الإنشاء",
             "system": "النظام",
-            "entity": "الشركة"
+            "entity": "المنشأة"
         },
         "form": {
             "editTitle": "تعديل الإشعار",
             "createTitle": "إنشاء إشعار",
             "system": "النظام",
-            "entity": "الشركة",
+            "entity": "المنشأة",
             "category": "الفئة",
             "categoryRequired": "الفئة مطلوبة.",
             "selectCategory": "اختر الفئة",
@@ -2499,7 +2519,7 @@
         "list": {
             "title": "الإشعارات",
             "addSystemNotification": "إضافة إشعار نظام",
-            "addEntityNotification": "إضافة إشعار شركة",
+            "addEntityNotification": "إضافة إشعار منشأة",
             "textFilter": "تصفية النص",
             "typeFilter": "تصفية النوع",
             "categoryFilter": "تصفية الفئة",
@@ -2516,7 +2536,7 @@
                 "actions": "الإجراءات"
             },
             "system": "النظام",
-            "entity": "الشركة",
+            "entity": "المنشأة",
             "noNotifications": "لم يتم العثور على إشعارات",
             "deleteDialog": {
                 "title": "تأكيد الحذف",
@@ -2561,7 +2581,7 @@
             "title": "إدارة الإشعارات",
             "mode": "الوضع:",
             "system": "النظام",
-            "entity": "الشركة",
+            "entity": "المنشأة",
             "tabNotifications": "الإشعارات",
             "tabCategories": "الفئات",
             "tabTypes": "الأنواع"
@@ -2575,7 +2595,7 @@
             "description": "الوصف",
             "canBeUnsubscribed": "يمكن إلغاء الاشتراك",
             "system": "النظام",
-            "entity": "الشركة",
+            "entity": "المنشأة",
             "yes": "نعم",
             "no": "لا"
         },
@@ -2583,7 +2603,7 @@
             "editTitle": "تعديل الفئة",
             "createTitle": "إنشاء فئة",
             "system": "النظام",
-            "entity": "الشركة",
+            "entity": "المنشأة",
             "notificationType": "نوع الإشعار",
             "notificationTypeRequired": "نوع الإشعار مطلوب.",
             "selectType": "اختر النوع",
@@ -2598,9 +2618,9 @@
             "save": "حفظ"
         },
         "categoriesList": {
-            "entityTitle": "فئات إشعارات الشركة",
+            "entityTitle": "فئات إشعارات المنشأة",
             "systemTitle": "فئات إشعارات النظام",
-            "addEntityCategory": "إضافة فئة شركة",
+            "addEntityCategory": "إضافة فئة منشأة",
             "addSystemCategory": "إضافة فئة نظام",
             "searchPlaceholderEntity": "بحث بالمعرف أو العنوان أو الوصف أو إرسال البريد أو إلغاء الاشتراك...",
             "searchPlaceholderSystem": "بحث بالمعرف أو العنوان أو الوصف أو النوع أو إرسال البريد أو إلغاء الاشتراك...",
@@ -2623,7 +2643,7 @@
             "title": "إنشاء إشعار",
             "mode": "الوضع:",
             "system": "النظام",
-            "entity": "الشركة",
+            "entity": "المنشأة",
             "category": "الفئة",
             "categoryRequired": "الفئة مطلوبة.",
             "selectCategory": "اختر الفئة",
@@ -2638,9 +2658,9 @@
             "createButton": "إنشاء إشعار"
         },
         "notificationsList": {
-            "entityTitle": "إشعارات الشركة",
+            "entityTitle": "إشعارات المنشأة",
             "systemTitle": "إشعارات النظام",
-            "addEntityNotification": "إضافة إشعار شركة",
+            "addEntityNotification": "إضافة إشعار منشأة",
             "addSystemNotification": "إضافة إشعار نظام",
             "textFilter": "تصفية النص",
             "searchPlaceholder": "بحث بالمعرف أو العنوان أو الرسالة أو النوع أو التاريخ...",
@@ -2708,7 +2728,7 @@
             "tableRoleId": "معرف الدور",
             "noRolesFound": "لم يتم العثور على أدوار",
             "selectEntities": "اختر الشركات",
-            "tableEntityId": "معرف الشركة",
+            "tableEntityId": "معرف المنشأة",
             "tableCode": "الرمز",
             "tableName": "الاسم",
             "noEntitiesFound": "لم يتم العثور على شركات",
@@ -2821,7 +2841,7 @@
             "stats": {
                 "totalUsers": "إجمالي المستخدمين",
                 "totalAccounts": "إجمالي الحسابات",
-                "totalEntities": "إجمالي الكيانات",
+                "totalEntities": "إجمالي المنشآت",
                 "totalOperations": "إجمالي العمليات",
                 "vsPrevious": "مقارنة بالفترة السابقة"
             },
@@ -2899,7 +2919,7 @@
             "cardTooltips": {
                 "statsUsers": "عدد المستخدمين المسجلين للبيئة والفترة المحددة. يُقارن الاتجاه بالفترة السابقة.",
                 "statsAccounts": "عدد حسابات المستخدمين (تسجيل الدخول). يُقارن الاتجاه بالفترة السابقة.",
-                "statsEntities": "عدد الكيانات التنظيمية (الشركات أو المستأجرين) ضمن النطاق المعروض.",
+                "statsEntities": "عدد المنشآت التنظيمية (الشركات أو المستأجرين) ضمن النطاق المعروض.",
                 "statsOperations": "عدد العمليات أو أحداث النشاط المسجّلة في الفترة. يُقارن الاتجاه بالفترة السابقة.",
                 "chartOperationsTrend": "العمليات اليومية خلال الأسبوع النموذجي لرصد النمو أو الانخفاض.",
                 "panelHealth": "فحوصات صحة التبعيات الحرجة مثل قاعدة البيانات والتخزين المؤقت وقائمة الرسائل والواجهات الخارجية.",

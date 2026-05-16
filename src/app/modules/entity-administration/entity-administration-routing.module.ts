@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { WorkflowsComponent } from './workflows/workflows.component';
 
 const routes: Routes = [
     { path: '', redirectTo: 'entities/list', pathMatch: 'full' },
@@ -29,7 +28,6 @@ const routes: Routes = [
         loadChildren: () => import('../entity-administration/entity-storage-management/entity-storage-management.module').then((m) => m.EntityStorageManagementModule),
         data: { breadcrumb: 'fileSystemESM' }
     },
-    { path: 'workflows', component: WorkflowsComponent, data: { breadcrumb: 'workflows' } }
 ];
 
 @NgModule({

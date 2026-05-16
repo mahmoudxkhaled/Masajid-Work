@@ -1,4 +1,20 @@
 {
+    "branding": {
+        "platformName": "Donations Hub",
+        "technicalName": "DAP",
+        "displayName": "Masajid Work",
+        "donationsPlatform": "Donations Platform"
+    },
+    "roles": {
+        "names": {
+            "developer": "Developer",
+            "systemAdministrator": "System Administrator",
+            "entityAdministrator": "Facility Representative",
+            "systemUser": "System User",
+            "guest": "Guest",
+            "unknown": "Unknown"
+        }
+    },
     "common": {
         "success": "Success",
         "error": "Error",
@@ -37,12 +53,12 @@
             "DAP11020": "Invalid request format. Request is null.",
             "DAP11021": "Invalid request format. Request contents is null.",
             "DAP11022": "Invalid request format. Request contents is empty.",
-            "DAP11030": "Unable to unpack ERP request. Please try again.",
+            "DAP11030": "Unable to unpack system request. Please try again.",
             "DAP11050": "Request implementation error. Global execution error occurred.",
             "DAP11051": "Request type is under development.",
             "DAP11052": "Unknown request type.",
             "DAP11053": "Error initializing Core database. Please contact support.",
-            "DAP11054": "Error initializing ERP database. Please contact support.",
+            "DAP11054": "Error initializing system database. Please contact support.",
             "DAP11055": "Access denied. You do not have enough privilege to perform this action.",
             "DAP11056": "Error logging request and response. Please try again.",
             "DAP11057": "Internal routing error occurred. Please try again.",
@@ -53,7 +69,7 @@
             "DAP11065": "Missing Routing header. Please contact support.",
             "DAP11066": "Invalid Routing header. Please contact support.",
             "DAP11068": "Core database transaction error. Please try again.",
-            "DAP11069": "ERP database transaction error. Please try again.",
+            "DAP11069": "System database transaction error. Please try again.",
             "DAP11070": "Invalid parameters count. Please check your request.",
             "paramInvalidType": "Invalid data type for parameter {{n}}. Please check your request.",
             "unknownWithCode": "System error occurred ({{code}}). Please contact support."
@@ -66,11 +82,10 @@
         "profile": "Profile",
         "settings": "Settings",
         "logout": "Logout",
-        "companyAdministration": "Entity Administration",
+        "companyAdministration": "Facilities Management",
         "roles&Permissions": "Roles & Permissions",
-        "companyDetails": "Company Details",
+        "companyDetails": "Facility Details",
         "usersDetails": "Users Details",
-        "workflows": "Workflows",
         "documentControl": "Document Control",
         "sharedDocuments": "Shared Documents",
         "humanResources": "Human Resources",
@@ -86,10 +101,9 @@
         "profile": "Profile",
         "settings": "Settings",
         "logout": "Logout",
-        "companyAdministration": "Entity Administration",
-        "companyDetails": "Company Details",
+        "companyAdministration": "Facilities Management",
+        "companyDetails": "Facility Details",
         "usersDetails": "Users Details",
-        "workflows": "Workflows",
         "documentControl": "Document Control",
         "sharedDocuments": "Shared Documents",
         "humanResources": "Human Resources",
@@ -113,7 +127,7 @@
             "chooseSection": "Choose a section",
             "ready": "Ready",
             "ssm": "System Storage Management (SSM)",
-            "esm": "Entity Storage Management (ESM)",
+            "esm": "Facility Storage Management (ESM)",
             "storageContentManagement": "Storage & Content Management",
             "storageContentManagementTitle": "Storage & Content Management",
             "storageContentManagementSubtitle": "Online storage, shared files, document control, and electronic document management.",
@@ -130,9 +144,9 @@
         "backToStorageContent": "Back to Storage & Content Management",
         "tabs": {
             "systemAdmin": "System Administrator",
-            "entityAdmin": "Entity Administrator",
+            "entityAdmin": "Facility Representative",
             "fileSharing": "File Sharing",
-            "companyStorage": "Company Storage"
+            "companyStorage": "Facility Storage"
         },
         "dcs": {
             "subtitle": "Document Control System.",
@@ -144,7 +158,7 @@
         },
         "systemAdmin": {
             "title": "System Storage Management (SSM)",
-            "description": "Manage virtual drives, list and manage file systems when you have Entity Admin on the drive, and monitor storage and traffic.",
+            "description": "Manage virtual drives, list and manage file systems when you have Facility Representative on the drive, and monitor storage and traffic.",
             "overview": "Overview",
             "activeLicenses": "Active Licenses",
             "capacityUsed": "Capacity Used",
@@ -157,19 +171,19 @@
             "filesTraffic": "File traffic"
         },
         "entityAdmin": {
-            "title": "Entity Storage Management (ESM)",
-            "description": "Manage virtual drives and file systems owned by the entity, sync with local storage, monitor storage and traffic, and manage storage settings and access rights.",
+            "title": "Facility Storage Management (ESM)",
+            "description": "Manage virtual drives and file systems owned by the facility, sync with local storage, monitor storage and traffic, and manage storage settings and access rights.",
             "overview": "Overview",
             "fileSystems": "File Systems",
             "folderStructures": "Folder Structures",
             "permissionRules": "Permission Rules",
-            "virtualDrivesOwned": "Virtual Drives owned by the Entity",
-            "fileSystemsHostedInDrives": "File systems hosted in drives owned by the entity.",
-            "fileSystemsByEntity": "File Systems by Entity",
+            "virtualDrivesOwned": "Virtual drives owned by the facility",
+            "fileSystemsHostedInDrives": "File systems hosted in drives owned by the facility.",
+            "fileSystemsByEntity": "File systems by facility",
             "fileSystemsPageReport": "Showing '{first}' to '{last}' of '{totalRecords}' file systems",
             "folderStructure": "Folder Structure",
             "permissions": "Permissions",
-            "entityName": "Entity",
+            "entityName": "Facility",
             "fileSystemName": "File System",
             "affectedAccountsColumn": "Affected accounts",
             "fileSystemType": "File System Type",
@@ -211,7 +225,7 @@
             "uploadSync": "Upload Sync",
             "downloadSync": "Download Sync",
             "fullSync": "Full Sync",
-            "entityStorageSettings": "Entity Storage Settings",
+            "entityStorageSettings": "Facility Storage Settings",
             "entityStorageSettingsDescription": "Control whether entity users can share files internally or externally.",
             "allowShareInternally": "Allow entity users to share files internally",
             "allowShareExternally": "Allow entity users to share files externally",
@@ -220,7 +234,7 @@
             "trafficMonitoring": "Traffic monitoring",
             "trafficDescription": "Uploads, downloads, and file traffic for owned virtual drives.",
             "ownedVirtualDrives": "Owned Virtual Drives",
-            "noOwnedDrives": "No virtual drives owned by the entity.",
+            "noOwnedDrives": "No virtual drives owned by the facility.",
             "permissionsAdmin": {
                 "title": "File System Permissions",
                 "description": "Manage access for the file system you opened from the list. Add or remove rules, review effective access by account, or clear all permissions.",
@@ -255,8 +269,8 @@
                 "relatedIdsHint": "Enter one or more numeric IDs separated by comma or space (based on access type).",
                 "relatedTargetsPlaceholder": "Select one or more targets",
                 "relatedTargetsSearchPlaceholder": "Search by ID or name...",
-                "targetsEntityColumn": "Entity",
-                "targetsFallbackEntityLabel": "Entity #{{id}}",
+                "targetsEntityColumn": "Facility",
+                "targetsFallbackEntityLabel": "Facility #{{id}}",
                 "targetId": "ID",
                 "targetName": "Name",
                 "noRelatedTargetsFound": "No matching targets found.",
@@ -296,11 +310,11 @@
                 "account": "Account",
                 "group": "Group",
                 "role": "Role",
-                "entity": "Entity",
+                "entity": "Facility",
                 "organization": "Organization",
                 "all": "All",
                 "owner": "Owner",
-                "entityAdmin": "Entity Admin",
+                "entityAdmin": "Facility Representative",
                 "unknown": "Unknown"
             },
             "accessRight": {
@@ -589,13 +603,13 @@
             "freeSpace": "Free Space",
             "productEnterprise": "File System Enterprise",
             "productStoragePack": "Storage Pack",
-            "driveMain": "Company Storage (Main)",
+            "driveMain": "Facility Storage (Main)",
             "driveArchive": "Archive",
             "driveProjects": "Projects",
-            "entityFilter": "Entity filter",
+            "entityFilter": "Facility filter",
             "licenseId": "License ID",
             "driveType": "Drive type",
-            "driveTypeEntity": "Entity",
+            "driveTypeEntity": "Facility",
             "driveTypeAccount": "Account",
             "activeOnly": "Active only",
             "searchPlaceholder": "Search by name or license ID",
@@ -609,7 +623,7 @@
             "updateCapacity": "Update capacity",
             "activateDrive": "Activate",
             "deactivateDrive": "Deactivate",
-            "createDriveDialogTitle": "Create (Entity) Virtual Drive",
+            "createDriveDialogTitle": "Create (facility) virtual drive",
             "createDriveSuccess": "Virtual drive creation requested.",
             "renameDriveDialogTitle": "Rename Virtual Drive",
             "newDriveName": "New name",
@@ -624,7 +638,7 @@
             "virtualDrivesListErrorMissingToken": "Missing storage access token.",
             "virtualDrivesListErrorInvalidToken": "Invalid storage access token.",
             "virtualDrivesListErrorDatabase": "File server database error occurred while listing drives.",
-            "virtualDrivesListErrorInvalidEntityFilter": "Invalid entity filter for listing drives.",
+            "virtualDrivesListErrorInvalidEntityFilter": "Invalid facility filter for listing drives.",
             "virtualDrivesListErrorInvalidDriveId": "Invalid drive ID.",
             "virtualDrivesListErrorAccessDeniedOwner": "Access denied to the drives of this owner ID.",
             "virtualDrivesCreateErrorInvalidName": "Invalid drive name.",
@@ -658,14 +672,14 @@
             "capacityMax200Validation": "Capacity must be between 1 and 200 GB.",
             "createdAt": "Created at",
             "filterAccount": "Account",
-            "filterEntity": "Entity",
+            "filterEntity": "Facility",
             "filterBoth": "Both",
             "filterAllDrives": "All drives",
             "searchPlaceholderFileSystems": "Search by file system name",
             "listFileSystems": "List File Systems",
             "fileSystemsInDrive": "File systems in selected drive",
             "selectDriveToManageFileSystems": "Select a drive above to list and manage file systems.",
-            "createFileSystemRequiresEntityAdmin": "Create and manage file systems only when you have Entity Admin role on the selected drive.",
+            "createFileSystemRequiresEntityAdmin": "Create and manage file systems only when you have Facility Representative role on the selected drive.",
             "trafficMonitoring": "Traffic monitoring",
             "trafficDescription": "Total uploads, downloads, and file traffic across virtual drives.",
             "totalUploads": "Total uploads",
@@ -677,7 +691,7 @@
             "fileSystemNameRequired": "File system name is required.",
             "fileSystemTypeRequired": "File system type is required.",
             "scopePersonal": "Personal file system",
-            "scopeEntity": "Entity file system",
+            "scopeEntity": "Facility file system",
             "scopeLabel": "Scope",
             "createFileSystemSuccess": "File system created successfully.",
             "updateFileSystemSuccess": "File system updated successfully.",
@@ -686,7 +700,7 @@
             "errorLoadingDrives": "Failed to load drives.",
             "errorLoadingFileSystems": "Failed to load file systems.",
             "errorLoadingTypes": "Failed to load file system types.",
-            "errorInvalidEntityFilter": "Invalid entity filter.",
+            "errorInvalidEntityFilter": "Invalid facility filter.",
             "errorInvalidFileSystemName": "Invalid file system name.",
             "errorInvalidFileSystemType": "Invalid file system type.",
             "errorFileSystemInUse": "Cannot delete file system, it is already in use.",
@@ -735,7 +749,7 @@
             "errorFileStorage": "Error during file storage."
         },
         "folders": {
-            "companyStorage": "Company Storage",
+            "companyStorage": "Facility Storage",
             "finance": "Finance",
             "hr": "HR",
             "projects": "Projects",
@@ -748,7 +762,7 @@
             "folder": "Folder"
         },
         "entityAdminFolders": {
-            "companyRoot": "Company Root",
+            "companyRoot": "Facility Root",
             "finance": "Finance",
             "hr": "HR",
             "shared": "Shared",
@@ -758,12 +772,12 @@
             "templates": "Templates"
         },
         "entityAdminEntities": {
-            "mainCompany": "Main Company",
+            "mainCompany": "Main facility",
             "branchOffice": "Branch Office",
             "projectAlpha": "Project Alpha"
         },
         "entityAdminFileSystemNames": {
-            "companyStorage": "Company Storage",
+            "companyStorage": "Facility Storage",
             "branchStorage": "Branch Storage",
             "projectDrive": "Project Drive"
         },
@@ -829,7 +843,7 @@
             "layoutTheme": "Layout & Theme Settings",
             "dashboard": "Dashboard Settings",
             "incoming": "Incoming Settings",
-            "entitySettings": "Entity Settings",
+            "entitySettings": "Facility Settings",
             "systemSettings": "System Settings"
         },
         "account": {
@@ -844,14 +858,14 @@
             }
         },
         "entity": {
-            "title": "Entity Settings",
+            "title": "Facility Settings",
             "status": {
                 "overridden": "Overridden at entity level",
                 "inherited": "Inherited from lower priority layers"
             },
             "messages": {
-                "saveSuccess": "Entity settings saved successfully",
-                "resetSuccess": "Entity settings restored to inherited defaults"
+                "saveSuccess": "Facility settings saved successfully",
+                "resetSuccess": "Facility settings restored to inherited defaults"
             }
         },
         "system": {
@@ -922,9 +936,9 @@
                 "removeSuccess": "Default entity setting removed successfully"
             },
             "entityCustom": {
-                "title": "Entity settings",
-                "saveSuccess": "Entity settings saved successfully",
-                "removeSuccess": "Entity override removed"
+                "title": "Facility settings",
+                "saveSuccess": "Facility settings saved successfully",
+                "removeSuccess": "Facility override removed"
             },
             "common": {
                 "saveHintTooltip": "You have unsaved changes. Click here to save.",
@@ -973,8 +987,8 @@
             }
         },
         "entitySettings": {
-            "title": "Entity Settings",
-            "noSettings": "No Entity Settings Found",
+            "title": "Facility Settings",
+            "noSettings": "No Facility Settings Found",
             "noSettingsNote": "There are no entity settings configured yet. Use the recommended settings below as a reference.",
             "recommendedSettings": "Recommended Settings",
             "recommendedSettingsNote": "These settings are recommended but not yet implemented in the API. They are disabled for now.",
@@ -990,7 +1004,7 @@
             "selectDateFormat": "Select Date Format",
             "selectTimeFormat": "Select Time Format",
             "selectCurrency": "Select Currency",
-            "saveSuccess": "Entity settings saved successfully"
+            "saveSuccess": "Facility settings saved successfully"
         },
         "systemSettings": {
             "title": "System Settings",
@@ -1035,8 +1049,8 @@
             "account": "User Accounts",
             "accountId": "Account ID",
             "accountTitle": "Account Title",
-            "entity": "Entity",
-            "company": "Company",
+            "entity": "Facility",
+            "company": "Facility",
             "userId": "User ID"
         },
         "placeholders": {
@@ -1186,15 +1200,15 @@
     },
     "layout": {
         "app-breadcrumb": {
-            "dashboard": "ERP Dashboard",
-            "entitiesList": "Entities List",
+            "dashboard": "Donations Hub",
+            "entitiesList": "All Facilities",
             "usersList": "Users List",
             "newUser": "New User",
             "userDetails": "User Details",
             "editUser": "Edit User",
             "userContactInfo": "Contact Information",
             "userAccounts": "User Accounts",
-            "entityUserAccounts": "Entity User Accounts",
+            "entityUserAccounts": "Facility User Accounts",
             "uikit": "UI Kit",
             "utilities": "Utilities",
             "pages": "Pages Management",
@@ -1231,10 +1245,10 @@
             "newGroup": "New Group",
             "groupDetails": "Group Details",
             "editGroup": "Edit Group",
-            "entityGroups": "Entity Groups",
-            "newEntityGroup": "New Entity Group",
-            "entityGroupDetails": "Entity Group Details",
-            "editEntityGroup": "Edit Entity Group",
+            "entityGroups": "Facility Groups",
+            "newEntityGroup": "New Facility Group",
+            "entityGroupDetails": "Facility Group Details",
+            "editEntityGroup": "Edit Facility Group",
             "wallpaper-libraries": "Wallpaper Libraries",
             "wallpaper-wizard": "Wallpaper Wizard",
             "support": "Support",
@@ -1256,7 +1270,7 @@
             "fileSystem": "File System",
             "fileSystem.entityAdmin.permissionsAdmin.title": "File System Permissions",
             "fileSystemSSM": "System Storage Management (SSM)",
-            "fileSystemESM": "Entity Storage Management (ESM)",
+            "fileSystemESM": "Facility Storage Management (ESM)",
             "fileSystemStorageContent": "Storage & Content Management",
             "fileSystemOSFS": "Online Storage File Systems",
             "fileSystemOsfsExplorer": "Folders & files",
@@ -1264,13 +1278,14 @@
             "fileSystemDCS": "Document Control System",
             "fileSystemEDMS": "Electronic Document Management System",
             "fileSystemSystemAdmin": "System Administrator",
-            "fileSystemEntityAdmin": "Entity Administrator",
+            "fileSystemEntityAdmin": "Facility Representative",
+            "fileSystemFacilityRepresentative": "Facility Representative",
             "fileSystemFileSharing": "File Sharing",
-            "fileSystemCompanyStorage": "Company Storage",
+            "fileSystemCompanyStorage": "Facility Storage",
             "humanResources": "Human Resources",
             "financials": "Financials",
             "systemAdministration": "System Administration",
-            "companyAdministration": "Entity Administration",
+            "companyAdministration": "Facilities Management",
             "actions": "Actions",
             "settings": "Settings",
             "logout": "Logout",
@@ -1278,15 +1293,14 @@
             "contract": "Contract",
             "invoices": "Invoices",
             "sharedDocuments": "Shared Documents",
-            "companyDetails": "Company Details",
+            "companyDetails": "Facility Details",
             "roles&Permissions": "Roles & Permissions",
             "usersDetails": "Users Details",
-            "workflows": "Workflows",
-            "newEntity": "New Entity",
-            "entityDetails": "Entity Details",
-            "editEntity": "Edit Entity",
-            "erpFunctions": "ERP Functions",
-            "erpModules": "ERP Modules",
+            "newEntity": "New facility",
+            "entityDetails": "Facility Details",
+            "editEntity": "Edit facility",
+            "erpFunctions": "Features",
+            "erpModules": "App Sections",
             "systemAdminDashboard": "System Administration Dashboard",
             "systemAdminDashboardV2": "System Administration Dashboard (Observability)",
             "modulesList": "Modules List",
@@ -1379,8 +1393,10 @@
             }
         },
         "top-bar": {
-            "companyLogo": "Company Logo",
-            "erpSystemSuffix": " - ERP System",
+            "facilityPhoto": "Facility Photo",
+            "companyLogo": "Facility Photo",
+            "platformSuffix": " - {{platformName}}",
+            "erpSystemSuffix": " - {{platformName}}",
             "noNotificationsYet": "You don't have notifications yet",
             "markAllAsRead": "Mark All as Read",
             "viewAll": "View All",
@@ -1401,7 +1417,7 @@
             },
             "header": {
                 "errors": {
-                    "network": "Unable to load entity header data. Check your connection and try again."
+                    "network": "Unable to load facility header data. Check your connection and try again."
                 }
             }
         }
@@ -1412,7 +1428,7 @@
             "samlNotificationRecipients": "SAML Notification Recipients",
             "idPSSOTargetURL": "IDP SSO Target URL",
             "currentAuthnRequestCertificate": "Current Authn Request Certificate",
-            "entityId": "Entity ID",
+            "entityId": "Facility ID",
             "ssoSignInURL": "SSO Sign In URL",
             "ssoSignOutURL": "SSO Sign Out URL",
             "ssoCallbackURL": "SSO Callback URL",
@@ -1442,9 +1458,9 @@
         },
         "branding": {
             "title": "Branding Details",
-            "companyLogoURL": "Company Logo URL",
+            "companyLogoURL": "Facility Photo URL",
             "brandCertificate": "Brand Certificate",
-            "companyLogo": "Company Logo",
+            "companyLogo": "Facility Photo",
             "brandColor": "Brand Color",
             "upload": "UPLOAD LOGO"
         },
@@ -1485,15 +1501,15 @@
             "title": "Profile Details",
             "firstName": "First Name",
             "lastName": "Last Name",
-            "companyName": "Company Name",
+            "companyName": "Facility Name",
             "phone": "Contact Phone",
             "country": "Country",
             "language": "Language",
             "timeZone": "Time Zone",
             "currency": "Currency",
-            "companyNameValidation": "Company Name is required",
-            "minLengthValidation": "Company Name must be at least 2 characters long.",
-            "maxLengthValidation": "Company Name cannot exceed 50 characters.",
+            "companyNameValidation": "Facility Name is required",
+            "minLengthValidation": "Facility Name must be at least 2 characters long.",
+            "maxLengthValidation": "Facility Name cannot exceed 50 characters.",
             "onlyLettersValidation": "Only letters and spaces are allowed. No special characters or numbers."
         },
         "training-settings": {
@@ -1525,7 +1541,7 @@
     },
     "auth": {
         "login": {
-            "title": "Sign in to ERP",
+            "title": "Sign in to {{platformName}}",
             "logoAlt": "Promatech logo",
             "brandName": "Masajid Work",
             "brandTagline": "",
@@ -1545,11 +1561,11 @@
             "sessionExpired": "Your session has expired. Please sign in again."
         },
         "register": {
-            "title": "Sign Up to ERP",
+            "title": "Sign up to {{platformName}}",
             "fields": {
                 "firstName": "First Name",
                 "lastName": "Last Name",
-                "companyname": "Company Name",
+                "companyname": "Facility Name",
                 "email": "Email",
                 "phone": "Phone",
                 "currency": "Currency",
@@ -1576,12 +1592,12 @@
                 "lastName": "Last Name is required",
                 "lastNameMinLength": "Last Name should have at least 3 symbols",
                 "lastNameMaxLength": "Last Name should have maximum 100 symbols",
-                "companyname": "Company Name is required",
-                "companynameMinLength": "Company Name should have at least 3 symbols",
-                "companynameMaxLength": "Company Name should have maximum 100 symbols",
+                "companyname": "Facility Name is required",
+                "companynameMinLength": "Facility Name should have at least 3 symbols",
+                "companynameMaxLength": "Facility Name should have maximum 100 symbols",
                 "email": "Email is required",
                 "emailTaken": "Valid Email is required",
-                "companyEmail": "Company email is required (no Gmail, Outlook, etc.)",
+                "companyEmail": "Facility email is required (no Gmail, Outlook, etc.)",
                 "language": "Language is required",
                 "timezone": "Time zone is required",
                 "phone": "Phone number is required",
@@ -1626,7 +1642,7 @@
             "waitMessage": "We are confirming your email . Please wait a moment....."
         },
         "verification-email": {
-            "title": "Welcome to ERP",
+            "title": "Welcome to {{platformName}}",
             "message": "Your email address has been successfully registered with our service.",
             "messageI": "To complete the registration process and verify your email,",
             "messageII": "please check your inbox"
@@ -1634,6 +1650,10 @@
     },
 
     "shared": {
+        "templateVariables": {
+            "title": "Template variables",
+            "description": "Insert these variables into your template content."
+        },
         "actions": {
             "save": "Save",
             "submit": "Submit",
@@ -1685,9 +1705,9 @@
             "delete": "Confirm Delete",
             "active": "Confirm Activation",
             "defaultWallpapers": "Default Wallpapers",
-            "companyWallpapers": "Company Wallpapers",
+            "companyWallpapers": "Facility Wallpapers",
             "defaultBackgrounds": "Default Backgrounds",
-            "companyBackgrounds": "Company Backgrounds",
+            "companyBackgrounds": "Facility Backgrounds",
             "sessionExpired": "Session Expired",
             "sessionExpiredMessage": "Someone kicked you out. Please log in again.",
             "logoutaccount": "Are you sure you want to log out?",
@@ -1764,7 +1784,7 @@
             "rejected": "Rejected"
         },
         "projects": {
-            "erpSystem": "ERP System",
+            "platformName": "{{platformName}}",
             "hrPortal": "HR Portal",
             "invoicing": "Invoicing",
             "documentControl": "Document Control"
@@ -1775,11 +1795,11 @@
         "description": "System administration - Manage companies and users",
         "companies": {
             "title": "Companies",
-            "addCompany": "Add Company",
-            "editCompany": "Edit Company",
-            "deleteCompany": "Delete Company",
+            "addCompany": "Add facility",
+            "editCompany": "Edit facility",
+            "deleteCompany": "Delete facility",
             "fields": {
-                "name": "Company Name",
+                "name": "Facility Name",
                 "status": "Status",
                 "industry": "Industry",
                 "founded": "Founded Year",
@@ -1796,13 +1816,13 @@
                 "name": "Full Name",
                 "email": "Email",
                 "role": "Role",
-                "company": "Company",
+                "company": "Facility",
                 "status": "Status"
             }
         },
         "roles": {
             "systemAdmin": "System Admin",
-            "companyAdmin": "Company Admin",
+            "companyAdmin": "Facility Representative",
             "supervisor": "Supervisor",
             "employee": "Employee"
         },
@@ -1873,12 +1893,12 @@
         }
     },
     "entities": {
-        "title": "Manage Entities",
+        "title": "All Facilities",
         "description": "System administration - Manage entities (companies)",
         "list": {
-            "title": "Entities List",
+            "title": "All Facilities",
             "addNew": "Add New",
-            "addNewEntity": "Add New Entity",
+            "addNewEntity": "Add New facility",
             "pleaseWait": "Please wait",
             "searchPlaceholder": "Search",
             "table": {
@@ -1894,18 +1914,18 @@
             "noEntities": "No entities found",
             "noDescription": "No description provided.",
             "activationDialog": {
-                "activateTitle": "Activate Entity",
-                "deactivateTitle": "Deactivate Entity",
+                "activateTitle": "Activate facility",
+                "deactivateTitle": "Deactivate facility",
                 "activateMessage": "Are you sure you want to activate {{name}}?",
                 "deactivateMessage": "Are you sure you want to deactivate {{name}}?",
                 "criticalWarning": "Critical Warning:",
-                "criticalMessage": "This action will forcibly logout all accounts under this entity's tree, and will not allow any login process for related accounts.",
+                "criticalMessage": "This action will forcibly logout all accounts under this facility's tree, and will not allow any login process for related accounts.",
                 "cancel": "Cancel",
                 "activate": "Activate",
                 "deactivate": "Deactivate"
             },
             "deleteDialog": {
-                "title": "Delete Entity",
+                "title": "Delete facility",
                 "message": "Are you sure you want to delete {{name}}?",
                 "cannotUndo": "This action cannot be undone.",
                 "cancel": "Cancel",
@@ -1913,14 +1933,14 @@
             }
         },
         "form": {
-            "create": "Create Entity",
-            "edit": "Edit Entity",
-            "entityCode": "Entity Code",
-            "companyName": "Company Name",
+            "create": "Create facility",
+            "edit": "Edit facility",
+            "entityCode": "Facility Code",
+            "companyName": "Facility Name",
             "description": "Description",
             "descriptionRequired": "Description is required",
-            "parentEntity": "Parent Entity",
-            "personalEntity": "Personal Entity?",
+            "parentEntity": "Parent facility",
+            "personalEntity": "Personal facility?",
             "administratorAccount": "Administrator Account",
             "email": "Email",
             "firstName": "First Name",
@@ -1931,35 +1951,35 @@
             "required": "This field is required",
             "placeholders": {
                 "entityCode": "Enter entity code",
-                "companyName": "Enter company name",
-                "description": "Add a clear description for this entity",
+                "companyName": "Enter facility name",
+                "description": "Add a clear description for this facility",
                 "parentEntity": "Select parent entity",
                 "email": "Enter email address",
                 "firstName": "Enter first name",
                 "lastName": "Enter last name"
             },
             "parentDialog": {
-                "title": "Select Parent Entity",
+                "title": "Select Parent facility",
                 "searchPlaceholder": "Search by name or code",
                 "code": "Code",
                 "name": "Name",
                 "noEntities": "No entities found",
-                "selectRootEntity": "Select Root Entity",
+                "selectRootEntity": "Select root facility",
                 "select": "Select",
                 "cancel": "Cancel"
             }
         },
         "details": {
-            "title": "Entity Details",
+            "title": "Facility Details",
             "backToList": "Back to List",
-            "editEntity": "Edit Entity",
-            "profile": "Entity Profile",
+            "editEntity": "Edit facility",
+            "profile": "Facility Profile",
             "tabs": {
                 "basicInfoContacts": "Basic Information & Contacts",
                 "accounts": "Accounts",
                 "admins": "Admins",
                 "rolesPermissions": "Roles & Permissions",
-                "entityGroups": "Entity Groups"
+                "entityGroups": "Facility Groups"
             },
             "logo": {
                 "uploadPhoto": "Upload Photo",
@@ -1969,7 +1989,7 @@
                 "uploading": "Uploading..."
             },
             "photo": {
-                "alt": "Entity photo",
+                "alt": "Facility photo",
                 "messages": {
                     "uploaded": "Photo uploaded successfully.",
                     "removed": "Photo removed successfully.",
@@ -1982,20 +2002,20 @@
             },
             "fields": {
                 "code": "Code:",
-                "entityId": "Entity ID:",
-                "parentEntity": "Parent Entity:",
+                "entityId": "Facility ID:",
+                "parentEntity": "Parent facility:",
                 "description": "Description"
             },
-            "noDescription": "No description has been provided for this entity.",
-            "unnamedEntity": "Unnamed Entity",
+            "noDescription": "No description has been provided for this facility.",
+            "unnamedEntity": "Unnamed facility",
             "invalidEntityId": "Invalid entity ID.",
             "businessErrors": {
                 "DAP11260": "Invalid entity ID",
-                "DAP11277": "Invalid account ID (the account does not exist, or the entity administrator tried to use an account outside their entity tree).",
-                "DAP11278": "Invalid action. The entity admin account must be assigned directly to the entity (the account's Entity_ID must equal the Entity_ID).",
+                "DAP11277": "Invalid account ID (the account does not exist, or the facility administrator tried to use an account outside their entity tree).",
+                "DAP11278": "Invalid action. The facility representative account must be assigned directly to the same facility.",
                 "DAP11281": "Unknown image file format",
                 "DAP11282": "Empty image file contents",
-                "DAP11279": "Invalid account ID. The provided ID is not among the entity's administrators"
+                "DAP11279": "Invalid account ID. The provided ID is not among the facility's administrators"
             }
         },
         "contact": {
@@ -2033,7 +2053,7 @@
                 "updatedSuccessfully": "Contact information updated successfully."
             },
             "errors": {
-                "invalidEntityId": "Invalid Entity ID",
+                "invalidEntityId": "Invalid Facility ID",
                 "invalidAddressFormat": "Invalid format for provided Address",
                 "invalidPhoneFormat": "Invalid format for one or more of the provided phone numbers (only digits are allowed; no +, -, / or spaces)",
                 "invalidFaxFormat": "Invalid format for one or more of the provided fax numbers (only digits are allowed; no +, -, / or spaces)",
@@ -2047,10 +2067,10 @@
             "cancel": "Cancel"
         },
         "messages": {
-            "entityCreated": "Entity created successfully",
-            "entityUpdated": "Entity updated successfully",
-            "entityActivated": "Entity activated",
-            "entityDeactivated": "Entity deactivated",
+            "entityCreated": "Facility created successfully",
+            "entityUpdated": "Facility updated successfully",
+            "entityActivated": "Facility activated",
+            "entityDeactivated": "Facility deactivated",
             "adminAssigned": "Admin assigned successfully",
             "loadError": "Failed to load entities",
             "saveError": "Failed to save entity",
@@ -2066,7 +2086,7 @@
                 "accountId": "Account ID",
                 "userId": "User ID",
                 "email": "Email",
-                "entityRole": "Entity Role",
+                "entityRole": "Facility Role",
                 "accountState": "Account State",
                 "lastLogin": "Last Login",
                 "actions": "Actions"
@@ -2156,9 +2176,9 @@
                 "accountId": "Account ID",
                 "userId": "User ID",
                 "email": "Email",
-                "entity": "Entity",
+                "entity": "Facility",
                 "role": "Role",
-                "entityRole": "Entity Role",
+                "entityRole": "Facility Role",
                 "accountState": "Account State",
                 "lastLogin": "Last Login",
                 "actions": "Actions"
@@ -2183,16 +2203,16 @@
                 "email": "Email",
                 "firstName": "First Name",
                 "lastName": "Last Name",
-                "entity": "Entity",
-                "entityRole": "Entity Role",
+                "entity": "Facility",
+                "entityRole": "Facility Role",
                 "placeholderEmail": "Enter email address",
                 "placeholderFirstName": "Enter first name",
                 "placeholderLastName": "Enter last name",
                 "selectEntity": "Select an entity",
                 "selectEntityRole": "Select an entity role",
                 "emailRequired": "Email is required.",
-                "entityRequired": "Entity is required.",
-                "entityRoleRequired": "Entity role is required.",
+                "entityRequired": "Facility is required.",
+                "entityRoleRequired": "Facility role is required.",
                 "validEmail": "Please enter a valid email address.",
                 "cancel": "Cancel",
                 "createAccount": "Create Account"
@@ -2214,7 +2234,7 @@
                 "deactivate": "Deactivate"
             },
             "assignAdminDialog": {
-                "title": "Assign As Entity Admin",
+                "title": "Assign As Facility Representative",
                 "messagePrefix": "Promote ",
                 "messageMiddle": " to entity administrator for ",
                 "messageSuffix": "? They will gain full admin permissions.",
@@ -2253,10 +2273,10 @@
             "userId": "User ID",
             "systemRole": "System Role",
             "email": "Email",
-            "entity": "Entity",
-            "entityRole": "Entity role",
-            "entityId": "Entity ID",
-            "entityRoleId": "Entity Role ID",
+            "entity": "Facility",
+            "entityRole": "Facility role",
+            "entityId": "Facility ID",
+            "entityRoleId": "Facility Role ID",
             "accountState": "Account State",
             "description": "Description",
             "descriptionPlaceholder": "Enter account description",
@@ -2265,20 +2285,20 @@
             "save": "Save"
         },
         "update": {
-            "title": "Update Account Entity",
+            "title": "Update account facility",
             "email": "Email",
-            "entity": "Entity",
+            "entity": "Facility",
             "selectEntityPlaceholder": "Select entity",
-            "entityRequired": "Entity is required.",
-            "entityRole": "Entity Role",
-            "selectEntityRolePlaceholder": "Select Entity Role",
-            "entityRoleRequired": "Entity Role is required.",
+            "entityRequired": "Facility is required.",
+            "entityRole": "Facility Role",
+            "selectEntityRolePlaceholder": "Select Facility Role",
+            "entityRoleRequired": "Facility Role is required.",
             "selectEntityFirst": "Please select an entity first.",
             "loadingRoles": "Loading roles...",
             "cancel": "Cancel",
-            "updateEntity": "Update Entity",
+            "updateEntity": "Update facility",
             "selectDialog": {
-                "title": "Select Entity",
+                "title": "Select facility",
                 "searchPlaceholder": "Search by name or code",
                 "code": "Code",
                 "name": "Name",
@@ -2290,9 +2310,9 @@
     },
     "entityGroups": {
         "list": {
-            "title": "Manage Entity Groups",
+            "title": "Manage Facility Groups",
             "pleaseWait": "Please wait",
-            "addNew": "Add New Entity Group",
+            "addNew": "Add New Facility Group",
             "searchPlaceholder": "Search by ID, title, or description...",
             "clearSearch": "Clear search",
             "showActiveOnly": "Show Active Only:",
@@ -2323,8 +2343,8 @@
             }
         },
         "form": {
-            "editTitle": "Edit Entity Group",
-            "createTitle": "Create Entity Group",
+            "editTitle": "Edit Facility Group",
+            "createTitle": "Create Facility Group",
             "groupTitle": "Group Title",
             "description": "Description",
             "placeholderTitle": "Enter group title",
@@ -2334,7 +2354,7 @@
             "save": "Save"
         },
         "details": {
-            "title": "Entity Group Members",
+            "title": "Facility Group Members",
             "backToList": "Back to List"
         },
         "members": {
@@ -2345,7 +2365,7 @@
             "table": {
                 "accountId": "Account ID",
                 "email": "Email",
-                "entity": "Entity",
+                "entity": "Facility",
                 "actions": "Actions"
             },
             "na": "N/A",
@@ -2392,9 +2412,9 @@
         "form": {
             "editTitle": "Edit Role",
             "createTitle": "Create Role",
-            "entity": "Entity",
+            "entity": "Facility",
             "selectEntityPlaceholder": "Select entity",
-            "entityRequired": "Entity is required.",
+            "entityRequired": "Facility is required.",
             "title": "Title",
             "description": "Description",
             "placeholderTitle": "Enter role title",
@@ -2403,7 +2423,7 @@
             "update": "Update",
             "save": "Save",
             "entityDialog": {
-                "title": "Select Entity",
+                "title": "Select facility",
                 "searchPlaceholder": "Search by name or code",
                 "code": "Code",
                 "name": "Name",
@@ -2455,7 +2475,7 @@
             "editRole": "Edit Role",
             "roleId": "Role ID",
             "title": "Title",
-            "entity": "Entity",
+            "entity": "Facility",
             "loading": "Loading...",
             "status": "Status",
             "active": "Active",
@@ -2542,7 +2562,7 @@
             "table": {
                 "accountId": "Account ID",
                 "email": "Email",
-                "entity": "Entity",
+                "entity": "Facility",
                 "actions": "Actions"
             },
             "na": "N/A",
@@ -2613,13 +2633,13 @@
             "referenceId": "Reference ID",
             "createdAt": "Created At",
             "system": "System",
-            "entity": "Entity"
+            "entity": "Facility"
         },
         "form": {
             "editTitle": "Edit Notification",
             "createTitle": "Create Notification",
             "system": "System",
-            "entity": "Entity",
+            "entity": "Facility",
             "category": "Category",
             "categoryRequired": "Category is required.",
             "selectCategory": "Select Category",
@@ -2638,7 +2658,7 @@
         "list": {
             "title": "Notifications",
             "addSystemNotification": "Add System Notification",
-            "addEntityNotification": "Add Entity Notification",
+            "addEntityNotification": "Add facility notification",
             "textFilter": "Text Filter",
             "typeFilter": "Type Filter",
             "categoryFilter": "Category Filter",
@@ -2655,7 +2675,7 @@
                 "actions": "Actions"
             },
             "system": "System",
-            "entity": "Entity",
+            "entity": "Facility",
             "noNotifications": "No notifications found",
             "deleteDialog": {
                 "title": "Confirm Delete",
@@ -2700,7 +2720,7 @@
             "title": "Notifications Management",
             "mode": "Mode:",
             "system": "System",
-            "entity": "Entity",
+            "entity": "Facility",
             "tabNotifications": "Notifications",
             "tabCategories": "Categories",
             "tabTypes": "Types"
@@ -2714,7 +2734,7 @@
             "description": "Description",
             "canBeUnsubscribed": "Can Be Unsubscribed",
             "system": "System",
-            "entity": "Entity",
+            "entity": "Facility",
             "yes": "Yes",
             "no": "No"
         },
@@ -2722,7 +2742,7 @@
             "editTitle": "Edit Category",
             "createTitle": "Create Category",
             "system": "System",
-            "entity": "Entity",
+            "entity": "Facility",
             "notificationType": "Notification Type",
             "notificationTypeRequired": "Notification Type is required.",
             "selectType": "Select Type",
@@ -2737,9 +2757,9 @@
             "save": "Save"
         },
         "categoriesList": {
-            "entityTitle": "Entity Notification Categories",
+            "entityTitle": "Facility notification categories",
             "systemTitle": "System Notification Categories",
-            "addEntityCategory": "Add Entity Category",
+            "addEntityCategory": "Add facility category",
             "addSystemCategory": "Add System Category",
             "searchPlaceholderEntity": "Search by ID, title, description, send email, or unsubscribe...",
             "searchPlaceholderSystem": "Search by ID, title, description, type, send email, or unsubscribe...",
@@ -2762,7 +2782,7 @@
             "title": "Create Notification",
             "mode": "Mode:",
             "system": "System",
-            "entity": "Entity",
+            "entity": "Facility",
             "category": "Category",
             "categoryRequired": "Category is required.",
             "selectCategory": "Select Category",
@@ -2777,9 +2797,9 @@
             "createButton": "Create Notification"
         },
         "notificationsList": {
-            "entityTitle": "Entity Notifications",
+            "entityTitle": "Facility notifications",
             "systemTitle": "System Notifications",
-            "addEntityNotification": "Add Entity Notification",
+            "addEntityNotification": "Add facility notification",
             "addSystemNotification": "Add System Notification",
             "textFilter": "Text Filter",
             "searchPlaceholder": "Search by ID, title, message, type, or date...",
@@ -2847,7 +2867,7 @@
             "tableRoleId": "Role ID",
             "noRolesFound": "No roles found",
             "selectEntities": "Select Entities",
-            "tableEntityId": "Entity ID",
+            "tableEntityId": "Facility ID",
             "tableCode": "Code",
             "tableName": "Name",
             "noEntitiesFound": "No entities found",

@@ -12,6 +12,7 @@ import { IEntityDetails } from 'src/app/core/models/account-status.model';
 import { Roles } from 'src/app/core/models/system-roles';
 import { textFieldValidator, getTextFieldError, nameFieldValidator, getNameFieldError } from 'src/app/core/validators/text-field.validator';
 import { Entity, EntityBackend } from 'src/app/modules/entity-administration/entities/models/entities.model';
+import { TranslationService } from 'src/app/core/services/translation.service';
 
 type EntityFormContext = 'create' | 'update' | 'details';
 
@@ -54,7 +55,8 @@ export class SharedEntityFormComponent implements OnInit, OnDestroy {
         private messageService: MessageService,
         private localStorageService: LocalStorageService,
         private languageDirService: LanguageDirService,
-        private entityDetailsRefreshService: EntityDetailsRefreshService
+        private entityDetailsRefreshService: EntityDetailsRefreshService,
+        private translationService: TranslationService
     ) { }
 
     ngOnInit(): void {
@@ -395,11 +397,11 @@ export class SharedEntityFormComponent implements OnInit, OnDestroy {
     }
 
     get codeError(): string {
-        return getTextFieldError(this.f['code'], 'Entity code', this.submitted);
+        return getTextFieldError(this.f['code'], this.translationService.getInstant('entities.form.entityCode'), this.submitted);
     }
 
     get nameError(): string {
-        return getTextFieldError(this.f['name'], 'Company name', this.submitted);
+        return getTextFieldError(this.f['name'], this.translationService.getInstant('entities.form.companyName'), this.submitted);
     }
 
     get emailError(): string {

@@ -74,6 +74,7 @@ import { TreeTableModule } from 'primeng/treetable';
 // App modules and components
 import { AppConfigModule } from 'src/app/layout/config/app.config.module';
 import { HasRoleDirective } from 'src/app/core/directives/has-role.directive';
+import { BrandingParamsPipe } from 'src/app/core/pipes/branding-params.pipe';
 import { ColorScemaSettingsComponent } from '../components/color-scema-settings/color-scema-settings.component';
 import { ERPInfoComponent } from '../components/erp-info/erp-info.component';
 import { ERPVariablesComponent } from '../components/erp-variables/erp-variables.component';
@@ -83,6 +84,7 @@ import { LogoutComponent } from 'src/app/modules/auth/components/logout/logout.c
 
 // Components to declare in this module
 const components = [
+    BrandingParamsPipe,
     ColorScemaSettingsComponent,
     ComingSoonComponent,
     ERPInfoComponent,

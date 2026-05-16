@@ -2,9 +2,9 @@
   <div class="variables-container">
     <!-- Header Section -->
     <div class="variables-header">
-      <h4>ERP Variables</h4>
+      <h4>{{ 'shared.templateVariables.title' | translate }}</h4>
     </div>
-    <app-erp-info severity="info" description="Some text to describe the ERP Variables"></app-erp-info>
+    <app-erp-info severity="info" [description]="'shared.templateVariables.description' | translate"></app-erp-info>
     <div class="variable-grid">
       <div *ngFor="let variable of erpVariables" class="variable-item" (click)="copyVariable(variable.value)">
         <div class="variable-name">

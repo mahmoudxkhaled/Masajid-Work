@@ -12,6 +12,7 @@ import { TranslationService } from './core/services/translation.service';
 import { LayoutService } from './layout/app-services/app.layout.service';
 import { AuthService } from './modules/auth/services/auth.service';
 import { SettingsEngineService } from './modules/summary/services/settings-engine.service';
+import { BrandingService } from './core/services/branding.service';
 
 @Component({
     selector: 'app-root',
@@ -30,7 +31,8 @@ export class AppComponent implements OnInit, OnDestroy {
         private authService: AuthService,
         private notificationRefreshService: NotificationRefreshService,
         private router: Router,
-        private settingsEngineService: SettingsEngineService
+        private settingsEngineService: SettingsEngineService,
+        private brandingService: BrandingService
     ) {
         this.refreshLoginDataPackage();
 
@@ -67,6 +69,7 @@ export class AppComponent implements OnInit, OnDestroy {
     userLanguageCode: string | null = null;
 
     ngOnInit(): void {
+        document.title = this.brandingService.displayName;
 
         this.primengConfig.ripple = true;
 

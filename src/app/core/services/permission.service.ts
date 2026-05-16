@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { LocalStorageService } from './local-storage.service';
 import { Roles } from '../models/system-roles';
+import { TranslationService } from './translation.service';
 
 const PERMISSION_MATRIX = {
     // Credentials and Session related requests (100-110)
@@ -125,7 +126,10 @@ export type PermissionAction = keyof typeof PERMISSION_MATRIX;
     providedIn: 'root',
 })
 export class PermissionService {
-    constructor(private localStorageService: LocalStorageService) { }
+    constructor(
+        private localStorageService: LocalStorageService,
+        private translationService: TranslationService
+    ) { }
 
     /**
      * Returns the current user's role identifier.
@@ -398,17 +402,17 @@ export class PermissionService {
     getRoleName(systemRoleId: number): string {
         switch (systemRoleId) {
             case Roles.Developer:
-                return 'Developer';
+                return this.translationService.getInstant('roles.names.developer');
             case Roles.SystemAdministrator:
-                return 'System Administrator';
+                return this.translationService.getInstant('roles.names.systemAdministrator');
             case Roles.EntityAdministrator:
-                return 'Entity Administrator';
+                return this.translationService.getInstant('roles.names.entityAdministrator');
             case Roles.SystemUser:
-                return 'System User';
+                return this.translationService.getInstant('roles.names.systemUser');
             case Roles.Guest:
-                return 'Guest';
+                return this.translationService.getInstant('roles.names.guest');
             default:
-                return 'Unknown';
+                return this.translationService.getInstant('roles.names.unknown');
         }
     }
 }
