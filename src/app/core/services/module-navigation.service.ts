@@ -112,6 +112,9 @@ export class ModuleNavigationService {
         const functionsWithModules = this.getFunctionsWithModules();
         const normalizedUrl = url.trim().replace(/^\/+|\/+$/g, '');
 
+        let bestMatch: IMenuModule | null = null;
+        let bestMatchLength = -1;
+
         for (const functionItem of functionsWithModules) {
             for (const module of functionItem.modules) {
                 if (!module.url) {
@@ -124,13 +127,17 @@ export class ModuleNavigationService {
                     return module;
                 }
 
-                if (normalizedModuleUrl.startsWith(normalizedUrl + '/') ||
-                    normalizedUrl.startsWith(normalizedModuleUrl + '/')) {
-                    return module;
+                const isPrefixMatch =
+                    normalizedModuleUrl.startsWith(normalizedUrl + '/') ||
+                    normalizedUrl.startsWith(normalizedModuleUrl + '/');
+
+                if (isPrefixMatch && normalizedModuleUrl.length > bestMatchLength) {
+                    bestMatch = module;
+                    bestMatchLength = normalizedModuleUrl.length;
                 }
             }
         }
 
-        return null;
+        return bestMatch;
     }
 }

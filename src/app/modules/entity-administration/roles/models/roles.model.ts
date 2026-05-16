@@ -40,23 +40,3 @@ export interface EntityRole {
     functions?: number[];
     modules?: number[];
 }
-
-/**
- * Response structure for Role Functions
- */
-export interface RoleFunctionsResponse {
-    success: boolean;
-    message?: {
-        Functions?: number[];
-    };
-}
-
-/**
- * Response structure for Role Modules
- */
-export interface RoleModulesResponse {
-    success: boolean;
-    message?: {
-        Modules?: number[];
-    };
-}

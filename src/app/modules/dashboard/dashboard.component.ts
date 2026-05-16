@@ -8,7 +8,6 @@ import { TranslationService } from 'src/app/core/services/translation.service';
 import { AuthService } from '../auth/services/auth.service';
 import { LogoutComponent } from '../auth/components/logout/logout.component';
 import { DialogService } from 'primeng/dynamicdialog';
-import { SettingsConfigurationsService } from 'src/app/modules/system-administration/settings-configurations.service';
 import { IMenuFunction, IMenuModule } from 'src/app/core/models/account-status.model';
 import { ModuleNavigationService } from 'src/app/core/services/module-navigation.service';
 
@@ -24,7 +23,6 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     showLogoutDialog: boolean = false;
     dashboardCategories: IMenuFunction[] = [];
     highlightedModuleCode: string | null = null;
-    private readonly moduleLogoLoadingCodes = new Set<string>();
     private langSub: Subscription;
 
     constructor(
@@ -37,7 +35,6 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
         private dialogService: DialogService,
         private authService: AuthService,
         private moduleNavigationService: ModuleNavigationService,
-        private settingsConfigurationsService: SettingsConfigurationsService,
         private cdr: ChangeDetectorRef
     ) { }
 
@@ -83,29 +80,6 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
         this.dashboardCategories = this.moduleNavigationService
             .getFunctionsWithModules()
             .filter(func => Array.isArray(func.modules) && func.modules.length > 0);
-        this.loadModuleLogos();
-    }
-
-    private loadModuleLogos(): void {
-        this.moduleLogoLoadingCodes.clear();
-        this.dashboardCategories.forEach((func) => {
-            func.modules.forEach((module) => {
-                this.moduleLogoLoadingCodes.add(module.code);
-                this.settingsConfigurationsService.getModuleLogoCached(module.moduleId).subscribe((url) => {
-                    this.moduleLogoLoadingCodes.delete(module.code);
-                    if (url) {
-                        module.icon = url;
-                    } else {
-                        delete module.icon;
-                    }
-                    this.cdr.detectChanges();
-                });
-            });
-        });
-    }
-
-    isModuleLogoLoading(module: IMenuModule): boolean {
-        return this.moduleLogoLoadingCodes.has(module.code);
     }
 
     getDashboardCategories(): IMenuFunction[] {
@@ -127,51 +101,20 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
      */
     private getDefaultModuleIcon(moduleCode: string): string {
         const iconMap: Record<string, string> = {
-            'ACT': '⚡',
             'NOT': '🔔',
             'PRF': '👤',
             'SET': '⚙️',
             'LGOT': '🚪',
             'SDB': '📊',
-            'ERPF': '🧩',
-            'ERPM': '📦',
             'ENTDT': '🏢',
             'USRACC': '👥',
-            'WF': '🔄',
-            'EACC': '💼',
-            'SHDOC': '📄',
-            'FCOA': '📚',
-            'AP': '💰',
-            'AR': '💵',
-            'GL': '📖',
-            'OC': '🏛️',
-            'PRSN': '👔',
-            'TS': '⏰',
-            'CLNT': '🤝',
-            'EST': '📊',
-            'TND': '📋',
-            'MC': '📝',
-            'CINV': '🧾',
-            'VND': '🚚',
-            'PO': '🛒',
-            'SC': '📄',
-            'VINV': '🧾',
-            'WBS': '📐',
-            'CBS': '📊',
-            'QS': '📏',
-            'BUDG': '💵',
-            'CRPT': '📈',
-            'PRPT': '📊',
-            'SCP': '🎛️',
-            'SU': '🧑‍💻',
+            'STCM': '📁',
             'GP': '👥',
             'NOTM': '🛎️',
             'SSM': '💾',
             'ESM': '🗃️',
-            'SCM': '📂',
-            'SDBV2': '📊',
             'SENT': '🗂️',
-            'EUA': '👥'
+            'EUA': '👥',
         };
         return iconMap[moduleCode] || '📁';
     }
@@ -283,6 +226,10 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
      */
     isModuleHighlighted(moduleCode: string): boolean {
         return this.highlightedModuleCode === moduleCode;
+    }
+
+    isModuleLogoLoading(_module: IMenuModule): boolean {
+        return false;
     }
 
     // #region Business errors

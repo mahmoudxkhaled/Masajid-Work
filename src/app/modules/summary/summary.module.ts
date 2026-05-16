@@ -4,7 +4,6 @@ import { SummaryRoutingModule } from './summary-routing.module';
 import { SharedModule } from 'src/app/Shared/shared/shared.module';
 
 // Components
-import { ActionsComponent } from './components/actions/actions.component';
 import { NotificationsComponent } from './components/notifications/notifications.component';
 import { ProfileOverviewComponent } from './components/profile/profile-overview/profile-overview.component';
 import { ProfileEditComponent } from './components/profile/profile-edit/profile-edit.component';
@@ -18,7 +17,6 @@ import { SettingsSectionComponent } from './components/settings/settings-section
 
 @NgModule({
     declarations: [
-        ActionsComponent,
         NotificationsComponent,
         ProfileOverviewComponent,
         ProfileEditComponent,

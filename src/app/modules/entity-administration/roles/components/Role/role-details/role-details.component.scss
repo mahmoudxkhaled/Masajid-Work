@@ -1,26 +1,6 @@
 // Styles for role details component
 // Follow entity-details component styling patterns
 
-.functions-list,
-.modules-list {
-    .list-item {
-        &:last-child {
-            div {
-                border-bottom: none !important;
-            }
-        }
-
-        div {
-            transition: background-color 0.2s;
-
-            &:hover {
-                background-color: var(--surface-hover);
-                border-radius: var(--border-radius);
-            }
-        }
-    }
-}
-
 // Role Profile Vertical Layout
 .role-profile-vertical {
     display: flex;

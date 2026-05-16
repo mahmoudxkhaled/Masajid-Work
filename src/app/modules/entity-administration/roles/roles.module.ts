@@ -8,7 +8,6 @@ import { RolesListComponent } from './components/Role/roles-list/roles-list.comp
 import { RoleFormComponent } from './components/Role/role-form/role-form.component';
 import { RoleDetailsComponent } from './components/Role/role-details/role-details.component';
 import { EditRoleDialogComponent } from './components/Role/edit-role-dialog/edit-role-dialog.component';
-import { RolePermissionsComponent } from './components/Permissions/role-permissions/role-permissions.component';
 import { AssignRoleToAccountComponent } from './components/Assignment/assign-role-to-account/assign-role-to-account.component';
 
 @NgModule({
@@ -17,7 +16,6 @@ import { AssignRoleToAccountComponent } from './components/Assignment/assign-rol
         RoleFormComponent,
         RoleDetailsComponent,
         EditRoleDialogComponent,
-        RolePermissionsComponent,
         AssignRoleToAccountComponent,
     ],
     imports: [

@@ -82,15 +82,10 @@ export class AppMenuComponent implements OnInit {
 
     private getDefaultFunctionIcon(functionCode: string): string {
         const iconMap: Record<string, string> = {
-            'DBS': 'fa fa-chart-pie',
-            'SysAdm': 'fa fa-cog',
-            'EntAdm': 'fa fa-building',
-            'DC': 'fa fa-file-alt',
-            'FIN': 'fa fa-receipt',
-            'HR': 'fa fa-user-tie',
-            'CRM': 'fa fa-handshake',
-            'SCM': 'fa fa-truck',
-            'PC': 'fa fa-project-diagram'
+            DBS: 'fa fa-chart-pie',
+            SysAdm: 'fa fa-cog',
+            EntAdm: 'fa fa-building',
+            DC: 'fa fa-file-alt',
         };
         return iconMap[functionCode] || 'fa fa-folder';
     }
@@ -98,19 +93,20 @@ export class AppMenuComponent implements OnInit {
 
     private getDefaultModuleIcon(moduleCode: string): string {
         const iconMap: Record<string, string> = {
-            'ACT': 'fa fa-bolt',
             'NOT': 'fa fa-bell',
+            'NOTM': 'fa fa-sliders-h',
             'PRF': 'fa fa-user',
             'SET': 'fa fa-cog',
             'LGOT': 'fa fa-sign-out-alt',
             'SDB': 'fa fa-chart-line',
-            'ERPF': 'fa fa-puzzle-piece',
-            'ERPM': 'fa fa-cubes',
-            'ENTDT': 'fa fa-building',
-            'USRACC': 'fa fa-users',
-            'WF': 'fa fa-sync-alt',
-            'TS': 'fa fa-clock',
-            'FCOA': 'fa fa-book'
+            'SSM': 'fa fa-hdd',
+            'SENT': 'fa fa-sitemap',
+            USRACC: 'fa fa-users-cog',
+            EUA: 'fa fa-users',
+            ENTDT: 'fa fa-building',
+            TS: 'fa fa-clock',
+            GP: 'fa fa-users',
+            STCM: 'fa fa-folder-open',
         };
         return iconMap[moduleCode] || 'fa fa-file';
     }

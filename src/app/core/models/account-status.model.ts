@@ -3,8 +3,6 @@ export interface Get_Login_Data_Package {
     Account_Details: IAccountDetails;
     User_Details: IUserDetails;
     Entity_Details: IEntityDetails;
-    Functions_Details?: IFunctionsDetails;
-    Modules_Details?: IModulesDetails;
     Account_Settings: IAccountSettings;
     User_Accounts?: IUserAccountItem[];
 }
@@ -62,17 +60,6 @@ export interface IFunctionDetail {
     URL: string;
 }
 
-export interface IFunctionsDetails {
-    SysAdm: IFunctionDetail;
-    EntAdm: IFunctionDetail;
-    DC: IFunctionDetail;
-    FIN: IFunctionDetail;
-    CRM: IFunctionDetail;
-    SCM: IFunctionDetail;
-    PC: IFunctionDetail;
-}
-
-
 export interface IModuleDetail {
     ModuleID: number;
     FunctionID: number;
@@ -108,8 +95,6 @@ export interface IAccountStatusResponse {
     Account_Details: IAccountDetails;
     User_Details: IUserDetails;
     Entity_Details: IEntityDetails;
-    Functions_Details?: IFunctionsDetails;
-    Modules_Details?: IModulesDetails;
     Account_Settings: IAccountSettings;
     User_Accounts?: IUserAccountItem[];
 }

@@ -1968,6 +1968,18 @@
                 "recommendedSize": "Recommended: 200KB or less",
                 "uploading": "Uploading..."
             },
+            "photo": {
+                "alt": "Entity photo",
+                "messages": {
+                    "uploaded": "Photo uploaded successfully.",
+                    "removed": "Photo removed successfully.",
+                    "readFileError": "Failed to read file. Please try again.",
+                    "invalidFileTypeSummary": "Invalid file type",
+                    "invalidFileTypeDetail": "Please select an image file (JPG, PNG, JPEG, or WEBP).",
+                    "largeFileSummary": "Large file size",
+                    "largeFileDetail": "File size ({{sizeMb}} MB) exceeds the recommended {{recommendedKb}} KB. Upload may take longer."
+                }
+            },
             "fields": {
                 "code": "Code:",
                 "entityId": "Entity ID:",
@@ -1975,7 +1987,16 @@
                 "description": "Description"
             },
             "noDescription": "No description has been provided for this entity.",
-            "unnamedEntity": "Unnamed Entity"
+            "unnamedEntity": "Unnamed Entity",
+            "invalidEntityId": "Invalid entity ID.",
+            "businessErrors": {
+                "DAP11260": "Invalid entity ID",
+                "DAP11277": "Invalid account ID (the account does not exist, or the entity administrator tried to use an account outside their entity tree).",
+                "DAP11278": "Invalid action. The entity admin account must be assigned directly to the entity (the account's Entity_ID must equal the Entity_ID).",
+                "DAP11281": "Unknown image file format",
+                "DAP11282": "Empty image file contents",
+                "DAP11279": "Invalid account ID. The provided ID is not among the entity's administrators"
+            }
         },
         "contact": {
             "title": "Contact Information",

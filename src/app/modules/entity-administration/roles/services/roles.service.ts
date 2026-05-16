@@ -20,12 +20,6 @@ export class RolesService {
         return this.localStorageService.getAccessToken();
     }
 
-    /**
-     * Formats an array of numbers into the API-expected string format
-     * Examples: [1,2,3] -> "{1,2,3}", [0,-2] -> "{0,-2}", [] -> "{}"
-     * @param numbers - Array of numbers to format
-     * @returns Formatted string like "{1,2,3}"
-     */
     private formatIntegerList(numbers: number[]): string {
         if (!numbers || numbers.length === 0) {
             return '{}';
@@ -33,23 +27,6 @@ export class RolesService {
         // Remove duplicates
         const uniqueNumbers = [...new Set(numbers)];
         return `{${uniqueNumbers.join(',')}}`;
-    }
-
-    /**
-     * Parses a string format like "{1,2,3}" back to number array
-     * @param listString - String in format "{1,2,3}"
-     * @returns Array of numbers
-     */
-    parseIntegerList(listString: string): number[] {
-        if (!listString || listString === '{}') {
-            return [];
-        }
-        // Remove braces and split by comma
-        const cleaned = listString.replace(/[{}]/g, '');
-        if (!cleaned) {
-            return [];
-        }
-        return cleaned.split(',').map(num => parseInt(num.trim(), 10)).filter(num => !isNaN(num));
     }
 
     /**
@@ -134,61 +111,6 @@ export class RolesService {
         this.isLoadingSubject.next(true);
         const params = [roleId.toString(), accountId.toString()];
         return this.apiServices.callAPI(605, this.getAccessToken(), params).pipe(
-            finalize(() => this.isLoadingSubject.next(false))
-        );
-    }
-
-    /**
-     * Define the allowed functions for a given role
-     * API Code: 610
-     * @param roleId - Entity Role ID
-     * @param functions - Array of function IDs (e.g., [1,2,3] or [0,-2] for wildcard with exceptions)
-     */
-    setRoleFunctions(roleId: number, functions: number[]): Observable<any> {
-        this.isLoadingSubject.next(true);
-        const functionsString = this.formatIntegerList(functions);
-        const params = [roleId.toString(), functionsString];
-        return this.apiServices.callAPI(610, this.getAccessToken(), params).pipe(
-            finalize(() => this.isLoadingSubject.next(false))
-        );
-    }
-
-    /**
-     * Retrieve the list of functions allowed for a role
-     * API Code: 611
-     * @param roleId - Entity Role ID
-     */
-    getRoleFunctions(roleId: number): Observable<any> {
-        this.isLoadingSubject.next(true);
-        return this.apiServices.callAPI(611, this.getAccessToken(), [roleId.toString()]).pipe(
-            finalize(() => this.isLoadingSubject.next(false))
-        );
-    }
-
-    /**
-     * Define or update the allowed modules list for a role
-     * API Code: 612
-     * @param roleId - Entity Role ID
-     * @param modules - Array of module IDs (e.g., [1,2,3] or [0,-2] for wildcard with exceptions)
-     */
-    setRoleModules(roleId: number, modules: number[]): Observable<any> {
-        this.isLoadingSubject.next(true);
-        const modulesString = this.formatIntegerList(modules);
-        const params = [roleId.toString(), modulesString];
-        console.log('params setRoleModules', params);
-        return this.apiServices.callAPI(612, this.getAccessToken(), params).pipe(
-            finalize(() => this.isLoadingSubject.next(false))
-        );
-    }
-
-    /**
-     * Retrieve the list of modules allowed for a role
-     * API Code: 613
-     * @param roleId - Entity Role ID
-     */
-    getRoleModules(roleId: number): Observable<any> {
-        this.isLoadingSubject.next(true);
-        return this.apiServices.callAPI(613, this.getAccessToken(), [roleId.toString()]).pipe(
             finalize(() => this.isLoadingSubject.next(false))
         );
     }

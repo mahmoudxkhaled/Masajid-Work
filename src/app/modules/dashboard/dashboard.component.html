@@ -13,14 +13,8 @@
                 <div class="card-glow"></div>
 
                 <div class="icon-section">
-                    <ng-container *ngIf="isModuleLogoLoading(module); else moduleIconReady">
-                        <p-skeleton width="2.8rem" height="2.8rem" borderRadius="8px"
-                            styleClass="module-logo-skeleton"></p-skeleton>
-                    </ng-container>
-                    <ng-template #moduleIconReady>
-                        <img *ngIf="module.icon" [src]="module.icon" [alt]="module.name" class="img-icon">
-                        <span *ngIf="!module.icon" class="emoji-icon">{{ getModuleIcon(module) }}</span>
-                    </ng-template>
+                    <img *ngIf="module.icon" [src]="module.icon" [alt]="module.name" class="img-icon">
+                    <span *ngIf="!module.icon" class="emoji-icon">{{ getModuleIcon(module) }}</span>
                 </div>
 
                 <div class="name-section">

@@ -43,12 +43,6 @@ const routes: Routes = [
                 data: { breadcrumb: 'documentControl' },
                 loadChildren: () => import('./modules/document-control/document-control.module').then((m) => m.DocumentControlModule),
             },
-            {
-                path: 'financials',
-                canActivate: [AuthGuard],
-                data: { breadcrumb: 'financials' },
-                loadChildren: () => import('./modules/finance-accounting/financials.module').then((m) => m.FinancialsModule),
-            },
 
         ],
     },

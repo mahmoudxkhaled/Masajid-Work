@@ -170,42 +170,42 @@
 
                         <div class="entity-profile-content">
 
-                            <!-- Hero Section: Logo + Core Identity -->
+                            <!-- Hero Section: Photo + Core Identity -->
                             <div class="profile-hero     p-5 mb-5">
                                 <div class="grid align-items-start">
 
-                                    <!-- Logo with hover actions (same as entity-details) -->
+                                    <!-- Entity photo with hover actions -->
                                     <div class="col-12 md:col-4 flex justify-content-center">
-                                        <ng-container *ngIf="canManageEntityLogo; else logoReadOnly">
+                                        <ng-container *ngIf="canManageEntityPhoto; else photoReadOnly">
                                             <div class="identity-logo-wrapper" role="button" tabindex="0"
-                                                aria-label="Upload entity logo" (click)="onLogoAreaClick()"
-                                                (keydown.enter)="onLogoAreaKeydown($event)"
-                                                (keydown.space)="onLogoAreaKeydown($event)">
+                                                [attr.aria-label]="'entities.details.logo.uploadPhoto' | translate" (click)="onPhotoAreaClick()"
+                                                (keydown.enter)="onPhotoAreaKeydown($event)"
+                                                (keydown.space)="onPhotoAreaKeydown($event)">
                                                 <div class="identity-logo">
-                                                    <ng-container *ngIf="logoAwaitingApi; else sharedEntityLogoImg">
+                                                    <ng-container *ngIf="photoAwaitingApi; else sharedEntityPhotoImg">
                                                         <p-skeleton width="100%" height="100%"
                                                             borderRadius="8px"></p-skeleton>
                                                     </ng-container>
-                                                    <ng-template #sharedEntityLogoImg>
-                                                        <img [src]="entityLogo || 'assets/media/upload-photo.jpg'"
-                                                            [class.identity-logo__img--fill]="!hasLogo"
-                                                            [alt]="'Entity Logo'">
+                                                    <ng-template #sharedEntityPhotoImg>
+                                                        <img [src]="entityPhotoUrl || 'assets/media/upload-photo.jpg'"
+                                                            [class.identity-logo__img--fill]="!hasPhoto"
+                                                            [alt]="'entities.details.photo.alt' | translate">
                                                     </ng-template>
                                                 </div>
 
                                                 <div class="logo-overlay">
                                                     <div class="logo-actions">
-                                                        <p-fileUpload #logoUploader
-                                                            *ngIf="!hasLogo && !loadingLogo && !logoAwaitingApi"
-                                                            mode="basic" name="logo" accept="image/*"
-                                                            (onSelect)="onLogoUpload($event)" [maxFileSize]="2097152"
+                                                        <p-fileUpload #photoUploader
+                                                            *ngIf="!hasPhoto && !loadingPhoto && !photoAwaitingApi"
+                                                            mode="basic" name="entityPhoto" accept="image/*"
+                                                            (onSelect)="onPhotoUpload($event)" [maxFileSize]="2097152"
                                                             [chooseLabel]="'entities.details.logo.uploadPhoto' | translate"
                                                             styleClass="logo-upload-button p-button-outlined p-button-sm">
                                                         </p-fileUpload>
 
-                                                        <div *ngIf="hasLogo && !loadingLogo" class="logo-actions-row">
-                                                            <p-fileUpload #logoUploader mode="basic" name="logo"
-                                                                accept="image/*" (onSelect)="onLogoUpload($event)"
+                                                        <div *ngIf="hasPhoto && !loadingPhoto" class="logo-actions-row">
+                                                            <p-fileUpload mode="basic" name="entityPhoto"
+                                                                accept="image/*" (onSelect)="onPhotoUpload($event)"
                                                                 [maxFileSize]="2097152"
                                                                 [chooseLabel]="'entities.details.logo.uploadAnotherOne' | translate"
                                                                 styleClass="logo-upload-button p-button-outlined p-button-sm">
@@ -214,11 +214,11 @@
                                                                 [label]="'entities.details.logo.removePhoto' | translate"
                                                                 icon="pi pi-trash" iconPos="left"
                                                                 class="logo-remove-button p-button-sm"
-                                                                (onClick)="removeLogo()" [disabled]="loadingLogo">
+                                                                (onClick)="removePhoto()" [disabled]="loadingPhoto">
                                                             </p-button>
                                                         </div>
 
-                                                        <small *ngIf="!loadingLogo && !logoAwaitingApi"
+                                                        <small *ngIf="!loadingPhoto && !photoAwaitingApi"
                                                             class="text-white-alpha-90 mt-2 text-center"
                                                             style="font-size: 0.75rem;">
                                                             {{ 'entities.details.logo.recommendedSize' | translate }}
@@ -226,7 +226,7 @@
                                                     </div>
                                                 </div>
 
-                                                <div *ngIf="loadingLogo" class="logo-loading-overlay">
+                                                <div *ngIf="loadingPhoto" class="logo-loading-overlay">
                                                     <div class="logo-upload-indicator">
                                                         <p-progressSpinner strokeWidth="4"
                                                             styleClass="logo-upload-spinner">
@@ -238,17 +238,17 @@
                                                 </div>
                                             </div>
                                         </ng-container>
-                                        <ng-template #logoReadOnly>
+                                        <ng-template #photoReadOnly>
                                             <div class="identity-logo-wrapper identity-logo-wrapper--readonly">
                                                 <div class="identity-logo">
-                                                    <ng-container *ngIf="logoAwaitingApi; else sharedEntityLogoImgReadonly">
+                                                    <ng-container *ngIf="photoAwaitingApi; else sharedEntityPhotoImgReadonly">
                                                         <p-skeleton width="100%" height="100%"
                                                             borderRadius="8px"></p-skeleton>
                                                     </ng-container>
-                                                    <ng-template #sharedEntityLogoImgReadonly>
-                                                        <img [src]="entityLogo || 'assets/media/upload-photo.jpg'"
-                                                            [class.identity-logo__img--fill]="!hasLogo"
-                                                            [alt]="'Entity Logo'">
+                                                    <ng-template #sharedEntityPhotoImgReadonly>
+                                                        <img [src]="entityPhotoUrl || 'assets/media/upload-photo.jpg'"
+                                                            [class.identity-logo__img--fill]="!hasPhoto"
+                                                            [alt]="'entities.details.photo.alt' | translate">
                                                     </ng-template>
                                                 </div>
                                             </div>

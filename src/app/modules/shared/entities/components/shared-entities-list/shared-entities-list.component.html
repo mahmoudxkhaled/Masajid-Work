@@ -62,21 +62,21 @@
                         </div>
                     </td>
                     <td class="text-center">
-                        <ng-container *ngIf="tableLoadingSpinner; else normalLogo">
+                        <ng-container *ngIf="tableLoadingSpinner; else normalPhoto">
                             <p-skeleton width="2rem" height="2rem" borderRadius="50%"></p-skeleton>
                         </ng-container>
-                        <ng-template #normalLogo>
+                        <ng-template #normalPhoto>
                             <button type="button" class="entity-logo-btn" (click)="viewDetails(entity)"
                                 [disabled]="!entity?.id">
-                                <ng-container *ngIf="isEntityLogoLoading(entity); else logoContent">
+                                <ng-container *ngIf="isEntityPhotoLoading(entity); else photoContent">
                                     <p-skeleton shape="circle" size="2rem" aria-hidden="true"></p-skeleton>
                                 </ng-container>
-                                <ng-template #logoContent>
-                                    <p-avatar *ngIf="getEntityLogoUrl(entity); else placeholderLogo"
-                                        [image]="getEntityLogoUrl(entity)!" shape="circle" size="large"
+                                <ng-template #photoContent>
+                                    <p-avatar *ngIf="getEntityPhotoUrl(entity); else placeholderPhoto"
+                                        [image]="getEntityPhotoUrl(entity)!" shape="circle" size="large"
                                         styleClass="entity-logo-avatar">
                                     </p-avatar>
-                                    <ng-template #placeholderLogo>
+                                    <ng-template #placeholderPhoto>
                                         <p-avatar icon="pi pi-building" shape="circle" size="large"
                                             styleClass="entity-logo-avatar"></p-avatar>
                                     </ng-template>

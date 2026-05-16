@@ -27,9 +27,9 @@ const PERMISSION_MATRIX = {
     Assign_Entity_Admin: [Roles.Developer, Roles.SystemAdministrator, Roles.EntityAdministrator],
     Get_Entity_Admins: [Roles.Developer, Roles.SystemAdministrator, Roles.EntityAdministrator],
     Delete_Entity_Admin: [Roles.Developer, Roles.SystemAdministrator, Roles.EntityAdministrator],
-    Assign_Entity_Logo: [Roles.Developer, Roles.SystemAdministrator, Roles.EntityAdministrator],
-    Get_Entity_Logo: [Roles.Developer, Roles.SystemAdministrator, Roles.EntityAdministrator, Roles.SystemUser],
-    Remove_Entity_Logo: [Roles.Developer, Roles.SystemAdministrator, Roles.EntityAdministrator],
+    Assign_Entity_Photo: [Roles.Developer, Roles.SystemAdministrator, Roles.EntityAdministrator],
+    Get_Entity_Photo: [Roles.Developer, Roles.SystemAdministrator, Roles.EntityAdministrator, Roles.SystemUser],
+    Remove_Entity_Photo: [Roles.Developer, Roles.SystemAdministrator, Roles.EntityAdministrator],
 
     // Entity Accounts & Tree APIs (500-501)
     Get_Entity_Accounts_List: [Roles.Developer, Roles.SystemAdministrator, Roles.EntityAdministrator],
@@ -132,14 +132,19 @@ export class PermissionService {
      */
     getCurrentRoleId(): Roles | 0 {
         const accountDetails = this.localStorageService.getAccountDetails();
-        return (accountDetails?.System_Role_ID as Roles) || 0;
+        const raw = accountDetails?.System_Role_ID as number | string | undefined | null;
+        if (raw === undefined || raw === null) {
+            return 0;
+        }
+        const n = Number(raw);
+        return Number.isFinite(n) ? (n as Roles) : 0;
     }
 
     /**
      * Checks if the current user matches the provided role.
      */
     hasRole(roleId: Roles | number): boolean {
-        return this.getCurrentRoleId() === roleId;
+        return Number(this.getCurrentRoleId()) === Number(roleId);
     }
 
     /**
@@ -149,8 +154,11 @@ export class PermissionService {
         if (!roles?.length) {
             return false;
         }
-        const currentRole = this.getCurrentRoleId();
-        return roles.some((role) => role === currentRole);
+        const currentRole = Number(this.getCurrentRoleId());
+        if (!Number.isFinite(currentRole)) {
+            return false;
+        }
+        return roles.some((role) => Number(role) === currentRole);
     }
 
     /**

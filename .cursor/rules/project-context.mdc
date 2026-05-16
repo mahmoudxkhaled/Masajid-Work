@@ -22,10 +22,9 @@ This workspace is **pmat** (ERP frontend): Angular 17, PrimeNG 17, TypeScript 5.
 - **`modules/`** – Feature modules, lazy-loaded via `app-routing.module.ts`:
     - **dashboard** – `/`
     - **summary** – `/summary` (actions, notifications, notifications-management, profile, settings, groups)
-    - **system-administration** – `/system-administration` (default → `dashboard`; also `erp-modules`, `erp-functions`, `system-storage-management`, `system-entities`, `user-accounts`)
+    - **system-administration** – `/system-administration` (default → `dashboard`; also `system-storage-management`, `system-entities`, `user-accounts`)
     - **entity-administration** – `/entity-administration` (entities, roles, `entity-user-accounts`, entity-groups, workflows, entity-storage-management)
     - **document-control** – `/document-control` (file-system landing; `storage-content-management`)
-    - **finance-accounting** – `/financials` (invoices)
     - **auth** – `/auth` (and `GetQuote`; no layout, no guard)
 
 ## Conventions (pointers — avoid duplicating other rules)

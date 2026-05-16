@@ -11,6 +11,7 @@ import { ImageService } from 'src/app/core/services/image.service';
 import { PermissionService } from 'src/app/core/services/permission.service';
 import { IAccountSettings, IEntityDetails } from 'src/app/core/models/account-status.model';
 import { AuthService } from 'src/app/modules/auth/services/auth.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-shared-entity-details',
@@ -18,28 +19,28 @@ import { AuthService } from 'src/app/modules/auth/services/auth.service';
     styleUrls: ['./shared-entity-details.component.scss']
 })
 export class SharedEntityDetailsComponent implements OnInit, OnDestroy {
-    @ViewChild('logoUploader') logoUploader?: FileUpload;
+    @ViewChild('photoUploader') photoUploader?: FileUpload;
 
     entityId: string = '';
     loading: boolean = false;
     loadingDetails: boolean = false;
-    loadingLogo: boolean = false;
-    logoAwaitingApi: boolean = false;
+    loadingPhoto: boolean = false;
+    photoAwaitingApi: boolean = false;
     activeTabIndex: number = 0;
 
     entityDetails: any = null;
-    entityLogo: string = 'assets/media/upload-photo.jpg';
-    hasLogo: boolean = false;
+    entityPhotoUrl: string = 'assets/media/upload-photo.jpg';
+    hasPhoto: boolean = false;
 
     accountSettings: IAccountSettings;
     isRegional: boolean = false;
     requestedSystemRole: number = 0;
 
-    canManageEntityLogo = false;
+    canManageEntityPhoto = false;
     canEditEntityDetails = false;
 
     private subscriptions: Subscription[] = [];
-    private getEntityLogoSub?: Subscription;
+    private getEntityPhotoSub?: Subscription;
     private currentEntityId: string = '';
 
     constructor(
@@ -52,7 +53,8 @@ export class SharedEntityDetailsComponent implements OnInit, OnDestroy {
         private imageService: ImageService,
         private permissionService: PermissionService,
         private languageDirService: LanguageDirService,
-        private authService: AuthService
+        private authService: AuthService,
+        private translate: TranslateService
     ) {
         this.accountSettings = this.localStorageService.getAccountSettings() as IAccountSettings;
         this.isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
@@ -63,9 +65,9 @@ export class SharedEntityDetailsComponent implements OnInit, OnDestroy {
             this.route.snapshot.data['requestedSystemRole'] ??
             (this.localStorageService.getAccountDetails()?.System_Role_ID || 0);
 
-        this.canManageEntityLogo =
-            this.permissionService.can('Assign_Entity_Logo') &&
-            this.permissionService.can('Remove_Entity_Logo');
+        this.canManageEntityPhoto =
+            this.permissionService.can('Assign_Entity_Photo') &&
+            this.permissionService.can('Remove_Entity_Photo');
         this.canEditEntityDetails = this.permissionService.can('Update_Entity_Details');
 
         this.applyTabIndexFromQuery(this.route.snapshot.queryParamMap);
@@ -84,8 +86,8 @@ export class SharedEntityDetailsComponent implements OnInit, OnDestroy {
             if (!nextId) {
                 this.messageService.add({
                     severity: 'error',
-                    summary: 'Error',
-                    detail: 'Invalid entity ID.'
+                    summary: this.translate.instant('common.error'),
+                    detail: this.translate.instant('entities.details.invalidEntityId')
                 });
                 this.router.navigate(['list'], { relativeTo: this.route.parent ?? this.route });
                 return;
@@ -103,13 +105,13 @@ export class SharedEntityDetailsComponent implements OnInit, OnDestroy {
     }
 
     private resetViewStateForEntityChange(): void {
-        this.getEntityLogoSub?.unsubscribe();
+        this.getEntityPhotoSub?.unsubscribe();
         this.entityDetails = null;
         this.loading = true;
         this.loadingDetails = true;
-        this.loadingLogo = false;
-        this.logoAwaitingApi = true;
-        this.setPlaceholderLogo();
+        this.loadingPhoto = false;
+        this.photoAwaitingApi = true;
+        this.setPlaceholderPhoto();
     }
 
     private parseTabIndex(raw: string | null): number | null {
@@ -151,7 +153,7 @@ export class SharedEntityDetailsComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
-        this.getEntityLogoSub?.unsubscribe();
+        this.getEntityPhotoSub?.unsubscribe();
         this.subscriptions.forEach((sub) => sub.unsubscribe());
     }
 
@@ -168,7 +170,7 @@ export class SharedEntityDetailsComponent implements OnInit, OnDestroy {
                     this.handleBusinessError('details', response);
                     this.loading = false;
                     this.loadingDetails = false;
-                    this.logoAwaitingApi = false;
+                    this.photoAwaitingApi = false;
                     return;
                 }
                 this.entityDetails = response?.message || {};
@@ -179,7 +181,7 @@ export class SharedEntityDetailsComponent implements OnInit, OnDestroy {
         });
 
         this.subscriptions.push(sub);
-        this.loadLogo();
+        this.loadPhoto();
     }
 
     private preloadEntityDetailsFromAccountStorageIfSameEntity(): void {
@@ -203,49 +205,48 @@ export class SharedEntityDetailsComponent implements OnInit, OnDestroy {
         }
     }
 
-    loadLogo(): void {
-        this.getEntityLogoSub?.unsubscribe();
-        this.logoAwaitingApi = true;
+    loadPhoto(): void {
+        this.getEntityPhotoSub?.unsubscribe();
+        this.photoAwaitingApi = true;
         const entityIdForRequest = this.entityId;
-        const sub = this.entitiesService.getEntityLogo(this.entityId).subscribe({
+        const sub = this.entitiesService.getEntityPhoto(this.entityId).subscribe({
             next: (response: any) => {
                 if (entityIdForRequest !== this.entityId) {
                     return;
                 }
                 if (response?.success && response?.message) {
-                    const logoData = response.message;
-                    if (logoData?.Image && logoData.Image.trim() !== '') {
-                        const imageFormat = logoData.Image_Format || 'png';
-                        this.entityLogo = `data:image/${imageFormat.toLowerCase()};base64,${logoData.Image}`;
-                        this.hasLogo = true;
+                    const parsed = this.entitiesService.parseEntityPhotoMessage(response.message);
+                    if (parsed) {
+                        this.entityPhotoUrl = `data:image/${parsed.imageFormat.toLowerCase()};base64,${parsed.imageBase64}`;
+                        this.hasPhoto = true;
                     } else {
-                        this.setPlaceholderLogo();
+                        this.setPlaceholderPhoto();
                     }
                 } else {
-                    this.setPlaceholderLogo();
+                    this.setPlaceholderPhoto();
                 }
-                this.loadingLogo = false;
-                this.logoAwaitingApi = false;
+                this.loadingPhoto = false;
+                this.photoAwaitingApi = false;
                 this.notifyTopBarIfCurrentOrParentEntity();
             },
             error: () => {
                 if (entityIdForRequest !== this.entityId) {
                     return;
                 }
-                this.entityLogo = 'assets/media/upload-photo.jpg';
-                this.hasLogo = false;
-                this.loadingLogo = false;
-                this.logoAwaitingApi = false;
+                this.entityPhotoUrl = 'assets/media/upload-photo.jpg';
+                this.hasPhoto = false;
+                this.loadingPhoto = false;
+                this.photoAwaitingApi = false;
             }
         });
 
-        this.getEntityLogoSub = sub;
+        this.getEntityPhotoSub = sub;
         this.subscriptions.push(sub);
     }
 
-    private setPlaceholderLogo(): void {
-        this.entityLogo = 'assets/media/upload-photo.jpg';
-        this.hasLogo = false;
+    private setPlaceholderPhoto(): void {
+        this.entityPhotoUrl = 'assets/media/upload-photo.jpg';
+        this.hasPhoto = false;
     }
 
     getEntityName(): string {
@@ -314,7 +315,7 @@ export class SharedEntityDetailsComponent implements OnInit, OnDestroy {
         this.loadAllData();
     }
 
-    onLogoUpload(event: any): void {
+    onPhotoUpload(event: any): void {
         const file = event.files?.[0];
         if (!file) {
             return;
@@ -323,11 +324,11 @@ export class SharedEntityDetailsComponent implements OnInit, OnDestroy {
         if (!file.type.startsWith('image/')) {
             this.messageService.add({
                 severity: 'error',
-                summary: 'Invalid File Type',
-                detail: 'Please select an image file (JPG, PNG, JPEG, WEBP).',
+                summary: this.translate.instant('entities.details.photo.messages.invalidFileTypeSummary'),
+                detail: this.translate.instant('entities.details.photo.messages.invalidFileTypeDetail'),
                 life: 5000
             });
-            this.logoUploader?.clear();
+            this.photoUploader?.clear();
             return;
         }
 
@@ -338,12 +339,15 @@ export class SharedEntityDetailsComponent implements OnInit, OnDestroy {
         if (file.size > RECOMMENDED_FILE_SIZE) {
             this.messageService.add({
                 severity: 'warn',
-                summary: 'Large File Size',
-                detail: `File size (${fileSizeInMB}MB) is larger than recommended (${recommendedSizeInKB}KB). Upload may take longer.`,
+                summary: this.translate.instant('entities.details.photo.messages.largeFileSummary'),
+                detail: this.translate.instant('entities.details.photo.messages.largeFileDetail', {
+                    sizeMb: fileSizeInMB,
+                    recommendedKb: recommendedSizeInKB
+                }),
                 life: 5000
             });
-            this.loadingLogo = false;
-            this.logoUploader?.clear();
+            this.loadingPhoto = false;
+            this.photoUploader?.clear();
             return;
         }
 
@@ -353,93 +357,93 @@ export class SharedEntityDetailsComponent implements OnInit, OnDestroy {
             const byteArray = new Uint8Array(arrayBuffer);
             const imageFormat = file.type.split('/')[1] || 'png';
 
-            this.uploadLogo(byteArray, imageFormat);
+            this.uploadPhoto(byteArray, imageFormat);
         };
         reader.onerror = () => {
             this.messageService.add({
                 severity: 'error',
-                summary: 'Error',
-                detail: 'Failed to read file. Please try again.',
+                summary: this.translate.instant('common.error'),
+                detail: this.translate.instant('entities.details.photo.messages.readFileError'),
                 life: 5000
             });
-            this.logoUploader?.clear();
+            this.photoUploader?.clear();
         };
         reader.readAsArrayBuffer(file);
     }
 
-    uploadLogo(byteArray: Uint8Array, imageFormat: string): void {
-        this.loadingLogo = true;
+    uploadPhoto(byteArray: Uint8Array, imageFormat: string): void {
+        this.loadingPhoto = true;
 
         const base64String = btoa(
             String.fromCharCode.apply(null, Array.from(byteArray))
         );
 
-        const sub = this.entitiesService.assignEntityLogo(
+        const sub = this.entitiesService.assignEntityPhoto(
             this.entityId,
             imageFormat,
             base64String
         ).subscribe({
             next: (response: any) => {
                 if (!response?.success) {
-                    this.handleBusinessError('uploadLogo', response);
-                    this.logoUploader?.clear();
+                    this.handleBusinessError('uploadPhoto', response);
+                    this.photoUploader?.clear();
                     return;
                 }
 
                 this.messageService.add({
                     severity: 'success',
-                    summary: 'Success',
-                    detail: 'Logo uploaded successfully.',
+                    summary: this.translate.instant('common.success'),
+                    detail: this.translate.instant('entities.details.photo.messages.uploaded'),
                     life: 3000
                 });
-                this.refreshTopBarAfterLogoChange();
-                this.loadLogo();
+                this.refreshTopBarAfterPhotoChange();
+                this.loadPhoto();
             },
             error: () => {
-                this.loadingLogo = false;
-                this.logoUploader?.clear();
+                this.loadingPhoto = false;
+                this.photoUploader?.clear();
             },
-            complete: () => this.loadingLogo = false
+            complete: () => this.loadingPhoto = false
         });
 
         this.subscriptions.push(sub);
     }
 
-    onLogoAreaClick(): void {
-        if (!this.canManageEntityLogo || this.loadingLogo || this.logoAwaitingApi) {
+    onPhotoAreaClick(): void {
+        if (!this.canManageEntityPhoto || this.loadingPhoto || this.photoAwaitingApi) {
             return;
         }
-        this.logoUploader?.choose();
+        this.photoUploader?.choose();
     }
 
-    onLogoAreaKeydown(event: KeyboardEvent | Event): void {
+    onPhotoAreaKeydown(event: KeyboardEvent | Event): void {
         event.preventDefault();
-        this.onLogoAreaClick();
+        this.onPhotoAreaClick();
     }
 
-    removeLogo(): void {
-        this.loadingLogo = true;
-        const sub = this.entitiesService.removeEntityLogo(this.entityId).subscribe({
+    removePhoto(): void {
+        this.loadingPhoto = true;
+        const sub = this.entitiesService.removeEntityPhoto(this.entityId).subscribe({
             next: (response: any) => {
                 if (!response?.success) {
-                    this.handleBusinessError('removeLogo', response);
-                    this.loadingLogo = false;
+                    this.handleBusinessError('removePhoto', response);
+                    this.loadingPhoto = false;
                     return;
                 }
 
                 this.messageService.add({
                     severity: 'success',
-                    summary: 'Success',
-                    detail: 'Logo removed successfully.',
+                    summary: this.translate.instant('common.success'),
+                    detail: this.translate.instant('entities.details.photo.messages.removed'),
                     life: 3000
                 });
-                this.refreshTopBarAfterLogoChange();
-                this.setPlaceholderLogo();
-                this.loadingLogo = false;
+                this.refreshTopBarAfterPhotoChange();
+                this.setPlaceholderPhoto();
+                this.loadingPhoto = false;
                 this.notifyTopBarIfCurrentOrParentEntity();
             },
             error: () => {
-                this.loadingLogo = false;
+                this.loadingPhoto = false;
             }
         });
 
@@ -455,7 +459,7 @@ export class SharedEntityDetailsComponent implements OnInit, OnDestroy {
         return Number(this.entityId) || 0;
     }
 
-    private refreshTopBarAfterLogoChange(): void {
+    private refreshTopBarAfterPhotoChange(): void {
         if (!this.isCurrentOrParentAccountEntity()) {
             this.entityDetailsRefreshService.requestRefresh();
             return;
@@ -494,27 +498,27 @@ export class SharedEntityDetailsComponent implements OnInit, OnDestroy {
         if (detail) {
             this.messageService.add({
                 severity: 'error',
-                summary: 'Error',
+                summary: this.translate.instant('common.error'),
                 detail
             });
         }
         return null;
     }
 
-    private getErrorMessage(context: string, code: string): string | null {
+    private getErrorMessage(_context: string, code: string): string | null {
         switch (code) {
             case 'DAP11260':
-                return 'Invalid Entity ID';
+                return this.translate.instant('entities.details.businessErrors.DAP11260');
             case 'DAP11277':
-                return 'Invalid Account ID (issued if the Account ID does not exist in the database, or if an entity administrator tries to assign an account outside his entity tree)';
+                return this.translate.instant('entities.details.businessErrors.DAP11277');
             case 'DAP11278':
-                return 'Invalid action. The Entity Admin account must be assigned directly to the entity (i.e. the Account\'s Entity_ID must be equal to the Entity_ID)';
+                return this.translate.instant('entities.details.businessErrors.DAP11278');
             case 'DAP11281':
-                return 'Unknown image file format';
+                return this.translate.instant('entities.details.businessErrors.DAP11281');
             case 'DAP11282':
-                return 'Empty contents for Image file';
+                return this.translate.instant('entities.details.businessErrors.DAP11282');
             case 'DAP11279':
-                return 'Invalid Account ID. Provided ID is not part of the Entity\'s admins';
+                return this.translate.instant('entities.details.businessErrors.DAP11279');
             default:
                 return null;
         }

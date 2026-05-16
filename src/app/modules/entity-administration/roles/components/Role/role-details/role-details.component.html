@@ -40,30 +40,6 @@
                         </div>
                     </p-panel>
                 </p-tabPanel>
-                <p-tabPanel [header]="'entityRoles.details.tabs.permissions' | translate">
-                    <div class="flex justify-content-end mb-3">
-                        <p-skeleton height="2.25rem" width="10rem" borderRadius="4px"></p-skeleton>
-                    </div>
-                    <div class="grid">
-                        <div class="col-12 md:col-6">
-                            <p-panel [header]="'entityRoles.details.functions' | translate" [toggleable]="false">
-                                <div class="flex flex-column gap-2">
-                                    <p-skeleton height="2rem" width="100%"></p-skeleton>
-                                    <p-skeleton height="2rem" width="90%"></p-skeleton>
-                                    <p-skeleton height="2rem" width="95%"></p-skeleton>
-                                </div>
-                            </p-panel>
-                        </div>
-                        <div class="col-12 md:col-6">
-                            <p-panel [header]="'entityRoles.details.modules' | translate" [toggleable]="false">
-                                <div class="flex flex-column gap-2">
-                                    <p-skeleton height="2rem" width="100%"></p-skeleton>
-                                    <p-skeleton height="2rem" width="85%"></p-skeleton>
-                                </div>
-                            </p-panel>
-                        </div>
-                    </div>
-                </p-tabPanel>
                 <p-tabPanel [header]="'entityRoles.details.tabs.assignedAccounts' | translate">
                     <p-table [value]="[1,2,3,4,5,6,7,8,9,10]" [paginator]="true" [rows]="10"
                         [rowsPerPageOptions]="[5, 10, 20, 50]" [showCurrentPageReport]="true"
@@ -169,54 +145,7 @@
                 </p-panel>
             </p-tabPanel>
 
-            <!-- Tab 2: Permissions -->
-            <p-tabPanel [header]="'entityRoles.details.tabs.permissions' | translate">
-                <div class="flex justify-content-end mb-3">
-                    <p-button [label]="'entityRoles.details.managePermissions' | translate" icon="pi pi-cog" severity="contrast"
-                        (onClick)="openPermissionsDialog()" [disabled]="loading">
-                    </p-button>
-                </div>
-                <div class="grid">
-                    <div class="col-12 md:col-6">
-                        <p-panel [header]="'entityRoles.details.functions' | translate" [toggleable]="false">
-                            <div *ngIf="functionsList.length > 0; else noFunctions" class="functions-list">
-                                <ul class="list-none p-0 m-0">
-                                    <li *ngFor="let func of functionsList" class="list-item">
-                                        <div class="flex align-items-center gap-2 py-2 border-bottom-1 surface-border">
-                                            <i class="pi pi-circle-fill text-primary" style="font-size: 0.5rem;"></i>
-                                            <span class="font-medium">{{ func.name }}</span>
-                                            <span class="text-500 text-sm">(#{{ func.id }})</span>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                            <ng-template #noFunctions>
-                                <p class="text-500 m-0">{{ 'entityRoles.details.noFunctions' | translate }}</p>
-                            </ng-template>
-                        </p-panel>
-                    </div>
-                    <div class="col-12 md:col-6">
-                        <p-panel [header]="'entityRoles.details.modules' | translate" [toggleable]="false">
-                            <div *ngIf="modulesList.length > 0; else noModules" class="modules-list">
-                                <ul class="list-none p-0 m-0">
-                                    <li *ngFor="let module of modulesList" class="list-item">
-                                        <div class="flex align-items-center gap-2 py-2 border-bottom-1 surface-border">
-                                            <i class="pi pi-circle-fill text-green-500" style="font-size: 0.5rem;"></i>
-                                            <span class="font-medium">{{ module.name }}</span>
-                                            <span class="text-500 text-sm">(#{{ module.id }})</span>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                            <ng-template #noModules>
-                                <p class="text-500 m-0">{{ 'entityRoles.details.noModules' | translate }}</p>
-                            </ng-template>
-                        </p-panel>
-                    </div>
-                </div>
-            </p-tabPanel>
-
-            <!-- Tab 3: Assigned Accounts (skeleton inside cells when loadingAccounts) -->
+            <!-- Tab 2: Assigned Accounts (skeleton inside cells when loadingAccounts) -->
             <p-tabPanel [header]="'entityRoles.details.tabs.assignedAccounts' | translate">
                 <p-table [value]="accountsTableValue" [paginator]="true" [rows]="10"
                     [rowsPerPageOptions]="[5, 10, 20, 50]" [showCurrentPageReport]="true"

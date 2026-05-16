@@ -174,7 +174,19 @@ export class EntitiesService {
         );
     }
 
-    assignEntityLogo(entityId: string, imageFormat: string, base64String: string): Observable<any> {
+    parseEntityPhotoMessage(message: any): { imageFormat: string; imageBase64: string } | null {
+        if (!message) {
+            return null;
+        }
+        const imageBase64 = String(message.Photo_Image ?? message.Image ?? '').trim();
+        if (!imageBase64) {
+            return null;
+        }
+        const imageFormat = String(message.Image_Format || 'png');
+        return { imageFormat, imageBase64 };
+    }
+
+    assignEntityPhoto(entityId: string, imageFormat: string, base64String: string): Observable<any> {
         this.isLoadingSubject.next(true);
         const quotedBase64String = `"${base64String}"`;
         return this.apiServices.callAPI(
@@ -186,8 +198,7 @@ export class EntitiesService {
         );
     }
 
-
-    getEntityLogo(entityId: string, withGlobalLoading: boolean = true): Observable<any> {
+    getEntityPhoto(entityId: string, withGlobalLoading: boolean = true): Observable<any> {
         if (withGlobalLoading) {
             this.isLoadingSubject.next(true);
         }
@@ -201,7 +212,7 @@ export class EntitiesService {
         );
     }
 
-    removeEntityLogo(entityId: string): Observable<any> {
+    removeEntityPhoto(entityId: string): Observable<any> {
         this.isLoadingSubject.next(true);
         return this.apiServices.callAPI(422, this.getAccessToken(), [entityId]).pipe(
             finalize(() => this.isLoadingSubject.next(false))

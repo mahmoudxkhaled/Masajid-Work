@@ -24,8 +24,8 @@ export class SharedEntitiesListComponent implements OnInit, OnDestroy {
     tableLoadingSpinner = false;
     private subscriptions: Subscription[] = [];
     private rawEntities: EntityBackend[] = [];
-    entityLogoUrls: Record<string, string> = {};
-    entityLogoLoading: Record<string, boolean> = {};
+    entityPhotoUrls: Record<string, string> = {};
+    entityPhotoLoading: Record<string, boolean> = {};
 
     /** When loading and entities is empty, return placeholder rows so the table can show skeleton cells. */
     get tableValue(): Entity[] {
@@ -123,7 +123,7 @@ export class SharedEntitiesListComponent implements OnInit, OnDestroy {
                 this.rawEntities = Object.values(entitiesData) as EntityBackend[];
                 this.mapRawEntities();
                 this.buildActivationControls();
-                this.loadLogosForCurrentPage();
+                this.loadPhotosForCurrentPage();
             },
             error: () => {
                 this.resetLoadingFlags(requestSignature);
@@ -162,34 +162,34 @@ export class SharedEntitiesListComponent implements OnInit, OnDestroy {
         }
     }
 
-    getEntityLogoUrl(entity: Entity): string | null {
+    getEntityPhotoUrl(entity: Entity): string | null {
         if (!entity?.id) return null;
-        return this.entityLogoUrls[entity.id] || null;
+        return this.entityPhotoUrls[entity.id] || null;
     }
 
-    isEntityLogoLoading(entity: Entity): boolean {
+    isEntityPhotoLoading(entity: Entity): boolean {
         if (!entity?.id) return false;
-        return !!this.entityLogoLoading[entity.id];
+        return !!this.entityPhotoLoading[entity.id];
     }
 
-    private loadLogosForCurrentPage(): void {
-        // Load logos only for visible page rows (simple cache by entity id).
+    private loadPhotosForCurrentPage(): void {
         this.entities.forEach((entity) => {
             if (!entity?.id) return;
-            if (this.entityLogoUrls[entity.id]) return;
-            if (this.entityLogoLoading[entity.id]) return;
+            if (this.entityPhotoUrls[entity.id]) return;
+            if (this.entityPhotoLoading[entity.id]) return;
 
-            this.entityLogoLoading[entity.id] = true;
-            const sub = this.entitiesService.getEntityLogo(entity.id, false).subscribe({
-                next: (logoRes: any) => {
-                    console.log('response loadLogosForCurrentPage', entity.id, logoRes);
-                    if (logoRes?.success && logoRes?.message?.Image) {
-                        const fmt = logoRes.message.Image_Format || 'png';
-                        this.entityLogoUrls[entity.id] = `data:image/${String(fmt).toLowerCase()};base64,${logoRes.message.Image}`;
+            this.entityPhotoLoading[entity.id] = true;
+            const sub = this.entitiesService.getEntityPhoto(entity.id, false).subscribe({
+                next: (photoRes: any) => {
+                    if (photoRes?.success && photoRes?.message) {
+                        const parsed = this.entitiesService.parseEntityPhotoMessage(photoRes.message);
+                        if (parsed) {
+                            this.entityPhotoUrls[entity.id] = `data:image/${parsed.imageFormat.toLowerCase()};base64,${parsed.imageBase64}`;
+                        }
                     }
                 },
                 complete: () => {
-                    this.entityLogoLoading[entity.id] = false;
+                    this.entityPhotoLoading[entity.id] = false;
                 }
             });
             this.subscriptions.push(sub);
