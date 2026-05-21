@@ -125,6 +125,28 @@
                             ],
                             "outputHashing": "all"
                         },
+                        "github-pages": {
+                            "baseHref": "/Masajid-Work/",
+                            "fileReplacements": [
+                                {
+                                    "replace": "src/environments/environment.ts",
+                                    "with": "src/environments/environment.prod.ts"
+                                }
+                            ],
+                            "budgets": [
+                                {
+                                    "type": "initial",
+                                    "maximumWarning": "8mb",
+                                    "maximumError": "8mb"
+                                },
+                                {
+                                    "type": "anyComponentStyle",
+                                    "maximumWarning": "8mb",
+                                    "maximumError": "8mb"
+                                }
+                            ],
+                            "outputHashing": "all"
+                        },
                         "development": {
                             "buildOptimizer": false,
                             "optimization": false,
