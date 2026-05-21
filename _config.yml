@@ -1,0 +1,22 @@
+# Fallback only if GitHub Pages runs Jekyll on the repo (branch deploy).
+# Prefer: Settings → Pages → Source → GitHub Actions (see deploy.md).
+safe: true
+exclude:
+  - node_modules
+  - dist
+  - CLAUDE.md
+  - CHANGELOG.md
+  - deploy.md
+  - github.md
+  - MODULE_URLS_DATABASE.md
+  - Docs
+  - src
+  - .cursor
+  - .github
+  - angular.json
+  - package.json
+  - package-lock.json
+  - tsconfig.app.json
+  - tsconfig.json
+  - tsconfig.spec.json
+  - karma.conf.js
