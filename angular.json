@@ -3,7 +3,7 @@
     "version": 1,
     "newProjectRoot": "projects",
     "projects": {
-        "pmat": {
+        "Masajid-Work": {
             "projectType": "application",
             "schematics": {
                 "@schematics/angular:component": {
@@ -47,7 +47,7 @@
                             "core-js/modules/es.string.starts-with.js",
                             "core-js/modules/es.string.trim.js"
                         ],
-                        "outputPath": "dist/pmat",
+                        "outputPath": "dist/Masajid-Work",
                         "index": "src/index.html",
                         "main": "src/main.ts",
                         "polyfills": ["zone.js"],
@@ -162,10 +162,10 @@
                     "builder": "@angular-devkit/build-angular:dev-server",
                     "configurations": {
                         "production": {
-                            "buildTarget": "pmat:build:production"
+                            "buildTarget": "Masajid-Work:build:production"
                         },
                         "development": {
-                            "buildTarget": "pmat:build:development"
+                            "buildTarget": "Masajid-Work:build:development"
                         }
                     },
                     "defaultConfiguration": "development"
@@ -173,7 +173,7 @@
                 "extract-i18n": {
                     "builder": "@angular-devkit/build-angular:extract-i18n",
                     "options": {
-                        "buildTarget": "pmat:build"
+                        "buildTarget": "Masajid-Work:build"
                     }
                 },
                 "test": {
