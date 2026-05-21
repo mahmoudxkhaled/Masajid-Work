@@ -1,13 +1,29 @@
-ng build --configuration production --base-href "https://mahmoudxkhaled.github.io/ERP-front/"
+# GitHub Pages
 
-npx angular-cli-ghpages --dir=dist/ERP-front --no-silent
+**Live URL:** https://mahmoudxkhaled.github.io/Masajid-Work/
 
-ng build --configuration=production
+## One-time setup (GitHub)
 
-npx ng build --output-path=dist/ERP-front --base-href=/ERP-front/
+1. Open the repo on GitHub → **Settings** → **Pages**.
+2. Under **Build and deployment**, set **Source** to **GitHub Actions**.
 
-````
-2) Deploy:
+Pushes to `main` run `.github/workflows/deploy-github-pages.yml` and publish `dist/pmat`.
+
+## Local build (same as CI)
+
 ```bash
-npx angular-cli-ghpages --dir=dist/ERP-front --no-silent
-````
+npm run build:gh-pages
+```
+
+Output: `dist/pmat` with `baseHref` `/Masajid-Work/`.
+
+## Manual deploy (optional)
+
+```bash
+npm run build:gh-pages
+cp dist/pmat/index.html dist/pmat/404.html
+touch dist/pmat/.nojekyll
+npx angular-cli-ghpages --dir=dist/pmat --no-silent
+```
+
+Requires `angular-cli-ghpages` if you use the manual path.

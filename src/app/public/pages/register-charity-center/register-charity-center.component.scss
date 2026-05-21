@@ -1,0 +1,7 @@
+@import '../../styles/public-register.scss';
+
+.register-field--span-2 {
+  @media (min-width: 768px) {
+    grid-column: 1 / -1;
+  }
+}

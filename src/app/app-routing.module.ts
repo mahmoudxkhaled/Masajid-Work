@@ -51,14 +51,6 @@ const routes: Routes = [
     },
     { path: 'login', redirectTo: 'auth', pathMatch: 'full' },
     {
-        path: 'register',
-        loadChildren: () =>
-            import('./core/components/under-development/under-development.module').then((m) => m.UnderDevelopmentModule),
-    },
-    { path: 'register/donor', redirectTo: 'register', pathMatch: 'full' },
-    { path: 'register/facility', redirectTo: 'register', pathMatch: 'full' },
-    { path: 'register/vendor', redirectTo: 'register', pathMatch: 'full' },
-    {
         path: 'auth',
         data: { breadcrumb: 'auth' },
         loadChildren: () => import('./modules/auth/auth.module').then((m) => m.AuthModule),

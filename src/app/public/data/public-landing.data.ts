@@ -1,4 +1,4 @@
-﻿import type {
+import type {
   DonationCategory,
   FeatureCard,
   ProcessStep,
@@ -120,7 +120,7 @@ export const USER_ROLES: UserRole[] = [
     titleKey: 'public.landing.roles.charityTitle',
     descriptionKey: 'public.landing.roles.charityDesc',
     actionLabelKey: 'public.landing.roles.charityBtn',
-    registerPath: '/register',
+    registerPath: '/register/charity-center',
   },
 ];
 
@@ -162,3 +162,7 @@ export const REGISTER_DONOR_PATH = '/register/donor';
 export const REGISTER_FACILITY_PATH = '/register/facility';
 
 export const REGISTER_VENDOR_PATH = '/register/vendor';
+
+export const REGISTER_SELECTION_PATH = '/register';
+
+export const REGISTER_CHARITY_CENTER_PATH = '/register/charity-center';

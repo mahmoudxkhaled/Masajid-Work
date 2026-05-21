@@ -1,4 +1,4 @@
-﻿import {
+import {
   AfterViewInit,
   ChangeDetectorRef,
   Component,
@@ -19,7 +19,6 @@ export class HowItWorksSectionComponent implements AfterViewInit, OnDestroy {
 
   readonly steps = PROCESS_STEPS;
 
-  /** When true, steps (and title/line) play enter animation. */
   revealed = false;
 
   private observer?: IntersectionObserver;

@@ -1,0 +1,127 @@
+<section class="register-page">
+  <div class="register-page__inner">
+    <a class="register-page__back" [routerLink]="['/register']">
+      <span class="material-symbols-outlined">arrow_back</span>
+      {{ 'public.register.common.backSelection' | translate }}
+    </a>
+
+    <header class="register-page__header" *ngIf="!submitted">
+      <h1 class="register-page__title">{{ 'public.register.donor.title' | translate }}</h1>
+      <p class="register-page__subtitle">{{ 'public.register.donor.subtitle' | translate }}</p>
+    </header>
+
+    <div class="register-card" *ngIf="submitted; else donorForm">
+      <div class="register-success">
+        <span class="material-symbols-outlined">check_circle</span>
+        <h2 class="register-success__title">{{ 'public.register.donor.successTitle' | translate }}</h2>
+        <p class="register-success__text">{{ 'public.register.donor.success' | translate }}</p>
+        <a class="register-success__link" [routerLink]="['/']">{{ 'public.register.common.backHome' | translate }}</a>
+      </div>
+    </div>
+
+    <ng-template #donorForm>
+      <form class="register-card" [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="register-card__section">
+          <div class="register-section__head">
+            <span class="material-symbols-outlined">account_circle</span>
+            <h2 class="register-section__title">{{ 'public.register.donor.sections.account' | translate }}</h2>
+          </div>
+          <div class="register-form__grid">
+            <div class="register-field">
+              <label class="register-field__label">{{ 'public.register.donor.fields.firstName' | translate }}</label>
+              <input class="register-field__input" type="text" formControlName="firstName" [class.register-field__input--invalid]="showError('firstName')" />
+              <small class="register-field__error" *ngIf="showError('firstName')">{{ 'public.register.validation.required' | translate }}</small>
+            </div>
+            <div class="register-field">
+              <label class="register-field__label">{{ 'public.register.donor.fields.lastName' | translate }}</label>
+              <input class="register-field__input" type="text" formControlName="lastName" [class.register-field__input--invalid]="showError('lastName')" />
+              <small class="register-field__error" *ngIf="showError('lastName')">{{ 'public.register.validation.required' | translate }}</small>
+            </div>
+            <div class="register-field register-field--span-2">
+              <label class="register-field__label">{{ 'public.register.donor.fields.email' | translate }}</label>
+              <input class="register-field__input" type="email" formControlName="email" [class.register-field__input--invalid]="showError('email')" />
+              <small class="register-field__error" *ngIf="showError('email') && form.get('email')?.errors?.['required']">{{ 'public.register.validation.required' | translate }}</small>
+              <small class="register-field__error" *ngIf="showError('email') && form.get('email')?.errors?.['email']">{{ 'public.register.validation.email' | translate }}</small>
+            </div>
+            <div class="register-field register-field--span-2">
+              <label class="register-field__label">{{ 'public.register.donor.fields.phone' | translate }}</label>
+              <input class="register-field__input" type="tel" formControlName="phone" [class.register-field__input--invalid]="showError('phone')" />
+              <small class="register-field__error" *ngIf="showError('phone') && form.get('phone')?.errors?.['required']">{{ 'public.register.validation.required' | translate }}</small>
+              <small class="register-field__error" *ngIf="showError('phone') && form.get('phone')?.errors?.['pattern']">{{ 'public.register.validation.phone' | translate }}</small>
+            </div>
+            <div class="register-field">
+              <label class="register-field__label">{{ 'public.register.donor.fields.password' | translate }}</label>
+              <input class="register-field__input" type="password" formControlName="password" [class.register-field__input--invalid]="showError('password')" />
+              <small class="register-field__error" *ngIf="showError('password')">{{ 'public.register.validation.passwordMin' | translate }}</small>
+            </div>
+            <div class="register-field">
+              <label class="register-field__label">{{ 'public.register.donor.fields.confirmPassword' | translate }}</label>
+              <input class="register-field__input" type="password" formControlName="cPassword" [class.register-field__input--invalid]="showError('cPassword')" />
+              <small class="register-field__error" *ngIf="showError('cPassword') && form.get('cPassword')?.errors?.['ConfirmPassword']">{{ 'public.register.validation.passwordMatch' | translate }}</small>
+              <small class="register-field__error" *ngIf="showError('cPassword') && form.get('cPassword')?.errors?.['required']">{{ 'public.register.validation.required' | translate }}</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="register-card__section register-card__section--muted">
+          <div class="register-section__head">
+            <span class="material-symbols-outlined">explore</span>
+            <h2 class="register-section__title">{{ 'public.register.donor.sections.preferences' | translate }}</h2>
+          </div>
+          <div class="register-form__grid">
+            <div class="register-field">
+              <label class="register-field__label">{{ 'public.register.donor.fields.country' | translate }}</label>
+              <select class="register-field__select" formControlName="country" [class.register-field__select--invalid]="showError('country')">
+                <option value="">{{ 'public.register.common.selectOption' | translate }}</option>
+                <option value="GB">{{ 'public.register.countries.gb' | translate }}</option>
+                <option value="US">{{ 'public.register.countries.us' | translate }}</option>
+                <option value="CA">{{ 'public.register.countries.ca' | translate }}</option>
+                <option value="AE">{{ 'public.register.countries.ae' | translate }}</option>
+              </select>
+              <small class="register-field__error" *ngIf="showError('country')">{{ 'public.register.validation.required' | translate }}</small>
+            </div>
+            <div class="register-field">
+              <label class="register-field__label">{{ 'public.register.donor.fields.city' | translate }}</label>
+              <input class="register-field__input" type="text" formControlName="city" [class.register-field__input--invalid]="showError('city')" />
+              <small class="register-field__error" *ngIf="showError('city')">{{ 'public.register.validation.required' | translate }}</small>
+            </div>
+            <div class="register-field register-field--span-2">
+              <label class="register-field__label">{{ 'public.register.donor.fields.radius' | translate }}</label>
+              <input type="range" min="1" max="100" formControlName="radiusKm" />
+              <div class="register-radius__value">{{ form.get('radiusKm')?.value }} km</div>
+            </div>
+          </div>
+          <p class="register-field__label">{{ 'public.register.donor.fields.categories' | translate }}</p>
+          <div class="register-chips" formArrayName="categories">
+            <label class="register-chip" *ngFor="let opt of categoryOptions; let i = index">
+              <input type="checkbox" [formControlName]="i" />
+              <span class="register-chip__label">{{ opt.labelKey | translate }}</span>
+            </label>
+          </div>
+          <small class="register-field__error" *ngIf="categories.touched && categories.errors?.['atLeastOneCategory']">
+            {{ 'public.register.validation.categoryRequired' | translate }}
+          </small>
+        </div>
+
+        <div class="register-card__section">
+          <label class="register-checkbox">
+            <input type="checkbox" formControlName="acceptTerms" />
+            <span class="register-checkbox__text">{{ 'public.register.donor.policies.terms' | translate }}</span>
+          </label>
+          <small class="register-field__error" *ngIf="showError('acceptTerms')">{{ 'public.register.validation.required' | translate }}</small>
+          <label class="register-checkbox">
+            <input type="checkbox" formControlName="confirmPhysicalOnly" />
+            <span class="register-checkbox__text">{{ 'public.register.policies.physicalOnly' | translate: brandingParams }}</span>
+          </label>
+          <small class="register-field__error" *ngIf="showError('confirmPhysicalOnly')">{{ 'public.register.validation.required' | translate }}</small>
+        </div>
+
+        <div class="register-actions">
+          <button class="register-btn register-btn--block" type="submit" [disabled]="submitting">
+            {{ 'public.register.donor.submit' | translate }}
+          </button>
+        </div>
+      </form>
+    </ng-template>
+  </div>
+</section>

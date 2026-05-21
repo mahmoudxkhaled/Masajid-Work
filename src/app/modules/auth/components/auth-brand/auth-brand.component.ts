@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { LanguageDirService } from 'src/app/core/services/language-dir.service';
 
 @Component({
@@ -6,13 +7,21 @@ import { LanguageDirService } from 'src/app/core/services/language-dir.service';
     templateUrl: './auth-brand.component.html',
     styleUrls: ['./auth-brand.component.scss'],
 })
-export class AuthBrandComponent implements OnInit {
+export class AuthBrandComponent implements OnInit, OnDestroy {
     isRtl = false;
+
+    private rtlSub?: Subscription;
 
     constructor(private rtlService: LanguageDirService) {}
 
     ngOnInit(): void {
-        const userLang = this.rtlService.getLanguageFromStorage();
-        this.isRtl = userLang === 'ar';
+        this.isRtl = this.rtlService.getRtlFromStorage();
+        this.rtlSub = this.rtlService.isRtl$.subscribe((rtl) => {
+            this.isRtl = rtl;
+        });
+    }
+
+    ngOnDestroy(): void {
+        this.rtlSub?.unsubscribe();
     }
 }

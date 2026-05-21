@@ -9,6 +9,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 export class AccountStatusComponent implements OnInit {
     status: string = 'Locked';
     isInactive: boolean = false;
+    yearNow = new Date().getFullYear();
 
     constructor(
         private router: Router,

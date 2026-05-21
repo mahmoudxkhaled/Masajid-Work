@@ -1,0 +1,142 @@
+<section class="register-page">
+  <div class="register-page__inner register-page__inner--wide">
+    <a class="register-page__back" [routerLink]="['/register']">
+      <span class="material-symbols-outlined">arrow_back</span>
+      {{ 'public.register.common.backSelection' | translate }}
+    </a>
+
+    <header class="register-page__header" *ngIf="!submitted">
+      <h1 class="register-page__title">{{ 'public.register.vendor.title' | translate }}</h1>
+      <p class="register-page__subtitle">{{ 'public.register.vendor.subtitle' | translate }}</p>
+    </header>
+
+    <div class="register-card" *ngIf="submitted; else vendorForm">
+      <div class="register-success">
+        <span class="material-symbols-outlined">check_circle</span>
+        <h2 class="register-success__title">{{ 'public.register.vendor.successTitle' | translate }}</h2>
+        <p class="register-success__text">{{ 'public.register.vendor.success' | translate }}</p>
+        <a class="register-success__link" [routerLink]="['/']">{{ 'public.register.common.backHome' | translate }}</a>
+      </div>
+    </div>
+
+    <ng-template #vendorForm>
+      <form class="register-card" [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="register-card__section">
+          <div class="register-section__head">
+            <span class="material-symbols-outlined">account_circle</span>
+            <h2 class="register-section__title">{{ 'public.register.vendor.sections.account' | translate }}</h2>
+          </div>
+          <div class="register-form__grid">
+            <div class="register-field">
+              <label class="register-field__label">{{ 'public.register.vendor.fields.fullName' | translate }}</label>
+              <input class="register-field__input" formControlName="fullName" [class.register-field__input--invalid]="showError('fullName')" />
+              <small class="register-field__error" *ngIf="showError('fullName')">{{ 'public.register.validation.required' | translate }}</small>
+            </div>
+            <div class="register-field">
+              <label class="register-field__label">{{ 'public.register.vendor.fields.email' | translate }}</label>
+              <input class="register-field__input" type="email" formControlName="email" [class.register-field__input--invalid]="showError('email')" />
+              <small class="register-field__error" *ngIf="showError('email')">{{ 'public.register.validation.email' | translate }}</small>
+            </div>
+            <div class="register-field">
+              <label class="register-field__label">{{ 'public.register.vendor.fields.password' | translate }}</label>
+              <input class="register-field__input" type="password" formControlName="password" [class.register-field__input--invalid]="showError('password')" />
+              <small class="register-field__error" *ngIf="showError('password')">{{ 'public.register.validation.passwordMin' | translate }}</small>
+            </div>
+            <div class="register-field">
+              <label class="register-field__label">{{ 'public.register.vendor.fields.confirmPassword' | translate }}</label>
+              <input class="register-field__input" type="password" formControlName="cPassword" [class.register-field__input--invalid]="showError('cPassword')" />
+              <small class="register-field__error" *ngIf="showError('cPassword')">{{ 'public.register.validation.passwordMatch' | translate }}</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="register-card__section">
+          <div class="register-section__head">
+            <span class="material-symbols-outlined">business_center</span>
+            <h2 class="register-section__title">{{ 'public.register.vendor.sections.business' | translate }}</h2>
+          </div>
+          <div class="register-form__grid">
+            <div class="register-field">
+              <label class="register-field__label">{{ 'public.register.vendor.fields.businessName' | translate }}</label>
+              <input class="register-field__input" formControlName="businessName" [class.register-field__input--invalid]="showError('businessName')" />
+              <small class="register-field__error" *ngIf="showError('businessName')">{{ 'public.register.validation.required' | translate }}</small>
+            </div>
+            <div class="register-field">
+              <label class="register-field__label">{{ 'public.register.vendor.fields.businessType' | translate }}</label>
+              <select class="register-field__select" formControlName="businessType" [class.register-field__select--invalid]="showError('businessType')">
+                <option value="">{{ 'public.register.common.selectOption' | translate }}</option>
+                <option value="company">{{ 'public.register.vendor.businessTypes.company' | translate }}</option>
+                <option value="contractor">{{ 'public.register.vendor.businessTypes.contractor' | translate }}</option>
+                <option value="nonProfit">{{ 'public.register.vendor.businessTypes.nonProfit' | translate }}</option>
+                <option value="enterprise">{{ 'public.register.vendor.businessTypes.enterprise' | translate }}</option>
+              </select>
+              <small class="register-field__error" *ngIf="showError('businessType')">{{ 'public.register.validation.required' | translate }}</small>
+            </div>
+            <div class="register-field">
+              <label class="register-field__label">{{ 'public.register.vendor.fields.location' | translate }}</label>
+              <input class="register-field__input" formControlName="location" [class.register-field__input--invalid]="showError('location')" />
+              <small class="register-field__error" *ngIf="showError('location')">{{ 'public.register.validation.required' | translate }}</small>
+            </div>
+            <div class="register-field">
+              <label class="register-field__label">{{ 'public.register.vendor.fields.businessPhone' | translate }}</label>
+              <input class="register-field__input" type="tel" formControlName="businessPhone" [class.register-field__input--invalid]="showError('businessPhone')" />
+              <small class="register-field__error" *ngIf="showError('businessPhone')">{{ 'public.register.validation.phone' | translate }}</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="register-card__section">
+          <div class="register-section__head">
+            <span class="material-symbols-outlined">build</span>
+            <h2 class="register-section__title">{{ 'public.register.vendor.sections.services' | translate }}</h2>
+          </div>
+          <p class="register-field__label">{{ 'public.register.vendor.fields.servicesHint' | translate }}</p>
+          <div class="register-chips" formArrayName="serviceCategories">
+            <label class="register-chip" *ngFor="let opt of categoryOptions; let i = index">
+              <input type="checkbox" [formControlName]="i" />
+              <span class="register-chip__label">{{ opt.labelKey | translate }}</span>
+            </label>
+          </div>
+          <small class="register-field__error" *ngIf="serviceCategories.touched && serviceCategories.errors?.['atLeastOneCategory']">
+            {{ 'public.register.validation.categoryRequired' | translate }}
+          </small>
+        </div>
+
+        <div class="register-card__section">
+          <div class="register-section__head">
+            <span class="material-symbols-outlined">upload_file</span>
+            <h2 class="register-section__title">{{ 'public.register.vendor.sections.documents' | translate }}</h2>
+          </div>
+          <app-public-file-upload-field
+            [labelKey]="'public.register.vendor.fields.commercialRegistration'"
+            [hintKey]="'public.register.upload.pdfHint'"
+            [control]="commercialRegistration"
+            (fileSelected)="onFileSelected($event)"
+          ></app-public-file-upload-field>
+        </div>
+
+        <div class="register-card__section">
+          <div class="register-disclosure">
+            <h3 class="register-disclosure__title">{{ 'public.register.vendor.disclosure.title' | translate }}</h3>
+            <p class="register-disclosure__text">{{ 'public.register.vendor.disclosure.text' | translate }}</p>
+            <label class="register-checkbox">
+              <input type="checkbox" formControlName="agreeDisclosure" />
+              <span class="register-checkbox__text">{{ 'public.register.vendor.disclosure.agree' | translate }}</span>
+            </label>
+            <small class="register-field__error" *ngIf="showError('agreeDisclosure')">{{ 'public.register.validation.required' | translate }}</small>
+          </div>
+        </div>
+
+        <div class="register-actions">
+          <button class="register-btn register-btn--block" type="submit" [disabled]="submitting">
+            {{ 'public.register.vendor.submit' | translate }}
+          </button>
+        </div>
+        <p class="register-login-hint">
+          {{ 'public.register.vendor.hasAccount' | translate }}
+          <a [routerLink]="loginPath">{{ 'public.register.vendor.loginLink' | translate }}</a>
+        </p>
+      </form>
+    </ng-template>
+  </div>
+</section>

@@ -15,7 +15,7 @@ import { resolvePostLoginUrl } from 'src/app/core/utils/post-login-navigation';
 export class Verify2FAComponent implements OnInit, OnDestroy, AfterViewInit {
 
   email: string = '';
-  validationMessage: string = '';
+  validationMessageKey = '';
   form: FormGroup;
   isLoading$: Observable<boolean>;
   unsubscribe: Subscription[] = [];
@@ -60,10 +60,10 @@ export class Verify2FAComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   verify2FA() {
-    this.validationMessage = '';
+    this.validationMessageKey = '';
 
     if (this.form.invalid) {
-      this.validationMessage = 'Please enter all digits';
+      this.validationMessageKey = 'auth.verify2fa.allDigitsRequired';
       return;
     }
 
@@ -85,7 +85,7 @@ export class Verify2FAComponent implements OnInit, OnDestroy, AfterViewInit {
             this.handleSuccessfulLogin();
           } else {
             console.log('verify2FA response error', response);
-            this.validationMessage = 'Invalid verification code. Please try again.';
+            this.validationMessageKey = 'auth.verify2fa.invalidCode';
           }
         },
       });
@@ -124,7 +124,7 @@ export class Verify2FAComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   moveToPrev(event: any, prevInputId: string): void {
-    this.validationMessage = ''
+    this.validationMessageKey = ''
     const input = event.target as HTMLInputElement;
     if (event.key === 'Backspace' && input.value === '') {
       const prevInput = document.getElementById(prevInputId) as HTMLInputElement;

@@ -5,11 +5,11 @@
 
   <div class="login-container">
     <app-auth-brand></app-auth-brand>
-    <h2>Two Factor Authentication</h2>
-    <p class="message">Your account has a 2 factor authentication login</p>
+    <h2>{{ 'auth.verify2fa.title' | translate }}</h2>
+    <p class="message">{{ 'auth.verify2fa.message' | translate }}</p>
     <p class="info-text">
       <i class="pi pi-info-circle" style="margin-right: 5px;"></i>
-      Please enter the 6-digit code sent to your email
+      {{ 'auth.verify2fa.codeHint' | translate }}
     </p>
 
     <form [formGroup]="form" (ngSubmit)="verify2FA()">
@@ -30,11 +30,9 @@
         </div>
       </div>
 
-      <div *ngIf="validationMessage" class="backend-error-message">
+      <div *ngIf="validationMessageKey" class="backend-error-message">
         <i class="pi pi-exclamation-circle" style="margin-right: 10px;"></i>
-        <span>
-          {{ validationMessage }}
-        </span>
+        <span>{{ validationMessageKey | translate }}</span>
       </div>
 
       <div class="flex align-items-center justify-content-center mt-4 gap-3">
@@ -46,18 +44,18 @@
             </span>
           </ng-container>
           <ng-container *ngIf="(isLoading$ | async) === false">
-            <span>Verify</span>
+            <span>{{ 'auth.verify2fa.submit' | translate }}</span>
           </ng-container>
         </button>
       </div>
     </form>
 
     <div class="links">
-      <a routerLink="/auth">Back to Login</a>
+      <a routerLink="/auth">{{ 'auth.common.backToLogin' | translate }}</a>
     </div>
 
     <div class="footer">
-      © {{ yearNow }} Promatech LLC. All rights reserved.
+      {{ 'auth.common.footer' | translate: { year: yearNow } }}
     </div>
   </div>
 </div>

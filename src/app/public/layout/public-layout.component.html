@@ -1,0 +1,14 @@
+<div
+  class="dh"
+  [class.dh--rtl]="dir === 'rtl'"
+  [class.dh--dark]="isDark"
+  [attr.dir]="dir"
+  [attr.lang]="lang"
+  (click)="onDhClick($event)"
+>
+  <app-header-section></app-header-section>
+  <main>
+    <router-outlet></router-outlet>
+  </main>
+  <app-footer-section></app-footer-section>
+</div>

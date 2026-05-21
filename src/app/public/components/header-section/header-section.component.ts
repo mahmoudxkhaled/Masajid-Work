@@ -1,4 +1,4 @@
-﻿import {
+import {
   Component,
   ElementRef,
   HostListener,
@@ -13,8 +13,10 @@ import {
   AUTH_LOGIN_PATH,
   LOGO_SRC,
   LOGO_SRC_DARK,
+  REGISTER_CHARITY_CENTER_PATH,
   REGISTER_DONOR_PATH,
   REGISTER_FACILITY_PATH,
+  REGISTER_SELECTION_PATH,
   REGISTER_VENDOR_PATH,
 } from '../../data/public-landing.data';
 import { PublicThemePreferenceService } from '../../services/public-theme-preference.service';
@@ -31,9 +33,11 @@ export class HeaderSectionComponent implements OnInit, OnDestroy {
   readonly logoSrcLight = LOGO_SRC;
   readonly logoSrcDark = LOGO_SRC_DARK;
   readonly loginPath = AUTH_LOGIN_PATH;
+  readonly registerSelectionPath = REGISTER_SELECTION_PATH;
   readonly registerDonorPath = REGISTER_DONOR_PATH;
   readonly registerFacilityPath = REGISTER_FACILITY_PATH;
   readonly registerVendorPath = REGISTER_VENDOR_PATH;
+  readonly registerCharityPath = REGISTER_CHARITY_CENTER_PATH;
 
   currentLang: 'en' | 'ar' = 'ar';
   isDarkTheme = false;

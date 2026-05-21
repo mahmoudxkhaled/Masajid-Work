@@ -14,7 +14,7 @@ export class VerificationEmailComponent implements OnInit, OnDestroy {
   verificationToken: string = '';
   isVerifying: boolean = false;
   verificationSuccess: boolean = false;
-  errorMessage: string = '';
+  errorMessageKey = '';
   redirectCountdown: number = 5;
   yearNow = new Date().getFullYear();
   constructor(
@@ -23,7 +23,7 @@ export class VerificationEmailComponent implements OnInit, OnDestroy {
     private authService: AuthService
   ) { }
 
-  private readonly INVALID_LINK_MESSAGE = 'Verification link is invalid or has expired.';
+  private readonly INVALID_LINK_KEY = 'auth.verification-email.invalidLink';
 
   ngOnInit(): void {
     const queryParamsSub = this.route.queryParams.subscribe(params => {
@@ -32,7 +32,7 @@ export class VerificationEmailComponent implements OnInit, OnDestroy {
       if (this.verificationToken) {
         this.verifyEmail();
       } else {
-        this.handleError(this.INVALID_LINK_MESSAGE);
+        this.handleError(this.INVALID_LINK_KEY);
       }
     });
     this.unsubscribe.push(queryParamsSub);
@@ -40,18 +40,18 @@ export class VerificationEmailComponent implements OnInit, OnDestroy {
 
   verifyEmail(): void {
     if (!this.verificationToken) {
-      this.handleError(this.INVALID_LINK_MESSAGE);
+      this.handleError(this.INVALID_LINK_KEY);
       return;
     }
 
     this.isVerifying = true;
-    this.errorMessage = '';
+    this.errorMessageKey = '';
     this.verificationSuccess = false;
 
     const verifySub = this.authService.verifyEmail(this.verificationToken).subscribe({
       next: (response: any) => {
         if (!response?.success) {
-          this.handleError(this.INVALID_LINK_MESSAGE);
+          this.handleError(this.INVALID_LINK_KEY);
           return;
         }
         this.verificationSuccess = true;
@@ -62,8 +62,8 @@ export class VerificationEmailComponent implements OnInit, OnDestroy {
     this.unsubscribe.push(verifySub);
   }
 
-  private handleError(message: string): void {
-    this.errorMessage = message;
+  private handleError(messageKey: string): void {
+    this.errorMessageKey = messageKey;
     this.isVerifying = false;
   }
 

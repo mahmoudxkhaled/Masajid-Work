@@ -1540,7 +1540,7 @@
     },
     "auth": {
         "login": {
-            "title": "Sign in to {{platformName}}",
+            "title": "Sign in to {platformName}",
             "logoAlt": "Promatech logo",
             "brandName": "Masajid Work",
             "brandTagline": "",
@@ -1556,11 +1556,11 @@
             "signUp": "Sign up",
             "invalidCredentials": "Invalid login credentials. Please check your email or password.",
             "validationInvalid": "Please enter a valid email and password.",
-            "signInFailedWithCode": "Unable to sign in ({{code}}). Please try again or contact support.",
+            "signInFailedWithCode": "Unable to sign in ({code}). Please try again or contact support.",
             "sessionExpired": "Your session has expired. Please sign in again."
         },
         "register": {
-            "title": "Sign up to {{platformName}}",
+            "title": "Sign up to {platformName}",
             "fields": {
                 "firstName": "First Name",
                 "lastName": "Last Name",
@@ -1633,6 +1633,36 @@
                 "missingUppercase": "Password must contain at least one uppercase letter.",
                 "missingLowercase": "Password must contain at least one lowercase letter.",
                 "missingSpecialChar": "Password must contain at least one special character."
+            },
+            "pages": {
+                "forgot-password": "Reset your password",
+                "unlock-account": "Unlock your account",
+                "new-account": "Create your new account password",
+                "change-password": "Change your password",
+                "default": "Reset Your Password"
+            },
+            "subtitles": {
+                "forgot-password": "Please enter the new password to recover your account.",
+                "unlock-account": "Your account was locked. Set a new password to unlock it.",
+                "new-account": "Welcome! Please create your first password to activate your account.",
+                "change-password": "Update your password to keep your account secure."
+            },
+            "rules": {
+                "length": "Between 8-15 characters",
+                "startsWithLetter": "Starts with a letter (uppercase or lowercase)",
+                "upperLower": "At least one uppercase and one lowercase letter",
+                "number": "At least one number",
+                "specialChar": "At least one special character (non-alphanumeric)"
+            },
+            "successTitle": "Password update is successful!",
+            "redirect": "You will be redirected to the login page in {seconds} seconds...",
+            "errors": {
+                "invalidPassword": "Please enter a valid new password.",
+                "missingToken": "Reset token is missing. Please use the link from your email.",
+                "invalidToken": "Invalid Reset Token. Please use the link from your email.",
+                "invalidNewPassword": "Invalid New Password. Please enter a valid password.",
+                "formatIncompliant": "New Password Format is incompliant. Please check the password requirements.",
+                "unexpected": "Unexpected error occurred."
             }
         },
         "email-verified": {
@@ -1641,10 +1671,60 @@
             "waitMessage": "We are confirming your email . Please wait a moment....."
         },
         "verification-email": {
-            "title": "Welcome to {{platformName}}",
+            "title": "Welcome to {platformName}",
             "message": "Your email address has been successfully registered with our service.",
             "messageI": "To complete the registration process and verify your email,",
-            "messageII": "please check your inbox"
+            "messageII": "please check your inbox",
+            "verifying": "Verifying email...",
+            "success": "Email verified successfully. You can now log in.",
+            "redirect": "You will be redirected to the login page in {seconds} seconds...",
+            "invalidLink": "Verification link is invalid or has expired."
+        },
+        "common": {
+            "footer": "© {year} Promatech LLC. All rights reserved.",
+            "backToHome": "Back to Home",
+            "backToLogin": "Back to Login",
+            "email": "Email",
+            "emailUsername": "Username (email)",
+            "password": "Password",
+            "emailRequired": "Email is required",
+            "emailInvalid": "Invalid email address",
+            "passwordRequired": "Password is required"
+        },
+        "forget-password": {
+            "title": "Forgot your password?",
+            "subtitle": "Please enter your email address, and we will send you instructions to reset your password.",
+            "sendResetLink": "Send Reset Link",
+            "resendIn": "Resend in {time}",
+            "resendResetLink": "Resend Reset Link",
+            "messages": {
+                "emailInvalid": "Please enter a valid email address",
+                "emailRequired": "Please enter your email address",
+                "invalidEmailFormat": "Invalid email address format",
+                "resetEmailSent": "If you have a Business Suite account, you will receive a reset link via an email shortly"
+            }
+        },
+        "verify2fa": {
+            "title": "Two Factor Authentication",
+            "message": "Your account has a 2 factor authentication login",
+            "codeHint": "Please enter the 6-digit code sent to your email",
+            "submit": "Verify",
+            "allDigitsRequired": "Please enter all digits",
+            "invalidCode": "Invalid verification code. Please try again."
+        },
+        "account-status": {
+            "inactiveTitle": "Account Deactivated",
+            "inactiveMessage": "Your account has been deactivated. Please contact the administrator.",
+            "inactiveWarning": "Please contact your system administrator or support team to reactivate your account.",
+            "lockedTitle": "Account Locked",
+            "lockedMessage": "Your account has been locked due to multiple failed login attempts.",
+            "lockedInfo": "Please check your email for the password reset link to unlock your account."
+        },
+        "email-verification-required": {
+            "title": "Email Verification Required",
+            "message": "We have sent a verification email to your email address.",
+            "inboxHint": "Please check your email inbox and click on the verification link to activate your account.",
+            "emailLabel": "Email: {email}"
         }
     },
     "shared": {
@@ -3405,6 +3485,8 @@
                 "donorRegistration": "Donor Registration",
                 "facilityRegistration": "Facility Registration",
                 "vendorPortal": "Vendor Portal",
+                "charityRegistration": "Charity Center Registration",
+                "allRegistration": "All registration options",
                 "themeToLight": "Switch to light theme",
                 "themeToDark": "Switch to dark theme"
             },
@@ -3524,6 +3606,213 @@
                 "privacy": "Privacy Policy",
                 "emailDisplay": "support@masajidwork.org",
                 "copy": "© 2024 Masajid Work. Built on principles of Amanah and Khidmah."
+            }
+        },
+        "register": {
+            "common": {
+                "backHome": "Back to Home",
+                "backSelection": "Back to registration options",
+                "selectOption": "Select an option",
+                "secureNote": "Secure encrypted registration",
+                "select": "Select"
+            },
+            "upload": {
+                "clickOrDrop": "Click to upload or drag and drop",
+                "browse": "Browse",
+                "noFile": "No file chosen",
+                "imageHint": "JPG or PNG up to 10MB",
+                "pdfHint": "PDF or JPG up to 10MB",
+                "idHint": "Passport or national ID (PDF, JPG, max 5MB)",
+                "authHint": "Official letter authorizing registration",
+                "certHint": "Valid charity or non-profit registration license"
+            },
+            "validation": {
+                "required": "This field is required.",
+                "email": "Enter a valid email address.",
+                "phone": "Enter a valid phone number.",
+                "passwordMin": "Password must be at least 8 characters.",
+                "passwordMatch": "Passwords do not match.",
+                "categoryRequired": "Select at least one category.",
+                "fileRequired": "Please upload a file."
+            },
+            "policies": {
+                "physicalOnly": "I understand that {platformName} manages physical, non-cash donation requests only, does not collect money or process payments, and that any financial arrangement happens outside the platform."
+            },
+            "countries": {
+                "gb": "United Kingdom",
+                "us": "United States",
+                "ca": "Canada",
+                "ae": "United Arab Emirates"
+            },
+            "selection": {
+                "title": "Create your {platformName} account",
+                "subtitle": "Choose how you want to participate in verified physical donations. The platform supports request management, fulfillment proof, and validation.",
+                "select": "Select",
+                "donor": {
+                    "title": "Donor",
+                    "description": "Browse active requests, accept physical donation needs, and upload proof of delivery for community validation."
+                },
+                "facility": {
+                    "title": "Facility",
+                    "description": "Register your mosque or community center. Publish physical needs such as carpets, equipment, and supplies after facility approval."
+                },
+                "vendor": {
+                    "title": "Vendor",
+                    "description": "Provide offers for goods or services required to fulfill donation requests and help donors meet mosque needs efficiently."
+                },
+                "charity": {
+                    "title": "Charity Center",
+                    "description": "Coordinate and monitor physical donation campaigns across multiple facilities with verified representatives."
+                }
+            },
+            "donor": {
+                "title": "Join the community",
+                "subtitle": "Register as a donor to fulfill verified physical needs for masajid in your area.",
+                "sections": {
+                    "account": "Account details",
+                    "preferences": "Donation preferences"
+                },
+                "fields": {
+                    "firstName": "First name",
+                    "lastName": "Last name",
+                    "email": "Email",
+                    "phone": "Phone",
+                    "password": "Password",
+                    "confirmPassword": "Confirm password",
+                    "country": "Country",
+                    "city": "City",
+                    "radius": "Donation radius (km)",
+                    "categories": "I am interested in providing:"
+                },
+                "policies": {
+                    "terms": "I agree to the terms of service and privacy policy."
+                },
+                "submit": "Create donor account",
+                "successTitle": "Registration complete",
+                "success": "Your donor account has been created. Please verify your email to continue."
+            },
+            "facility": {
+                "title": "Facility registration",
+                "subtitle": "Register your facility to publish physical donation requests after review and approval.",
+                "sections": {
+                    "info": "Facility information",
+                    "representative": "Representative information",
+                    "verification": "Verification documents",
+                    "confirmation": "Final confirmation"
+                },
+                "fields": {
+                    "name": "Facility name",
+                    "type": "Facility type",
+                    "description": "Description",
+                    "address": "Location address",
+                    "city": "City",
+                    "country": "Country",
+                    "contactPhone": "Contact number",
+                    "facilityPhoto": "Facility photo",
+                    "repName": "Full name",
+                    "repEmail": "Email address",
+                    "repPhone": "Phone number",
+                    "repRole": "Position / role",
+                    "password": "Account password",
+                    "confirmPassword": "Confirm password",
+                    "officialId": "Official ID upload",
+                    "proofOfRepresentation": "Proof of representation",
+                    "reviewNotes": "Additional notes for reviewers"
+                },
+                "types": {
+                    "mosque": "Mosque",
+                    "islamicCenter": "Islamic center",
+                    "quranCenter": "Quran center",
+                    "educational": "Educational institute",
+                    "charitable": "Charitable foundation"
+                },
+                "verificationInfo": "All facilities undergo verification before they can publish donation requests. Typical processing time is 48–72 hours.",
+                "policies": {
+                    "certify": "I certify that the information provided is accurate and that I am an authorized representative of this facility.",
+                    "physicalPolicy": "I understand that only physical, non-cash donation requests are managed on this platform, that facility approval is required before publishing requests, and that any financial arrangement happens outside the platform.",
+                    "terms": "I have read and agree to the terms of service and privacy policy."
+                },
+                "submit": "Submit facility registration",
+                "successTitle": "Submitted for review",
+                "success": "Your facility registration has been submitted for review."
+            },
+            "vendor": {
+                "title": "Join the Khidmah network",
+                "subtitle": "Partner with masajid to provide goods and services that fulfill verified physical donation requests.",
+                "sections": {
+                    "account": "Account details",
+                    "business": "Business details",
+                    "services": "Services provided",
+                    "documents": "Supporting documents"
+                },
+                "fields": {
+                    "fullName": "Full name",
+                    "email": "Email address",
+                    "password": "Password",
+                    "confirmPassword": "Confirm password",
+                    "businessName": "Business name",
+                    "businessType": "Business type",
+                    "location": "Location",
+                    "businessPhone": "Business phone",
+                    "servicesHint": "Select all services your business can provide to fulfill donation requests.",
+                    "commercialRegistration": "Commercial registration (CR)"
+                },
+                "businessTypes": {
+                    "company": "Company",
+                    "contractor": "Individual contractor",
+                    "nonProfit": "Non-profit organization",
+                    "enterprise": "Social enterprise"
+                },
+                "disclosure": {
+                    "title": "Platform role disclosure",
+                    "text": "Vendor offers are for goods or services required to fulfill donation requests. Masajid does not collect money or process payments. Any financial arrangement, if required, happens outside the platform.",
+                    "agree": "I agree to the terms and platform guidelines."
+                },
+                "submit": "Create vendor account",
+                "hasAccount": "Already have an account?",
+                "loginLink": "Log in here",
+                "successTitle": "Vendor account created",
+                "success": "Your vendor account has been created. Some features may require review before you can submit offers."
+            },
+            "charity": {
+                "title": "Charity center registration",
+                "subtitle": "Register your charity center to coordinate verified physical donation campaigns.",
+                "sections": {
+                    "center": "Center information",
+                    "representative": "Representative info",
+                    "verification": "Verification documents",
+                    "confirmation": "Final confirmation"
+                },
+                "fields": {
+                    "centerName": "Charity center name",
+                    "organizationType": "Organization type",
+                    "address": "Physical location",
+                    "contactEmail": "Primary contact email",
+                    "phone": "Phone number",
+                    "mission": "Description of mission",
+                    "repName": "Full name",
+                    "repRole": "Position / role",
+                    "repEmail": "Official email",
+                    "repPhone": "Mobile phone",
+                    "password": "Account password",
+                    "confirmPassword": "Confirm password",
+                    "representativeId": "Upload representative ID",
+                    "authorizationDocument": "Authorization document",
+                    "registrationCertificate": "Registration certificate"
+                },
+                "orgTypes": {
+                    "communityCenter": "Community center",
+                    "masjidTrust": "Masjid trust",
+                    "reliefAgency": "Relief agency",
+                    "educational": "Educational foundation"
+                },
+                "verificationIntro": "We require validation of your organization's legal status and representative authority.",
+                "policies": {
+                    "authorize": "I authorize verification of the provided documents and contact with the organization's board to confirm my authority."
+                },
+                "submit": "Submit charity center registration",
+                "successTitle": "Submitted for review",
+                "success": "Your charity center registration has been submitted for review."
             }
         }
     }

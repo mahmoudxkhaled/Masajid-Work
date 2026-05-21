@@ -1,5 +1,31 @@
 @import '../../../../../brand-palette';
 
+.auth-brand-wrap {
+    width: 100%;
+    text-align: start;
+    margin-bottom: 0.5rem;
+}
+
+.auth-brand-wrap--rtl {
+    text-align: end;
+}
+
+.auth-brand__back-home {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-bottom: 1.25rem;
+    color: $brand-primary;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.auth-brand__back-home:hover {
+    color: $brand-primary-hover;
+    text-decoration: underline;
+}
+
 .auth-brand {
     display: flex;
     align-items: center;

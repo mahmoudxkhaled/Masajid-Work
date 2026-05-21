@@ -6,36 +6,33 @@
         <app-auth-brand></app-auth-brand>
         <h2>{{ 'auth.verification-email.title' | translate: ({} | brandingParams) }}</h2>
 
-        <!-- Loading State -->
         <div *ngIf="isVerifying">
             <p style="color: #515C66;">
                 <i class="pi pi-spin pi-spinner" style="font-size: 1.5rem; margin-right: 10px;"></i>
-                Verifying email...
+                {{ 'auth.verification-email.verifying' | translate }}
             </p>
         </div>
 
-        <!-- Success State -->
         <div *ngIf="verificationSuccess && !isVerifying" class="success-message">
             <p style="color: #22c55e; font-weight: bold;">
                 <i class="pi pi-check-circle" style="font-size: 1.5rem; margin-right: 10px;"></i>
-                Email verified successfully. You can now log in.
+                {{ 'auth.verification-email.success' | translate }}
             </p>
             <p style="font-size: 14px; color: #515C66; margin-top: 10px;">
-                You will be redirected to the login page in {{ redirectCountdown }} seconds...
+                {{ 'auth.verification-email.redirect' | translate: { seconds: redirectCountdown } }}
             </p>
         </div>
 
-        <!-- Error State -->
-        <div *ngIf="errorMessage && !isVerifying" class="backend-error-message">
+        <div *ngIf="errorMessageKey && !isVerifying" class="backend-error-message">
             <i class="pi pi-exclamation-triangle" style="font-size: 1.5rem; margin-right: 10px;"></i>
-            <span>{{ errorMessage }}</span>
+            <span>{{ errorMessageKey | translate }}</span>
         </div>
 
         <div class="links">
-            <a routerLink="/auth">Back to Login</a>
+            <a routerLink="/auth">{{ 'auth.common.backToLogin' | translate }}</a>
         </div>
         <div class="footer">
-            © {{ yearNow }} Promatech LLC. All rights reserved.
+            {{ 'auth.common.footer' | translate: { year: yearNow } }}
         </div>
     </div>
 </div>

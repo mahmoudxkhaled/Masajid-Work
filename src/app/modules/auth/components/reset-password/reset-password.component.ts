@@ -42,9 +42,9 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
     resetSuccess: boolean = false;
     redirectCountdown: number = 5;
     hasError: boolean = false;
-    errorMessage: string = '';
+    errorMessageKey = '';
     type: string = '';
-    pageLabel: string = '';
+    pageLabelKey = 'auth.reset-password.pages.default';
     isLoading$: Observable<boolean>;
     yearNow = new Date().getFullYear();
 
@@ -76,14 +76,14 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
     }
 
     private setPageLabel(): void {
-        const labelMap: { [key: string]: string } = {
-            'forgot-password': 'Reset your password',
-            'unlock-account': 'Unlock your account',
-            'new-account': 'Create your new account password',
-            'change-password': 'Change your password'
+        const labelMap: Record<string, string> = {
+            'forgot-password': 'auth.reset-password.pages.forgot-password',
+            'unlock-account': 'auth.reset-password.pages.unlock-account',
+            'new-account': 'auth.reset-password.pages.new-account',
+            'change-password': 'auth.reset-password.pages.change-password',
         };
 
-        this.pageLabel = labelMap[this.type] || 'Reset Your Password';
+        this.pageLabelKey = labelMap[this.type] || 'auth.reset-password.pages.default';
     }
 
     submit() {
@@ -91,7 +91,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
         if (this.authService.isLoadingSubject.value) return;
         if (this.resetPassForm.invalid) {
             this.hasError = true;
-            this.errorMessage = 'Please enter a valid new password.';
+            this.errorMessageKey = 'auth.reset-password.errors.invalidPassword';
             return;
         }
 
@@ -99,7 +99,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
 
         if (!this.resetToken) {
             this.hasError = true;
-            this.errorMessage = 'Reset token is missing. Please use the link from your email.';
+            this.errorMessageKey = 'auth.reset-password.errors.missingToken';
             return;
         }
 
@@ -126,16 +126,16 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
         switch (code) {
 
             case 'DAP11135':
-                this.errorMessage = 'Invalid Reset Token. Please use the link from your email.';
+                this.errorMessageKey = 'auth.reset-password.errors.invalidToken';
                 return;
             case 'DAP11136':
-                this.errorMessage = 'Invalid New Password. Please enter a valid password.';
+                this.errorMessageKey = 'auth.reset-password.errors.invalidNewPassword';
                 return;
             case 'DAP11137':
-                this.errorMessage = 'New Password Format is incompliant. Please check the password requirements.';
+                this.errorMessageKey = 'auth.reset-password.errors.formatIncompliant';
                 return;
             default:
-                this.errorMessage = code || 'Unexpected error occurred.';
+                this.errorMessageKey = 'auth.reset-password.errors.unexpected';
                 return;
         }
     }

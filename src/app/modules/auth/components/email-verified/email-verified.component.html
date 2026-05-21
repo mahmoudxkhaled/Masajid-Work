@@ -4,24 +4,24 @@
     <div class="wave"></div>
     <div class="forgot-container">
         <app-auth-brand></app-auth-brand>
-        <h2>Email Verification Required</h2>
-        <p>We have sent a verification email to your email address.</p>
+        <h2>{{ 'auth.email-verification-required.title' | translate }}</h2>
+        <p>{{ 'auth.email-verification-required.message' | translate }}</p>
 
         <div class="info-message">
             <i class="pi pi-info-circle" style="margin-right: 10px; color: #5a0ca8;"></i>
             <div class="info-content">
-                <div>Please check your email inbox and click on the verification link to activate your account.</div>
+                <div>{{ 'auth.email-verification-required.inboxHint' | translate }}</div>
                 <div *ngIf="userEmail" style="margin-top: 8px; font-weight: bold;">
-                    Email: {{ userEmail }}
+                    {{ 'auth.email-verification-required.emailLabel' | translate: { email: userEmail } }}
                 </div>
             </div>
         </div>
 
         <div class="links">
-            <a routerLink="/auth" (click)="backToLogin()">Back to Login</a>
+            <a routerLink="/auth" (click)="backToLogin()">{{ 'auth.common.backToLogin' | translate }}</a>
         </div>
         <div class="footer">
-            © {{ yearNow }} Promatech LLC. All rights reserved.
+            {{ 'auth.common.footer' | translate: { year: yearNow } }}
         </div>
     </div>
 </div>

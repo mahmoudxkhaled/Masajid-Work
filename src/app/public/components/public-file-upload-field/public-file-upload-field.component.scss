@@ -1,0 +1,86 @@
+.upload-field__input {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.upload-field__dropzone {
+  border: 2px dashed var(--dh-outline-variant);
+  border-radius: 0.75rem;
+  padding: 2rem 1rem;
+  text-align: center;
+  background: var(--dh-surface-container-low);
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.upload-field__dropzone:hover,
+.upload-field__dropzone:focus-visible {
+  border-color: var(--dh-primary);
+  outline: none;
+}
+
+.upload-field__dropzone--invalid {
+  border-color: #b3261e;
+}
+
+.upload-field__icon {
+  font-size: 2.5rem;
+  color: var(--dh-outline-variant);
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.upload-field__title {
+  display: block;
+  font-weight: 600;
+  color: var(--dh-on-surface);
+}
+
+.upload-field__hint {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 0.8125rem;
+  color: var(--dh-on-surface-variant);
+}
+
+.upload-field__file {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--dh-primary);
+  font-weight: 500;
+}
+
+.upload-field__file--muted {
+  color: var(--dh-on-surface-variant);
+  font-style: italic;
+  font-weight: 400;
+}
+
+.upload-field__inline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--dh-outline-variant);
+  border-radius: 0.5rem;
+  background: var(--dh-surface-container-lowest);
+}
+
+.upload-field__inline--invalid {
+  border-color: #b3261e;
+}
+
+.upload-field__browse {
+  border: none;
+  background: none;
+  color: var(--dh-primary);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+}

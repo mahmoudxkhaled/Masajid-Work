@@ -14,13 +14,12 @@ const RESEND_COOLDOWN_SECONDS = 120;
 export class ForgetPasswordComponent implements OnInit, OnDestroy {
 
   loginCreditials: FormGroup;
-  validationMessage: string = '';
-  successMessage: string = '';
+  validationMessageKey = '';
+  successMessageKey = '';
   isLoading$: Observable<boolean>;
   unsubscribe: Subscription[] = [];
   yearNow = new Date().getFullYear();
 
-  /** Seconds left before Resend is allowed (2 min cooldown after sending). */
   resendCooldownSeconds: number = 0;
   private resendCooldownTimer: ReturnType<typeof setInterval> | null = null;
 
@@ -48,17 +47,17 @@ export class ForgetPasswordComponent implements OnInit, OnDestroy {
 
   sendCode() {
     if (this.loginCreditials.invalid) {
-      this.validationMessage = 'Please enter a valid email address';
-      this.successMessage = '';
+      this.validationMessageKey = 'auth.forget-password.messages.emailInvalid';
+      this.successMessageKey = '';
       return;
     }
 
-    this.validationMessage = '';
-    this.successMessage = '';
+    this.validationMessageKey = '';
+    this.successMessageKey = '';
     const emailValue = (this.email?.value as string).trim();
 
     if (!emailValue) {
-      this.validationMessage = 'Please enter your email address';
+      this.validationMessageKey = 'auth.forget-password.messages.emailRequired';
       return;
     }
 
@@ -66,12 +65,12 @@ export class ForgetPasswordComponent implements OnInit, OnDestroy {
       next: (response: any) => {
 
         if (!response?.success) {
-          this.validationMessage = 'Invalid email address format';
-          this.successMessage = '';
+          this.validationMessageKey = 'auth.forget-password.messages.invalidEmailFormat';
+          this.successMessageKey = '';
           return;
         }
-        this.successMessage = 'If you have a Business Suite account, you will receive a reset link via an email shortly';
-        this.validationMessage = '';
+        this.successMessageKey = 'auth.forget-password.messages.resetEmailSent';
+        this.validationMessageKey = '';
         this.startResendCooldown();
       },
     });
@@ -107,7 +106,7 @@ export class ForgetPasswordComponent implements OnInit, OnDestroy {
       return;
     }
     this.resendCooldownSeconds = Math.ceil(remainingMs / 1000);
-    this.successMessage = 'If you have a Business Suite account, you will receive a reset link via an email shortly';
+    this.successMessageKey = 'auth.forget-password.messages.resetEmailSent';
     this.resendCooldownTimer = setInterval(() => {
       this.resendCooldownSeconds--;
       if (this.resendCooldownSeconds <= 0) {

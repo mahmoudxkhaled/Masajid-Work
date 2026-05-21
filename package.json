@@ -9,7 +9,8 @@
         "test": "ng test",
         "lint": "ng lint",
         "build:prod": "ng build --configuration production",
-        "build:test": "ng build --configuration testing"
+        "build:test": "ng build --configuration testing",
+        "build:gh-pages": "ng build --configuration=github-pages"
     },
     "private": true,
     "dependencies": {

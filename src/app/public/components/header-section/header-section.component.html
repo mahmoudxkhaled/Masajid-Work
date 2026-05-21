@@ -63,14 +63,16 @@
       </div>
       <a class="header__login" [routerLink]="loginPath">{{ 'public.landing.cta.login' | translate }}</a>
       <div class="header__menu">
-        <button type="button" class="header__register">
+        <a class="header__register" [routerLink]="registerSelectionPath">
           {{ 'public.landing.header.register' | translate }}
           <span class="material-symbols-outlined" aria-hidden="true">expand_more</span>
-        </button>
+        </a>
         <div class="header__dropdown" role="menu">
+          <a [routerLink]="registerSelectionPath" role="menuitem">{{ 'public.landing.header.allRegistration' | translate }}</a>
           <a [routerLink]="registerDonorPath" role="menuitem">{{ 'public.landing.header.donorRegistration' | translate }}</a>
           <a [routerLink]="registerFacilityPath" role="menuitem">{{ 'public.landing.header.facilityRegistration' | translate }}</a>
           <a [routerLink]="registerVendorPath" role="menuitem">{{ 'public.landing.header.vendorPortal' | translate }}</a>
+          <a [routerLink]="registerCharityPath" role="menuitem">{{ 'public.landing.header.charityRegistration' | translate }}</a>
         </div>
       </div>
     </div>

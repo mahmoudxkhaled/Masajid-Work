@@ -23,3 +23,13 @@ body:has(.dh) {
     'opsz' 24;
   vertical-align: middle;
 }
+
+.dh--rtl .register-page__back .material-symbols-outlined,
+.dh[dir='rtl'] .register-page__back .material-symbols-outlined {
+  transform: scaleX(-1);
+}
+
+.dh--rtl .selection-card__action .material-symbols-outlined,
+.dh[dir='rtl'] .selection-card__action .material-symbols-outlined {
+  transform: scaleX(-1);
+}
