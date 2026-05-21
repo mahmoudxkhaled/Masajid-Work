@@ -5,6 +5,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { LocalStorageService } from 'src/app/core/services/local-storage.service';
 import { Observable, Subscription } from 'rxjs';
 import { LanguageDirService } from 'src/app/core/services/language-dir.service';
+import { resolvePostLoginUrl } from 'src/app/core/utils/post-login-navigation';
 
 @Component({
   selector: 'app-verify-2fa',
@@ -33,7 +34,8 @@ export class Verify2FAComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnInit(): void {
 
     if (this.localStorageService.getToken()) {
-      this.router.navigate(['/']);
+      const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+      void this.router.navigateByUrl(resolvePostLoginUrl(returnUrl));
     }
 
     this.email = this.route.snapshot.params['email'];

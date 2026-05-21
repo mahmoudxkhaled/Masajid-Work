@@ -1,0 +1,17 @@
+﻿<section id="features" class="features" aria-labelledby="features-heading" [publicScrollReveal]="'up'">
+  <div class="features__inner">
+    <header class="features__head">
+      <h2 id="features-heading" class="features__title">
+        {{ 'public.landing.features.heading' | translate }}
+      </h2>
+      <div class="features__rule" aria-hidden="true"></div>
+    </header>
+    <div class="features__grid">
+      <article class="features__card" *ngFor="let card of cards">
+        <span class="material-symbols-outlined features__icon" aria-hidden="true">{{ card.icon }}</span>
+        <h3 class="features__card-title">{{ card.titleKey | translate }}</h3>
+        <p class="features__card-text">{{ card.descriptionKey | translate }}</p>
+      </article>
+    </div>
+  </div>
+</section>

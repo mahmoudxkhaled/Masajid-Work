@@ -1,0 +1,13 @@
+﻿<section
+  #statsRoot
+  id="stats"
+  class="stats"
+  [attr.aria-label]="'public.landing.stats.sectionAria' | translate"
+>
+  <div class="stats__inner">
+    <article class="stats__card" *ngFor="let s of stats; let i = index">
+      <p class="stats__value">{{ formatStat(i) }}</p>
+      <p class="stats__label">{{ s.labelKey | translate }}</p>
+    </article>
+  </div>
+</section>

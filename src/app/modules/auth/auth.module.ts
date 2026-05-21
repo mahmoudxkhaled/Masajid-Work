@@ -11,6 +11,7 @@ import { ResetPasswordComponent } from './components/reset-password/reset-passwo
 import { ForgetPasswordComponent } from './components/forget-password/forget-password.component';
 import { AccountStatusComponent } from './components/account-status/account-status.component';
 import { Verify2FAComponent } from './components/verify-2fa/verify-2fa.component';
+import { APP_DEFAULT_LANGUAGE } from 'src/app/core/config/app-branding.config';
 import { AuthBrandComponent } from './components/auth-brand/auth-brand.component';
 
 @NgModule({
@@ -29,7 +30,7 @@ import { AuthBrandComponent } from './components/auth-brand/auth-brand.component
 })
 export class AuthModule {
     constructor(private translate: TranslateService) {
-        this.translate.setDefaultLang('en');
-        this.translate.use('en');
+        this.translate.setDefaultLang(APP_DEFAULT_LANGUAGE);
+        this.translate.use(APP_DEFAULT_LANGUAGE);
     }
 }

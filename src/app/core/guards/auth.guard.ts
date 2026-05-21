@@ -4,13 +4,13 @@ import { LocalStorageService } from '../services/local-storage.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthGuard {
-  constructor(private router: Router, private localStorageService: LocalStorageService) { }
+  constructor(private router: Router, private localStorageService: LocalStorageService) {}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     if (this.localStorageService.getToken()) {
       return true;
     }
-    this.router.navigateByUrl('/auth');
+    this.router.navigate(['/auth'], { queryParams: { returnUrl: state.url } });
     return false;
   }
 }

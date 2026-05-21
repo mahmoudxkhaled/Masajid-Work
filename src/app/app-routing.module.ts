@@ -11,11 +11,15 @@ const routerOptions: ExtraOptions = {
 const routes: Routes = [
     {
         path: '',
+        loadChildren: () => import('./public/public.module').then((m) => m.PublicModule),
+    },
+    {
+        path: '',
         component: AppLayoutComponent,
+        canActivate: [AuthGuard],
         children: [
             {
-                path: '',
-                canActivate: [AuthGuard],
+                path: 'dashboard',
                 data: { breadcrumb: 'dashboard' },
                 loadChildren: () => import('./modules/dashboard/dashboard.module').then((m) => m.DashboardModule),
             },
@@ -43,9 +47,17 @@ const routes: Routes = [
                 data: { breadcrumb: 'documentControl' },
                 loadChildren: () => import('./modules/document-control/document-control.module').then((m) => m.DocumentControlModule),
             },
-
         ],
     },
+    { path: 'login', redirectTo: 'auth', pathMatch: 'full' },
+    {
+        path: 'register',
+        loadChildren: () =>
+            import('./core/components/under-development/under-development.module').then((m) => m.UnderDevelopmentModule),
+    },
+    { path: 'register/donor', redirectTo: 'register', pathMatch: 'full' },
+    { path: 'register/facility', redirectTo: 'register', pathMatch: 'full' },
+    { path: 'register/vendor', redirectTo: 'register', pathMatch: 'full' },
     {
         path: 'auth',
         data: { breadcrumb: 'auth' },
@@ -64,10 +76,6 @@ const routes: Routes = [
         path: 'under-development',
         loadChildren: () => import('./core/components/under-development/under-development.module').then((m) => m.UnderDevelopmentModule),
     },
-    {
-        path: 'landing',
-        loadChildren: () => import('./core/components/landing/landing.module').then((m) => m.LandingModule),
-    },
     { path: '**', redirectTo: '/notfound' },
 ];
 
@@ -75,4 +83,4 @@ const routes: Routes = [
     imports: [RouterModule.forRoot(routes, routerOptions)],
     exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

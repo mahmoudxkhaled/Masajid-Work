@@ -1,6 +1,6 @@
 {
     "branding": {
-        "platformName": "مركز التبرعات",
+        "platformName": "Masajid Work",
         "technicalName": "DAP",
         "displayName": "Masajid Work",
         "donationsPlatform": "منصة التبرعات"
@@ -1032,7 +1032,25 @@
     "profile": {
         "title": "الملف الشخصي",
         "description": "إدارة معلومات ملفك الشخصي",
-        "overview": "نظرة عامة على الملف الشخصي",
+        "overview": {
+            "loading": "جاري التحميل...",
+            "profilePictureAlt": "صورة الملف الشخصي",
+            "cropAlt": "قص",
+            "fullName": "الاسم الكامل",
+            "contactInformation": "معلومات الاتصال",
+            "address": "العنوان",
+            "noContactInfoAvailable": "لا توجد معلومات اتصال متاحة",
+            "noAccounts": "لا توجد حسابات متاحة",
+            "editAccountTitle": "تعديل عنوان الحساب",
+            "viewDetails": "عرض التفاصيل",
+            "accountDetailsDialogTitle": "تفاصيل الحساب",
+            "roleName": "الدور",
+            "editAccountTitleDialogTitle": "تعديل عنوان الحساب",
+            "editAccountTitlePlaceholder": "أدخل عنوان الحساب",
+            "regionalFieldHint": "أنت تعدل العنوان المحلي (حسب اللغة).",
+            "accountTitleUpdated": "تم تحديث عنوان الحساب بنجاح.",
+            "socialMedia": "وسائل التواصل الاجتماعي"
+        },
         "personalInfo": "المعلومات الشخصية",
         "fields": {
             "firstName": "الاسم الأول",
@@ -1175,25 +1193,6 @@
             "enterValue": "أدخل القيمة",
             "savePreferences": "حفظ التفضيلات"
         },
-        "overview": {
-            "loading": "جاري التحميل...",
-            "profilePictureAlt": "صورة الملف الشخصي",
-            "cropAlt": "قص",
-            "fullName": "الاسم الكامل",
-            "contactInformation": "معلومات الاتصال",
-            "address": "العنوان",
-            "noContactInfoAvailable": "لا توجد معلومات اتصال متاحة",
-            "noAccounts": "لا توجد حسابات متاحة",
-            "editAccountTitle": "تعديل عنوان الحساب",
-            "viewDetails": "عرض التفاصيل",
-            "accountDetailsDialogTitle": "تفاصيل الحساب",
-            "roleName": "الدور",
-            "editAccountTitleDialogTitle": "تعديل عنوان الحساب",
-            "editAccountTitlePlaceholder": "أدخل عنوان الحساب",
-            "regionalFieldHint": "أنت تعدل العنوان المحلي (حسب اللغة).",
-            "accountTitleUpdated": "تم تحديث عنوان الحساب بنجاح.",
-            "socialMedia": "وسائل التواصل الاجتماعي"
-        },
         "preferences": {
             "title": "التفضيلات",
             "description": "قم بتخصيص إعدادات المظهر والنسق."
@@ -1210,7 +1209,6 @@
             "userContactInfo": "معلومات الاتصال",
             "userAccounts": "حسابات المستخدمين",
             "entityUserAccounts": "حسابات مستخدمي المنشأة",
-
             "uikit": "أدوات واجهة المستخدم",
             "utilities": "الأدوات المساعدة",
             "pages": "إدارة الصفحات",
@@ -1399,7 +1397,6 @@
             }
         }
     },
-
     "auth": {
         "login": {
             "title": "تسجيل الدخول إلى {{platformName}}",
@@ -1509,7 +1506,6 @@
             "messageII": "يرجى التحقق من صندوق الوارد"
         }
     },
-
     "shared": {
         "templateVariables": {
             "title": "متغيرات القالب",
@@ -2325,7 +2321,7 @@
             "saveChanges": "حفظ التغييرات"
         },
         "details": {
-            "title": "تفاصيل الدور",
+            "title": "العنوان",
             "backToList": "العودة للقائمة",
             "tabs": {
                 "basicInformation": "المعلومات الأساسية",
@@ -2335,7 +2331,6 @@
             "profile": "ملف الدور",
             "editRole": "تعديل الدور",
             "roleId": "معرف الدور",
-            "title": "العنوان",
             "entity": "المنشأة",
             "loading": "جاري التحميل...",
             "status": "الحالة",
@@ -3251,5 +3246,144 @@
         "goToDashboard": "لوحة التحكم",
         "goToHomepage": "الذهاب للصفحة الرئيسية",
         "goHome": "الذهاب للرئيسية"
+    },
+    "public": {
+        "landing": {
+            "header": {
+                "navAria": "التنقل الرئيسي",
+                "brand": "مساجد ورك",
+                "home": "الرئيسية",
+                "howItWorks": "كيف يعمل",
+                "about": "من نحن",
+                "trust": "الثقة والتحقق",
+                "languageGroup": "اللغة",
+                "languageMenu": "اختر اللغة",
+                "langEn": "English",
+                "langAr": "العربية",
+                "register": "تسجيل",
+                "donorRegistration": "تسجيل متبرع",
+                "facilityRegistration": "تسجيل منشأة",
+                "vendorPortal": "بوابة الموردين",
+                "themeToLight": "التبديل إلى السمة الفاتحة",
+                "themeToDark": "التبديل إلى السمة الداكنة"
+            },
+            "hero": {
+                "titlePrefix": "ربط المساجد بالمتبرعين من أجل",
+                "titleAccent": "تبرعات مادية موثقة",
+                "lead": "تساعد منصة مساجد ورك المنشآت الموثقة على نشر احتياجات مادية حقيقية، بينما يمكن للمتبرعين مراجعة الطلبات وقبولها وتنفيذها والتحقق منها دون أي تعامل نقدي عبر المنصة.",
+                "registerDonor": "سجّل كمتبرع",
+                "registerFacility": "سجّل منشأة",
+                "howItWorksLink": "كيف يعمل",
+                "imageAlt": "داخل مسجد هادئ بسجاد صلاة وإضاءة ناعمة",
+                "badgeAria": "تمييز الاحتياجات الموثقة",
+                "badgeTitle": "احتياجات موثقة",
+                "badgeSub": "سجاد، إضاءة، مراوح"
+            },
+            "trustBar": {
+                "noCash": "لا يتم التعامل بالنقد عبر المنصة",
+                "verifiedReps": "ممثلو منشآت موثقون",
+                "proof": "إثبات التسليم مطلوب",
+                "community": "تحقق مجتمعي بعد الإتمام"
+            },
+            "stats": {
+                "sectionAria": "إحصائيات المنصة",
+                "facilities": "منشآت مسجلة",
+                "donors": "متبرعون نشطون",
+                "requests": "طلبات تبرع",
+                "fulfilled": "تبرعات مكتملة"
+            },
+            "features": {
+                "heading": "مصمم لتبرعات مادية شفافة",
+                "verifiedTitle": "منشآت موثقة",
+                "verifiedDesc": "عملية تحقق صارمة لجميع ممثلي المساجد ومواقع المنشآت.",
+                "physicalTitle": "تبرعات مادية فقط",
+                "physicalDesc": "التركيز على الأصول الملموسة لضمان وصول كامل نية المتبرع إلى الموقع.",
+                "proofTitle": "إثبات التنفيذ",
+                "proofDesc": "يرفع المتبرعون والموردون تأكيدًا مرئيًا عند التسليم والتركيب.",
+                "validationTitle": "تحقق لاحق",
+                "validationDesc": "يؤكد المجتمع المحلي وجود العنصر المتبرع به وانتفاع المسجد منه."
+            },
+            "process": {
+                "heading": "كيف يعمل مساجد ورك؟",
+                "s1Title": "تقديم الطلب",
+                "s1Sub": "المسجد يسجل الحاجة",
+                "s2Title": "مراجعة الإدارة",
+                "s2Sub": "التحقق من الطلب",
+                "s3Title": "تصفح المتبرع",
+                "s3Sub": "استكشاف الاحتياجات",
+                "s4Title": "قبول المتبرع",
+                "s4Sub": "التزام بالتنفيذ",
+                "s5Title": "التنفيذ والإثبات",
+                "s5Sub": "التسليم والصورة",
+                "s6Title": "تأكيد المنشأة",
+                "s6Sub": "استلام الممثل",
+                "s7Title": "تحقق مجتمعي",
+                "s7Sub": "ختم الثقة النهائي"
+            },
+            "roles": {
+                "heading": "من يمكنه استخدام مساجد ورك؟",
+                "facilityTitle": "ممثل المنشأة",
+                "facilityDesc": "سجّل مسجدك لنشر احتياجات مادية موثقة ومتطلبات البنية التحتية.",
+                "facilityBtn": "سجّل منشأة",
+                "donorTitle": "متبرع",
+                "donorDesc": "اعثر على احتياجات مادية محددة ونفّذها مباشرة لمجتمعات في منطقتك.",
+                "donorBtn": "سجّل كمتبرع",
+                "vendorTitle": "مورد",
+                "vendorDesc": "شارك المتبرعين في توريد وتركيب المعدات المتخصصة للمساجد.",
+                "vendorBtn": "انضم كمورد",
+                "charityTitle": "ممثل جمعية",
+                "charityDesc": "راقب ونسّق حملات تبرع مادية واسعة النطاق عبر عدة منشآت.",
+                "charityBtn": "انضم للمركز"
+            },
+            "donate": {
+                "heading": "عناصر يمكنك التبرع بها",
+                "carpetsLabel": "سجاد",
+                "carpetsAlt": "سجاد صلاة فاخر",
+                "fansLabel": "مراوح وتكييف",
+                "fansAlt": "مراوح سقف وتكييف",
+                "soundLabel": "أنظمة صوت",
+                "soundAlt": "معدات صوت للمسجد",
+                "furnitureLabel": "أثاث",
+                "furnitureAlt": "أثاث خشبي للمسجد",
+                "cleaningLabel": "مستلزمات نظافة",
+                "cleaningAlt": "مستلزمات تنظيف للمسجد",
+                "maintenanceLabel": "صيانة",
+                "maintenanceAlt": "أعمال صيانة وأدوات",
+                "paintingLabel": "دهانات",
+                "paintingAlt": "دهان داخلي وتجديد",
+                "lightingLabel": "إضاءة",
+                "lightingAlt": "تجهيزات إضاءة حديثة"
+            },
+            "validation": {
+                "heading": "مصمم لتقليل الاحتيال وزيادة الثقة",
+                "identity": "هوية موثقة",
+                "visualProof": "إثبات مرئي",
+                "localValidation": "تحقق محلي",
+                "copy": "تضمن حلقة التحقق لدينا أن كل تبرع لا يُسلَّم فحسب، بل يُستخدم كما يُراد للمجتمع المستفيد."
+            },
+            "cta": {
+                "title": "ابدأ دعم الاحتياجات المادية الموثقة اليوم",
+                "lead": "انضم إلى شبكة مبنية على الشفافية والأمانة والخدمة الجماعية.",
+                "donorBtn": "تسجيل متبرع",
+                "facilityBtn": "تسجيل منشأة",
+                "login": "تسجيل الدخول"
+            },
+            "footer": {
+                "brand": "مساجد ورك",
+                "mission": "بناء الثقة والكفاءة في إدارة المنشآت المجتمعية عبر تبرعات مادية موثقة.",
+                "quickHeading": "روابط سريعة",
+                "quickNavAria": "روابط سريعة",
+                "legalHeading": "التواصل والقانونية",
+                "legalNavAria": "قانوني وتواصل",
+                "aboutUs": "من نحن",
+                "howItWorks": "كيف يعمل",
+                "trust": "الثقة والتحقق",
+                "facilityReg": "تسجيل منشأة",
+                "vendorPortal": "بوابة الموردين",
+                "privacy": "سياسة الخصوصية",
+                "emailDisplay": "support@masajidwork.org",
+                "copy": "© 2024 مساجد ورك. مبني على مبادئ الأمانة والإخلاص في الخدمة."
+            }
+        }
     }
 }

@@ -1,0 +1,41 @@
+﻿<section
+  #sectionRoot
+  id="trust-validation"
+  class="validation"
+  [class.validation--revealed]="revealed"
+  aria-labelledby="validation-heading"
+>
+  <div class="validation__inner">
+    <h2
+      id="validation-heading"
+      class="validation__title"
+      [class.validation__title--in]="revealed"
+    >
+      {{ 'public.landing.validation.heading' | translate }}
+    </h2>
+    <div class="validation__row">
+      <div class="validation__track" aria-hidden="true"></div>
+      <div
+        *ngFor="let node of nodes; let i = index"
+        class="validation__node"
+        [class.validation__node--accent]="node.variant === 'accent'"
+        [class.validation__node--in]="revealed"
+        [style.animation-delay.ms]="nodeStaggerMs(i)"
+      >
+        <span
+          class="material-symbols-outlined validation__icon"
+          [class.validation__icon--accent]="node.variant === 'accent'"
+          aria-hidden="true"
+        >{{ node.icon }}</span>
+        <p class="validation__label">{{ node.labelKey | translate }}</p>
+      </div>
+    </div>
+    <p
+      class="validation__copy"
+      [class.validation__copy--in]="revealed"
+      [style.animation-delay.ms]="copyDelayMs()"
+    >
+      {{ 'public.landing.validation.copy' | translate }}
+    </p>
+  </div>
+</section>

@@ -22,7 +22,10 @@ export class LanguageDirService {
 
     getRtlFromStorage(): boolean {
         const stored = localStorage.getItem('isRtl');
-        return stored ? JSON.parse(stored) : false;
+        if (stored != null) {
+            return JSON.parse(stored);
+        }
+        return this.localStorage.getPreferredLanguageCode() === 'ar';
     }
 
     setUserLanguageCode(lang: string) {

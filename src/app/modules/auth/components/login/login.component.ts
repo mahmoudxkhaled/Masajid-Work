@@ -5,6 +5,7 @@ import { Observable, Subscription } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
 import { LanguageDirService } from 'src/app/core/services/language-dir.service';
 import { LocalStorageService } from 'src/app/core/services/local-storage.service';
+import { resolvePostLoginUrl } from 'src/app/core/utils/post-login-navigation';
 
 @Component({
     templateUrl: './login.component.html',
@@ -45,7 +46,8 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         if (this.localStorageService.getToken()) {
-            this.router.navigate(['/']);
+            const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+            void this.router.navigateByUrl(resolvePostLoginUrl(returnUrl));
         }
 
         const sessionExpired = this.route.snapshot.queryParamMap.get('sessionExpired');

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { map, Observable } from 'rxjs';
+import { APP_DEFAULT_LANGUAGE } from '../config/app-branding.config';
 
 @Injectable({
     providedIn: 'root',
@@ -9,7 +10,7 @@ export class TranslationService {
     private availableLanguages = ['en', 'ar'];
 
     constructor(private translate: TranslateService) {
-        this.setDefaultLang('en');
+        this.setDefaultLang(APP_DEFAULT_LANGUAGE);
     }
 
     setDefaultLang(lang: string) {
@@ -20,7 +21,7 @@ export class TranslationService {
         if (this.availableLanguages.includes(lang)) {
             this.translate.use(lang);
         } else {
-            this.translate.use('en');
+            this.translate.use(APP_DEFAULT_LANGUAGE);
         }
     }
     getCurrentLang(): Observable<string> {

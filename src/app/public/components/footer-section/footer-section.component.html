@@ -1,0 +1,33 @@
+﻿<footer id="footer" class="footer" [publicScrollReveal]="'down'">
+  <div class="footer__grid">
+    <div class="footer__brand">
+      <div class="footer__logo">
+        <img
+          class="footer__logo-img"
+          [src]="isDarkTheme ? logoSrcDark : logoSrcLight"
+          width="240"
+          height="68"
+          [attr.alt]="'public.landing.footer.brand' | translate"
+          decoding="async"
+        />
+      </div>
+      <p class="footer__mission">{{ 'public.landing.footer.mission' | translate }}</p>
+    </div>
+    <div>
+      <h3 class="footer__heading">{{ 'public.landing.footer.quickHeading' | translate }}</h3>
+      <nav class="footer__nav" [attr.aria-label]="'public.landing.footer.quickNavAria' | translate">
+        <a *ngFor="let link of quickLinks" [href]="link.href">{{ link.labelKey | translate }}</a>
+      </nav>
+    </div>
+    <div>
+      <h3 class="footer__heading">{{ 'public.landing.footer.legalHeading' | translate }}</h3>
+      <nav class="footer__nav" [attr.aria-label]="'public.landing.footer.legalNavAria' | translate">
+        <a *ngFor="let link of legalLinks" [href]="link.href">{{ link.labelKey | translate }}</a>
+        <p class="footer__email">{{ 'public.landing.footer.emailDisplay' | translate }}</p>
+      </nav>
+    </div>
+  </div>
+  <div class="footer__bar">
+    <p class="footer__copy">{{ 'public.landing.footer.copy' | translate }}</p>
+  </div>
+</footer>

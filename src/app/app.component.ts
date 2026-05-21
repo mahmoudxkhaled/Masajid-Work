@@ -12,6 +12,7 @@ import { TranslationService } from './core/services/translation.service';
 import { LayoutService } from './layout/app-services/app.layout.service';
 import { AuthService } from './modules/auth/services/auth.service';
 import { SettingsEngineService } from './modules/summary/services/settings-engine.service';
+import { APP_DEFAULT_LANGUAGE } from './core/config/app-branding.config';
 import { BrandingService } from './core/services/branding.service';
 
 @Component({
@@ -36,7 +37,7 @@ export class AppComponent implements OnInit, OnDestroy {
     ) {
         this.refreshLoginDataPackage();
 
-        this.translationService.setDefaultLang('en');
+        this.translationService.setDefaultLang(APP_DEFAULT_LANGUAGE);
         const documentStyle = getComputedStyle(document.documentElement);
         const textColor = documentStyle.getPropertyValue('--primary-color');
         Chart.register({
@@ -75,9 +76,10 @@ export class AppComponent implements OnInit, OnDestroy {
 
         const userLangCode = this.rtlService.getLanguageFromStorage();
 
-        this.translationService.useLanguage(userLangCode || 'en');
+        this.translationService.useLanguage(userLangCode || APP_DEFAULT_LANGUAGE);
 
         this.isRtl = this.rtlService.getRtlFromStorage();
+        this.rtlService.setRtl(this.isRtl);
 
         this.rtlSubscription = this.rtlService.isRtl$.subscribe((isRtl) => {
             this.isRtl = isRtl;

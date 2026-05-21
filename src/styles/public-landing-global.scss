@@ -1,0 +1,25 @@
+@use '../app/public/styles/public-reveal';
+
+@media (prefers-reduced-motion: no-preference) {
+  html:has(.dh) {
+    scroll-behavior: smooth;
+  }
+}
+
+html.dh-theme-dark body:has(.dh) {
+  background-color: #131118;
+  color: #e6e1e9;
+}
+
+body:has(.dh) {
+  margin: 0;
+}
+
+.material-symbols-outlined {
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24;
+  vertical-align: middle;
+}

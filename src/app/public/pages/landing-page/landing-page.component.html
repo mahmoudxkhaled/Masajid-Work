@@ -1,0 +1,22 @@
+<div
+  class="dh"
+  [class.dh--rtl]="dir === 'rtl'"
+  [class.dh--dark]="isDark"
+  [attr.dir]="dir"
+  [attr.lang]="lang"
+  (click)="onDhClick($event)"
+>
+  <app-header-section></app-header-section>
+  <main>
+    <app-hero-section></app-hero-section>
+    <app-trust-bar-section></app-trust-bar-section>
+    <app-stats-section></app-stats-section>
+    <app-features-section></app-features-section>
+    <app-how-it-works-section></app-how-it-works-section>
+    <app-about-section></app-about-section>
+    <app-services-section></app-services-section>
+    <app-validation-section></app-validation-section>
+    <app-call-to-action-section></app-call-to-action-section>
+  </main>
+  <app-footer-section></app-footer-section>
+</div>

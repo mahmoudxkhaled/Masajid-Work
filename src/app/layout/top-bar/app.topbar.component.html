@@ -12,7 +12,7 @@
 
 
         <div id="" class="flex justify-content-center flex-grow-1">
-            <a class="iaware-logo layout-topbar-logo" routerLink="/">
+            <a class="iaware-logo layout-topbar-logo" routerLink="/dashboard">
                 <!-- <svg width="150" viewBox="0 0 200 40" xmlns="http://www.w3.org/2000/svg">
                     <text x="10" y="30" font-family="Arial, sans-serif" font-size="32"
                         fill="var(--topbar-item-text-color)" font-weight="700">
@@ -43,7 +43,7 @@
             </svg> -->
         <!-- <img src="../../assets/media/logo1.png" width="100" alt="Logo" /> -->
         <!-- </a> -->
-        <img width="80" src="../../assets/media/logo/Slogan.png" routerLink="/" style="cursor: pointer;"
+        <img width="80" src="../../assets/media/logo/Slogan.png" routerLink="/dashboard" style="cursor: pointer;"
             [ngClass]="{ 'topbar-pmat-logo--white': layoutService.config().topbarTheme !== 'light' }"
             [attr.alt]="'layout.top-bar.companyLogo' | translate" />
     </div>

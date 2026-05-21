@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Facility Registration | Masajid Work</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=Readex+Pro:wght@300;400;500;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary": "#765b00",
+                    "on-background": "#1d1b20",
+                    "secondary-fixed": "#e9ddff",
+                    "on-secondary": "#ffffff",
+                    "surface-dim": "#ded8e0",
+                    "on-secondary-fixed-variant": "#4b4263",
+                    "on-primary-container": "#e0d2ff",
+                    "error-container": "#ffdad6",
+                    "secondary-fixed-dim": "#cdc0e9",
+                    "on-surface": "#1d1b20",
+                    "secondary": "#63597c",
+                    "primary-fixed": "#e9ddff",
+                    "inverse-surface": "#322f35",
+                    "surface-bright": "#fdf7ff",
+                    "inverse-on-surface": "#f5eff7",
+                    "surface-container-highest": "#e6e0e9",
+                    "surface-container": "#f2ecf4",
+                    "on-tertiary-fixed": "#241a00",
+                    "on-surface-variant": "#494551",
+                    "on-error-container": "#93000a",
+                    "inverse-primary": "#cfbcff",
+                    "error": "#ba1a1a",
+                    "on-tertiary-container": "#503d00",
+                    "on-secondary-fixed": "#1f1635",
+                    "tertiary-fixed": "#ffdf93",
+                    "surface-container-low": "#f8f2fa",
+                    "surface": "#fdf7ff",
+                    "outline-variant": "#cbc4d2",
+                    "tertiary-fixed-dim": "#e7c365",
+                    "on-error": "#ffffff",
+                    "primary": "#4f378a",
+                    "on-tertiary-fixed-variant": "#594400",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary-container": "#645a7d",
+                    "background": "#fdf7ff",
+                    "outline": "#7a7582",
+                    "surface-variant": "#e6e0e9",
+                    "secondary-container": "#e1d4fd",
+                    "surface-tint": "#6750a4",
+                    "on-primary": "#ffffff",
+                    "on-primary-fixed-variant": "#4f378a",
+                    "on-primary-fixed": "#22005d",
+                    "surface-container-lowest": "#ffffff",
+                    "primary-fixed-dim": "#cfbcff",
+                    "primary-container": "#6750a4",
+                    "tertiary-container": "#c9a74d",
+                    "surface-container-high": "#ece6ee"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "md": "16px",
+                    "gutter": "24px",
+                    "sm": "8px",
+                    "unit": "4px",
+                    "xl": "48px",
+                    "lg": "24px",
+                    "container-max": "1280px",
+                    "xs": "4px"
+            },
+            "fontFamily": {
+                    "arabic-body": ["Readex Pro"],
+                    "label-sm": ["IBM Plex Sans"],
+                    "body-readable": ["IBM Plex Sans"],
+                    "display-lg": ["IBM Plex Sans"],
+                    "headline-md": ["IBM Plex Sans"]
+            },
+            "fontSize": {
+                    "arabic-body": ["18px", {"lineHeight": "1.8", "fontWeight": "400"}],
+                    "label-sm": ["14px", {"lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                    "body-readable": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "display-lg": ["40px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "1.4", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .step-active { @apply text-primary font-bold; }
+        .step-inactive { @apply text-outline-variant; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-readable">
+<!-- TopNavBar -->
+<header class="bg-surface dark:bg-on-background shadow-sm docked full-width top-0 z-50 sticky">
+<nav class="flex justify-between items-center px-lg py-md max-w-container-max mx-auto w-full">
+<div class="text-headline-md font-headline-md text-primary dark:text-primary-fixed">Masajid Work</div>
+<div class="hidden md:flex gap-lg items-center">
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors font-body-readable text-body-readable" href="#">Home</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors font-body-readable text-body-readable" href="#">How It Works</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors font-body-readable text-body-readable" href="#">About</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors font-body-readable text-body-readable" href="#">Trust &amp; Validation</a>
+</div>
+<div class="flex gap-md items-center">
+<button class="text-on-surface-variant hover:text-primary transition-colors flex items-center gap-xs">
+<span class="material-symbols-outlined">language</span>
+<span class="font-label-sm text-label-sm">Language</span>
+</button>
+<button class="bg-primary text-on-primary px-lg py-sm rounded-full font-label-sm text-label-sm hover:opacity-80 transition-all text-primary dark:text-primary-fixed border-b-2 border-primary dark:border-primary-fixed pb-1">Register</button>
+</div>
+</nav>
+</header>
+<main class="min-h-screen pt-xl pb-xl px-gutter">
+<div class="max-w-4xl mx-auto">
+<!-- Header Section -->
+<div class="mb-xl text-center">
+<h1 class="font-display-lg text-display-lg mb-sm text-primary">Facility Registration</h1>
+<p class="text-on-surface-variant max-w-2xl mx-auto">Join a network of verified Islamic institutions built on Amanah and Khidmah. Please provide accurate details to ensure a smooth verification process.</p>
+</div>
+<!-- Stepper -->
+<div class="flex justify-between mb-xl relative">
+<div class="absolute top-1/2 left-0 w-full h-[2px] bg-surface-container-highest -z-10 -translate-y-1/2"></div>
+<div class="flex flex-col items-center bg-background px-md">
+<div class="w-10 h-10 rounded-full bg-primary text-on-primary flex items-center justify-center mb-xs">1</div>
+<span class="font-label-sm text-label-sm text-primary">Facility Info</span>
+</div>
+<div class="flex flex-col items-center bg-background px-md">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest text-on-surface-variant flex items-center justify-center mb-xs">2</div>
+<span class="font-label-sm text-label-sm text-outline-variant">Representative</span>
+</div>
+<div class="flex flex-col items-center bg-background px-md">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest text-on-surface-variant flex items-center justify-center mb-xs">3</div>
+<span class="font-label-sm text-label-sm text-outline-variant">Verification</span>
+</div>
+<div class="flex flex-col items-center bg-background px-md">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest text-on-surface-variant flex items-center justify-center mb-xs">4</div>
+<span class="font-label-sm text-label-sm text-outline-variant">Confirm</span>
+</div>
+</div>
+<!-- Form Container -->
+<form class="space-y-lg" id="registrationForm">
+<!-- Step 1: Facility Info -->
+<section class="glass-card p-xl rounded-xl shadow-sm border-primary/10" id="step1">
+<div class="flex items-center gap-sm mb-lg">
+<span class="material-symbols-outlined text-primary">mosque</span>
+<h2 class="font-headline-md text-headline-md text-on-surface">Step 1: Facility Information</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
+<div class="flex flex-col gap-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Facility Name</label>
+<input class="rounded-lg border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary p-md bg-surface-container-lowest" placeholder="e.g. Al-Noor Islamic Center" type="text"/>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Facility Type</label>
+<select class="rounded-lg border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary p-md bg-surface-container-lowest">
+<option>Mosque</option>
+<option>Islamic Center</option>
+<option>Quran Center</option>
+<option>Educational Institute</option>
+<option>Charitable Foundation</option>
+</select>
+</div>
+<div class="md:col-span-2 flex flex-col gap-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Description</label>
+<textarea class="rounded-lg border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary p-md bg-surface-container-lowest" placeholder="Briefly describe the facility's mission and community services..." rows="3"></textarea>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Location Address</label>
+<input class="rounded-lg border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary p-md bg-surface-container-lowest" placeholder="Street, Building, Unit" type="text"/>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Contact Number</label>
+<input class="rounded-lg border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary p-md bg-surface-container-lowest" placeholder="+1 (555) 000-0000" type="tel"/>
+</div>
+<div class="md:col-span-2">
+<label class="font-label-sm text-label-sm text-on-surface-variant block mb-sm">Facility Photo</label>
+<div class="border-2 border-dashed border-outline-variant rounded-xl p-xl text-center bg-surface-container-low hover:border-primary transition-colors cursor-pointer group">
+<span class="material-symbols-outlined text-outline text-4xl mb-sm group-hover:text-primary">add_a_photo</span>
+<p class="text-on-surface-variant">Click to upload or drag and drop</p>
+<p class="text-outline text-sm mt-xs">JPG, PNG up to 10MB</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Step 2: Rep Info -->
+<section class="glass-card p-xl rounded-xl shadow-sm border-primary/10" id="step2">
+<div class="flex items-center gap-sm mb-lg">
+<span class="material-symbols-outlined text-primary">person</span>
+<h2 class="font-headline-md text-headline-md text-on-surface">Step 2: Representative Information</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
+<div class="flex flex-col gap-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Full Name</label>
+<input class="rounded-lg border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary p-md bg-surface-container-lowest" placeholder="As-Salam Admin" type="text"/>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Email Address</label>
+<input class="rounded-lg border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary p-md bg-surface-container-lowest" placeholder="admin@facility.org" type="email"/>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Phone Number</label>
+<input class="rounded-lg border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary p-md bg-surface-container-lowest" placeholder="+1 (555) 123-4567" type="tel"/>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Position/Role</label>
+<input class="rounded-lg border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary p-md bg-surface-container-lowest" placeholder="e.g. Trustee, Director, Imam" type="text"/>
+</div>
+<div class="md:col-span-2 flex flex-col gap-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Account Password</label>
+<input class="rounded-lg border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary p-md bg-surface-container-lowest" placeholder="••••••••" type="password"/>
+</div>
+</div>
+</section>
+<!-- Step 3: Verification -->
+<section class="glass-card p-xl rounded-xl shadow-sm border-primary/10" id="step3">
+<div class="flex items-center gap-sm mb-lg">
+<span class="material-symbols-outlined text-primary">verified_user</span>
+<h2 class="font-headline-md text-headline-md text-on-surface">Step 3: Verification Documents</h2>
+</div>
+<div class="bg-primary-container/10 p-md rounded-lg mb-lg flex gap-md items-start">
+<span class="material-symbols-outlined text-primary">info</span>
+<p class="text-sm text-on-surface-variant">To maintain the platform's integrity, all facilities must undergo a verification process. Typical processing time is 48-72 hours.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
+<div class="flex flex-col gap-md">
+<div>
+<label class="font-label-sm text-label-sm text-on-surface-variant block mb-sm">Official ID Upload</label>
+<div class="border border-outline-variant rounded-lg p-md flex items-center justify-between bg-surface-container-lowest">
+<span class="text-outline text-sm italic">No file chosen</span>
+<button class="text-primary font-label-sm text-label-sm" type="button">Browse</button>
+</div>
+</div>
+<div>
+<label class="font-label-sm text-label-sm text-on-surface-variant block mb-sm">Proof of Representation</label>
+<div class="border border-outline-variant rounded-lg p-md flex items-center justify-between bg-surface-container-lowest">
+<span class="text-outline text-sm italic">Authorization letter, etc.</span>
+<button class="text-primary font-label-sm text-label-sm" type="button">Browse</button>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Additional Notes for Reviewers</label>
+<textarea class="rounded-lg border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary p-md bg-surface-container-lowest h-full" placeholder="Any context regarding your registration..." rows="5"></textarea>
+</div>
+</div>
+</section>
+<!-- Step 4: Confirmation -->
+<section class="glass-card p-xl rounded-xl shadow-sm border-primary/10" id="step4">
+<div class="flex items-center gap-sm mb-lg">
+<span class="material-symbols-outlined text-primary">task_alt</span>
+<h2 class="font-headline-md text-headline-md text-on-surface">Step 4: Final Confirmation</h2>
+</div>
+<div class="space-y-md">
+<label class="flex items-start gap-md cursor-pointer group">
+<div class="mt-1">
+<input class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/>
+</div>
+<span class="text-on-surface-variant text-sm">I certify that the information provided is accurate and that I am an authorized representative of this facility.</span>
+</label>
+<label class="flex items-start gap-md cursor-pointer group">
+<div class="mt-1">
+<input class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/>
+</div>
+<span class="text-on-surface-variant text-sm">I agree to the <strong>No-Cash Donation Policy</strong>, ensuring all transactions via the platform are digital and traceable for institutional transparency.</span>
+</label>
+<label class="flex items-start gap-md cursor-pointer group">
+<div class="mt-1">
+<input class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/>
+</div>
+<span class="text-on-surface-variant text-sm">I have read and agree to the Terms of Service and Privacy Policy regarding data handling and verification protocols.</span>
+</label>
+</div>
+</section>
+<!-- Action Buttons -->
+<div class="flex flex-col md:flex-row gap-lg justify-between items-center pt-lg">
+<div class="flex items-center gap-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-tertiary">lock</span>
+<span class="text-sm">Secure 256-bit Encrypted Registration</span>
+</div>
+<button class="w-full md:w-auto bg-primary text-on-primary px-xl py-lg rounded-full font-headline-md text-headline-md shadow-lg hover:shadow-xl hover:translate-y-[-2px] active:translate-y-0 transition-all" type="submit">
+                        Submit Facility Registration
+                    </button>
+</div>
+</form>
+</div>
+</main>
+<!-- Success Message (Hidden) -->
+<div class="fixed inset-0 bg-on-background/60 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-md" id="successOverlay">
+<div class="bg-surface p-xl rounded-xl max-w-md w-full text-center shadow-xl">
+<span class="material-symbols-outlined text-6xl text-primary mb-md">check_circle</span>
+<h3 class="font-headline-md text-headline-md mb-sm">Registration Submitted</h3>
+<p class="text-on-surface-variant mb-lg">Your facility registration is now under review. You will receive an email confirmation shortly with your reference ID.</p>
+<button class="w-full bg-primary text-on-primary py-md rounded-full font-label-sm text-label-sm" onclick="window.location.reload()">Back to Home</button>
+</div>
+</div>
+<!-- Footer -->
+<footer class="bg-surface-container-low dark:bg-inverse-surface full-width bottom mt-xl">
+<div class="flex flex-col md:flex-row justify-between items-start px-lg py-xl max-w-container-max mx-auto w-full gap-lg">
+<div class="flex flex-col gap-md max-w-sm">
+<div class="text-headline-md font-headline-md text-primary dark:text-primary-fixed">Masajid Work</div>
+<p class="text-on-surface-variant dark:text-outline-variant font-body-readable text-body-readable">A community-focused management platform empowering mosques and Islamic centers with modern digital tools for transparency and service.</p>
+</div>
+<div class="flex flex-wrap gap-xl">
+<div class="flex flex-col gap-sm">
+<span class="font-bold text-on-surface">Platform</span>
+<a class="text-on-surface-variant dark:text-outline-variant hover:underline decoration-primary dark:decoration-primary-fixed transition-opacity duration-200" href="#">How It Works</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:underline decoration-primary dark:decoration-primary-fixed transition-opacity duration-200" href="#">Features</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:underline decoration-primary dark:decoration-primary-fixed transition-opacity duration-200" href="#">Pricing</a>
+</div>
+<div class="flex flex-col gap-sm">
+<span class="font-bold text-on-surface">Legal</span>
+<a class="text-on-surface-variant dark:text-outline-variant hover:underline decoration-primary dark:decoration-primary-fixed transition-opacity duration-200" href="#">Privacy Policy</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:underline decoration-primary dark:decoration-primary-fixed transition-opacity duration-200" href="#">Terms of Service</a>
+</div>
+<div class="flex flex-col gap-sm">
+<span class="font-bold text-on-surface">Support</span>
+<a class="text-on-surface-variant dark:text-outline-variant hover:underline decoration-primary dark:decoration-primary-fixed transition-opacity duration-200" href="#">Contact Us</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:underline decoration-primary dark:decoration-primary-fixed transition-opacity duration-200" href="#">Support Center</a>
+</div>
+</div>
+</div>
+<div class="border-t border-outline-variant/20 max-w-container-max mx-auto px-lg py-md text-center text-sm text-on-surface-variant">
+            © 2024 Masajid Work. Built on the principles of Amanah and Khidmah.
+        </div>
+</footer>
+<script>
+        document.getElementById('registrationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            document.getElementById('successOverlay').classList.remove('hidden');
+        });
+
+        // Simple scroll spy for stepper interaction (visual only)
+        window.addEventListener('scroll', () => {
+            const sections = ['step1', 'step2', 'step3', 'step4'];
+            let current = '';
+            
+            sections.forEach(section => {
+                const element = document.getElementById(section);
+                const rect = element.getBoundingClientRect();
+                if (rect.top <= 200) current = section;
+            });
+
+            // This logic would normally update the stepper UI colors
+        });
+    </script>
+</body></html>

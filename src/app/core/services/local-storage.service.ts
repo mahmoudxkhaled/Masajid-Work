@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { APP_DEFAULT_LANGUAGE } from '../config/app-branding.config';
 import { IUserDetails, IAccountDetails, IEntityDetails, IAccountSettings, IAccountStatusResponse, IUserAccountItem } from '../models/account-status.model';
 
 @Injectable({
@@ -33,10 +34,13 @@ export class LocalStorageService {
   // #region Language & Theme preferences (source of truth: Account_Settings)
   getPreferredLanguageCode(): 'en' | 'ar' {
     const lang = (this.getAccountSettings()?.Language || '').toString().trim().toLowerCase();
+    if (lang === 'en' || lang === 'english') {
+      return 'en';
+    }
     if (lang === 'ar' || lang === 'arabic' || lang === 'العربية') {
       return 'ar';
     }
-    return 'en';
+    return APP_DEFAULT_LANGUAGE;
   }
 
   setPreferredLanguageCode(code: 'en' | 'ar'): void {

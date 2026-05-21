@@ -192,7 +192,7 @@ export class AppTopbarComponent implements OnInit, OnDestroy {
         );
         this.subs.add(
             this.rtlService.userLanguageCode$.subscribe((lang) => {
-                this.userLanguageCode = lang || 'en';
+                this.userLanguageCode = lang || 'ar';
                 this.userLanguageId = this.userLanguageCode;
                 this.ref.detectChanges();
             })
@@ -367,7 +367,7 @@ export class AppTopbarComponent implements OnInit, OnDestroy {
         this.themeLoading = true;
         this.userTheme = this.userTheme === 'light' ? 'dark' : 'light';
         this.layoutService.applyUserTheme(this.userTheme as 'light' | 'dark');
-        this.saveAccountPreferences(this.userLanguageCode || 'en', this.userTheme, () => {
+        this.saveAccountPreferences(this.userLanguageCode || 'ar', this.userTheme, () => {
             this.themeLoading = false;
             this.ref.detectChanges();
         });
@@ -457,10 +457,13 @@ export class AppTopbarComponent implements OnInit, OnDestroy {
 
     private normalizeLanguageCode(rawLanguage: string | undefined): string {
         const normalized = (rawLanguage || '').toString().trim().toLowerCase();
+        if (normalized === 'en' || normalized === 'english') {
+            return 'en';
+        }
         if (normalized === 'ar' || normalized === 'arabic' || normalized === 'العربية') {
             return 'ar';
         }
-        return 'en';
+        return 'ar';
     }
 
 

@@ -1,0 +1,78 @@
+<nav class="header" [attr.aria-label]="'public.landing.header.navAria' | translate">
+  <div class="header__inner">
+    <a class="header__logo" href="#hero" [attr.aria-label]="'branding.displayName' | translate">
+      <img
+        class="header__logo-img"
+        [src]="isDarkTheme ? logoSrcDark : logoSrcLight"
+        width="200"
+        height="56"
+        alt=""
+        decoding="async"
+      />
+    </a>
+    <div class="header__nav">
+      <a class="header__link header__link--active" href="#hero">{{ 'public.landing.header.home' | translate }}</a>
+      <a class="header__link" href="#how-it-works">{{ 'public.landing.header.howItWorks' | translate }}</a>
+      <a class="header__link" href="#about">{{ 'public.landing.header.about' | translate }}</a>
+      <a class="header__link" href="#trust-validation">{{ 'public.landing.header.trust' | translate }}</a>
+    </div>
+    <div class="header__actions">
+      <button
+        type="button"
+        class="header__theme"
+        (click)="toggleTheme()"
+        [attr.aria-pressed]="isDarkTheme"
+        [attr.aria-label]="(isDarkTheme ? 'public.landing.header.themeToLight' : 'public.landing.header.themeToDark') | translate"
+      >
+        <span class="material-symbols-outlined" aria-hidden="true">{{
+          isDarkTheme ? 'light_mode' : 'dark_mode'
+        }}</span>
+      </button>
+      <div #langMenu class="header__lang-menu" [class.header__lang-menu--open]="langMenuOpen">
+        <button
+          type="button"
+          class="header__lang-trigger"
+          [attr.aria-label]="'public.landing.header.languageMenu' | translate"
+          [attr.aria-expanded]="langMenuOpen"
+          aria-haspopup="menu"
+          (click)="toggleLangMenu($event)"
+        >
+          <span class="material-symbols-outlined" aria-hidden="true">language</span>
+          <span class="material-symbols-outlined header__lang-chevron" aria-hidden="true">expand_more</span>
+        </button>
+        <div class="header__dropdown" role="menu">
+          <button
+            type="button"
+            role="menuitem"
+            class="header__dropdown-item"
+            [class.header__dropdown-item--active]="currentLang === 'en'"
+            (click)="setLang('en')"
+          >
+            {{ 'public.landing.header.langEn' | translate }}
+          </button>
+          <button
+            type="button"
+            role="menuitem"
+            class="header__dropdown-item"
+            [class.header__dropdown-item--active]="currentLang === 'ar'"
+            (click)="setLang('ar')"
+          >
+            {{ 'public.landing.header.langAr' | translate }}
+          </button>
+        </div>
+      </div>
+      <a class="header__login" [routerLink]="loginPath">{{ 'public.landing.cta.login' | translate }}</a>
+      <div class="header__menu">
+        <button type="button" class="header__register">
+          {{ 'public.landing.header.register' | translate }}
+          <span class="material-symbols-outlined" aria-hidden="true">expand_more</span>
+        </button>
+        <div class="header__dropdown" role="menu">
+          <a [routerLink]="registerDonorPath" role="menuitem">{{ 'public.landing.header.donorRegistration' | translate }}</a>
+          <a [routerLink]="registerFacilityPath" role="menuitem">{{ 'public.landing.header.facilityRegistration' | translate }}</a>
+          <a [routerLink]="registerVendorPath" role="menuitem">{{ 'public.landing.header.vendorPortal' | translate }}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>

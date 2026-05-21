@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Donor Registration | Masajid Work</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&amp;family=Readex+Pro:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary": "#765b00",
+                      "on-background": "#1d1b20",
+                      "secondary-fixed": "#e9ddff",
+                      "on-secondary": "#ffffff",
+                      "surface-dim": "#ded8e0",
+                      "on-secondary-fixed-variant": "#4b4263",
+                      "on-primary-container": "#e0d2ff",
+                      "error-container": "#ffdad6",
+                      "secondary-fixed-dim": "#cdc0e9",
+                      "on-surface": "#1d1b20",
+                      "secondary": "#63597c",
+                      "primary-fixed": "#e9ddff",
+                      "inverse-surface": "#322f35",
+                      "surface-bright": "#fdf7ff",
+                      "inverse-on-surface": "#f5eff7",
+                      "surface-container-highest": "#e6e0e9",
+                      "surface-container": "#f2ecf4",
+                      "on-tertiary-fixed": "#241a00",
+                      "on-surface-variant": "#494551",
+                      "on-error-container": "#93000a",
+                      "inverse-primary": "#cfbcff",
+                      "error": "#ba1a1a",
+                      "on-tertiary-container": "#503d00",
+                      "on-secondary-fixed": "#1f1635",
+                      "tertiary-fixed": "#ffdf93",
+                      "surface-container-low": "#f8f2fa",
+                      "surface": "#fdf7ff",
+                      "outline-variant": "#cbc4d2",
+                      "tertiary-fixed-dim": "#e7c365",
+                      "on-error": "#ffffff",
+                      "primary": "#4f378a",
+                      "on-tertiary-fixed-variant": "#594400",
+                      "on-tertiary": "#ffffff",
+                      "on-secondary-container": "#645a7d",
+                      "background": "#fdf7ff",
+                      "outline": "#7a7582",
+                      "surface-variant": "#e6e0e9",
+                      "secondary-container": "#e1d4fd",
+                      "surface-tint": "#6750a4",
+                      "on-primary": "#ffffff",
+                      "on-primary-fixed-variant": "#4f378a",
+                      "on-primary-fixed": "#22005d",
+                      "surface-container-lowest": "#ffffff",
+                      "primary-fixed-dim": "#cfbcff",
+                      "primary-container": "#6750a4",
+                      "tertiary-container": "#c9a74d",
+                      "surface-container-high": "#ece6ee"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "md": "16px",
+                      "gutter": "24px",
+                      "sm": "8px",
+                      "unit": "4px",
+                      "xl": "48px",
+                      "lg": "24px",
+                      "container-max": "1280px",
+                      "xs": "4px"
+              },
+              "fontFamily": {
+                      "arabic-body": ["Readex Pro"],
+                      "label-sm": ["IBM Plex Sans"],
+                      "body-readable": ["IBM Plex Sans"],
+                      "display-lg": ["IBM Plex Sans"],
+                      "headline-md": ["IBM Plex Sans"]
+              },
+              "fontSize": {
+                      "arabic-body": ["18px", {"lineHeight": "1.8", "fontWeight": "400"}],
+                      "label-sm": ["14px", {"lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                      "body-readable": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "display-lg": ["40px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                      "headline-md": ["24px", {"lineHeight": "1.4", "fontWeight": "600"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .donor-card-shadow {
+            box-shadow: 0 4px 20px -2px rgba(79, 55, 138, 0.08);
+        }
+        .category-chip:checked + label {
+            background-color: #6750a4;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-readable">
+<!-- TopNavBar -->
+<nav class="bg-surface dark:bg-on-background shadow-sm fixed top-0 w-full z-50">
+<div class="flex justify-between items-center px-lg py-md max-w-container-max mx-auto w-full">
+<div class="text-headline-md font-headline-md text-primary dark:text-primary-fixed">Masajid Work</div>
+<div class="hidden md:flex gap-lg items-center">
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors font-body-readable text-body-readable" href="#">Home</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors font-body-readable text-body-readable" href="#">How It Works</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors font-body-readable text-body-readable" href="#">About</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors font-body-readable text-body-readable" href="#">Trust &amp; Validation</a>
+</div>
+<div class="flex items-center gap-md">
+<button class="text-on-surface-variant dark:text-outline-variant hover:text-primary transition-colors font-label-sm text-label-sm px-md py-sm">Language</button>
+<button class="bg-primary text-on-primary px-lg py-sm rounded-full font-label-sm text-label-sm hover:opacity-80 transition-all duration-200">Register</button>
+</div>
+</div>
+</nav>
+<main class="pt-[100px] pb-xl px-gutter">
+<div class="max-w-3xl mx-auto">
+<!-- Header Section -->
+<div class="mb-xl text-center">
+<h1 class="font-display-lg text-display-lg text-primary mb-sm">Join the Community</h1>
+<p class="text-on-surface-variant font-body-readable text-body-readable">Register as a donor to fulfill the physical needs of Masajid in your area through Khidmah.</p>
+</div>
+<!-- Multi-Section Registration Card -->
+<form action="#" class="bg-surface-container-lowest rounded-xl donor-card-shadow overflow-hidden border border-outline-variant/30" method="POST">
+<!-- Section A: Account Details -->
+<div class="p-lg md:p-xl border-b border-outline-variant/20">
+<div class="flex items-center gap-sm mb-lg">
+<span class="material-symbols-outlined text-primary">account_circle</span>
+<h2 class="font-headline-md text-headline-md text-on-surface">Account Details</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
+<div class="flex flex-col gap-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant px-unit">First Name</label>
+<input class="rounded-lg border-outline-variant bg-surface-container focus:border-primary focus:ring-primary h-[48px] px-md" placeholder="Abdullah" type="text"/>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant px-unit">Last Name</label>
+<input class="rounded-lg border-outline-variant bg-surface-container focus:border-primary focus:ring-primary h-[48px] px-md" placeholder="Rahman" type="text"/>
+</div>
+<div class="flex flex-col gap-xs md:col-span-2">
+<label class="font-label-sm text-label-sm text-on-surface-variant px-unit">Email</label>
+<input class="rounded-lg border-outline-variant bg-surface-container focus:border-primary focus:ring-primary h-[48px] px-md" placeholder="abdullah@example.com" type="email"/>
+</div>
+<div class="flex flex-col gap-xs md:col-span-2">
+<label class="font-label-sm text-label-sm text-on-surface-variant px-unit">Phone</label>
+<input class="rounded-lg border-outline-variant bg-surface-container focus:border-primary focus:ring-primary h-[48px] px-md" placeholder="+1 (555) 000-0000" type="tel"/>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant px-unit">Password</label>
+<input class="rounded-lg border-outline-variant bg-surface-container focus:border-primary focus:ring-primary h-[48px] px-md" placeholder="••••••••" type="password"/>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant px-unit">Confirm Password</label>
+<input class="rounded-lg border-outline-variant bg-surface-container focus:border-primary focus:ring-primary h-[48px] px-md" placeholder="••••••••" type="password"/>
+</div>
+</div>
+</div>
+<!-- Section B: Preferences -->
+<div class="p-lg md:p-xl border-b border-outline-variant/20 bg-surface-container-low/30">
+<div class="flex items-center gap-sm mb-lg">
+<span class="material-symbols-outlined text-primary">explore</span>
+<h2 class="font-headline-md text-headline-md text-on-surface">Donation Preferences</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg mb-xl">
+<div class="flex flex-col gap-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant px-unit">Country</label>
+<select class="rounded-lg border-outline-variant bg-surface-container focus:border-primary focus:ring-primary h-[48px] px-md">
+<option>United Kingdom</option>
+<option>United States</option>
+<option>Canada</option>
+<option>United Arab Emirates</option>
+</select>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant px-unit">City</label>
+<input class="rounded-lg border-outline-variant bg-surface-container focus:border-primary focus:ring-primary h-[48px] px-md" placeholder="London" type="text"/>
+</div>
+<div class="flex flex-col gap-xs md:col-span-2">
+<label class="font-label-sm text-label-sm text-on-surface-variant px-unit">Donation Radius (km)</label>
+<input class="w-full accent-primary mt-sm" id="radiusRange" max="100" min="1" type="range" value="25"/>
+<div class="flex justify-between text-label-sm text-on-surface-variant mt-xs">
+<span>1km</span>
+<span class="text-primary font-bold"><span id="radiusVal">25</span>km</span>
+<span>100km</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-md">
+<label class="font-label-sm text-label-sm text-on-surface-variant px-unit">I am interested in providing:</label>
+<div class="flex flex-wrap gap-sm">
+<div class="relative">
+<input class="category-chip hidden peer" id="cat1" type="checkbox"/>
+<label class="px-lg py-sm rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm cursor-pointer transition-all peer-checked:bg-primary peer-checked:text-on-primary" for="cat1">Carpets</label>
+</div>
+<div class="relative">
+<input class="category-chip hidden peer" id="cat2" type="checkbox"/>
+<label class="px-lg py-sm rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm cursor-pointer transition-all peer-checked:bg-primary peer-checked:text-on-primary" for="cat2">Fans</label>
+</div>
+<div class="relative">
+<input class="category-chip hidden peer" id="cat3" type="checkbox"/>
+<label class="px-lg py-sm rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm cursor-pointer transition-all peer-checked:bg-primary peer-checked:text-on-primary" for="cat3">Sound Systems</label>
+</div>
+<div class="relative">
+<input class="category-chip hidden peer" id="cat4" type="checkbox"/>
+<label class="px-lg py-sm rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm cursor-pointer transition-all peer-checked:bg-primary peer-checked:text-on-primary" for="cat4">Furniture</label>
+</div>
+<div class="relative">
+<input class="category-chip hidden peer" id="cat5" type="checkbox"/>
+<label class="px-lg py-sm rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm cursor-pointer transition-all peer-checked:bg-primary peer-checked:text-on-primary" for="cat5">Cleaning Supplies</label>
+</div>
+<div class="relative">
+<input class="category-chip hidden peer" id="cat6" type="checkbox"/>
+<label class="px-lg py-sm rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm cursor-pointer transition-all peer-checked:bg-primary peer-checked:text-on-primary" for="cat6">Maintenance</label>
+</div>
+<div class="relative">
+<input class="category-chip hidden peer" id="cat7" type="checkbox"/>
+<label class="px-lg py-sm rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm cursor-pointer transition-all peer-checked:bg-primary peer-checked:text-on-primary" for="cat7">Painting</label>
+</div>
+<div class="relative">
+<input class="category-chip hidden peer" id="cat8" type="checkbox"/>
+<label class="px-lg py-sm rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm cursor-pointer transition-all peer-checked:bg-primary peer-checked:text-on-primary" for="cat8">Lighting</label>
+</div>
+</div>
+</div>
+</div>
+<!-- Section C & D: Privacy & Terms -->
+<div class="p-lg md:p-xl space-y-lg">
+<div class="flex gap-md p-md rounded-lg bg-tertiary-fixed/20 border border-tertiary-fixed-dim/30">
+<div class="pt-unit">
+<input class="rounded text-primary focus:ring-primary w-5 h-5" type="checkbox"/>
+</div>
+<div>
+<p class="font-label-sm text-on-surface font-bold">Appear as anonymous donor</p>
+<p class="text-sm text-on-tertiary-fixed-variant">Your identity will be hidden from public donation lists. Only Masajid administrators will see your contact details for delivery coordination.</p>
+</div>
+</div>
+<div class="flex gap-md p-md rounded-lg bg-surface-container">
+<div class="pt-unit">
+<input class="rounded text-primary focus:ring-primary w-5 h-5" required="" type="checkbox"/>
+</div>
+<div>
+<p class="font-label-sm text-on-surface">I confirm that all donations through Masajid Work are physical or non-cash items as per the platform principles of Khidmah.</p>
+</div>
+</div>
+<!-- Actions -->
+<div class="pt-lg flex flex-col gap-md">
+<button class="w-full bg-primary text-on-primary font-headline-md text-headline-md py-md rounded-xl hover:bg-primary-container transition-colors donor-card-shadow" type="submit">Create Donor Account</button>
+<div class="flex justify-between items-center px-sm">
+<a class="text-on-surface-variant font-label-sm text-label-sm flex items-center gap-xs hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-sm">arrow_back</span> Back
+                            </a>
+<div class="text-on-surface-variant font-label-sm text-label-sm">
+                                Already have an account? <a class="text-primary font-bold hover:underline" href="#">Login</a>
+</div>
+</div>
+</div>
+</div>
+</form>
+<!-- Decorative Visual -->
+<div class="mt-xl flex justify-center opacity-40">
+<img alt="Masjid interior" class="w-full h-40 object-cover rounded-3xl grayscale" data-alt="A serene and beautifully lit interior of a modern mosque, showing intricate architectural details and soft natural light filtering through high windows. The atmosphere is peaceful and spiritual, characterized by a clean and minimalist community-focused aesthetic. The color palette consists of soft beiges, warm wood tones, and subtle emerald accents, conveying a sense of institutional trust and communal harmony." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDbaChX5A4SbZmL7bjf9jhyu9Io1Yio4sOaarVS8lILfGKOJwBll-3vgAhvppMeg-2SxhITVVBg29m6oAARPoIvrc5SvfJGArJvYQvj9qF9IUcx8_cb2WKEswp-heQutZKgEqhMkDqqmcRq21oIoHbZOkyezlqdsEXGIsDvPkmi7x3pm4bAQlCd8oSTr-8Hsem2of4_15L-CLhv-L5oRdgTlKSyvgmKxcAt6OzF6vsBv3jeN-g75Cd5zJpmijHvbXplL2P_yNTOPesO"/>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-low dark:bg-inverse-surface mt-xl">
+<div class="flex flex-col md:flex-row justify-between items-start px-lg py-xl max-w-container-max mx-auto w-full gap-lg">
+<div class="flex flex-col gap-md max-w-md">
+<div class="text-headline-md font-headline-md text-primary dark:text-primary-fixed">Masajid Work</div>
+<p class="text-on-surface-variant dark:text-outline-variant font-body-readable text-body-readable">
+                    © 2024 Masajid Work. Built on the principles of Amanah and Khidmah.
+                </p>
+</div>
+<div class="flex flex-wrap gap-xl">
+<div class="flex flex-col gap-sm">
+<p class="font-bold text-primary dark:text-primary-fixed-dim">Platform</p>
+<a class="text-on-surface-variant dark:text-outline-variant hover:underline decoration-primary" href="#">Privacy Policy</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:underline decoration-primary" href="#">Terms of Service</a>
+</div>
+<div class="flex flex-col gap-sm">
+<p class="font-bold text-primary dark:text-primary-fixed-dim">Community</p>
+<a class="text-on-surface-variant dark:text-outline-variant hover:underline decoration-primary" href="#">Contact Us</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:underline decoration-primary" href="#">Support</a>
+</div>
+</div>
+</div>
+</footer>
+<script>
+        // Micro-interaction for the radius slider
+        const radiusRange = document.getElementById('radiusRange');
+        const radiusVal = document.getElementById('radiusVal');
+        
+        if(radiusRange && radiusVal) {
+            radiusRange.addEventListener('input', (e) => {
+                radiusVal.textContent = e.target.value;
+            });
+        }
+
+        // Form submission simple feedback
+        const form = document.querySelector('form');
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const btn = form.querySelector('button[type="submit"]');
+            btn.textContent = "Creating Account...";
+            btn.style.opacity = "0.7";
+            setTimeout(() => {
+                btn.textContent = "Welcome Aboard!";
+                btn.classList.replace('bg-primary', 'bg-tertiary');
+            }, 1500);
+        });
+    </script>
+</body></html>

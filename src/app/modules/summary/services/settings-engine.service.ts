@@ -278,13 +278,16 @@ export class SettingsEngineService {
 
     private normalizeResolvedLanguage(raw: string | null): 'en' | 'ar' {
         if (raw == null || raw === '') {
-            return 'en';
+            return 'ar';
         }
         const s = String(raw).trim().toLowerCase();
+        if (s === 'en' || s === 'english') {
+            return 'en';
+        }
         if (s === 'ar' || s === 'arabic' || s === 'العربية') {
             return 'ar';
         }
-        return 'en';
+        return 'ar';
     }
 
     private normalizeResolvedTheme(raw: string | null): 'light' | 'dark' {

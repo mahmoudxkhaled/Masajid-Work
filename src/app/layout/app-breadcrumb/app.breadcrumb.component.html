@@ -1,7 +1,7 @@
 <div class="layout-breadcrumb-container">
     <nav class="layout-breadcrumb">
         <ol>
-            <li><a routerLink="/"><i class="pi pi-home"></i></a> </li>
+            <li><a routerLink="/dashboard"><i class="pi pi-home"></i></a> </li>
             <ng-template ngFor let-item let-last="last" let-index="index" [ngForOf]="breadcrumbs$ | async">
                 <li><i class="pi pi-angle-right"></i></li>
                 <li>

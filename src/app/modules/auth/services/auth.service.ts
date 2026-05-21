@@ -8,6 +8,7 @@ import { IAccountStatusResponse } from 'src/app/core/models/account-status.model
 import { SettingsEngineService } from '../../summary/services/settings-engine.service';
 import { ProfileApiService } from 'src/app/modules/summary/services/profile-api.service';
 import { LayoutService } from 'src/app/layout/app-services/app.layout.service';
+import { resolvePostLoginUrl } from 'src/app/core/utils/post-login-navigation';
 
 @Injectable({
     providedIn: 'root',
@@ -63,7 +64,8 @@ export class AuthService {
                         ),
                         tap(() => {
                             this.notificationRefreshService.requestRefresh();
-                            this.router.navigate(['/']);
+                            const returnUrl = this.router.parseUrl(this.router.url).queryParams['returnUrl'];
+                            void this.router.navigateByUrl(resolvePostLoginUrl(returnUrl));
                         })
                     );
                 }
@@ -105,7 +107,8 @@ export class AuthService {
                         ),
                         tap(() => {
                             this.notificationRefreshService.requestRefresh();
-                            this.router.navigate(['/']);
+                            const returnUrl = this.router.parseUrl(this.router.url).queryParams['returnUrl'];
+                            void this.router.navigateByUrl(resolvePostLoginUrl(returnUrl));
                         })
                     );
                 }

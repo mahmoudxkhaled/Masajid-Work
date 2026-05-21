@@ -1,0 +1,42 @@
+:host {
+  display: block;
+}
+
+.trust-bar {
+  background-color: var(--dh-surface-container-low, #f8f2fa);
+  padding-block: 24px;
+}
+
+.trust-bar__inner {
+  max-width: var(--dh-container-max, 1280px);
+  margin-inline: auto;
+  padding-inline: var(--dh-gutter, 24px);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+@media (min-width: 768px) {
+  .trust-bar__inner {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.trust-bar__item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--dh-on-surface-variant, #494551);
+}
+
+.trust-bar__icon {
+  color: var(--dh-primary, #4f378a);
+  flex-shrink: 0;
+}
+
+.trust-bar__label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+}

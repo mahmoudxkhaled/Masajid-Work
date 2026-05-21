@@ -1,0 +1,69 @@
+.dh main section[id],
+.dh main section#trust-bar,
+.dh footer#footer {
+  scroll-margin-top: 88px;
+}
+
+.dh {
+  --dh-primary: #4f378a;
+  --dh-on-primary: #ffffff;
+  --dh-primary-container: #6750a4;
+  --dh-on-surface: #1d1b20;
+  --dh-on-surface-variant: #494551;
+  --dh-surface: #fdf7ff;
+  --dh-surface-container: #f2ecf4;
+  --dh-surface-container-low: #f8f2fa;
+  --dh-surface-container-lowest: #ffffff;
+  --dh-surface-container-high: #ece6ee;
+  --dh-surface-container-highest: #e6e0e9;
+  --dh-outline-variant: #cbc4d2;
+  --dh-tertiary: #765b00;
+  --dh-tertiary-container: #c9a74d;
+  --dh-on-tertiary-container: #503d00;
+  --dh-container-max: 1280px;
+  --dh-gutter: 24px;
+  --dh-section-y: clamp(3rem, 6vw, 5rem);
+  --dh-features-section-bg: rgb(236 230 238 / 0.3);
+  --dh-hero-glow: rgb(103 80 164 / 0.2);
+  --dh-hero-badge-border: rgb(79 55 138 / 0.1);
+  --dh-cta-panel-bg: #4f378a;
+  --dh-cta-panel-fg: #ffffff;
+  --dh-cta-solid-bg: #ffffff;
+  --dh-cta-solid-fg: #4f378a;
+  --dh-cta-shadow: rgb(79 55 138 / 0.35);
+  --dh-header-shadow: rgb(0 0 0 / 0.08);
+  --dh-dropdown-shadow: rgb(0 0 0 / 0.12);
+
+  min-height: 100vh;
+  background-color: var(--dh-surface);
+  color: var(--dh-on-surface);
+  font-family: 'IBM Plex Sans', system-ui, sans-serif;
+}
+
+.dh--dark {
+  --dh-primary: #cfbcff;
+  --dh-on-primary: #381e72;
+  --dh-primary-container: #5c4696;
+  --dh-on-surface: #e6e1e9;
+  --dh-on-surface-variant: #cac4d0;
+  --dh-surface: #131118;
+  --dh-surface-container: #2d2835;
+  --dh-surface-container-low: #1e1a24;
+  --dh-surface-container-lowest: #1a1620;
+  --dh-surface-container-high: #363040;
+  --dh-surface-container-highest: #403a48;
+  --dh-outline-variant: #49454f;
+  --dh-tertiary: #e9c66c;
+  --dh-tertiary-container: #c9a74d;
+  --dh-on-tertiary-container: #2a1f00;
+  --dh-features-section-bg: rgb(255 255 255 / 0.04);
+  --dh-hero-glow: rgb(208 188 255 / 0.14);
+  --dh-hero-badge-border: rgb(208 188 255 / 0.22);
+  --dh-cta-panel-bg: #4f378a;
+  --dh-cta-panel-fg: #ffffff;
+  --dh-cta-solid-bg: #eaddff;
+  --dh-cta-solid-fg: #381e72;
+  --dh-cta-shadow: rgb(0 0 0 / 0.45);
+  --dh-header-shadow: rgb(0 0 0 / 0.35);
+  --dh-dropdown-shadow: rgb(0 0 0 / 0.45);
+}

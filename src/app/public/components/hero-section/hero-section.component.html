@@ -1,0 +1,40 @@
+﻿<section id="hero" class="hero" aria-labelledby="hero-heading" [publicScrollReveal]="'up'">
+  <div class="hero__grid">
+    <div class="hero__content">
+      <h1 id="hero-heading" class="hero__title">
+        {{ 'public.landing.hero.titlePrefix' | translate }}
+        <span class="hero__title-accent">{{ 'public.landing.hero.titleAccent' | translate }}</span>
+      </h1>
+      <p class="hero__lead">{{ 'public.landing.hero.lead' | translate }}</p>
+      <div class="hero__actions">
+        <a class="btn btn--primary" [routerLink]="registerDonorPath">{{ 'public.landing.hero.registerDonor' | translate }}</a>
+        <a class="btn btn--outline" [routerLink]="registerFacilityPath">{{ 'public.landing.hero.registerFacility' | translate }}</a>
+        <a class="hero__text-link" href="#how-it-works">
+          {{ 'public.landing.hero.howItWorksLink' | translate }}
+          <span class="material-symbols-outlined hero__arrow" aria-hidden="true">arrow_forward</span>
+        </a>
+      </div>
+    </div>
+    <div class="hero__visual">
+      <div class="hero__glow" aria-hidden="true"></div>
+      <div class="hero__figure">
+        <img
+          [src]="heroImage"
+          width="800"
+          height="800"
+          [attr.alt]="'public.landing.hero.imageAlt' | translate"
+          class="hero__img"
+          loading="eager"
+          decoding="async"
+        />
+        <aside class="hero__badge" [attr.aria-label]="'public.landing.hero.badgeAria' | translate">
+          <span class="material-symbols-outlined hero__badge-icon" aria-hidden="true">verified</span>
+          <div>
+            <p class="hero__badge-title">{{ 'public.landing.hero.badgeTitle' | translate }}</p>
+            <p class="hero__badge-sub">{{ 'public.landing.hero.badgeSub' | translate }}</p>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </div>
+</section>

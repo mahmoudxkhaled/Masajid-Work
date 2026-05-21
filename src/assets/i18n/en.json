@@ -1,6 +1,6 @@
 {
     "branding": {
-        "platformName": "Donations Hub",
+        "platformName": "Masajid Work",
         "technicalName": "DAP",
         "displayName": "Masajid Work",
         "donationsPlatform": "Donations Platform"
@@ -1031,7 +1031,25 @@
     "profile": {
         "title": "Profile",
         "description": "Manage your profile information",
-        "overview": "Profile Overview",
+        "overview": {
+            "loading": "Loading...",
+            "profilePictureAlt": "Profile picture",
+            "cropAlt": "Crop",
+            "fullName": "Full Name",
+            "contactInformation": "Contact Information",
+            "address": "Address",
+            "noContactInfoAvailable": "No contact information available",
+            "noAccounts": "No accounts available",
+            "editAccountTitle": "Edit account title",
+            "viewDetails": "View details",
+            "accountDetailsDialogTitle": "Account details",
+            "roleName": "Role",
+            "editAccountTitleDialogTitle": "Edit Account Title",
+            "editAccountTitlePlaceholder": "Enter account title",
+            "regionalFieldHint": "You are editing the regional (language-specific) title.",
+            "accountTitleUpdated": "Account title updated successfully.",
+            "socialMedia": "Social Media"
+        },
         "personalInfo": "Personal Information",
         "fields": {
             "firstName": "First Name",
@@ -1174,25 +1192,6 @@
             "enterValue": "Enter value",
             "savePreferences": "Save Preferences"
         },
-        "overview": {
-            "loading": "Loading...",
-            "profilePictureAlt": "Profile picture",
-            "cropAlt": "Crop",
-            "fullName": "Full Name",
-            "contactInformation": "Contact Information",
-            "address": "Address",
-            "noContactInfoAvailable": "No contact information available",
-            "noAccounts": "No accounts available",
-            "editAccountTitle": "Edit account title",
-            "viewDetails": "View details",
-            "accountDetailsDialogTitle": "Account details",
-            "roleName": "Role",
-            "editAccountTitleDialogTitle": "Edit Account Title",
-            "editAccountTitlePlaceholder": "Enter account title",
-            "regionalFieldHint": "You are editing the regional (language-specific) title.",
-            "accountTitleUpdated": "Account title updated successfully.",
-            "socialMedia": "Social Media"
-        },
         "preferences": {
             "title": "Preferences",
             "description": "Customize your layout and theme settings."
@@ -1200,7 +1199,7 @@
     },
     "layout": {
         "app-breadcrumb": {
-            "dashboard": "Donations Hub",
+            "dashboard": "Masajid Work",
             "entitiesList": "All Facilities",
             "usersList": "Users List",
             "newUser": "New User",
@@ -1648,7 +1647,6 @@
             "messageII": "please check your inbox"
         }
     },
-
     "shared": {
         "templateVariables": {
             "title": "Template variables",
@@ -2464,7 +2462,7 @@
             "saveChanges": "Save Changes"
         },
         "details": {
-            "title": "Role Details",
+            "title": "Title",
             "backToList": "Back to List",
             "tabs": {
                 "basicInformation": "Basic Information",
@@ -2474,7 +2472,6 @@
             "profile": "Role Profile",
             "editRole": "Edit Role",
             "roleId": "Role ID",
-            "title": "Title",
             "entity": "Facility",
             "loading": "Loading...",
             "status": "Status",
@@ -3375,7 +3372,6 @@
             }
         }
     },
-
     "notfound": {
         "ariaLabel": "Page not found",
         "logoAlt": "PROMATECH logo",
@@ -3391,5 +3387,144 @@
         "goToDashboard": "Go to Dashboard",
         "goToHomepage": "Go to Homepage",
         "goHome": "Go to home"
+    },
+    "public": {
+        "landing": {
+            "header": {
+                "navAria": "Primary navigation",
+                "brand": "Masajid Work",
+                "home": "Home",
+                "howItWorks": "How It Works",
+                "about": "About",
+                "trust": "Trust & Validation",
+                "languageGroup": "Language",
+                "languageMenu": "Choose language",
+                "langEn": "English",
+                "langAr": "Arabic",
+                "register": "Register",
+                "donorRegistration": "Donor Registration",
+                "facilityRegistration": "Facility Registration",
+                "vendorPortal": "Vendor Portal",
+                "themeToLight": "Switch to light theme",
+                "themeToDark": "Switch to dark theme"
+            },
+            "hero": {
+                "titlePrefix": "Connecting Mosques with Donors for",
+                "titleAccent": "Verified Physical Donations",
+                "lead": "Masajid Work helps verified facilities publish real physical needs, while donors can review, accept, fulfill, and validate donations without any cash transaction through the platform.",
+                "registerDonor": "Register as Donor",
+                "registerFacility": "Register Facility",
+                "howItWorksLink": "How It Works",
+                "imageAlt": "Serene mosque interior with prayer carpets and soft morning light",
+                "badgeAria": "Verified needs highlight",
+                "badgeTitle": "Verified Needs",
+                "badgeSub": "Carpets, Lighting, Fans"
+            },
+            "trustBar": {
+                "noCash": "No cash handled by platform",
+                "verifiedReps": "Verified facility representatives",
+                "proof": "Fulfillment proof required",
+                "community": "Community validation after completion"
+            },
+            "stats": {
+                "sectionAria": "Platform statistics",
+                "facilities": "Registered Facilities",
+                "donors": "Active Donors",
+                "requests": "Donation Requests",
+                "fulfilled": "Fulfilled Donations"
+            },
+            "features": {
+                "heading": "Built for transparent physical donations",
+                "verifiedTitle": "Verified Facilities",
+                "verifiedDesc": "Rigorous vetting process for all masjid representatives and facility locations.",
+                "physicalTitle": "Physical Donations Only",
+                "physicalDesc": "Focusing strictly on tangible assets to ensure 100% of donor intent reaches the site.",
+                "proofTitle": "Fulfillment Proof",
+                "proofDesc": "Donors and vendors upload visual confirmation upon delivery and installation.",
+                "validationTitle": "Later Validation",
+                "validationDesc": "The local community confirms the presence and utility of the donated item."
+            },
+            "process": {
+                "heading": "How Masajid Work Works",
+                "s1Title": "Request submission",
+                "s1Sub": "Masjid lists needed item",
+                "s2Title": "Admin review",
+                "s2Sub": "Need verification check",
+                "s3Title": "Donor browse",
+                "s3Sub": "Explore local needs",
+                "s4Title": "Donor acceptance",
+                "s4Sub": "Commitment to fulfill",
+                "s5Title": "Fulfillment & Proof",
+                "s5Sub": "Item delivery & photo",
+                "s6Title": "Facility confirmation",
+                "s6Sub": "Representative receipt",
+                "s7Title": "Community validation",
+                "s7Sub": "Final trust seal"
+            },
+            "roles": {
+                "heading": "Who can use Masajid Work?",
+                "facilityTitle": "Facility Representative",
+                "facilityDesc": "Register your masjid to post verified physical needs and infrastructure requirements.",
+                "facilityBtn": "Register Facility",
+                "donorTitle": "Donor",
+                "donorDesc": "Find and fulfill specific physical needs directly for communities in your area.",
+                "donorBtn": "Register as Donor",
+                "vendorTitle": "Vendor",
+                "vendorDesc": "Partner with donors to supply and install specialized equipment for masajid.",
+                "vendorBtn": "Join as Vendor",
+                "charityTitle": "Charity Rep",
+                "charityDesc": "Monitor and coordinate large-scale physical donation campaigns across multiple facilities.",
+                "charityBtn": "Join Hub"
+            },
+            "donate": {
+                "heading": "Items You Can Donate",
+                "carpetsLabel": "Carpets",
+                "carpetsAlt": "Premium prayer carpets",
+                "fansLabel": "Fans & AC",
+                "fansAlt": "Ceiling fans and air conditioning",
+                "soundLabel": "Sound Systems",
+                "soundAlt": "Mosque sound system equipment",
+                "furnitureLabel": "Furniture",
+                "furnitureAlt": "Wooden furniture for masjid",
+                "cleaningLabel": "Cleaning Supplies",
+                "cleaningAlt": "Cleaning supplies for masjid",
+                "maintenanceLabel": "Maintenance",
+                "maintenanceAlt": "Maintenance work and tools",
+                "paintingLabel": "Painting",
+                "paintingAlt": "Interior painting renovation",
+                "lightingLabel": "Lighting",
+                "lightingAlt": "Modern lighting fixtures"
+            },
+            "validation": {
+                "heading": "Designed to reduce fraud and increase confidence",
+                "identity": "Vetted Identity",
+                "visualProof": "Visual Proof",
+                "localValidation": "Local Validation",
+                "copy": "Our verification loop ensures that every donation is not only delivered but also properly utilized by the community it was intended for."
+            },
+            "cta": {
+                "title": "Start supporting verified physical needs today",
+                "lead": "Join a network built on transparency, Amanah, and communal Khidmah.",
+                "donorBtn": "Donor Registration",
+                "facilityBtn": "Facility Registration",
+                "login": "Login"
+            },
+            "footer": {
+                "brand": "Masajid Work",
+                "mission": "Building trust and efficiency in community-driven facility management through verified physical donations.",
+                "quickHeading": "Quick Links",
+                "quickNavAria": "Quick links",
+                "legalHeading": "Contact & Legal",
+                "legalNavAria": "Legal and contact",
+                "aboutUs": "About Us",
+                "howItWorks": "How it Works",
+                "trust": "Trust & Validation",
+                "facilityReg": "Facility Registration",
+                "vendorPortal": "Vendor Portal",
+                "privacy": "Privacy Policy",
+                "emailDisplay": "support@masajidwork.org",
+                "copy": "© 2024 Masajid Work. Built on principles of Amanah and Khidmah."
+            }
+        }
     }
 }

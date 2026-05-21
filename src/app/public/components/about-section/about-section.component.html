@@ -1,0 +1,13 @@
+﻿<section id="about" class="roles" aria-labelledby="roles-heading" [publicScrollReveal]="'down'">
+  <div class="roles__inner">
+    <h2 id="roles-heading" class="roles__title">{{ 'public.landing.roles.heading' | translate }}</h2>
+    <div class="roles__grid">
+      <article class="roles__card" *ngFor="let role of roles">
+        <span class="material-symbols-outlined roles__icon" aria-hidden="true">{{ role.icon }}</span>
+        <h3 class="roles__card-title">{{ role.titleKey | translate }}</h3>
+        <p class="roles__text">{{ role.descriptionKey | translate }}</p>
+        <a class="roles__btn" [routerLink]="role.registerPath">{{ role.actionLabelKey | translate }}</a>
+      </article>
+    </div>
+  </div>
+</section>

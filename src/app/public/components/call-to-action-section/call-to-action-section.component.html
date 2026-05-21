@@ -1,0 +1,17 @@
+<section id="cta" class="cta" aria-labelledby="cta-heading" [publicScrollReveal]="'up'">
+  <div class="cta__inner">
+    <div class="cta__panel">
+      <div class="cta__glow cta__glow--tl" aria-hidden="true"></div>
+      <div class="cta__glow cta__glow--br" aria-hidden="true"></div>
+      <h2 id="cta-heading" class="cta__title">{{ 'public.landing.cta.title' | translate }}</h2>
+      <p class="cta__lead">{{ 'public.landing.cta.lead' | translate }}</p>
+      <div class="cta__actions">
+        <a class="cta__btn cta__btn--solid" [routerLink]="registerDonorPath">{{ 'public.landing.cta.donorBtn' | translate }}</a>
+        <a class="cta__btn cta__btn--ghost" [routerLink]="registerFacilityPath">
+          {{ 'public.landing.cta.facilityBtn' | translate }}
+        </a>
+        <a class="cta__btn cta__btn--link" [routerLink]="loginPath">{{ 'public.landing.cta.login' | translate }}</a>
+      </div>
+    </div>
+  </div>
+</section>

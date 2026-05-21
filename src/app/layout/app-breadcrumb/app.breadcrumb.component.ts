@@ -80,7 +80,7 @@ export class AppBreadcrumbComponent {
             event.stopPropagation();
 
             // Navigate to dashboard (root path) with module URL as query parameter
-            this.router.navigate(['/'], {
+            this.router.navigate(['/dashboard'], {
                 queryParams: { moduleUrl: breadcrumbUrl }
             });
         }

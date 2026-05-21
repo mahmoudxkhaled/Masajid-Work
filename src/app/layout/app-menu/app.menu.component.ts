@@ -67,7 +67,7 @@ export class AppMenuComponent implements OnInit {
                 label: this.translate.getInstant('layout.menu.home'),
                 hasPermession: true,
                 icon: 'fa fa-home',
-                routerLink: ['/']
+                routerLink: ['/dashboard']
             },
             ...functionItems
         ];

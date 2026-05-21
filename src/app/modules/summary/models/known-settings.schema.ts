@@ -18,7 +18,7 @@ export const KNOWN_SETTINGS_SCHEMA: Record<string, KnownSettingSchemaEntry> = {
     language: {
         type: 'select',
         labelKey: 'settings.sharedPanel.keys.language',
-        defaultValue: 'en',
+        defaultValue: 'ar',
         options: [
             { labelKey: 'settings.sharedPanel.options.language.en', value: 'en' },
             { labelKey: 'settings.sharedPanel.options.language.ar', value: 'ar' },

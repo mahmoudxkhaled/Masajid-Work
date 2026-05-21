@@ -1,0 +1,112 @@
+.cta {
+  max-width: var(--dh-container-max, 1280px);
+  margin-inline: auto;
+  padding-inline: var(--dh-gutter, 24px);
+  padding-block: var(--dh-section-y, 4rem);
+}
+
+.cta__inner {
+  position: relative;
+}
+
+.cta__panel {
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+  padding: clamp(2rem, 6vw, 5rem);
+  text-align: center;
+  background: var(--dh-cta-panel-bg, #4f378a);
+  color: var(--dh-cta-panel-fg, #fff);
+  box-shadow: 0 24px 48px var(--dh-cta-shadow, rgb(79 55 138 / 0.35));
+}
+
+.cta__glow {
+  position: absolute;
+  width: 16rem;
+  height: 16rem;
+  border-radius: 50%;
+  filter: blur(48px);
+  pointer-events: none;
+}
+
+.cta__glow--tl {
+  inset-block-start: -6rem;
+  inset-inline-start: -6rem;
+  background: rgb(224 210 255 / 0.2);
+}
+
+.cta__glow--br {
+  inset-block-end: -6rem;
+  inset-inline-end: -6rem;
+  background: rgb(201 167 77 / 0.2);
+}
+
+.cta__title {
+  position: relative;
+  margin: 0 0 16px;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.cta__lead {
+  position: relative;
+  margin: 0 auto 32px;
+  max-width: 36rem;
+  font-size: 1.125rem;
+  line-height: 1.6;
+  opacity: 0.9;
+}
+
+.cta__actions {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+@media (min-width: 640px) {
+  .cta__actions {
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+}
+
+.cta__btn {
+  border-radius: 12px;
+  padding: 16px 32px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+
+.cta__btn:active {
+  transform: scale(0.95);
+}
+
+.cta__btn--solid {
+  border: none;
+  background: var(--dh-cta-solid-bg, #fff);
+  color: var(--dh-cta-solid-fg, #4f378a);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.15);
+}
+
+.cta__btn--ghost {
+  border: 2px solid var(--dh-cta-panel-fg, #fff);
+  background: transparent;
+  color: var(--dh-cta-panel-fg, #fff);
+}
+
+.cta__btn--link {
+  border: none;
+  background: none;
+  color: rgb(255 255 255 / 0.85);
+  padding-inline: 32px;
+}
+
+.cta__btn--link:hover {
+  color: var(--dh-cta-panel-fg, #fff);
+}

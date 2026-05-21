@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Charity Center Registration | Masajid Work</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=Readex+Pro:wght@400;500;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .step-active {
+            color: #4f378a;
+            border-bottom: 2px solid #4f378a;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary": "#765b00",
+                      "on-background": "#1d1b20",
+                      "secondary-fixed": "#e9ddff",
+                      "on-secondary": "#ffffff",
+                      "surface-dim": "#ded8e0",
+                      "on-secondary-fixed-variant": "#4b4263",
+                      "on-primary-container": "#e0d2ff",
+                      "error-container": "#ffdad6",
+                      "secondary-fixed-dim": "#cdc0e9",
+                      "on-surface": "#1d1b20",
+                      "secondary": "#63597c",
+                      "primary-fixed": "#e9ddff",
+                      "inverse-surface": "#322f35",
+                      "surface-bright": "#fdf7ff",
+                      "inverse-on-surface": "#f5eff7",
+                      "surface-container-highest": "#e6e0e9",
+                      "surface-container": "#f2ecf4",
+                      "on-tertiary-fixed": "#241a00",
+                      "on-surface-variant": "#494551",
+                      "on-error-container": "#93000a",
+                      "inverse-primary": "#cfbcff",
+                      "error": "#ba1a1a",
+                      "on-tertiary-container": "#503d00",
+                      "on-secondary-fixed": "#1f1635",
+                      "tertiary-fixed": "#ffdf93",
+                      "surface-container-low": "#f8f2fa",
+                      "surface": "#fdf7ff",
+                      "outline-variant": "#cbc4d2",
+                      "tertiary-fixed-dim": "#e7c365",
+                      "on-error": "#ffffff",
+                      "primary": "#4f378a",
+                      "on-tertiary-fixed-variant": "#594400",
+                      "on-tertiary": "#ffffff",
+                      "on-secondary-container": "#645a7d",
+                      "background": "#fdf7ff",
+                      "outline": "#7a7582",
+                      "surface-variant": "#e6e0e9",
+                      "secondary-container": "#e1d4fd",
+                      "surface-tint": "#6750a4",
+                      "on-primary": "#ffffff",
+                      "on-primary-fixed-variant": "#4f378a",
+                      "on-primary-fixed": "#22005d",
+                      "surface-container-lowest": "#ffffff",
+                      "primary-fixed-dim": "#cfbcff",
+                      "primary-container": "#6750a4",
+                      "tertiary-container": "#c9a74d",
+                      "surface-container-high": "#ece6ee"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "md": "16px",
+                      "gutter": "24px",
+                      "sm": "8px",
+                      "unit": "4px",
+                      "xl": "48px",
+                      "lg": "24px",
+                      "container-max": "1280px",
+                      "xs": "4px"
+              },
+              "fontFamily": {
+                      "arabic-body": ["Readex Pro"],
+                      "label-sm": ["IBM Plex Sans"],
+                      "body-readable": ["IBM Plex Sans"],
+                      "display-lg": ["IBM Plex Sans"],
+                      "headline-md": ["IBM Plex Sans"]
+              },
+              "fontSize": {
+                      "arabic-body": ["18px", {"lineHeight": "1.8", "fontWeight": "400"}],
+                      "label-sm": ["14px", {"lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                      "body-readable": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "display-lg": ["40px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                      "headline-md": ["24px", {"lineHeight": "1.4", "fontWeight": "600"}]
+              }
+            },
+          },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-readable">
+<!-- TopNavBar -->
+<header class="bg-surface dark:bg-on-background shadow-sm docked full-width top-0 sticky z-50">
+<div class="flex justify-between items-center px-lg py-md max-w-container-max mx-auto w-full">
+<div class="text-headline-md font-headline-md text-primary dark:text-primary-fixed font-extrabold tracking-tight">
+                Masajid Work
+            </div>
+<nav class="hidden md:flex gap-lg items-center">
+<a class="font-body-readable text-body-readable text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">Home</a>
+<a class="font-body-readable text-body-readable text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">How It Works</a>
+<a class="font-body-readable text-body-readable text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">About</a>
+<a class="font-body-readable text-body-readable text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">Trust &amp; Validation</a>
+</nav>
+<div class="flex items-center gap-md">
+<button class="text-on-surface-variant font-medium hover:text-primary transition-colors">Language</button>
+<button class="bg-primary text-on-primary px-lg py-sm rounded-lg font-bold shadow-md hover:opacity-90 transition-all">Register</button>
+</div>
+</div>
+</header>
+<main class="min-h-screen pb-xl">
+<!-- Hero Section -->
+<section class="relative h-[300px] flex items-center justify-center overflow-hidden">
+<div class="absolute inset-0 z-0">
+<img class="w-full h-full object-cover brightness-50" data-alt="A serene and modern mosque interior with high ceilings and geometric Islamic architecture, bathed in soft morning sunlight streaming through stained glass. The atmosphere is peaceful and evokes a sense of sacred community service and spiritual transparency. The color palette is dominated by soft whites and warm wood tones, aligning with the brand's Amanah and Khidmah principles." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBdkTvL5TAs3ueYlhRO6t1ZELVV2Qn-W2DhZrQWc_wjvQ3564lJTr-1_bWZLGtDe4zSqvjCF_UoZm7V-f-CrpSmtTN5UUzyyfPxb1TelVbRWj4_5DSf1LLP1hr-ruFnKiRQ9q-pD0wVnFkNYwDb4q6ehd9JPk8J_5kOVefcaMHKcC-BA3fCSoPdUq6NbCLQxMKrFpJBkrm5hA6CFUbyQTPM6aHJs3ZCx_v7_kZBi3qzMMM7HMqbqNpNQriSmZkVdLcNcsdddG2I-qrK"/>
+</div>
+<div class="relative z-10 text-center px-gutter">
+<h1 class="font-display-lg text-display-lg text-white mb-sm">Charity Center Registration</h1>
+<p class="text-white opacity-90 max-w-2xl mx-auto">Join our ecosystem of trust and service. Complete the registration to begin managing your community impacts with Amanah.</p>
+</div>
+</section>
+<!-- Registration Form Container -->
+<div class="max-w-4xl mx-auto -mt-16 relative z-20 px-gutter">
+<form class="space-y-lg" id="registrationForm">
+<!-- Section A: Center Info -->
+<div class="glass-card rounded-xl p-xl shadow-lg border border-outline-variant">
+<div class="flex items-center gap-md mb-lg">
+<span class="material-symbols-outlined text-primary text-3xl">account_balance</span>
+<h2 class="font-headline-md text-headline-md text-on-surface">Center Information</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
+<div class="space-y-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Charity Center Name</label>
+<input class="w-full rounded-lg border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary bg-surface p-md transition-all" placeholder="e.g., Al-Noor Community Center" type="text"/>
+</div>
+<div class="space-y-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Organization Type</label>
+<select class="w-full rounded-lg border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary bg-surface p-md transition-all">
+<option>Community Center</option>
+<option>Masjid Trust</option>
+<option>Relief Agency</option>
+<option>Educational Foundation</option>
+</select>
+</div>
+<div class="space-y-xs md:col-span-2">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Physical Location</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-outline">location_on</span>
+<input class="w-full rounded-lg border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary bg-surface p-md pl-xl transition-all" placeholder="Full Address" type="text"/>
+</div>
+</div>
+<div class="space-y-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Primary Contact Email</label>
+<input class="w-full rounded-lg border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary bg-surface p-md transition-all" placeholder="contact@center.org" type="email"/>
+</div>
+<div class="space-y-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Phone Number</label>
+<input class="w-full rounded-lg border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary bg-surface p-md transition-all" placeholder="+1 (555) 000-0000" type="tel"/>
+</div>
+<div class="space-y-xs md:col-span-2">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Description of Mission</label>
+<textarea class="w-full rounded-lg border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary bg-surface p-md transition-all" placeholder="Briefly describe your center's goals and community focus..." rows="4"></textarea>
+</div>
+</div>
+</div>
+<!-- Section B: Representative Info -->
+<div class="glass-card rounded-xl p-xl shadow-lg border border-outline-variant">
+<div class="flex items-center gap-md mb-lg">
+<span class="material-symbols-outlined text-primary text-3xl">badge</span>
+<h2 class="font-headline-md text-headline-md text-on-surface">Representative Info</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
+<div class="space-y-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Full Name</label>
+<input class="w-full rounded-lg border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary bg-surface p-md transition-all" placeholder="John Doe" type="text"/>
+</div>
+<div class="space-y-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Position/Role</label>
+<input class="w-full rounded-lg border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary bg-surface p-md transition-all" placeholder="Executive Director" type="text"/>
+</div>
+<div class="space-y-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Official Email</label>
+<input class="w-full rounded-lg border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary bg-surface p-md transition-all" placeholder="j.doe@center.org" type="email"/>
+</div>
+<div class="space-y-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Mobile Phone</label>
+<input class="w-full rounded-lg border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary bg-surface p-md transition-all" placeholder="+1 (555) 000-0000" type="tel"/>
+</div>
+<div class="space-y-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Account Password</label>
+<input class="w-full rounded-lg border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary bg-surface p-md transition-all" placeholder="••••••••" type="password"/>
+</div>
+<div class="space-y-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Confirm Password</label>
+<input class="w-full rounded-lg border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary bg-surface p-md transition-all" placeholder="••••••••" type="password"/>
+</div>
+</div>
+</div>
+<!-- Section C: Verification -->
+<div class="glass-card rounded-xl p-xl shadow-lg border border-outline-variant">
+<div class="flex items-center gap-md mb-lg">
+<span class="material-symbols-outlined text-primary text-3xl">verified_user</span>
+<h2 class="font-headline-md text-headline-md text-on-surface">Verification Documents</h2>
+</div>
+<p class="text-on-surface-variant mb-lg italic">To maintain the sanctity of Amanah, we require validation of your organization's legal status.</p>
+<div class="space-y-md">
+<!-- File Upload 1 -->
+<div class="border-2 border-dashed border-outline-variant rounded-xl p-lg flex flex-col items-center justify-center hover:border-primary transition-colors bg-surface-container-low cursor-pointer">
+<span class="material-symbols-outlined text-outline text-4xl mb-sm">cloud_upload</span>
+<span class="font-bold text-on-surface">Upload Representative ID</span>
+<p class="text-sm text-on-surface-variant">Passport or National ID (PDF, JPG, max 5MB)</p>
+<input class="hidden" type="file"/>
+</div>
+<!-- File Upload 2 -->
+<div class="border-2 border-dashed border-outline-variant rounded-xl p-lg flex flex-col items-center justify-center hover:border-primary transition-colors bg-surface-container-low cursor-pointer">
+<span class="material-symbols-outlined text-outline text-4xl mb-sm">description</span>
+<span class="font-bold text-on-surface">Authorization Document</span>
+<p class="text-sm text-on-surface-variant">Official letter from the board authorizing registration</p>
+<input class="hidden" type="file"/>
+</div>
+<!-- File Upload 3 -->
+<div class="border-2 border-dashed border-outline-variant rounded-xl p-lg flex flex-col items-center justify-center hover:border-primary transition-colors bg-surface-container-low cursor-pointer">
+<span class="material-symbols-outlined text-outline text-4xl mb-sm">article</span>
+<span class="font-bold text-on-surface">Registration Certificate</span>
+<p class="text-sm text-on-surface-variant">Valid non-profit or charity registration license</p>
+<input class="hidden" type="file"/>
+</div>
+</div>
+</div>
+<!-- Section D: Confirmation -->
+<div class="glass-card rounded-xl p-xl shadow-lg border border-outline-variant">
+<div class="flex items-center gap-md mb-lg">
+<span class="material-symbols-outlined text-primary text-3xl">fact_check</span>
+<h2 class="font-headline-md text-headline-md text-on-surface">Final Confirmation</h2>
+</div>
+<div class="space-y-md">
+<label class="flex items-start gap-md cursor-pointer group">
+<div class="mt-1">
+<input class="rounded border-outline-variant text-primary focus:ring-primary w-5 h-5" type="checkbox"/>
+</div>
+<span class="text-on-surface-variant text-body-readable group-hover:text-on-surface transition-colors">
+                                I hereby authorize Masajid Work to verify the provided documents and contact the organization's board for confirmation of my authority.
+                            </span>
+</label>
+<label class="flex items-start gap-md cursor-pointer group">
+<div class="mt-1">
+<input class="rounded border-outline-variant text-primary focus:ring-primary w-5 h-5" type="checkbox"/>
+</div>
+<span class="text-on-surface-variant text-body-readable group-hover:text-on-surface transition-colors">
+                                I confirm that our organization adheres to a strict "no-cash transparency" policy for all digital donations channeled through this platform.
+                            </span>
+</label>
+</div>
+<div class="mt-xl">
+<button class="w-full bg-primary text-on-primary py-lg rounded-xl font-headline-md text-headline-md shadow-lg hover:scale-[1.01] active:scale-[0.99] transition-all flex items-center justify-center gap-md" type="submit">
+                            Submit Charity Center Registration
+                            <span class="material-symbols-outlined">send</span>
+</button>
+</div>
+</div>
+</form>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-low dark:bg-inverse-surface full-width bottom mt-xl">
+<div class="flex flex-col md:flex-row justify-between items-start px-lg py-xl max-w-container-max mx-auto w-full gap-lg">
+<div class="space-y-md">
+<div class="text-headline-md font-headline-md text-primary dark:text-primary-fixed font-bold">Masajid Work</div>
+<p class="font-body-readable text-body-readable text-on-surface-variant dark:text-outline-variant max-w-sm">
+                    © 2024 Masajid Work. Built on the principles of Amanah and Khidmah.
+                </p>
+</div>
+<div class="flex flex-wrap gap-xl">
+<div class="flex flex-col gap-sm">
+<span class="font-bold text-on-surface">Legal</span>
+<a class="font-body-readable text-body-readable text-on-surface-variant dark:text-outline-variant hover:underline decoration-primary dark:decoration-primary-fixed transition-opacity duration-200" href="#">Privacy Policy</a>
+<a class="font-body-readable text-body-readable text-on-surface-variant dark:text-outline-variant hover:underline decoration-primary dark:decoration-primary-fixed transition-opacity duration-200" href="#">Terms of Service</a>
+</div>
+<div class="flex flex-col gap-sm">
+<span class="font-bold text-on-surface">Support</span>
+<a class="font-body-readable text-body-readable text-on-surface-variant dark:text-outline-variant hover:underline decoration-primary dark:decoration-primary-fixed transition-opacity duration-200" href="#">Contact Us</a>
+<a class="font-body-readable text-body-readable text-on-surface-variant dark:text-outline-variant hover:underline decoration-primary dark:decoration-primary-fixed transition-opacity duration-200" href="#">Support Center</a>
+</div>
+</div>
+</div>
+</footer>
+<script>
+        // Micro-interaction for form submission
+        document.getElementById('registrationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span> Processing Registration...';
+            btn.classList.add('opacity-80', 'cursor-not-allowed');
+            
+            setTimeout(() => {
+                btn.innerHTML = '<span class="material-symbols-outlined">check_circle</span> Registration Submitted Successfully';
+                btn.classList.remove('bg-primary');
+                btn.classList.add('bg-green-600');
+                
+                // Show success toast logic could go here
+                alert('Success! Your charity center registration has been submitted for verification. You will receive an email shortly.');
+            }, 2000);
+        });
+
+        // Simple interactive feedback for file uploads
+        document.querySelectorAll('input[type="file"]').forEach(input => {
+            const parent = input.closest('div');
+            parent.addEventListener('click', () => input.click());
+            
+            input.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    const fileName = e.target.files[0].name;
+                    const textSpan = parent.querySelector('.text-on-surface');
+                    const iconSpan = parent.querySelector('.material-symbols-outlined');
+                    
+                    textSpan.innerText = 'Selected: ' + fileName;
+                    iconSpan.innerText = 'check_circle';
+                    iconSpan.classList.add('text-green-600');
+                    parent.classList.add('border-green-600', 'bg-green-50');
+                }
+            });
+        });
+    </script>
+</body></html>
