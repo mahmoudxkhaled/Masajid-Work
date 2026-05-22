@@ -2,23 +2,25 @@
 
 **Live URL:** https://mahmoudxkhaled.github.io/Masajid-Work/
 
-## One-time setup (required)
+## Deploy from a branch (recommended for this repo)
+
+This project is an **Angular** app. You must **not** publish the `main` branch root — GitHub will run **Jekyll** on `CLAUDE.md` and fail.
+
+### One-time GitHub settings
 
 1. Open **https://github.com/mahmoudxkhaled/Masajid-Work/settings/pages**
-2. Under **Build and deployment** → **Source**, choose **GitHub Actions** (not “Deploy from a branch”).
-3. If you previously used a branch (`main` / `/` or `/docs`), change it to **GitHub Actions** so Jekyll does not build the repo.
+2. **Build and deployment** → **Source** → **Deploy from a branch**
+3. **Branch** → **`gh-pages`** → **`/ (root)`** → **Save**
 
-Pushes to `main` run `.github/workflows/deploy-github-pages.yml` and publish the Angular app from `dist/pmat`.
+### How it works
 
-## Fix: Jekyll / Liquid error on `CLAUDE.md`
+- Push to **`main`** runs **`.github/workflows/deploy-gh-pages-branch.yml`**
+- That workflow builds Angular and pushes static files to the **`gh-pages`** branch (with `.nojekyll` and `404.html` for SPA routing)
+- Pages serves **`gh-pages`** at the URL above
 
-If the deployment log shows **jekyll v3.10.0** and errors on `CLAUDE.md`, Pages is still using **branch + Jekyll**, not the Angular workflow.
+After the first successful run, confirm branch **`gh-pages`** exists under **Branches** on GitHub.
 
-- Set **Source** to **GitHub Actions** (steps above).
-- Re-run **Deploy to GitHub Pages** under **Actions** (or push to `main`).
-- Root `.nojekyll` and `_config.yml` are safety nets only; the Angular site must come from the workflow artifact.
-
-## Local build (same as CI)
+### Local build (same as CI)
 
 ```bash
 npm run build:gh-pages
@@ -26,12 +28,32 @@ npm run build:gh-pages
 
 Output: `dist/pmat` with `baseHref` `/Masajid-Work/`.
 
-## Manual deploy (optional)
+### Manual deploy to `gh-pages` (optional)
+
+Requires network access to GitHub and `angular-cli-ghpages`:
 
 ```bash
 npm run build:gh-pages
-cp dist/pmat/index.html dist/pmat/404.html
 npx angular-cli-ghpages --dir=dist/pmat --no-silent
 ```
 
-Requires `angular-cli-ghpages` if you use the manual path.
+If you see `Could not resolve host: github.com`, fix DNS/network/VPN — the build is fine; only the git push failed.
+
+---
+
+## Alternative: GitHub Actions artifact (not “Deploy from a branch”)
+
+Use **`.github/workflows/deploy-github-pages.yml`** only if **Source** is **GitHub Actions** (not branch `gh-pages`). Do not enable both branch deploy and that workflow at the same time.
+
+---
+
+## Repo status (branch deploy)
+
+| Check | Status |
+|--------|--------|
+| `github-pages` build config in `angular.json` | Yes (`baseHref: /Masajid-Work/`) |
+| `gh-pages` branch on remote | Created after first workflow run |
+| Publish `main` root directly | **No** — Jekyll + Liquid errors |
+| Publish `gh-pages` with built files + `.nojekyll` | **Yes** |
+
+Removed: **`jekyll-gh-pages.yml`** (Jekyll build of the full repo — not compatible with this Angular project).
