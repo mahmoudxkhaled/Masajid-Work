@@ -23,13 +23,13 @@ jobs:
 
       - run: npm run build:gh-pages
 
-      - run: cp dist/pmat/index.html dist/pmat/404.html
+      - run: cp dist/Masajid-Work/index.html dist/Masajid-Work/404.html
 
-      - run: touch dist/pmat/.nojekyll
+      - run: touch dist/Masajid-Work/.nojekyll
 
       - uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist/pmat
+          publish_dir: ./dist/Masajid-Work
           publish_branch: gh-pages
           force_orphan: true

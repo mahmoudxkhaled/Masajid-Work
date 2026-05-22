@@ -10,7 +10,8 @@
         "lint": "ng lint",
         "build:prod": "ng build --configuration production",
         "build:test": "ng build --configuration testing",
-        "build:gh-pages": "ng build --configuration=github-pages"
+        "build:gh-pages": "ng build --configuration=github-pages",
+        "deploy:gh-pages": "npm run build:gh-pages && node scripts/deploy-gh-pages.mjs"
     },
     "private": true,
     "dependencies": {

@@ -26,15 +26,22 @@ After the first successful run, confirm branch **`gh-pages`** exists under **Bra
 npm run build:gh-pages
 ```
 
-Output: `dist/pmat` with `baseHref` `/Masajid-Work/`.
+Output: `dist/Masajid-Work` with `baseHref` `/Masajid-Work/`.
 
 ### Manual deploy to `gh-pages` (optional)
 
-Requires network access to GitHub and `angular-cli-ghpages`:
+Use the project script (pushes **only** `dist/Masajid-Work`, safe on Windows):
 
 ```bash
-npm run build:gh-pages
-npx angular-cli-ghpages --dir=dist/pmat --no-silent
+npm run deploy:gh-pages
+```
+
+Do **not** use `angular-cli-ghpages` on this repo from Windows — it clones the full tree under `node_modules/.cache/gh-pages/` and often fails with **Filename too long**.
+
+Wrong folder (will fail or deploy empty):
+
+```bash
+npx angular-cli-ghpages --dir=dist/pmat   # incorrect — use dist/Masajid-Work
 ```
 
 If you see `Could not resolve host: github.com`, fix DNS/network/VPN — the build is fine; only the git push failed.
