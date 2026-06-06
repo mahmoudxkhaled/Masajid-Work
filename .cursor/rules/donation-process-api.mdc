@@ -1,0 +1,18 @@
+---
+description: Use Donation Process API spec when working on donation requests, commitments, fulfillment, or related features
+globs: "**/donation*/**","**/donations/**","**/masajid-work/**"
+alwaysApply: false
+---
+
+# Donation Process API Reference
+
+When working on **donation requests, categories, commitments, vendor offers, fulfillment, breakdown, validation, attachments, or entity extra data**, use the project API spec as the single source of truth.
+
+**Reference document:** `Docs/donation-process-api.md`
+
+- Use it for request codes (`100100`–`112006`), input/output shapes, permissions (DEV/SADMIN/EADMIN/USER/GUEST), and error codes (`DAP13xxx` + generic `DAP11000`–`DAP11099`).
+- Call APIs via **`ApiService.callAPI`** with **`string[]`** parameters and **`LocalStorageService.getAccessToken()`**.
+- On **`success: false`**, use component-local **`handleBusinessError`** + **`switch (code)`** per **`business-error-handling`** — map codes from the doc to i18n keys.
+- List endpoints use **`Last_*_ID`** + **`Filter_Count`** pagination; **`List_Entities_Extra_Data`** requires **`Filter_Count`** between **5 and 100**.
+- File attachments and proof uploads depend on storage APIs — see **`Docs/storage-management-file-system-api.md`** for upload/download.
+- **`Country_Code`** is case-sensitive; entity types: `1` Facility, `2` Vendor, `3` CharityCenter.
