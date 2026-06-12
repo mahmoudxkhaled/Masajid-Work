@@ -1,0 +1,6 @@
+<ng-container *ngIf="label; else statusSkeleton">
+  <p-tag [value]="label" [severity]="severity"></p-tag>
+</ng-container>
+<ng-template #statusSkeleton>
+  <p-skeleton height="1.5rem" width="4.5rem" borderRadius="16px"></p-skeleton>
+</ng-template>

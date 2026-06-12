@@ -1266,6 +1266,17 @@
             "supervisorTimesheets": "Supervisor Timesheets",
             "summary": "Summary",
             "documentControl": "Document Control",
+            "donations.title": "Donations",
+            "donations.facility.title": "Facility Donations",
+            "donations.facility.requests.title": "My Donation Requests",
+            "donations.browse.title": "Browse Donations",
+            "donations.commitments.title": "My Commitments",
+            "donations.adminReview.title": "Admin Review",
+            "donations.vendorOffers.title": "Vendor Offers",
+            "donations.charityRepresentation.title": "Charity Representation",
+            "donations.validation.title": "Community Validation",
+            "donations.reference.title": "Donation Reference",
+            "donations.reference.categories.title": "Donation Categories",
             "fileSystem": "File System",
             "fileSystem.entityAdmin.permissionsAdmin.title": "File System Permissions",
             "fileSystemSSM": "System Storage Management (SSM)",
@@ -3465,6 +3476,109 @@
         "goToDashboard": "Go to Dashboard",
         "goToHomepage": "Go to Homepage",
         "goHome": "Go to home"
+    },
+    "donations": {
+        "title": "Donations",
+        "facility": {
+            "title": "Facility Donations",
+            "requests": {
+                "title": "My Donation Requests",
+                "subtitle": "Create, track, and manage donation requests for your facility.",
+                "create": "New request",
+                "searchPlaceholder": "Search requests...",
+                "pagination": "{first} to {last} of {totalRecords}",
+                "empty": "No donation requests found.",
+                "columns": {
+                    "title": "Title",
+                    "status": "Status",
+                    "estimatedCost": "Estimated cost",
+                    "createdAt": "Created"
+                },
+                "messages": {
+                    "notOwnerFacility": "You are not the owner facility for these requests."
+                }
+            }
+        },
+        "browse": {
+            "title": "Browse Donations",
+            "subtitle": "Explore published donation requests open for donor commitment.",
+            "pagination": "{first} to {last} of {totalRecords}",
+            "empty": "No published donation requests found."
+        },
+        "commitments": {
+            "title": "My Commitments",
+            "subtitle": "Track your accepted donation commitments and fulfillment progress.",
+            "pagination": "{first} to {last} of {totalRecords}",
+            "empty": "No commitments found.",
+            "columns": {
+                "requestId": "Request ID",
+                "expectedClosure": "Expected closure"
+            },
+            "messages": {
+                "notDonor": "You are not registered as a donor."
+            }
+        },
+        "adminReview": {
+            "title": "Admin Review",
+            "subtitle": "Review and approve donation requests pending publication.",
+            "searchPlaceholder": "Search requests...",
+            "pagination": "{first} to {last} of {totalRecords}",
+            "empty": "No requests pending review."
+        },
+        "vendorOffers": {
+            "title": "Vendor Offers",
+            "subtitle": "Browse donation requests open for vendor offers in your service area.",
+            "pagination": "{first} to {last} of {totalRecords}",
+            "empty": "No requests available for vendor offers."
+        },
+        "charityRepresentation": {
+            "title": "Charity Representation",
+            "subtitle": "Manage representation requests assigned to your charity center.",
+            "pagination": "{first} to {last} of {totalRecords}",
+            "empty": "No representation requests found."
+        },
+        "validation": {
+            "title": "Community Validation",
+            "subtitle": "Review fulfilled donations open for community validation.",
+            "pagination": "{first} to {last} of {totalRecords}",
+            "empty": "No donations open for validation."
+        },
+        "reference": {
+            "title": "Donation Reference",
+            "categories": {
+                "title": "Donation Categories",
+                "subtitle": "Manage donation categories by donation type.",
+                "typeFilter": "Donation type",
+                "pagination": "{first} to {last} of {totalRecords}",
+                "empty": "No categories found for this type.",
+                "yes": "Yes",
+                "no": "No",
+                "active": "Active",
+                "inactive": "Inactive",
+                "columns": {
+                    "code": "Code",
+                    "name": "Name",
+                    "isService": "Service",
+                    "order": "Order",
+                    "active": "Status"
+                }
+            }
+        },
+        "shared": {
+            "columns": {
+                "title": "Title",
+                "status": "Status",
+                "estimatedCost": "Estimated cost",
+                "createdAt": "Created"
+            },
+            "filters": {
+                "status": "Status",
+                "allStatuses": "All statuses"
+            },
+            "categoryPicker": {
+                "placeholder": "Select category"
+            }
+        }
     },
     "public": {
         "landing": {

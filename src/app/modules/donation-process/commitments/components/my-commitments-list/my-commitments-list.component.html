@@ -1,0 +1,70 @@
+<p-toast />
+<div class="block-section card">
+  <div class="flex flex-column gap-2 mb-3">
+    <h2 class="block-title mb-0">{{ 'donations.commitments.title' | translate }}</h2>
+    <p class="mb-0 text-500">{{ 'donations.commitments.subtitle' | translate }}</p>
+  </div>
+
+  <div class="block-card">
+    <p-table
+      [value]="tableValue"
+      [paginator]="true"
+      [lazy]="true"
+      [first]="first"
+      [rows]="rows"
+      [totalRecords]="totalRecords"
+      [rowsPerPageOptions]="rowsPerPageOptions"
+      [showCurrentPageReport]="true"
+      [currentPageReportTemplate]="'donations.commitments.pagination' | translate"
+      responsiveLayout="scroll"
+      styleClass="p-datatable-sm"
+      (onLazyLoad)="onPageChange($event)"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="width: 8rem">{{ 'donations.commitments.columns.requestId' | translate }}</th>
+          <th class="text-center" style="width: 9rem">{{ 'donations.shared.columns.status' | translate }}</th>
+          <th class="text-center" style="width: 12rem">{{ 'donations.commitments.columns.expectedClosure' | translate }}</th>
+          <th class="text-center" style="width: 10rem">{{ 'donations.shared.columns.createdAt' | translate }}</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-row>
+        <tr>
+          <td>
+            <ng-container *ngIf="tableLoadingSpinner; else requestCell">
+              <p-skeleton height="1.25rem" width="5rem"></p-skeleton>
+            </ng-container>
+            <ng-template #requestCell>{{ row.donationRequestId || '-' }}</ng-template>
+          </td>
+          <td class="text-center">
+            <ng-container *ngIf="tableLoadingSpinner; else statusCell">
+              <p-skeleton height="1.5rem" width="4.5rem" borderRadius="16px"></p-skeleton>
+            </ng-container>
+            <ng-template #statusCell>
+              <app-donation-status-badge [label]="getStatusLabel(row.statusId)"></app-donation-status-badge>
+            </ng-template>
+          </td>
+          <td class="text-center">
+            <ng-container *ngIf="tableLoadingSpinner; else closureCell">
+              <p-skeleton height="1.25rem" width="8rem"></p-skeleton>
+            </ng-container>
+            <ng-template #closureCell>{{ row.expectedClosureAt || '-' }}</ng-template>
+          </td>
+          <td class="text-center">
+            <ng-container *ngIf="tableLoadingSpinner; else createdCell">
+              <p-skeleton height="1.25rem" width="7rem"></p-skeleton>
+            </ng-container>
+            <ng-template #createdCell>{{ row.createdAt || '-' }}</ng-template>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="4" class="text-center py-4">{{ 'donations.commitments.empty' | translate }}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>

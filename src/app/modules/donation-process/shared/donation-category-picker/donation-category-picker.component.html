@@ -1,0 +1,16 @@
+<ng-container *ngIf="loading; else categoryDropdown">
+  <p-skeleton height="2.5rem" width="100%" borderRadius="6px"></p-skeleton>
+</ng-container>
+<ng-template #categoryDropdown>
+  <p-dropdown
+    [options]="categories"
+    [(ngModel)]="selectedCategoryId"
+    optionLabel="name"
+    optionValue="id"
+    [placeholder]="placeholderKey | translate"
+    [disabled]="disabled || !donationTypeId"
+    [showClear]="true"
+    styleClass="w-full"
+    (onChange)="onCategoryChange($event.value)"
+  ></p-dropdown>
+</ng-template>

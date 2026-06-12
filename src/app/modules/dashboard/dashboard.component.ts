@@ -115,6 +115,14 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
             'ESM': '🗃️',
             'SENT': '🗂️',
             'EUA': '👥',
+            'FDRQ': '🕌',
+            'DNBR': '🔍',
+            'DNCMT': '🤝',
+            'DNADM': '✅',
+            'DNVND': '🏪',
+            'DNCHR': '🏛️',
+            'DNVAL': '🛡️',
+            'DNREF': '📋',
         };
         return iconMap[moduleCode] || '📁';
     }

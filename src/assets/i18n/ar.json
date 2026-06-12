@@ -1267,6 +1267,17 @@
             "supervisorTimesheets": "جداول الأوقات للمشرف",
             "summary": "الملخص",
             "documentControl": "التحكم في المستندات",
+            "donations.title": "التبرعات",
+            "donations.facility.title": "تبرعات المنشأة",
+            "donations.facility.requests.title": "طلبات التبرع الخاصة بي",
+            "donations.browse.title": "تصفح التبرعات",
+            "donations.commitments.title": "التزاماتي",
+            "donations.adminReview.title": "مراجعة الإدارة",
+            "donations.vendorOffers.title": "عروض الموردين",
+            "donations.charityRepresentation.title": "تمثيل الجمعيات",
+            "donations.validation.title": "التحقق المجتمعي",
+            "donations.reference.title": "مرجع التبرعات",
+            "donations.reference.categories.title": "تصنيفات التبرعات",
             "fileSystem": "نظام الملفات",
             "fileSystem.entityAdmin.permissionsAdmin.title": "صلاحيات نظام الملفات",
             "fileSystemSSM": "إدارة تخزين النظام (SSM)",
@@ -3324,6 +3335,109 @@
         "goToDashboard": "لوحة التحكم",
         "goToHomepage": "الذهاب للصفحة الرئيسية",
         "goHome": "الذهاب للرئيسية"
+    },
+    "donations": {
+        "title": "التبرعات",
+        "facility": {
+            "title": "تبرعات المنشأة",
+            "requests": {
+                "title": "طلبات التبرع الخاصة بي",
+                "subtitle": "أنشئ طلبات التبرع وتابعها وأدرها لمنشأتك.",
+                "create": "طلب جديد",
+                "searchPlaceholder": "ابحث في الطلبات...",
+                "pagination": "{first} إلى {last} من {totalRecords}",
+                "empty": "لا توجد طلبات تبرع.",
+                "columns": {
+                    "title": "العنوان",
+                    "status": "الحالة",
+                    "estimatedCost": "التكلفة التقديرية",
+                    "createdAt": "تاريخ الإنشاء"
+                },
+                "messages": {
+                    "notOwnerFacility": "أنت لست ممثل المنشأة المالكة لهذه الطلبات."
+                }
+            }
+        },
+        "browse": {
+            "title": "تصفح التبرعات",
+            "subtitle": "استكشف طلبات التبرع المنشورة المتاحة للالتزام.",
+            "pagination": "{first} إلى {last} من {totalRecords}",
+            "empty": "لا توجد طلبات تبرع منشورة."
+        },
+        "commitments": {
+            "title": "التزاماتي",
+            "subtitle": "تابع التزامات التبرع المقبولة وتقدم التنفيذ.",
+            "pagination": "{first} إلى {last} من {totalRecords}",
+            "empty": "لا توجد التزامات.",
+            "columns": {
+                "requestId": "رقم الطلب",
+                "expectedClosure": "الإغلاق المتوقع"
+            },
+            "messages": {
+                "notDonor": "أنت غير مسجل كمتبرع."
+            }
+        },
+        "adminReview": {
+            "title": "مراجعة الإدارة",
+            "subtitle": "راجع ووافق على طلبات التبرع المعلقة للنشر.",
+            "searchPlaceholder": "ابحث في الطلبات...",
+            "pagination": "{first} إلى {last} من {totalRecords}",
+            "empty": "لا توجد طلبات بانتظار المراجعة."
+        },
+        "vendorOffers": {
+            "title": "عروض الموردين",
+            "subtitle": "تصفح طلبات التبرع المتاحة لعروض الموردين في منطقتك.",
+            "pagination": "{first} إلى {last} من {totalRecords}",
+            "empty": "لا توجد طلبات متاحة لعروض الموردين."
+        },
+        "charityRepresentation": {
+            "title": "تمثيل الجمعيات",
+            "subtitle": "أدر طلبات التمثيل المخصصة لمركز الجمعية الخاص بك.",
+            "pagination": "{first} إلى {last} من {totalRecords}",
+            "empty": "لا توجد طلبات تمثيل."
+        },
+        "validation": {
+            "title": "التحقق المجتمعي",
+            "subtitle": "راجع التبرعات المنفذة المفتوحة للتحقق المجتمعي.",
+            "pagination": "{first} إلى {last} من {totalRecords}",
+            "empty": "لا توجد تبرعات مفتوحة للتحقق."
+        },
+        "reference": {
+            "title": "مرجع التبرعات",
+            "categories": {
+                "title": "تصنيفات التبرعات",
+                "subtitle": "إدارة تصنيفات التبرع حسب نوع التبرع.",
+                "typeFilter": "نوع التبرع",
+                "pagination": "{first} إلى {last} من {totalRecords}",
+                "empty": "لا توجد تصنيفات لهذا النوع.",
+                "yes": "نعم",
+                "no": "لا",
+                "active": "نشط",
+                "inactive": "غير نشط",
+                "columns": {
+                    "code": "الرمز",
+                    "name": "الاسم",
+                    "isService": "خدمة",
+                    "order": "الترتيب",
+                    "active": "الحالة"
+                }
+            }
+        },
+        "shared": {
+            "columns": {
+                "title": "العنوان",
+                "status": "الحالة",
+                "estimatedCost": "التكلفة التقديرية",
+                "createdAt": "تاريخ الإنشاء"
+            },
+            "filters": {
+                "status": "الحالة",
+                "allStatuses": "كل الحالات"
+            },
+            "categoryPicker": {
+                "placeholder": "اختر التصنيف"
+            }
+        }
     },
     "public": {
         "landing": {

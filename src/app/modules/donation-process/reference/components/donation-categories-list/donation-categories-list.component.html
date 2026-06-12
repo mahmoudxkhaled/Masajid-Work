@@ -1,0 +1,99 @@
+<p-toast />
+<div class="block-section card">
+  <div class="flex flex-column gap-2 mb-3">
+    <h2 class="block-title mb-0">{{ 'donations.reference.categories.title' | translate }}</h2>
+    <p class="mb-0 text-500">{{ 'donations.reference.categories.subtitle' | translate }}</p>
+  </div>
+
+  <div class="block-card">
+    <p-table
+      [value]="tableValue"
+      [paginator]="true"
+      [rows]="rows"
+      [rowsPerPageOptions]="rowsPerPageOptions"
+      [showCurrentPageReport]="true"
+      [currentPageReportTemplate]="'donations.reference.categories.pagination' | translate"
+      responsiveLayout="scroll"
+      styleClass="p-datatable-sm"
+    >
+      <ng-template pTemplate="caption">
+        <div class="flex align-items-center justify-content-between gap-3 mb-2 flex-wrap">
+          <label class="flex align-items-center gap-2">
+            <span>{{ 'donations.reference.categories.typeFilter' | translate }}</span>
+            <ng-container *ngIf="loadingTypes; else typeDropdown">
+              <p-skeleton height="2.5rem" width="12rem" borderRadius="6px"></p-skeleton>
+            </ng-container>
+            <ng-template #typeDropdown>
+              <p-dropdown
+                [options]="typeOptions"
+                [(ngModel)]="selectedTypeId"
+                optionLabel="label"
+                optionValue="value"
+                [style]="{ width: '12rem' }"
+                (onChange)="onTypeChange()"
+              ></p-dropdown>
+            </ng-template>
+          </label>
+        </div>
+      </ng-template>
+
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="width: 8rem">{{ 'donations.reference.categories.columns.code' | translate }}</th>
+          <th style="width: 16rem">{{ 'donations.reference.categories.columns.name' | translate }}</th>
+          <th class="text-center" style="width: 8rem">{{ 'donations.reference.categories.columns.isService' | translate }}</th>
+          <th class="text-center" style="width: 8rem">{{ 'donations.reference.categories.columns.order' | translate }}</th>
+          <th class="text-center" style="width: 8rem">{{ 'donations.reference.categories.columns.active' | translate }}</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-row>
+        <tr>
+          <td>
+            <ng-container *ngIf="tableLoadingSpinner; else codeCell">
+              <p-skeleton height="1.25rem" width="5rem"></p-skeleton>
+            </ng-container>
+            <ng-template #codeCell>{{ row.code }}</ng-template>
+          </td>
+          <td>
+            <ng-container *ngIf="tableLoadingSpinner; else nameCell">
+              <p-skeleton height="1.25rem" width="12rem"></p-skeleton>
+            </ng-container>
+            <ng-template #nameCell>{{ row.name }}</ng-template>
+          </td>
+          <td class="text-center">
+            <ng-container *ngIf="tableLoadingSpinner; else serviceCell">
+              <p-skeleton height="1.25rem" width="3rem"></p-skeleton>
+            </ng-container>
+            <ng-template #serviceCell>
+              {{ (row.isService ? 'donations.reference.categories.yes' : 'donations.reference.categories.no') | translate }}
+            </ng-template>
+          </td>
+          <td class="text-center">
+            <ng-container *ngIf="tableLoadingSpinner; else orderCell">
+              <p-skeleton height="1.25rem" width="3rem"></p-skeleton>
+            </ng-container>
+            <ng-template #orderCell>{{ row.defaultOrder }}</ng-template>
+          </td>
+          <td class="text-center">
+            <ng-container *ngIf="tableLoadingSpinner; else activeCell">
+              <p-skeleton height="1.5rem" width="4rem" borderRadius="16px"></p-skeleton>
+            </ng-container>
+            <ng-template #activeCell>
+              <app-donation-status-badge
+                [label]="(row.active ? 'donations.reference.categories.active' : 'donations.reference.categories.inactive') | translate"
+                [severity]="row.active ? 'success' : 'secondary'"
+              ></app-donation-status-badge>
+            </ng-template>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="5" class="text-center py-4">{{ 'donations.reference.categories.empty' | translate }}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>

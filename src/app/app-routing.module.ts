@@ -47,6 +47,13 @@ const routes: Routes = [
                 data: { breadcrumb: 'documentControl' },
                 loadChildren: () => import('./modules/document-control/document-control.module').then((m) => m.DocumentControlModule),
             },
+            {
+                path: 'donations',
+                canActivate: [AuthGuard],
+                data: { breadcrumb: 'donations.title' },
+                loadChildren: () =>
+                    import('./modules/donation-process/donation-process.module').then((m) => m.DonationProcessModule),
+            },
         ],
     },
     { path: 'login', redirectTo: 'auth', pathMatch: 'full' },
