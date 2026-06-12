@@ -18,6 +18,7 @@
     "common": {
         "success": "Success",
         "error": "Error",
+        "warning": "Warning",
         "loading": "Loading...",
         "cancel": "Cancel",
         "confirm": "Confirm",
@@ -3486,7 +3487,7 @@
                 "subtitle": "Create, track, and manage donation requests for your facility.",
                 "create": "New request",
                 "searchPlaceholder": "Search requests...",
-                "pagination": "{first} to {last} of {totalRecords}",
+                "pagination": "Showing '{first}' to '{last}' of '{totalRecords}'",
                 "empty": "No donation requests found.",
                 "columns": {
                     "title": "Title",
@@ -3502,13 +3503,13 @@
         "browse": {
             "title": "Browse Donations",
             "subtitle": "Explore published donation requests open for donor commitment.",
-            "pagination": "{first} to {last} of {totalRecords}",
+            "pagination": "Showing '{first}' to '{last}' of '{totalRecords}'",
             "empty": "No published donation requests found."
         },
         "commitments": {
             "title": "My Commitments",
             "subtitle": "Track your accepted donation commitments and fulfillment progress.",
-            "pagination": "{first} to {last} of {totalRecords}",
+            "pagination": "Showing '{first}' to '{last}' of '{totalRecords}'",
             "empty": "No commitments found.",
             "columns": {
                 "requestId": "Request ID",
@@ -3522,25 +3523,25 @@
             "title": "Admin Review",
             "subtitle": "Review and approve donation requests pending publication.",
             "searchPlaceholder": "Search requests...",
-            "pagination": "{first} to {last} of {totalRecords}",
+            "pagination": "Showing '{first}' to '{last}' of '{totalRecords}'",
             "empty": "No requests pending review."
         },
         "vendorOffers": {
             "title": "Vendor Offers",
             "subtitle": "Browse donation requests open for vendor offers in your service area.",
-            "pagination": "{first} to {last} of {totalRecords}",
+            "pagination": "Showing '{first}' to '{last}' of '{totalRecords}'",
             "empty": "No requests available for vendor offers."
         },
         "charityRepresentation": {
             "title": "Charity Representation",
             "subtitle": "Manage representation requests assigned to your charity center.",
-            "pagination": "{first} to {last} of {totalRecords}",
+            "pagination": "Showing '{first}' to '{last}' of '{totalRecords}'",
             "empty": "No representation requests found."
         },
         "validation": {
             "title": "Community Validation",
             "subtitle": "Review fulfilled donations open for community validation.",
-            "pagination": "{first} to {last} of {totalRecords}",
+            "pagination": "Showing '{first}' to '{last}' of '{totalRecords}'",
             "empty": "No donations open for validation."
         },
         "reference": {
@@ -3549,7 +3550,8 @@
                 "title": "Donation Categories",
                 "subtitle": "Manage donation categories by donation type.",
                 "typeFilter": "Donation type",
-                "pagination": "{first} to {last} of {totalRecords}",
+                "searchPlaceholder": "Search categories...",
+                "pagination": "Showing '{first}' to '{last}' of '{totalRecords}'",
                 "empty": "No categories found for this type.",
                 "yes": "Yes",
                 "no": "No",
@@ -3560,7 +3562,44 @@
                     "name": "Name",
                     "isService": "Service",
                     "order": "Order",
-                    "active": "Status"
+                    "active": "Status",
+                    "actions": "Actions"
+                },
+                "actions": {
+                    "add": "Add category",
+                    "edit": "Edit",
+                    "activate": "Activate",
+                    "deactivate": "Deactivate"
+                },
+                "form": {
+                    "createTitle": "Add donation category",
+                    "editTitle": "Edit donation category",
+                    "code": "Code",
+                    "name": "Name",
+                    "isService": "Is service category",
+                    "defaultOrder": "Default order",
+                    "validationRequired": "Code, name, and a default order greater than zero are required."
+                },
+                "activation": {
+                    "activateTitle": "Activate category",
+                    "deactivateTitle": "Deactivate category",
+                    "activateIntro": "Activate ",
+                    "deactivateIntro": "Deactivate ",
+                    "questionMark": "?"
+                },
+                "messages": {
+                    "created": "Donation category created successfully.",
+                    "updated": "Donation category updated successfully.",
+                    "activated": "Donation category activated successfully.",
+                    "deactivated": "Donation category deactivated successfully."
+                },
+                "errors": {
+                    "invalidTypeId": "Invalid donation type.",
+                    "invalidCategoryId": "Invalid donation category.",
+                    "invalidCode": "Code must be between 1 and 19 characters.",
+                    "invalidName": "Name must be between 1 and 99 characters.",
+                    "duplicateCode": "A category with this code already exists.",
+                    "invalidOrder": "Default order must be greater than zero."
                 }
             }
         },

@@ -18,6 +18,7 @@
     "common": {
         "success": "نجاح",
         "error": "خطأ",
+        "warning": "تنبيه",
         "loading": "جاري التحميل...",
         "cancel": "إلغاء",
         "confirm": "تأكيد",
@@ -3345,7 +3346,7 @@
                 "subtitle": "أنشئ طلبات التبرع وتابعها وأدرها لمنشأتك.",
                 "create": "طلب جديد",
                 "searchPlaceholder": "ابحث في الطلبات...",
-                "pagination": "{first} إلى {last} من {totalRecords}",
+                "pagination": "عرض '{first}' إلى '{last}' من أصل '{totalRecords}'",
                 "empty": "لا توجد طلبات تبرع.",
                 "columns": {
                     "title": "العنوان",
@@ -3361,13 +3362,13 @@
         "browse": {
             "title": "تصفح التبرعات",
             "subtitle": "استكشف طلبات التبرع المنشورة المتاحة للالتزام.",
-            "pagination": "{first} إلى {last} من {totalRecords}",
+            "pagination": "عرض '{first}' إلى '{last}' من أصل '{totalRecords}'",
             "empty": "لا توجد طلبات تبرع منشورة."
         },
         "commitments": {
             "title": "التزاماتي",
             "subtitle": "تابع التزامات التبرع المقبولة وتقدم التنفيذ.",
-            "pagination": "{first} إلى {last} من {totalRecords}",
+            "pagination": "عرض '{first}' إلى '{last}' من أصل '{totalRecords}'",
             "empty": "لا توجد التزامات.",
             "columns": {
                 "requestId": "رقم الطلب",
@@ -3381,25 +3382,25 @@
             "title": "مراجعة الإدارة",
             "subtitle": "راجع ووافق على طلبات التبرع المعلقة للنشر.",
             "searchPlaceholder": "ابحث في الطلبات...",
-            "pagination": "{first} إلى {last} من {totalRecords}",
+            "pagination": "عرض '{first}' إلى '{last}' من أصل '{totalRecords}'",
             "empty": "لا توجد طلبات بانتظار المراجعة."
         },
         "vendorOffers": {
             "title": "عروض الموردين",
             "subtitle": "تصفح طلبات التبرع المتاحة لعروض الموردين في منطقتك.",
-            "pagination": "{first} إلى {last} من {totalRecords}",
+            "pagination": "عرض '{first}' إلى '{last}' من أصل '{totalRecords}'",
             "empty": "لا توجد طلبات متاحة لعروض الموردين."
         },
         "charityRepresentation": {
             "title": "تمثيل الجمعيات",
             "subtitle": "أدر طلبات التمثيل المخصصة لمركز الجمعية الخاص بك.",
-            "pagination": "{first} إلى {last} من {totalRecords}",
+            "pagination": "عرض '{first}' إلى '{last}' من أصل '{totalRecords}'",
             "empty": "لا توجد طلبات تمثيل."
         },
         "validation": {
             "title": "التحقق المجتمعي",
             "subtitle": "راجع التبرعات المنفذة المفتوحة للتحقق المجتمعي.",
-            "pagination": "{first} إلى {last} من {totalRecords}",
+            "pagination": "عرض '{first}' إلى '{last}' من أصل '{totalRecords}'",
             "empty": "لا توجد تبرعات مفتوحة للتحقق."
         },
         "reference": {
@@ -3408,7 +3409,8 @@
                 "title": "تصنيفات التبرعات",
                 "subtitle": "إدارة تصنيفات التبرع حسب نوع التبرع.",
                 "typeFilter": "نوع التبرع",
-                "pagination": "{first} إلى {last} من {totalRecords}",
+                "searchPlaceholder": "بحث في التصنيفات...",
+                "pagination": "عرض '{first}' إلى '{last}' من أصل '{totalRecords}'",
                 "empty": "لا توجد تصنيفات لهذا النوع.",
                 "yes": "نعم",
                 "no": "لا",
@@ -3419,7 +3421,44 @@
                     "name": "الاسم",
                     "isService": "خدمة",
                     "order": "الترتيب",
-                    "active": "الحالة"
+                    "active": "الحالة",
+                    "actions": "إجراءات"
+                },
+                "actions": {
+                    "add": "إضافة تصنيف",
+                    "edit": "تعديل",
+                    "activate": "تفعيل",
+                    "deactivate": "إلغاء التفعيل"
+                },
+                "form": {
+                    "createTitle": "إضافة تصنيف تبرع",
+                    "editTitle": "تعديل تصنيف تبرع",
+                    "code": "الرمز",
+                    "name": "الاسم",
+                    "isService": "تصنيف خدمة",
+                    "defaultOrder": "الترتيب الافتراضي",
+                    "validationRequired": "الرمز والاسم وترتيب افتراضي أكبر من صفر مطلوبة."
+                },
+                "activation": {
+                    "activateTitle": "تفعيل التصنيف",
+                    "deactivateTitle": "إلغاء تفعيل التصنيف",
+                    "activateIntro": "تفعيل ",
+                    "deactivateIntro": "إلغاء تفعيل ",
+                    "questionMark": "؟"
+                },
+                "messages": {
+                    "created": "تم إنشاء تصنيف التبرع بنجاح.",
+                    "updated": "تم تحديث تصنيف التبرع بنجاح.",
+                    "activated": "تم تفعيل تصنيف التبرع بنجاح.",
+                    "deactivated": "تم إلغاء تفعيل تصنيف التبرع بنجاح."
+                },
+                "errors": {
+                    "invalidTypeId": "نوع التبرع غير صالح.",
+                    "invalidCategoryId": "تصنيف التبرع غير صالح.",
+                    "invalidCode": "يجب أن يكون الرمز بين 1 و19 حرفاً.",
+                    "invalidName": "يجب أن يكون الاسم بين 1 و99 حرفاً.",
+                    "duplicateCode": "يوجد تصنيف بهذا الرمز مسبقاً.",
+                    "invalidOrder": "يجب أن يكون الترتيب الافتراضي أكبر من صفر."
                 }
             }
         },

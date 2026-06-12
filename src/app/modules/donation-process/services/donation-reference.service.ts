@@ -15,7 +15,7 @@ export class DonationReferenceService {
   constructor(
     private apiServices: ApiService,
     private localStorageService: LocalStorageService,
-  ) {}
+  ) { }
 
   // #region API calls
 
@@ -74,8 +74,10 @@ export class DonationReferenceService {
       code,
       name,
       isService.toString(),
+      isService.toString(),
       defaultOrder.toString(),
     ];
+    console.log('updateDonationCategory params', params);
     return this.apiServices.callAPI(100103, this.getAccessToken(), params).pipe(
       finalize(() => this.isLoadingSubject.next(false)),
     );
@@ -101,45 +103,119 @@ export class DonationReferenceService {
 
   mapDonationTypes(rawItems: DonationTypeBackend[]): DonationType[] {
     const isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
-    return rawItems.map((item) => ({
-      id: Number(item.Donation_Type_ID || 0),
-      code: String(item.Code || ''),
-      name: isRegional ? String(item.Name_Regional || item.Name || '') : String(item.Name || ''),
-      description: isRegional
-        ? String(item.Description_Regional || item.Description || '')
-        : String(item.Description || ''),
-      active: Boolean(item.Is_Active),
-    }));
+    return rawItems.map((item) => {
+      const record = item as Record<string, unknown>;
+      return {
+        id: this.readNumber(record, 'Donation_Type_ID'),
+        code: this.readString(record, 'Code'),
+        name: isRegional
+          ? this.readString(record, 'Name_Regional') || this.readString(record, 'Name')
+          : this.readString(record, 'Name'),
+        description: isRegional
+          ? this.readString(record, 'Description_Regional') || this.readString(record, 'Description')
+          : this.readString(record, 'Description'),
+        active: this.readBoolean(record, 'Is_Active'),
+      };
+    });
   }
 
   mapDonationCategories(rawItems: DonationCategoryBackend[]): DonationCategory[] {
     const isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
-    return rawItems.map((item) => ({
-      id: Number(item.Donation_Category_ID || 0),
-      donationTypeId: Number(item.Donation_Type_ID || 0),
-      code: String(item.Code || ''),
-      name: isRegional ? String(item.Name_Regional || item.Name || '') : String(item.Name || ''),
-      isService: Boolean(item.Is_Service),
-      defaultOrder: Number(item.Default_Order || 0),
-      active: Boolean(item.Is_Active),
-    }));
+    return rawItems
+      .map((item) => {
+        const record = item as Record<string, unknown>;
+        return {
+          id: this.readNumber(record, 'Donation_Category_ID'),
+          donationTypeId: this.readNumber(record, 'Donation_Type_ID'),
+          code: this.readString(record, 'Code'),
+          name: isRegional
+            ? this.readString(record, 'Name_Regional') || this.readString(record, 'Name')
+            : this.readString(record, 'Name'),
+          isService: this.readBoolean(record, 'Is_Service'),
+          defaultOrder: this.readNumber(record, 'Default_Order'),
+          active: this.readBoolean(record, 'Is_Active'),
+        };
+      })
+      .sort((a, b) => a.defaultOrder - b.defaultOrder);
   }
 
   mapDonationRequestStatuses(rawItems: DonationRequestStatusBackend[]): DonationRequestStatus[] {
     const isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
-    return rawItems.map((item) => ({
-      id: Number(item.Status_ID || 0),
-      code: String(item.Code || ''),
-      name: isRegional ? String(item.Name_Regional || item.Name || '') : String(item.Name || ''),
-    }));
+    return rawItems.map((item) => {
+      const record = item as Record<string, unknown>;
+      return {
+        id: this.readNumber(record, 'Status_ID'),
+        code: this.readString(record, 'Code'),
+        name: isRegional
+          ? this.readString(record, 'Name_Regional') || this.readString(record, 'Name')
+          : this.readString(record, 'Name'),
+      };
+    });
   }
 
-  extractDictionaryItems<T>(message: Record<string, unknown> | undefined, key: string): T[] {
-    const dictionary = message?.[key];
-    if (!dictionary || typeof dictionary !== 'object') {
+  parseListFromResponse<T>(response: any): T[] {
+    if (!response?.success) {
       return [];
     }
+    return this.extractDictionaryItems<T>(response.message);
+  }
+
+  toTypeDropdownOptions(rawTypes: DonationTypeBackend[]): { label: string; value: number }[] {
+    return this.mapDonationTypes(rawTypes).map((item) => ({ label: item.name, value: item.id }));
+  }
+
+  extractDictionaryItems<T>(message: Record<string, unknown> | undefined, key?: string): T[] {
+    if (!message) {
+      return [];
+    }
+
+    let dictionary: unknown;
+
+    if (key) {
+      const nestedKey = key.charAt(0).toLowerCase() + key.slice(1);
+      dictionary = message[key] ?? message[nestedKey];
+    }
+
+    if (!dictionary || typeof dictionary !== 'object' || Array.isArray(dictionary)) {
+      dictionary = this.isIndexedItemDictionary(message) ? message : undefined;
+    }
+
+    if (!dictionary || typeof dictionary !== 'object' || Array.isArray(dictionary)) {
+      return [];
+    }
+
     return Object.values(dictionary as Record<string, T>);
+  }
+
+  private isIndexedItemDictionary(message: Record<string, unknown>): boolean {
+    const entries = Object.entries(message);
+    if (!entries.length) {
+      return false;
+    }
+
+    return entries.every(
+      ([entryKey, entryValue]) =>
+        /^\d+$/.test(entryKey) &&
+        entryValue !== null &&
+        typeof entryValue === 'object' &&
+        !Array.isArray(entryValue),
+    );
+  }
+
+  private readString(item: Record<string, unknown>, key: string): string {
+    const camelKey = key.charAt(0).toLowerCase() + key.slice(1);
+    const value = item[key] ?? item[camelKey];
+    return value === undefined || value === null ? '' : String(value);
+  }
+
+  private readNumber(item: Record<string, unknown>, key: string): number {
+    const camelKey = key.charAt(0).toLowerCase() + key.slice(1);
+    return Number(item[key] ?? item[camelKey] ?? 0);
+  }
+
+  private readBoolean(item: Record<string, unknown>, key: string): boolean {
+    const camelKey = key.charAt(0).toLowerCase() + key.slice(1);
+    return Boolean(item[key] ?? item[camelKey]);
   }
 
   // #endregion

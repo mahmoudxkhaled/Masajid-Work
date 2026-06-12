@@ -1,37 +1,47 @@
 <p-toast />
 <div class="block-section card">
-  <div class="flex flex-column gap-2 mb-3">
-    <h2 class="block-title mb-0">{{ 'donations.reference.categories.title' | translate }}</h2>
-    <p class="mb-0 text-500">{{ 'donations.reference.categories.subtitle' | translate }}</p>
+  <div class="flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
+    <div class="flex flex-column gap-2 flex-1 min-w-0">
+      <h2 class="block-title mb-0">{{ 'donations.reference.categories.title' | translate }}</h2>
+      <p class="mb-0 text-500">{{ 'donations.reference.categories.subtitle' | translate }}</p>
+    </div>
+    <div *ngIf="canManageCategories" class="flex-shrink-0">
+      <ng-container *ngIf="loadingTypes; else addButton">
+        <p-skeleton height="2.5rem" width="10rem" borderRadius="6px"></p-skeleton>
+      </ng-container>
+      <ng-template #addButton>
+        <p-button [label]="'donations.reference.categories.actions.add' | translate" icon="pi pi-plus"
+          [disabled]="!selectedTypeId || tableLoadingSpinner" (onClick)="openCreateDialog()"></p-button>
+      </ng-template>
+    </div>
   </div>
 
   <div class="block-card">
-    <p-table
-      [value]="tableValue"
-      [paginator]="true"
-      [rows]="rows"
-      [rowsPerPageOptions]="rowsPerPageOptions"
-      [showCurrentPageReport]="true"
+    <p-table #categoriesTable [value]="tableValue" [paginator]="true" [rows]="rows"
+      [rowsPerPageOptions]="rowsPerPageOptions" [showCurrentPageReport]="true"
       [currentPageReportTemplate]="'donations.reference.categories.pagination' | translate"
-      responsiveLayout="scroll"
-      styleClass="p-datatable-sm"
-    >
+      [globalFilterFields]="['code', 'name']" responsiveLayout="scroll" styleClass="p-datatable-sm">
       <ng-template pTemplate="caption">
         <div class="flex align-items-center justify-content-between gap-3 mb-2 flex-wrap">
-          <label class="flex align-items-center gap-2">
+          <span class="p-input-icon-left flex-1 min-w-200px max-w-md">
+            <ng-container *ngIf="tableLoadingSpinner && categories.length === 0; else categoriesSearchInput">
+              <p-skeleton height="2.5rem" width="100%" borderRadius="6px"></p-skeleton>
+            </ng-container>
+            <ng-template #categoriesSearchInput>
+              <i class="pi pi-search"></i>
+              <input pInputText type="text" class="w-full"
+                [placeholder]="'donations.reference.categories.searchPlaceholder' | translate"
+                (input)="categoriesTable.filterGlobal($any($event.target).value, 'contains')" />
+            </ng-template>
+          </span>
+          <label class="flex align-items-center gap-2 mb-0">
             <span>{{ 'donations.reference.categories.typeFilter' | translate }}</span>
             <ng-container *ngIf="loadingTypes; else typeDropdown">
               <p-skeleton height="2.5rem" width="12rem" borderRadius="6px"></p-skeleton>
             </ng-container>
             <ng-template #typeDropdown>
-              <p-dropdown
-                [options]="typeOptions"
-                [(ngModel)]="selectedTypeId"
-                optionLabel="label"
-                optionValue="value"
-                [style]="{ width: '12rem' }"
-                (onChange)="onTypeChange()"
-              ></p-dropdown>
+              <p-dropdown [options]="typeOptions" [(ngModel)]="selectedTypeId" optionLabel="label" optionValue="value"
+                [style]="{ width: '12rem' }" (onChange)="onTypeChange()"></p-dropdown>
             </ng-template>
           </label>
         </div>
@@ -39,11 +49,28 @@
 
       <ng-template pTemplate="header">
         <tr>
-          <th style="width: 8rem">{{ 'donations.reference.categories.columns.code' | translate }}</th>
-          <th style="width: 16rem">{{ 'donations.reference.categories.columns.name' | translate }}</th>
-          <th class="text-center" style="width: 8rem">{{ 'donations.reference.categories.columns.isService' | translate }}</th>
-          <th class="text-center" style="width: 8rem">{{ 'donations.reference.categories.columns.order' | translate }}</th>
-          <th class="text-center" style="width: 8rem">{{ 'donations.reference.categories.columns.active' | translate }}</th>
+          <th pSortableColumn="code" style="width: 8rem">
+            {{ 'donations.reference.categories.columns.code' | translate }}
+            <p-sortIcon field="code"></p-sortIcon>
+          </th>
+          <th pSortableColumn="name" style="width: 16rem">
+            {{ 'donations.reference.categories.columns.name' | translate }}
+            <p-sortIcon field="name"></p-sortIcon>
+          </th>
+          <th pSortableColumn="isService" class="text-center" style="width: 8rem">
+            {{ 'donations.reference.categories.columns.isService' | translate }}
+            <p-sortIcon field="isService"></p-sortIcon>
+          </th>
+          <th pSortableColumn="defaultOrder" class="text-center" style="width: 8rem">
+            {{ 'donations.reference.categories.columns.order' | translate }}
+            <p-sortIcon field="defaultOrder"></p-sortIcon>
+          </th>
+          <th pSortableColumn="active" class="text-center" style="width: 8rem">
+            {{ 'donations.reference.categories.columns.active' | translate }}
+            <p-sortIcon field="active"></p-sortIcon>
+          </th>
+          <th *ngIf="canManageCategories" class="text-center" style="width: 5rem">{{
+            'donations.reference.categories.columns.actions' | translate }}</th>
         </tr>
       </ng-template>
 
@@ -63,27 +90,53 @@
           </td>
           <td class="text-center">
             <ng-container *ngIf="tableLoadingSpinner; else serviceCell">
-              <p-skeleton height="1.25rem" width="3rem"></p-skeleton>
+              <div class="flex justify-content-center">
+                <p-skeleton height="1.25rem" width="3rem"></p-skeleton>
+              </div>
             </ng-container>
             <ng-template #serviceCell>
-              {{ (row.isService ? 'donations.reference.categories.yes' : 'donations.reference.categories.no') | translate }}
+              <div class="flex justify-content-center">
+                {{ (row.isService ? 'donations.reference.categories.yes' : 'donations.reference.categories.no') |
+                translate }}
+              </div>
             </ng-template>
           </td>
           <td class="text-center">
             <ng-container *ngIf="tableLoadingSpinner; else orderCell">
-              <p-skeleton height="1.25rem" width="3rem"></p-skeleton>
+              <div class="flex justify-content-center">
+                <p-skeleton height="1.25rem" width="3rem"></p-skeleton>
+              </div>
             </ng-container>
-            <ng-template #orderCell>{{ row.defaultOrder }}</ng-template>
+            <ng-template #orderCell>
+              <div class="flex justify-content-center">{{ row.defaultOrder }}</div>
+            </ng-template>
           </td>
           <td class="text-center">
             <ng-container *ngIf="tableLoadingSpinner; else activeCell">
-              <p-skeleton height="1.5rem" width="4rem" borderRadius="16px"></p-skeleton>
+              <div class="flex justify-content-center">
+                <p-skeleton height="1.5rem" width="4rem" borderRadius="16px"></p-skeleton>
+              </div>
             </ng-container>
             <ng-template #activeCell>
-              <app-donation-status-badge
-                [label]="(row.active ? 'donations.reference.categories.active' : 'donations.reference.categories.inactive') | translate"
-                [severity]="row.active ? 'success' : 'secondary'"
-              ></app-donation-status-badge>
+              <div class="flex justify-content-center">
+                <app-donation-status-badge
+                  [label]="(row.active ? 'donations.reference.categories.active' : 'donations.reference.categories.inactive') | translate"
+                  [severity]="row.active ? 'success' : 'secondary'"></app-donation-status-badge>
+              </div>
+            </ng-template>
+          </td>
+          <td *ngIf="canManageCategories" class="text-center">
+            <ng-container *ngIf="tableLoadingSpinner; else actionsCell">
+              <div class="flex justify-content-center">
+                <p-skeleton shape="circle" size="2rem"></p-skeleton>
+              </div>
+            </ng-container>
+            <ng-template #actionsCell>
+              <div class="flex justify-content-center">
+                <p-button icon="pi pi-ellipsis-v" [rounded]="true" [text]="true"
+                  (click)="$event.stopPropagation(); openRowMenu(rowMenu, row, $event)"></p-button>
+                <p-menu #rowMenu [model]="menuItems" [popup]="true" [appendTo]="'body'"></p-menu>
+              </div>
             </ng-template>
           </td>
         </tr>
@@ -91,9 +144,75 @@
 
       <ng-template pTemplate="emptymessage">
         <tr>
-          <td colspan="5" class="text-center py-4">{{ 'donations.reference.categories.empty' | translate }}</td>
+          <td [attr.colspan]="canManageCategories ? 6 : 5" class="text-center py-4">{{
+            'donations.reference.categories.empty' | translate }}</td>
         </tr>
       </ng-template>
     </p-table>
   </div>
 </div>
+
+<p-dialog [(visible)]="formDialogVisible" [modal]="true" [style]="{ width: '480px' }" [draggable]="false"
+  [resizable]="false" (onHide)="onFormDialogClose()">
+  <ng-template pTemplate="header">
+    <h3>{{ (formMode === 'create' ? 'donations.reference.categories.form.createTitle' :
+      'donations.reference.categories.form.editTitle') | translate }}</h3>
+  </ng-template>
+
+  <div class="flex flex-column gap-3">
+    <div class="flex flex-column gap-2">
+      <label for="categoryCode">{{ 'donations.reference.categories.form.code' | translate }}</label>
+      <input id="categoryCode" pInputText class="w-full" [(ngModel)]="formCode" maxlength="19" />
+    </div>
+    <div class="flex flex-column gap-2">
+      <label for="categoryName">{{ 'donations.reference.categories.form.name' | translate }}</label>
+      <input id="categoryName" pInputText class="w-full" [(ngModel)]="formName" maxlength="99" />
+    </div>
+
+    <div class="flex flex-column gap-2">
+      <label for="categoryOrder">{{ 'donations.reference.categories.form.defaultOrder' | translate }}</label>
+      <p-inputNumber id="categoryOrder" [(ngModel)]="formDefaultOrder" [min]="1" [useGrouping]="false"
+        class="w-full"></p-inputNumber>
+    </div>
+    <div class="flex align-items-center gap-2">
+      <p-checkbox [(ngModel)]="formIsService" [binary]="true" inputId="categoryIsService"></p-checkbox>
+      <label for="categoryIsService">{{ 'donations.reference.categories.form.isService' | translate }}</label>
+    </div>
+
+  </div>
+
+  <ng-template pTemplate="footer">
+    <p-button [label]="'common.cancel' | translate" icon="pi pi-times" class="p-button-text"
+      (onClick)="onFormDialogClose()" [disabled]="!!(isLoading$ | async)"></p-button>
+    <p-button [label]="'common.save' | translate" icon="pi pi-check" (onClick)="saveCategory()"
+      [disabled]="!!(isLoading$ | async)"></p-button>
+  </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="activationDialogVisible" [modal]="true" [style]="{ width: '480px' }" [draggable]="false"
+  [resizable]="false" (onHide)="onActivationDialogClose()">
+  <ng-template pTemplate="header">
+    <h3>{{
+      (currentCategoryForActivation?.active
+      ? 'donations.reference.categories.activation.deactivateTitle'
+      : 'donations.reference.categories.activation.activateTitle') | translate
+      }}</h3>
+  </ng-template>
+
+  <p class="m-0">
+    <ng-container *ngIf="currentCategoryForActivation?.active; else activatePrompt">
+      {{ 'donations.reference.categories.activation.deactivateIntro' | translate }}<strong>"{{ currentCategoryForActivation?.name }}"</strong>{{ 'donations.reference.categories.activation.questionMark' | translate }}
+    </ng-container>
+    <ng-template #activatePrompt>
+      {{ 'donations.reference.categories.activation.activateIntro' | translate }}<strong>"{{ currentCategoryForActivation?.name }}"</strong>{{ 'donations.reference.categories.activation.questionMark' | translate }}
+    </ng-template>
+  </p>
+
+  <ng-template pTemplate="footer">
+    <p-button [label]="'common.cancel' | translate" icon="pi pi-times" class="p-button-text"
+      (onClick)="onActivationDialogClose()" [disabled]="!!(isLoading$ | async)"></p-button>
+    <p-button [severity]="currentCategoryForActivation?.active ? 'danger' : 'success'"
+      [label]="(currentCategoryForActivation?.active ? 'donations.reference.categories.actions.deactivate' : 'donations.reference.categories.actions.activate') | translate"
+      (onClick)="confirmActivationToggle()" [disabled]="!!(isLoading$ | async)"></p-button>
+  </ng-template>
+</p-dialog>

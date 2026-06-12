@@ -34,7 +34,7 @@ export class VendorOffersListComponent implements OnInit, OnDestroy {
     private languageDirService: LanguageDirService,
     private translate: TranslationService,
     private messageService: MessageService,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.subscriptions.push(

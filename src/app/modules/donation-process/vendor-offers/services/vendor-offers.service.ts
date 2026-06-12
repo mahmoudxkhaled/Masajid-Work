@@ -14,7 +14,7 @@ export class VendorOffersService {
     private apiServices: ApiService,
     private localStorageService: LocalStorageService,
     private donationRequestsService: DonationRequestsService,
-  ) {}
+  ) { }
 
   listRequestsForVendor(
     categoryFilter: number[],

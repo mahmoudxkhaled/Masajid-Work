@@ -71,10 +71,7 @@ export class DonationCategoryPickerComponent implements OnInit, OnChanges, OnDes
             this.categories = [];
             return;
           }
-          this.rawCategories = this.donationReferenceService.extractDictionaryItems<DonationCategoryBackend>(
-            response.message,
-            'Donation_Categories',
-          );
+          this.rawCategories = this.donationReferenceService.extractDictionaryItems<DonationCategoryBackend>(response.message);
           this.remapCategories();
         },
         complete: () => {
