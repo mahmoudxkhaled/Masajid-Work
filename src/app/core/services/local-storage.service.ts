@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { APP_DEFAULT_LANGUAGE } from '../config/app-branding.config';
 import { IUserDetails, IAccountDetails, IEntityDetails, IAccountSettings, IAccountStatusResponse, IUserAccountItem } from '../models/account-status.model';
+import { MasajidUserType } from '../models/masajid-user-type.model';
 
 @Injectable({
   providedIn: 'root'
@@ -142,8 +143,37 @@ export class LocalStorageService {
   }
   // #endregion
 
+  // #region Masajid user context
+  setMasajidUserType(userType: MasajidUserType): void {
+    this.setItem('Masajid_User_Type', userType);
+  }
+
+  getMasajidUserType(): MasajidUserType | null {
+    return this.getItem('Masajid_User_Type') as MasajidUserType | null;
+  }
+
+  setEntityTypeId(entityTypeId: number): void {
+    this.setItem('Entity_Type_ID', entityTypeId);
+  }
+
+  getEntityTypeId(): number | null {
+    const value = this.getItem('Entity_Type_ID');
+    if (value === null || value === undefined) {
+      return null;
+    }
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : null;
+  }
+
+  clearMasajidUserContext(): void {
+    this.removeItem('Masajid_User_Type');
+    this.removeItem('Entity_Type_ID');
+  }
+  // #endregion
+
   // #region Login lifecycle
   setLoginDataPackage(accountData: IAccountStatusResponse): void {
+    this.clearMasajidUserContext();
     if (accountData.User_Details) {
       this.setItem('User_Details', accountData.User_Details);
     }

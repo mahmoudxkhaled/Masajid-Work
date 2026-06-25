@@ -3,17 +3,25 @@ import { LocalStorageService } from './local-storage.service';
 import { PermissionService } from './permission.service';
 import {
     IModulesDetails,
-    IModuleDetail,
     IFunctionDetail,
     IMenuFunction,
     IMenuModule
 } from '../models/account-status.model';
+import { MasajidUserType } from '../models/masajid-user-type.model';
 import {
     STATIC_FUNCTIONS_DETAILS,
     STATIC_MODULES_DETAILS,
     MODULE_ROLE_VISIBILITY,
-    DEFAULT_MODULE_VISIBLE_ROLES
+    DEFAULT_MODULE_VISIBLE_ROLES,
+    SYSTEM_ADMIN_ONLY_LEGACY_FUNCTIONS,
 } from '../config/static-navigation.config';
+import { Roles } from '../models/system-roles';
+import {
+    MASAJID_WORKSPACE_FUNCTION_USER_TYPE,
+    MASAJID_WORKSPACE_FUNCTIONS,
+    MASAJID_WORKSPACE_MODULES,
+    MASAJID_WORKSPACE_MODULE_ROLE_VISIBILITY,
+} from '../config/masajid-workspace.config';
 
 @Injectable({
     providedIn: 'root'
@@ -24,43 +32,99 @@ export class ModuleNavigationService {
         private permissionService: PermissionService
     ) { }
 
-    getFunctionsWithModules(): IMenuFunction[] {
-        const functionsDetails: Record<string, IFunctionDetail> = STATIC_FUNCTIONS_DETAILS;
-        const modulesDetails = STATIC_MODULES_DETAILS;
+    getFunctionsWithModules(userType?: MasajidUserType | null): IMenuFunction[] {
+        const resolvedUserType = userType ?? this.localStorageService.getMasajidUserType();
+        const legacyFunctions = this.buildLegacyFunctionsWithModules(resolvedUserType);
+        const workspaceFunctions = this.buildWorkspaceFunctionsWithModules(resolvedUserType);
+        const merged = [...legacyFunctions, ...workspaceFunctions];
+        merged.sort((a, b) => a.defaultOrder - b.defaultOrder);
+        return merged;
+    }
+
+    private buildLegacyFunctionsWithModules(userType: MasajidUserType | null | undefined): IMenuFunction[] {
         const isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
         const functionsArray: IMenuFunction[] = [];
 
-        Object.entries(functionsDetails).forEach(([functionCode, functionData]) => {
-            if (!functionData || !functionData.FunctionID) {
+        Object.entries(STATIC_FUNCTIONS_DETAILS).forEach(([functionCode, functionData]) => {
+            if (!functionData?.FunctionID) {
                 return;
             }
 
-            let modules = this.getModulesForFunction(functionData.FunctionID, modulesDetails, functionCode, isRegional);
-            modules = modules.filter((m) => this.canSeeModule(m.code));
-
-            modules.sort((a, b) => (a.defaultOrder || 0) - (b.defaultOrder || 0));
-
-            if (modules.length === 0) {
+            if (!this.canSeeLegacyFunction(functionCode, userType)) {
                 return;
             }
 
-            functionsArray.push({
-                code: functionCode,
-                name: isRegional ? (functionData.Name_Regional || functionData.Name || '') : (functionData.Name || ''),
-                nameRegional: functionData.Name_Regional || '',
-                defaultOrder: functionData.Default_Order || 0,
-                icon: undefined,
-                modules: modules,
-                url: functionData.URL || ''
-            });
+            let modules = this.getModulesForFunction(
+                functionData.FunctionID,
+                STATIC_MODULES_DETAILS,
+                functionCode,
+                isRegional,
+                (moduleCode) => this.canSeeLegacyModule(moduleCode),
+            );
+
+            if (!modules.length) {
+                return;
+            }
+
+            functionsArray.push(this.toMenuFunction(functionCode, functionData, modules, isRegional));
         });
-
-        functionsArray.sort((a, b) => a.defaultOrder - b.defaultOrder);
 
         return functionsArray;
     }
 
-    private canSeeModule(moduleCode: string): boolean {
+    private buildWorkspaceFunctionsWithModules(userType: MasajidUserType | null | undefined): IMenuFunction[] {
+        if (!userType || userType === MasajidUserType.Unknown) {
+            return [];
+        }
+
+        const isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
+        const functionsArray: IMenuFunction[] = [];
+
+        Object.entries(MASAJID_WORKSPACE_FUNCTIONS).forEach(([functionCode, functionData]) => {
+            if (!functionData?.FunctionID) {
+                return;
+            }
+
+            if (MASAJID_WORKSPACE_FUNCTION_USER_TYPE[functionCode] !== userType) {
+                return;
+            }
+
+            let modules = this.getModulesForFunction(
+                functionData.FunctionID,
+                MASAJID_WORKSPACE_MODULES,
+                functionCode,
+                isRegional,
+                (moduleCode) => this.canSeeWorkspaceModule(moduleCode),
+            );
+
+            if (!modules.length) {
+                return;
+            }
+
+            functionsArray.push(this.toMenuFunction(functionCode, functionData, modules, isRegional));
+        });
+
+        return functionsArray;
+    }
+
+    private toMenuFunction(
+        functionCode: string,
+        functionData: IFunctionDetail,
+        modules: IMenuModule[],
+        isRegional: boolean,
+    ): IMenuFunction {
+        return {
+            code: functionCode,
+            name: isRegional ? (functionData.Name_Regional || functionData.Name || '') : (functionData.Name || ''),
+            nameRegional: functionData.Name_Regional || '',
+            defaultOrder: functionData.Default_Order || 0,
+            icon: undefined,
+            modules,
+            url: functionData.URL || '',
+        };
+    }
+
+    private canSeeLegacyModule(moduleCode: string): boolean {
         const roleId = this.permissionService.getCurrentRoleId();
         if (!roleId) {
             return false;
@@ -70,16 +134,39 @@ export class ModuleNavigationService {
         return this.permissionService.hasAnyRole(allowed);
     }
 
+    private canSeeLegacyFunction(functionCode: string, userType: MasajidUserType | null | undefined): boolean {
+        if (!SYSTEM_ADMIN_ONLY_LEGACY_FUNCTIONS.includes(functionCode)) {
+            return true;
+        }
+
+        if (userType === MasajidUserType.SystemAdmin) {
+            return true;
+        }
+
+        return this.permissionService.hasAnyRole([Roles.Developer, Roles.SystemAdministrator]);
+    }
+
+    private canSeeWorkspaceModule(moduleCode: string): boolean {
+        const roleId = this.permissionService.getCurrentRoleId();
+        if (!roleId) {
+            return false;
+        }
+
+        const allowed = MASAJID_WORKSPACE_MODULE_ROLE_VISIBILITY[moduleCode] ?? DEFAULT_MODULE_VISIBLE_ROLES;
+        return this.permissionService.hasAnyRole(allowed);
+    }
+
     private getModulesForFunction(
         functionId: number,
         modulesDetails: IModulesDetails,
         functionCode: string,
-        isRegional: boolean
+        isRegional: boolean,
+        canSee: (moduleCode: string) => boolean,
     ): IMenuModule[] {
         const modules: IMenuModule[] = [];
 
         Object.entries(modulesDetails).forEach(([moduleCode, moduleData]) => {
-            if (!moduleData || moduleData.FunctionID !== functionId) {
+            if (!moduleData || moduleData.FunctionID !== functionId || !canSee(moduleCode)) {
                 return;
             }
 
@@ -92,16 +179,16 @@ export class ModuleNavigationService {
                 icon: undefined,
                 isImplemented: moduleData.URL.trim() !== '',
                 moduleId: moduleData.ModuleID,
-                functionCode: functionCode
+                functionCode,
             });
         });
 
+        modules.sort((a, b) => (a.defaultOrder || 0) - (b.defaultOrder || 0));
         return modules;
     }
 
     getFunctionByCode(functionCode: string): IFunctionDetail | null {
-        const row = STATIC_FUNCTIONS_DETAILS[functionCode];
-        return row ?? null;
+        return STATIC_FUNCTIONS_DETAILS[functionCode] ?? MASAJID_WORKSPACE_FUNCTIONS[functionCode] ?? null;
     }
 
     findModuleByUrl(url: string): IMenuModule | null {

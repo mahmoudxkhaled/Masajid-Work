@@ -18,15 +18,9 @@ export const MODULE_ROLE_VISIBILITY: Partial<Record<string, Roles[]>> = {
     SET: [Roles.Developer, Roles.SystemAdministrator, Roles.EntityAdministrator, Roles.SystemUser, Roles.Guest],
     LGOT: [Roles.Developer, Roles.SystemAdministrator, Roles.EntityAdministrator, Roles.SystemUser, Roles.Guest],
     NOTM: [Roles.Developer, Roles.SystemAdministrator, Roles.EntityAdministrator],
-    FDRQ: [Roles.Developer, Roles.SystemAdministrator, Roles.EntityAdministrator, Roles.SystemUser],
-    DNBR: [Roles.Developer, Roles.SystemAdministrator, Roles.EntityAdministrator, Roles.SystemUser],
-    DNCMT: [Roles.Developer, Roles.SystemAdministrator, Roles.EntityAdministrator, Roles.SystemUser],
-    DNADM: [Roles.Developer, Roles.SystemAdministrator],
-    DNVND: [Roles.Developer, Roles.SystemAdministrator, Roles.EntityAdministrator, Roles.SystemUser],
-    DNCHR: [Roles.Developer, Roles.SystemAdministrator, Roles.EntityAdministrator, Roles.SystemUser],
-    DNVAL: [Roles.Developer, Roles.SystemAdministrator, Roles.EntityAdministrator, Roles.SystemUser],
-    DNREF: [Roles.Developer, Roles.SystemAdministrator],
 };
+
+export const SYSTEM_ADMIN_ONLY_LEGACY_FUNCTIONS: readonly string[] = ['EntAdm', 'DC'];
 
 export const STATIC_FUNCTIONS_DETAILS: Record<string, IFunctionDetail> = {
     DBS: {
@@ -35,13 +29,6 @@ export const STATIC_FUNCTIONS_DETAILS: Record<string, IFunctionDetail> = {
         Name_Regional: '\u0645\u0644\u062e\u0635 \u0644\u0648\u062d\u0629 \u0627\u0644\u062a\u062d\u0643\u0645',
         Default_Order: 10,
         URL: '/',
-    },
-    DON: {
-        FunctionID: 5,
-        Name: 'Donations',
-        Name_Regional: '\u0627\u0644\u062a\u0628\u0631\u0639\u0627\u062a',
-        Default_Order: 15,
-        URL: '/donations',
     },
     EntAdm: {
         FunctionID: 3,
@@ -178,69 +165,5 @@ export const STATIC_MODULES_DETAILS: IModulesDetails = {
         Name_Regional: '\u0627\u0644\u062a\u062e\u0632\u064a\u0646 \u0648\u0625\u062f\u0627\u0631\u0629 \u0627\u0644\u0645\u062d\u062a\u0648\u0649',
         Default_Order: 10,
         URL: '/document-control/storage-content-management',
-    },
-    FDRQ: {
-        ModuleID: 200,
-        FunctionID: 5,
-        Name: 'My Donation Requests',
-        Name_Regional: '\u0637\u0644\u0628\u0627\u062a \u0627\u0644\u062a\u0628\u0631\u0639 \u0627\u0644\u062e\u0627\u0635\u0629 \u0628\u064a',
-        Default_Order: 10,
-        URL: '/donations/facility/requests',
-    },
-    DNBR: {
-        ModuleID: 201,
-        FunctionID: 5,
-        Name: 'Browse Donations',
-        Name_Regional: '\u062a\u0635\u0641\u062d \u0637\u0644\u0628\u0627\u062a \u0627\u0644\u062a\u0628\u0631\u0639',
-        Default_Order: 20,
-        URL: '/donations/browse',
-    },
-    DNCMT: {
-        ModuleID: 202,
-        FunctionID: 5,
-        Name: 'My Commitments',
-        Name_Regional: '\u0627\u0644\u062a\u0632\u0627\u0645\u0627\u062a\u064a',
-        Default_Order: 30,
-        URL: '/donations/commitments',
-    },
-    DNADM: {
-        ModuleID: 203,
-        FunctionID: 5,
-        Name: 'Admin Review',
-        Name_Regional: '\u0645\u0631\u0627\u062c\u0639\u0629 \u0627\u0644\u0625\u062f\u0627\u0631\u0629',
-        Default_Order: 40,
-        URL: '/donations/admin/pending-review',
-    },
-    DNVND: {
-        ModuleID: 204,
-        FunctionID: 5,
-        Name: 'Vendor Offers',
-        Name_Regional: '\u0639\u0631\u0648\u0636 \u0627\u0644\u0645\u0648\u0631\u062f\u064a\u0646',
-        Default_Order: 50,
-        URL: '/donations/vendor/requests',
-    },
-    DNCHR: {
-        ModuleID: 205,
-        FunctionID: 5,
-        Name: 'Charity Representation',
-        Name_Regional: '\u062a\u0645\u062b\u064a\u0644 \u0627\u0644\u062c\u0645\u0639\u064a\u0627\u062a',
-        Default_Order: 60,
-        URL: '/donations/charity/representation',
-    },
-    DNVAL: {
-        ModuleID: 206,
-        FunctionID: 5,
-        Name: 'Community Validation',
-        Name_Regional: '\u0627\u0644\u062a\u062d\u0642\u0642 \u0627\u0644\u0645\u062c\u062a\u0645\u0639\u064a',
-        Default_Order: 70,
-        URL: '/donations/validation',
-    },
-    DNREF: {
-        ModuleID: 207,
-        FunctionID: 5,
-        Name: 'Donation Categories',
-        Name_Regional: '\u062a\u0635\u0646\u064a\u0641\u0627\u062a \u0627\u0644\u062a\u0628\u0631\u0639\u0627\u062a',
-        Default_Order: 80,
-        URL: '/donations/reference/categories',
     },
 };

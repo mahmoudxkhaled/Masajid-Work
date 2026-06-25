@@ -10,6 +10,7 @@ import { LogoutComponent } from '../auth/components/logout/logout.component';
 import { DialogService } from 'primeng/dynamicdialog';
 import { IMenuFunction, IMenuModule } from 'src/app/core/models/account-status.model';
 import { ModuleNavigationService } from 'src/app/core/services/module-navigation.service';
+import { DashboardResolverService } from 'src/app/core/services/dashboard-resolver.service';
 
 @Component({
     selector: 'app-dashboard',
@@ -24,6 +25,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     dashboardCategories: IMenuFunction[] = [];
     highlightedModuleCode: string | null = null;
     private langSub: Subscription;
+    private dashboardSub: Subscription;
 
     constructor(
         private localStorageService: LocalStorageService,
@@ -35,6 +37,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
         private dialogService: DialogService,
         private authService: AuthService,
         private moduleNavigationService: ModuleNavigationService,
+        private dashboardResolverService: DashboardResolverService,
         private cdr: ChangeDetectorRef
     ) { }
 
@@ -77,9 +80,13 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     loadDashboardCategories(): void {
-        this.dashboardCategories = this.moduleNavigationService
-            .getFunctionsWithModules()
-            .filter(func => Array.isArray(func.modules) && func.modules.length > 0);
+        this.dashboardSub?.unsubscribe();
+        this.dashboardSub = this.dashboardResolverService.resolveCurrentUserType().subscribe((userType) => {
+            this.dashboardCategories = this.moduleNavigationService
+                .getFunctionsWithModules(userType)
+                .filter((func) => Array.isArray(func.modules) && func.modules.length > 0);
+            this.cdr.detectChanges();
+        });
     }
 
     getDashboardCategories(): IMenuFunction[] {
@@ -123,6 +130,27 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
             'DNCHR': '🏛️',
             'DNVAL': '🛡️',
             'DNREF': '📋',
+            'ADM_REV': '✅',
+            'ADM_OVER': '⏰',
+            'ADM_FAC': '🕌',
+            'ADM_ACC': '👥',
+            'ADM_NOT': '🛎️',
+            'FDRQ_NEW': '➕',
+            'FCONF': '📦',
+            'FAC_PROFILE': '👤',
+            'FAC_NOT': '🔔',
+            'DNR_PROFILE': '👤',
+            'DNR_NOT': '🔔',
+            'VREQ': '🏪',
+            'VOFR': '📋',
+            'VOFR_NEW': '➕',
+            'VND_PROFILE': '👤',
+            'VND_NOT': '🔔',
+            'CHR_REQ': '🏛️',
+            'CHR_CMT': '🤝',
+            'CHR_SUPPORT': '📦',
+            'CHR_PROFILE': '👤',
+            'CHR_NOT': '🔔',
         };
         return iconMap[moduleCode] || '📁';
     }
@@ -274,5 +302,6 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
 
     ngOnDestroy(): void {
         this.langSub?.unsubscribe();
+        this.dashboardSub?.unsubscribe();
     }
 }

@@ -8,7 +8,7 @@ import { IAccountStatusResponse } from 'src/app/core/models/account-status.model
 import { SettingsEngineService } from '../../summary/services/settings-engine.service';
 import { ProfileApiService } from 'src/app/modules/summary/services/profile-api.service';
 import { LayoutService } from 'src/app/layout/app-services/app.layout.service';
-import { resolvePostLoginUrl } from 'src/app/core/utils/post-login-navigation';
+import { DashboardResolverService } from 'src/app/core/services/dashboard-resolver.service';
 
 @Injectable({
     providedIn: 'root',
@@ -22,7 +22,8 @@ export class AuthService {
         private notificationRefreshService: NotificationRefreshService,
         private injector: Injector,
         private profileApiService: ProfileApiService,
-        private layoutService: LayoutService
+        private layoutService: LayoutService,
+        private dashboardResolverService: DashboardResolverService
     ) {
         this.isLoadingSubject = new BehaviorSubject<boolean>(false);
     }
@@ -62,10 +63,21 @@ export class AuthService {
                                 map(() => r)
                             )
                         ),
+                        switchMap(() => {
+                            this.dashboardResolverService.invalidateUserTypeCache();
+                            return this.dashboardResolverService.resolveCurrentUserType();
+                        }),
                         tap(() => {
                             this.notificationRefreshService.requestRefresh();
                             const returnUrl = this.router.parseUrl(this.router.url).queryParams['returnUrl'];
-                            void this.router.navigateByUrl(resolvePostLoginUrl(returnUrl));
+                            void this.router.navigateByUrl(
+                                returnUrl &&
+                                    returnUrl.startsWith('/') &&
+                                    !returnUrl.startsWith('//') &&
+                                    !returnUrl.startsWith('/auth')
+                                    ? returnUrl
+                                    : '/dashboard',
+                            );
                         })
                     );
                 }
@@ -105,10 +117,21 @@ export class AuthService {
                                 map(() => r)
                             )
                         ),
+                        switchMap(() => {
+                            this.dashboardResolverService.invalidateUserTypeCache();
+                            return this.dashboardResolverService.resolveCurrentUserType();
+                        }),
                         tap(() => {
                             this.notificationRefreshService.requestRefresh();
                             const returnUrl = this.router.parseUrl(this.router.url).queryParams['returnUrl'];
-                            void this.router.navigateByUrl(resolvePostLoginUrl(returnUrl));
+                            void this.router.navigateByUrl(
+                                returnUrl &&
+                                    returnUrl.startsWith('/') &&
+                                    !returnUrl.startsWith('//') &&
+                                    !returnUrl.startsWith('/auth')
+                                    ? returnUrl
+                                    : '/dashboard',
+                            );
                         })
                     );
                 }
