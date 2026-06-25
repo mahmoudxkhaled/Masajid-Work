@@ -29,52 +29,63 @@
         <div class="register-card__section">
           <div class="register-form__grid">
             <div class="register-field register-field--span-2">
-              <label class="register-field__label">{{ 'public.register.vendor.fields.businessName' | translate }}</label>
-              <input class="register-field__input" formControlName="vendorName" [class.register-field__input--invalid]="showError('vendorName')" />
-              <small class="register-field__error" *ngIf="showError('vendorName')">{{ 'public.register.validation.required' | translate }}</small>
+              <label class="register-field__label">{{ 'public.register.vendor.fields.businessName' | translate
+                }}</label>
+              <input class="register-field__input" formControlName="vendorName"
+                [class.register-field__input--invalid]="showError('vendorName')" />
+              <small class="register-field__error" *ngIf="showError('vendorName')">{{
+                'public.register.validation.required' | translate }}</small>
             </div>
             <div class="register-field">
-              <label class="register-field__label">{{ 'public.register.fields.representativeFirstName' | translate }}</label>
-              <input class="register-field__input" formControlName="representativeFirstName" [class.register-field__input--invalid]="showError('representativeFirstName')" />
-              <small class="register-field__error" *ngIf="showError('representativeFirstName')">{{ 'public.register.validation.required' | translate }}</small>
+              <label class="register-field__label">{{ 'public.register.fields.representativeFirstName' | translate
+                }}</label>
+              <input class="register-field__input" formControlName="representativeFirstName"
+                [class.register-field__input--invalid]="showError('representativeFirstName')" />
+              <small class="register-field__error" *ngIf="showError('representativeFirstName')">{{
+                'public.register.validation.required' | translate }}</small>
             </div>
             <div class="register-field">
-              <label class="register-field__label">{{ 'public.register.fields.representativeLastName' | translate }}</label>
-              <input class="register-field__input" formControlName="representativeLastName" [class.register-field__input--invalid]="showError('representativeLastName')" />
-              <small class="register-field__error" *ngIf="showError('representativeLastName')">{{ 'public.register.validation.required' | translate }}</small>
+              <label class="register-field__label">{{ 'public.register.fields.representativeLastName' | translate
+                }}</label>
+              <input class="register-field__input" formControlName="representativeLastName"
+                [class.register-field__input--invalid]="showError('representativeLastName')" />
+              <small class="register-field__error" *ngIf="showError('representativeLastName')">{{
+                'public.register.validation.required' | translate }}</small>
             </div>
-            <small class="register-field__error register-field--span-2" *ngIf="showGroupError('representativeFullName')">
+            <small class="register-field__error register-field--span-2"
+              *ngIf="showGroupError('representativeFullName')">
               {{ 'public.register.validation.representativeFullName' | translate }}
             </small>
             <div class="register-field register-field--span-2">
               <label class="register-field__label">{{ 'public.register.vendor.fields.email' | translate }}</label>
-              <input class="register-field__input" type="email" formControlName="representativeEmail" [class.register-field__input--invalid]="showError('representativeEmail')" />
-              <small class="register-field__error" *ngIf="showError('representativeEmail')">{{ 'public.register.validation.email' | translate }}</small>
+              <input class="register-field__input" type="email" formControlName="representativeEmail"
+                [class.register-field__input--invalid]="showError('representativeEmail')" />
+              <small class="register-field__error" *ngIf="showError('representativeEmail')">{{
+                'public.register.validation.email' | translate }}</small>
             </div>
             <div class="register-field">
               <label class="register-field__label">{{ 'public.register.fields.countryCode' | translate }}</label>
-              <select class="register-field__select" formControlName="countryCode" [class.register-field__select--invalid]="showError('countryCode')">
+              <select class="register-field__select" formControlName="countryCode"
+                [class.register-field__select--invalid]="showError('countryCode')">
                 <option value="">{{ 'public.register.placeholders.selectCountry' | translate }}</option>
                 <option *ngFor="let country of countries" [value]="country.code">
                   {{ lookupService.getCountryLabel(country, isArabic) }}
                 </option>
               </select>
-              <small class="register-field__error" *ngIf="showError('countryCode')">{{ 'public.register.validation.countryCode' | translate }}</small>
+              <small class="register-field__error" *ngIf="showError('countryCode')">{{
+                'public.register.validation.countryCode' | translate }}</small>
             </div>
             <div class="register-field">
               <label class="register-field__label">{{ 'public.register.facility.fields.city' | translate }}</label>
-              <input class="register-field__input" formControlName="city" [class.register-field__input--invalid]="showError('city')" />
-              <small class="register-field__error" *ngIf="showError('city')">{{ 'public.register.validation.required' | translate }}</small>
+              <input class="register-field__input" formControlName="city"
+                [class.register-field__input--invalid]="showError('city')" />
+              <small class="register-field__error" *ngIf="showError('city')">{{ 'public.register.validation.required' |
+                translate }}</small>
             </div>
-            <div class="register-field">
-              <label class="register-field__label">{{ 'public.register.fields.latitude' | translate }}</label>
-              <input class="register-field__input" type="text" formControlName="latitude" [class.register-field__input--invalid]="showError('latitude')" />
-              <small class="register-field__error" *ngIf="showError('latitude')">{{ 'public.register.validation.latitude' | translate }}</small>
-            </div>
-            <div class="register-field">
-              <label class="register-field__label">{{ 'public.register.fields.longitude' | translate }}</label>
-              <input class="register-field__input" type="text" formControlName="longitude" [class.register-field__input--invalid]="showError('longitude')" />
-              <small class="register-field__error" *ngIf="showError('longitude')">{{ 'public.register.validation.longitude' | translate }}</small>
+            <div class="register-field register-field--span-2">
+              <app-register-location-picker [latitudeControl]="$any(form.get('latitude'))"
+                [longitudeControl]="$any(form.get('longitude'))"
+                [countryCodeControl]="$any(form.get('countryCode'))"></app-register-location-picker>
             </div>
           </div>
         </div>
@@ -89,13 +100,11 @@
             {{ 'public.register.vendor.submit' | translate }}
           </button>
         </div>
-        <p class="register-login-hint">
-          {{ 'public.register.vendor.hasAccount' | translate }}
-          <a [routerLink]="loginPath">{{ 'public.register.vendor.loginLink' | translate }}</a>
+        <p class="register-login-hint  mb-4">
+          {{ 'public.register.common.hasAccount' | translate }}
+          <a [routerLink]="loginPath">{{ 'public.register.common.loginLink' | translate }}</a>
         </p>
       </form>
     </ng-template>
   </div>
 </section>
-
-

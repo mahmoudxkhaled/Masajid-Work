@@ -71,19 +71,10 @@
               <small class="register-field__error" *ngIf="showError('city')">{{ 'public.register.validation.required' |
                 translate }}</small>
             </div>
-            <div class="register-field">
-              <label class="register-field__label">{{ 'public.register.fields.latitude' | translate }}</label>
-              <input class="register-field__input" type="text" formControlName="latitude"
-                [class.register-field__input--invalid]="showError('latitude')" />
-              <small class="register-field__error" *ngIf="showError('latitude')">{{
-                'public.register.validation.latitude' | translate }}</small>
-            </div>
-            <div class="register-field">
-              <label class="register-field__label">{{ 'public.register.fields.longitude' | translate }}</label>
-              <input class="register-field__input" type="text" formControlName="longitude"
-                [class.register-field__input--invalid]="showError('longitude')" />
-              <small class="register-field__error" *ngIf="showError('longitude')">{{
-                'public.register.validation.longitude' | translate }}</small>
+            <div class="register-field register-field--span-2">
+              <app-register-location-picker [latitudeControl]="$any(form.get('latitude'))"
+                [longitudeControl]="$any(form.get('longitude'))"
+                [countryCodeControl]="$any(form.get('countryCode'))"></app-register-location-picker>
             </div>
           </div>
         </div>
@@ -98,6 +89,10 @@
             {{ 'public.register.donor.submit' | translate }}
           </button>
         </div>
+        <p class="register-login-hint mb-4">
+          {{ 'public.register.common.hasAccount' | translate }}
+          <a [routerLink]="loginPath">{{ 'public.register.common.loginLink' | translate }}</a>
+        </p>
       </form>
     </ng-template>
   </div>

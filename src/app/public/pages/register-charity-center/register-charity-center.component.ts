@@ -5,6 +5,7 @@ import { CountryLookup } from 'src/app/core/models/lookup.model';
 import { BrandingService } from 'src/app/core/services/branding.service';
 import { PublicLookupService } from 'src/app/core/services/public-lookup.service';
 import type { CharityCenterRegistrationRequest } from '../../models/public-registration.model';
+import { AUTH_LOGIN_PATH } from '../../data/public-landing.data';
 import { PublicRegistrationService } from '../../services/public-registration.service';
 import {
   adminEmailValidators,
@@ -21,6 +22,7 @@ import {
   styleUrl: './register-charity-center.component.scss',
 })
 export class CharityCenterRegistrationComponent implements OnInit {
+  readonly loginPath = AUTH_LOGIN_PATH;
   readonly brandingParams = this.branding.translateParams;
 
   countries: CountryLookup[] = [];
@@ -98,6 +100,13 @@ export class CharityCenterRegistrationComponent implements OnInit {
   }
 
   showGroupError(errorKey: string): boolean {
+    if (errorKey === 'representativeFullName') {
+      const first = this.form.get('representativeFirstName');
+      const last = this.form.get('representativeLastName');
+      const namesTouched = !!(first?.touched || last?.touched);
+      return namesTouched && !!this.form.errors?.[errorKey];
+    }
+
     return this.form.touched && !!this.form.errors?.[errorKey];
   }
 

@@ -29,6 +29,7 @@
                             "file-saver",
                             "html2canvas",
                             "google-libphonenumber",
+                            "leaflet",
                             "rgbcolor",
                             "raf",
                             "core-js/modules/es.array.index-of.js",
@@ -58,6 +59,11 @@
                             "src/favicon.ico",
                             "src/runtime-config.json",
                             "src/assets",
+                            {
+                                "glob": "**/*",
+                                "input": "node_modules/leaflet/dist/images",
+                                "output": "assets/leaflet"
+                            },
                             {
                                 "glob": "**/*",
                                 "input": "./node_modules/monaco-editor/min",

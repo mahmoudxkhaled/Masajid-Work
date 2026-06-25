@@ -4,6 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { CountryLookup } from 'src/app/core/models/lookup.model';
 import { PublicLookupService } from 'src/app/core/services/public-lookup.service';
 import type { DonorRegistrationRequest } from '../../models/public-registration.model';
+import { AUTH_LOGIN_PATH } from '../../data/public-landing.data';
 import { PublicRegistrationService } from '../../services/public-registration.service';
 import {
   adminEmailValidators,
@@ -19,6 +20,7 @@ import {
   styleUrl: './register-donor.component.scss',
 })
 export class DonorRegistrationComponent implements OnInit {
+  readonly loginPath = AUTH_LOGIN_PATH;
   countries: CountryLookup[] = [];
   isArabic = false;
   submitted = false;

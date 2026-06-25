@@ -114,7 +114,8 @@
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .register-form__grid--span-2 {
+  .register-form__grid--span-2,
+  .register-field--span-2 {
     grid-column: 1 / -1;
   }
 }
@@ -458,6 +459,7 @@
 .register-login-hint {
   text-align: center;
   margin-top: 1rem;
+  margin-bottom: 2rem;
   font-size: 0.875rem;
   color: var(--dh-on-surface-variant);
 }

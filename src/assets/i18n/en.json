@@ -3777,7 +3777,9 @@
                 "back": "Back",
                 "next": "Next",
                 "submitting": "Submitting your registration…",
-                "passwordSetupInfo": "After registration, you will receive an email to set your password."
+                "passwordSetupInfo": "After registration, you will receive an email to set your password.",
+                "hasAccount": "Already have an account?",
+                "loginLink": "Log in here"
             },
             "fields": {
                 "countryCode": "Country",
@@ -3787,7 +3789,22 @@
                 "representativeLastName": "Representative last name"
             },
             "placeholders": {
-                "selectCountry": "Select a country"
+                "selectCountry": "Select a country",
+                "latitude": "e.g. 30.0444",
+                "longitude": "e.g. 31.2357"
+            },
+            "location": {
+                "title": "Location on map",
+                "hint": "Click the map or drag the pin to set your location. You can also use your current location.",
+                "selectCountryFirst": "Select a country above to load the map centered on that region.",
+                "useMyLocation": "Use my current location",
+                "locating": "Getting your location…",
+                "errors": {
+                    "unsupported": "Geolocation is not supported by your browser.",
+                    "denied": "Location permission was denied. Please pick a point on the map.",
+                    "unavailable": "Your location could not be determined. Please pick a point on the map.",
+                    "timeout": "Location request timed out. Please pick a point on the map."
+                }
             },
             "messages": {
                 "invalidEmail": "The email address is not valid.",

@@ -97,6 +97,13 @@ export class VendorRegistrationComponent implements OnInit {
   }
 
   showGroupError(errorKey: string): boolean {
+    if (errorKey === 'representativeFullName') {
+      const first = this.form.get('representativeFirstName');
+      const last = this.form.get('representativeLastName');
+      const namesTouched = !!(first?.touched || last?.touched);
+      return namesTouched && !!this.form.errors?.[errorKey];
+    }
+
     return this.form.touched && !!this.form.errors?.[errorKey];
   }
 

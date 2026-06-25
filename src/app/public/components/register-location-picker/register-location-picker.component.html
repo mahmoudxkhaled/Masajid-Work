@@ -1,0 +1,74 @@
+<div class="register-location-picker">
+  <div class="register-location-picker__head">
+    <span class="register-field__label">{{ 'public.register.location.title' | translate }}</span>
+    <p class="register-location-picker__hint">{{ 'public.register.location.hint' | translate }}</p>
+  </div>
+
+  <div
+    class="register-location-picker__map-box"
+    [class.register-location-picker__map-box--invalid]="showLocationError"
+  >
+    <div #map class="register-location-picker__map" [attr.aria-label]="'public.register.location.title' | translate"></div>
+    <div class="register-location-picker__map-overlay" *ngIf="!hasCountryCode">
+      {{ 'public.register.location.selectCountryFirst' | translate }}
+    </div>
+  </div>
+
+  <div class="register-location-picker__actions">
+    <button
+      type="button"
+      class="register-location-picker__geo-btn"
+      (click)="useMyLocation()"
+      [disabled]="locating || !hasCountryCode"
+    >
+      <span class="material-symbols-outlined">my_location</span>
+      <ng-container *ngIf="locating; else geoLabel">
+        {{ 'public.register.location.locating' | translate }}
+      </ng-container>
+      <ng-template #geoLabel>{{ 'public.register.location.useMyLocation' | translate }}</ng-template>
+    </button>
+  </div>
+
+  <div class="register-location-picker__coords">
+    <div class="register-location-picker__coord-field">
+      <label class="register-location-picker__coord-label" for="register-location-latitude">
+        {{ 'public.register.fields.latitude' | translate }}
+      </label>
+      <input
+        id="register-location-latitude"
+        class="register-location-picker__input"
+        type="text"
+        inputmode="decimal"
+        [value]="latitudeControl.value ?? ''"
+        (input)="onCoordinateInput('lat', $event)"
+        (blur)="onCoordinateBlur('lat')"
+        [class.register-location-picker__input--invalid]="showLatitudeError"
+        [placeholder]="'public.register.placeholders.latitude' | translate"
+      />
+      <small class="register-location-picker__error" *ngIf="showLatitudeError">
+        {{ 'public.register.validation.latitude' | translate }}
+      </small>
+    </div>
+    <div class="register-location-picker__coord-field">
+      <label class="register-location-picker__coord-label" for="register-location-longitude">
+        {{ 'public.register.fields.longitude' | translate }}
+      </label>
+      <input
+        id="register-location-longitude"
+        class="register-location-picker__input"
+        type="text"
+        inputmode="decimal"
+        [value]="longitudeControl.value ?? ''"
+        (input)="onCoordinateInput('lng', $event)"
+        (blur)="onCoordinateBlur('lng')"
+        [class.register-location-picker__input--invalid]="showLongitudeError"
+        [placeholder]="'public.register.placeholders.longitude' | translate"
+      />
+      <small class="register-location-picker__error" *ngIf="showLongitudeError">
+        {{ 'public.register.validation.longitude' | translate }}
+      </small>
+    </div>
+  </div>
+
+  <small class="register-location-picker__error" *ngIf="locationErrorKey">{{ locationErrorKey | translate }}</small>
+</div>

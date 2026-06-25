@@ -48,6 +48,11 @@ export function representativeFullNameValidator(firstNameKey: string, lastNameKe
     const formGroup = group as FormGroup;
     const first = String(formGroup.get(firstNameKey)?.value || '').trim();
     const last = String(formGroup.get(lastNameKey)?.value || '').trim();
+
+    if (!first && !last) {
+      return null;
+    }
+
     const combined = `${first} ${last}`.trim();
     return /\S+\s+\S+/.test(combined) ? null : { representativeFullName: true };
   };
