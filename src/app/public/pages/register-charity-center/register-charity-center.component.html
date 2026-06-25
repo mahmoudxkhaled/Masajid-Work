@@ -20,144 +20,73 @@
     </div>
 
     <ng-template #charityForm>
+      <div class="register-error-banner" *ngIf="submitErrorKey">
+        <span class="material-symbols-outlined">error</span>
+        <span>{{ submitErrorKey | translate }}</span>
+      </div>
+
       <form class="register-card" [formGroup]="form" (ngSubmit)="onSubmit()">
         <div class="register-card__section">
-          <div class="register-section__head">
-            <span class="material-symbols-outlined">account_balance</span>
-            <h2 class="register-section__title">{{ 'public.register.charity.sections.center' | translate }}</h2>
-          </div>
           <div class="register-form__grid">
-            <div class="register-field">
+            <div class="register-field register-field--span-2">
               <label class="register-field__label">{{ 'public.register.charity.fields.centerName' | translate }}</label>
               <input class="register-field__input" formControlName="centerName" [class.register-field__input--invalid]="showError('centerName')" />
               <small class="register-field__error" *ngIf="showError('centerName')">{{ 'public.register.validation.required' | translate }}</small>
             </div>
             <div class="register-field">
-              <label class="register-field__label">{{ 'public.register.charity.fields.organizationType' | translate }}</label>
-              <select class="register-field__select" formControlName="organizationType" [class.register-field__select--invalid]="showError('organizationType')">
-                <option value="">{{ 'public.register.common.selectOption' | translate }}</option>
-                <option value="communityCenter">{{ 'public.register.charity.orgTypes.communityCenter' | translate }}</option>
-                <option value="masjidTrust">{{ 'public.register.charity.orgTypes.masjidTrust' | translate }}</option>
-                <option value="reliefAgency">{{ 'public.register.charity.orgTypes.reliefAgency' | translate }}</option>
-                <option value="educational">{{ 'public.register.charity.orgTypes.educational' | translate }}</option>
-              </select>
-              <small class="register-field__error" *ngIf="showError('organizationType')">{{ 'public.register.validation.required' | translate }}</small>
+              <label class="register-field__label">{{ 'public.register.fields.representativeFirstName' | translate }}</label>
+              <input class="register-field__input" formControlName="representativeFirstName" [class.register-field__input--invalid]="showError('representativeFirstName')" />
+              <small class="register-field__error" *ngIf="showError('representativeFirstName')">{{ 'public.register.validation.required' | translate }}</small>
             </div>
+            <div class="register-field">
+              <label class="register-field__label">{{ 'public.register.fields.representativeLastName' | translate }}</label>
+              <input class="register-field__input" formControlName="representativeLastName" [class.register-field__input--invalid]="showError('representativeLastName')" />
+              <small class="register-field__error" *ngIf="showError('representativeLastName')">{{ 'public.register.validation.required' | translate }}</small>
+            </div>
+            <small class="register-field__error register-field--span-2" *ngIf="showGroupError('representativeFullName')">
+              {{ 'public.register.validation.representativeFullName' | translate }}
+            </small>
             <div class="register-field register-field--span-2">
-              <label class="register-field__label">{{ 'public.register.charity.fields.address' | translate }}</label>
-              <input class="register-field__input" formControlName="address" [class.register-field__input--invalid]="showError('address')" />
-              <small class="register-field__error" *ngIf="showError('address')">{{ 'public.register.validation.required' | translate }}</small>
-            </div>
-            <div class="register-field">
-              <label class="register-field__label">{{ 'public.register.charity.fields.contactEmail' | translate }}</label>
-              <input class="register-field__input" type="email" formControlName="contactEmail" [class.register-field__input--invalid]="showError('contactEmail')" />
-              <small class="register-field__error" *ngIf="showError('contactEmail')">{{ 'public.register.validation.email' | translate }}</small>
-            </div>
-            <div class="register-field">
-              <label class="register-field__label">{{ 'public.register.charity.fields.phone' | translate }}</label>
-              <input class="register-field__input" type="tel" formControlName="phone" [class.register-field__input--invalid]="showError('phone')" />
-              <small class="register-field__error" *ngIf="showError('phone')">{{ 'public.register.validation.phone' | translate }}</small>
-            </div>
-            <div class="register-field register-field--span-2">
-              <label class="register-field__label">{{ 'public.register.charity.fields.mission' | translate }}</label>
-              <textarea class="register-field__textarea" rows="4" formControlName="missionDescription" [class.register-field__input--invalid]="showError('missionDescription')"></textarea>
-              <small class="register-field__error" *ngIf="showError('missionDescription')">{{ 'public.register.validation.required' | translate }}</small>
-            </div>
-          </div>
-        </div>
-
-        <div class="register-card__section">
-          <div class="register-section__head">
-            <span class="material-symbols-outlined">badge</span>
-            <h2 class="register-section__title">{{ 'public.register.charity.sections.representative' | translate }}</h2>
-          </div>
-          <div class="register-form__grid">
-            <div class="register-field">
-              <label class="register-field__label">{{ 'public.register.charity.fields.repName' | translate }}</label>
-              <input class="register-field__input" formControlName="repFullName" [class.register-field__input--invalid]="showError('repFullName')" />
-              <small class="register-field__error" *ngIf="showError('repFullName')">{{ 'public.register.validation.required' | translate }}</small>
-            </div>
-            <div class="register-field">
-              <label class="register-field__label">{{ 'public.register.charity.fields.repRole' | translate }}</label>
-              <input class="register-field__input" formControlName="repRole" [class.register-field__input--invalid]="showError('repRole')" />
-              <small class="register-field__error" *ngIf="showError('repRole')">{{ 'public.register.validation.required' | translate }}</small>
-            </div>
-            <div class="register-field">
               <label class="register-field__label">{{ 'public.register.charity.fields.repEmail' | translate }}</label>
-              <input class="register-field__input" type="email" formControlName="repEmail" [class.register-field__input--invalid]="showError('repEmail')" />
-              <small class="register-field__error" *ngIf="showError('repEmail')">{{ 'public.register.validation.email' | translate }}</small>
+              <input class="register-field__input" type="email" formControlName="representativeEmail" [class.register-field__input--invalid]="showError('representativeEmail')" />
+              <small class="register-field__error" *ngIf="showError('representativeEmail')">{{ 'public.register.validation.email' | translate }}</small>
             </div>
             <div class="register-field">
-              <label class="register-field__label">{{ 'public.register.charity.fields.repPhone' | translate }}</label>
-              <input class="register-field__input" type="tel" formControlName="repPhone" [class.register-field__input--invalid]="showError('repPhone')" />
-              <small class="register-field__error" *ngIf="showError('repPhone')">{{ 'public.register.validation.phone' | translate }}</small>
+              <label class="register-field__label">{{ 'public.register.fields.countryCode' | translate }}</label>
+              <select class="register-field__select" formControlName="countryCode" [class.register-field__select--invalid]="showError('countryCode')">
+                <option value="">{{ 'public.register.placeholders.selectCountry' | translate }}</option>
+                <option *ngFor="let country of countries" [value]="country.code">
+                  {{ lookupService.getCountryLabel(country, isArabic) }}
+                </option>
+              </select>
+              <small class="register-field__error" *ngIf="showError('countryCode')">{{ 'public.register.validation.countryCode' | translate }}</small>
             </div>
             <div class="register-field">
-              <label class="register-field__label">{{ 'public.register.charity.fields.password' | translate }}</label>
-              <input class="register-field__input" type="password" formControlName="password" [class.register-field__input--invalid]="showError('password')" />
-              <small class="register-field__error" *ngIf="showError('password')">{{ 'public.register.validation.passwordMin' | translate }}</small>
+              <label class="register-field__label">{{ 'public.register.facility.fields.city' | translate }}</label>
+              <input class="register-field__input" formControlName="city" [class.register-field__input--invalid]="showError('city')" />
+              <small class="register-field__error" *ngIf="showError('city')">{{ 'public.register.validation.required' | translate }}</small>
             </div>
             <div class="register-field">
-              <label class="register-field__label">{{ 'public.register.charity.fields.confirmPassword' | translate }}</label>
-              <input class="register-field__input" type="password" formControlName="cPassword" [class.register-field__input--invalid]="showError('cPassword')" />
-              <small class="register-field__error" *ngIf="showError('cPassword')">{{ 'public.register.validation.passwordMatch' | translate }}</small>
+              <label class="register-field__label">{{ 'public.register.fields.latitude' | translate }}</label>
+              <input class="register-field__input" type="text" formControlName="latitude" [class.register-field__input--invalid]="showError('latitude')" />
+              <small class="register-field__error" *ngIf="showError('latitude')">{{ 'public.register.validation.latitude' | translate }}</small>
+            </div>
+            <div class="register-field">
+              <label class="register-field__label">{{ 'public.register.fields.longitude' | translate }}</label>
+              <input class="register-field__input" type="text" formControlName="longitude" [class.register-field__input--invalid]="showError('longitude')" />
+              <small class="register-field__error" *ngIf="showError('longitude')">{{ 'public.register.validation.longitude' | translate }}</small>
             </div>
           </div>
         </div>
 
-        <div class="register-card__section">
-          <div class="register-section__head">
-            <span class="material-symbols-outlined">verified_user</span>
-            <h2 class="register-section__title">{{ 'public.register.charity.sections.verification' | translate }}</h2>
-          </div>
-          <p class="register-field__label">{{ 'public.register.charity.verificationIntro' | translate }}</p>
-          <div class="register-form__grid">
-            <div class="register-field register-field--span-2">
-              <app-public-file-upload-field
-                [labelKey]="'public.register.charity.fields.representativeId'"
-                [hintKey]="'public.register.upload.idHint'"
-                [control]="representativeId"
-                (fileSelected)="onFileSelected('representativeId', $event)"
-              ></app-public-file-upload-field>
-            </div>
-            <div class="register-field register-field--span-2">
-              <app-public-file-upload-field
-                [labelKey]="'public.register.charity.fields.authorizationDocument'"
-                [hintKey]="'public.register.upload.authHint'"
-                [control]="authorizationDocument"
-                (fileSelected)="onFileSelected('authorizationDocument', $event)"
-              ></app-public-file-upload-field>
-            </div>
-            <div class="register-field register-field--span-2">
-              <app-public-file-upload-field
-                [labelKey]="'public.register.charity.fields.registrationCertificate'"
-                [hintKey]="'public.register.upload.certHint'"
-                [control]="registrationCertificate"
-                (fileSelected)="onFileSelected('registrationCertificate', $event)"
-              ></app-public-file-upload-field>
-            </div>
-          </div>
-        </div>
-
-        <div class="register-card__section">
-          <div class="register-section__head">
-            <span class="material-symbols-outlined">fact_check</span>
-            <h2 class="register-section__title">{{ 'public.register.charity.sections.confirmation' | translate }}</h2>
-          </div>
-          <label class="register-checkbox">
-            <input type="checkbox" formControlName="authorizeVerification" />
-            <span class="register-checkbox__text">{{ 'public.register.charity.policies.authorize' | translate }}</span>
-          </label>
-          <label class="register-checkbox">
-            <input type="checkbox" formControlName="confirmPhysicalPolicy" />
-            <span class="register-checkbox__text">{{ 'public.register.policies.physicalOnly' | translate: brandingParams }}</span>
-          </label>
+        <div class="register-submitting" *ngIf="submitting">
+          <span class="material-symbols-outlined">hourglass_top</span>
+          {{ 'public.register.common.submitting' | translate }}
         </div>
 
         <div class="register-actions">
           <button class="register-btn register-btn--block" type="submit" [disabled]="submitting">
             {{ 'public.register.charity.submit' | translate }}
-            <span class="material-symbols-outlined">send</span>
           </button>
         </div>
       </form>

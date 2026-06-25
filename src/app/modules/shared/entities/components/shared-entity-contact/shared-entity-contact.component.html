@@ -99,25 +99,29 @@
                 </div>
             </div>
 
-            <!-- Fax Numbers -->
+            <!-- City -->
             <div class="col-12 md:col-6 lg:col-4">
                 <div class="contact-field">
                     <div class="field-label">
-                        <i class="pi pi-print mr-2 text-primary"></i>
-                        <span class="font-semibold">{{ 'entities.contact.faxNumbers' | translate }}</span>
+                        <i class="pi pi-map-marker mr-2 text-primary"></i>
+                        <span class="font-semibold">{{ 'entities.contact.city' | translate }}</span>
                     </div>
-                    <div class="mt-3 flex flex-column gap-3">
-                        <ng-container *ngIf="hasFaxNumbers(); else noFaxes">
-                            <div *ngFor="let fax of getFaxNumbersForDisplay()" class="flex align-items-center">
-                                <p-tag [value]="formatPhoneDisplay(fax)" severity="secondary" [rounded]="true"
-                                    icon="pi pi-print">
-                                </p-tag>
-                            </div>
-                        </ng-container>
-                        <ng-template #noFaxes>
-                            <span class="text-500 italic">{{ 'entities.contact.noFaxes' | translate }}</span>
-                        </ng-template>
+                    <p class="mt-2 text-700 line-height-3 text-lg">
+                        {{ contacts.city || '—' }}
+                    </p>
+                </div>
+            </div>
+
+            <!-- Latitude / Longitude -->
+            <div class="col-12 md:col-6 lg:col-4">
+                <div class="contact-field">
+                    <div class="field-label">
+                        <i class="pi pi-compass mr-2 text-primary"></i>
+                        <span class="font-semibold">{{ 'entities.contact.coordinates' | translate }}</span>
                     </div>
+                    <p class="mt-2 text-700 line-height-3 text-lg">
+                        {{ contacts.latitude || '—' }}, {{ contacts.longitude || '—' }}
+                    </p>
                 </div>
             </div>
 
@@ -178,6 +182,40 @@
                 </small>
             </div>
 
+            <!-- City -->
+            <div class="col-12 md:col-4">
+                <label for="city" class="block font-medium mb-2">
+                    <i class="pi pi-map-marker mr-2"></i>{{ 'entities.contact.city' | translate }} <span class="text-red-500">*</span>
+                </label>
+                <input id="city" type="text" pInputText formControlName="city" class="w-full"
+                    [placeholder]="'entities.contact.editDialog.cityPlaceholder' | translate" />
+                <small class="p-error" *ngIf="submitted && f['city']?.errors?.['required']">
+                    {{ 'entities.contact.editDialog.cityRequired' | translate }}
+                </small>
+            </div>
+
+            <div class="col-12 md:col-4">
+                <label for="latitude" class="block font-medium mb-2">
+                    <i class="pi pi-compass mr-2"></i>{{ 'entities.contact.latitude' | translate }} <span class="text-red-500">*</span>
+                </label>
+                <input id="latitude" type="text" pInputText formControlName="latitude" class="w-full"
+                    [placeholder]="'entities.contact.editDialog.latitudePlaceholder' | translate" />
+                <small class="p-error" *ngIf="submitted && f['latitude']?.errors?.['required']">
+                    {{ 'entities.contact.editDialog.latitudeRequired' | translate }}
+                </small>
+            </div>
+
+            <div class="col-12 md:col-4">
+                <label for="longitude" class="block font-medium mb-2">
+                    <i class="pi pi-compass mr-2"></i>{{ 'entities.contact.longitude' | translate }} <span class="text-red-500">*</span>
+                </label>
+                <input id="longitude" type="text" pInputText formControlName="longitude" class="w-full"
+                    [placeholder]="'entities.contact.editDialog.longitudePlaceholder' | translate" />
+                <small class="p-error" *ngIf="submitted && f['longitude']?.errors?.['required']">
+                    {{ 'entities.contact.editDialog.longitudeRequired' | translate }}
+                </small>
+            </div>
+
             <!-- Phone Numbers -->
             <div class="col-12 md:col-6">
                 <div class="flex justify-content-between align-items-center mb-2">
@@ -204,31 +242,6 @@
                     </div>
                     <small *ngIf="phoneNumbersFormArray.length === 0" class="text-500 italic">
                         {{ 'entities.contact.editDialog.noPhonesYet' | translate }}
-                    </small>
-                </div>
-            </div>
-
-            <!-- Fax Numbers -->
-            <div class="col-12 md:col-6">
-                <div class="flex justify-content-between align-items-center mb-2">
-                    <label class="font-medium">
-                        <i class="pi pi-print mr-2"></i>{{ 'entities.contact.faxNumbers' | translate }}
-                    </label>
-                    <p-button [label]="'entities.contact.editDialog.addFax' | translate" icon="pi pi-plus" size="small" severity="help" (onClick)="addFaxNumber()">
-                    </p-button>
-                </div>
-                <div formArrayName="faxNumbers" class="flex flex-column gap-3">
-                    <div *ngFor="let control of faxNumberControls; let i = index" class="field-group">
-                        <div class="p-inputgroup">
-                            <span class="p-inputgroup-addon"><i class="pi pi-print"></i></span>
-                            <input type="text" pInputText [formControl]="control" [placeholder]="'entities.contact.editDialog.phonePlaceholder' | translate"
-                                class="w-full" />
-                            <p-button icon="pi pi-trash" severity="danger" [text]="true" (onClick)="removeFaxNumber(i)">
-                            </p-button>
-                        </div>
-                    </div>
-                    <small *ngIf="faxNumbersFormArray.length === 0" class="text-500 italic">
-                        {{ 'entities.contact.editDialog.noFaxAdded' | translate }}
                     </small>
                 </div>
             </div>

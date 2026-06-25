@@ -1,10 +1,18 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, Validators } from '@angular/forms';
-import { PasswordMatchValidator } from 'src/app/core/validators/password-match.validator';
+import { FormBuilder, Validators } from '@angular/forms';
+import { TranslateService } from '@ngx-translate/core';
+import { CountryLookup } from 'src/app/core/models/lookup.model';
 import { BrandingService } from 'src/app/core/services/branding.service';
+import { PublicLookupService } from 'src/app/core/services/public-lookup.service';
 import type { CharityCenterRegistrationRequest } from '../../models/public-registration.model';
 import { PublicRegistrationService } from '../../services/public-registration.service';
-import { publicPhoneValidators, requiredFileSelected } from '../../utils/public-registration.validators';
+import {
+  adminEmailValidators,
+  countryCode3Required,
+  latitudeValidator,
+  longitudeValidator,
+  representativeFullNameValidator,
+} from '../../utils/public-registration.validators';
 
 @Component({
   standalone: false,
@@ -15,52 +23,44 @@ import { publicPhoneValidators, requiredFileSelected } from '../../utils/public-
 export class CharityCenterRegistrationComponent implements OnInit {
   readonly brandingParams = this.branding.translateParams;
 
+  countries: CountryLookup[] = [];
+  isArabic = false;
   submitted = false;
   submitting = false;
+  submitErrorKey = '';
 
-  representativeId = new FormControl<File | null>(null, requiredFileSelected());
-  authorizationDocument = new FormControl<File | null>(null, requiredFileSelected());
-  registrationCertificate = new FormControl<File | null>(null, requiredFileSelected());
-
-  form = this.fb.group({
-    centerName: ['', Validators.required],
-    organizationType: ['', Validators.required],
-    address: ['', Validators.required],
-    contactEmail: ['', [Validators.required, Validators.email]],
-    phone: ['', publicPhoneValidators],
-    missionDescription: ['', Validators.required],
-    repFullName: ['', Validators.required],
-    repRole: ['', Validators.required],
-    repEmail: ['', [Validators.required, Validators.email]],
-    repPhone: ['', publicPhoneValidators],
-    password: ['', [Validators.required, Validators.minLength(8)]],
-    cPassword: ['', Validators.required],
-    authorizeVerification: [false, Validators.requiredTrue],
-    confirmPhysicalPolicy: [false, Validators.requiredTrue],
-  });
+  form = this.fb.group(
+    {
+      centerName: ['', Validators.required],
+      representativeFirstName: ['', Validators.required],
+      representativeLastName: ['', Validators.required],
+      representativeEmail: ['', adminEmailValidators],
+      countryCode: ['', countryCode3Required()],
+      city: ['', Validators.required],
+      latitude: ['', latitudeValidator()],
+      longitude: ['', longitudeValidator()],
+    },
+    { validators: representativeFullNameValidator('representativeFirstName', 'representativeLastName') },
+  );
 
   constructor(
     private readonly fb: FormBuilder,
     private readonly branding: BrandingService,
     private readonly registrationService: PublicRegistrationService,
-  ) {}
-
-  ngOnInit(): void {
-    this.form.get('cPassword')?.valueChanges.subscribe(() => {
-      PasswordMatchValidator.MatchPassword(this.form);
-    });
-    this.form.get('password')?.valueChanges.subscribe(() => {
-      PasswordMatchValidator.MatchPassword(this.form);
-    });
+    readonly lookupService: PublicLookupService,
+    private readonly translate: TranslateService,
+  ) {
+    this.isArabic = this.translate.currentLang === 'ar';
   }
 
-  onFileSelected(
-    field: 'representativeId' | 'authorizationDocument' | 'registrationCertificate',
-    file: File | null,
-  ): void {
-    const control = this[field];
-    control.setValue(file);
-    control.markAsTouched();
+  ngOnInit(): void {
+    this.lookupService.getCountries().subscribe((countries) => {
+      this.countries = this.lookupService.sortCountriesByLabel(countries, this.isArabic);
+    });
+    this.translate.onLangChange.subscribe((event) => {
+      this.isArabic = event.lang === 'ar';
+      this.countries = this.lookupService.sortCountriesByLabel(this.countries, this.isArabic);
+    });
   }
 
   onSubmit(): void {
@@ -68,27 +68,28 @@ export class CharityCenterRegistrationComponent implements OnInit {
       return;
     }
     this.form.markAllAsTouched();
-    this.representativeId.markAsTouched();
-    this.authorizationDocument.markAsTouched();
-    this.registrationCertificate.markAsTouched();
-    PasswordMatchValidator.MatchPassword(this.form);
-
-    const filesInvalid =
-      this.representativeId.invalid ||
-      this.authorizationDocument.invalid ||
-      this.registrationCertificate.invalid;
-
-    if (this.form.invalid || filesInvalid) {
+    if (this.form.invalid) {
       return;
     }
 
     this.submitting = true;
-    const dto = this.buildDto();
-    // TODO: call this.registrationService.registerCharityCenter(dto) when API is ready
-    void dto;
-    void this.registrationService;
-    this.submitting = false;
-    this.submitted = true;
+    this.submitErrorKey = '';
+
+    this.registrationService.registerCharityCenter(this.buildDto()).subscribe({
+      next: (result) => {
+        if (result.outcome === 'error') {
+          this.submitErrorKey = result.messageKey;
+          this.submitting = false;
+          return;
+        }
+        this.submitting = false;
+        this.submitted = true;
+      },
+      error: () => {
+        this.submitErrorKey = 'public.register.messages.genericError';
+        this.submitting = false;
+      },
+    });
   }
 
   showError(controlName: string): boolean {
@@ -96,28 +97,21 @@ export class CharityCenterRegistrationComponent implements OnInit {
     return !!control && control.touched && control.invalid;
   }
 
-  getFileForUpload(
-    field: 'representativeId' | 'authorizationDocument' | 'registrationCertificate',
-  ): File | null {
-    return this[field].value;
+  showGroupError(errorKey: string): boolean {
+    return this.form.touched && !!this.form.errors?.[errorKey];
   }
 
   private buildDto(): CharityCenterRegistrationRequest {
     const raw = this.form.getRawValue();
     return {
-      centerName: String(raw.centerName ?? ''),
-      organizationType: String(raw.organizationType ?? ''),
-      address: String(raw.address ?? ''),
-      contactEmail: String(raw.contactEmail ?? ''),
-      phone: String(raw.phone ?? ''),
-      missionDescription: String(raw.missionDescription ?? ''),
-      repFullName: String(raw.repFullName ?? ''),
-      repRole: String(raw.repRole ?? ''),
-      repEmail: String(raw.repEmail ?? ''),
-      repPhone: String(raw.repPhone ?? ''),
-      password: String(raw.password ?? ''),
-      authorizeVerification: Boolean(raw.authorizeVerification),
-      confirmPhysicalPolicy: Boolean(raw.confirmPhysicalPolicy),
+      centerName: String(raw.centerName ?? '').trim(),
+      representativeFirstName: String(raw.representativeFirstName ?? '').trim(),
+      representativeLastName: String(raw.representativeLastName ?? '').trim(),
+      representativeEmail: String(raw.representativeEmail ?? '').trim(),
+      countryCode: String(raw.countryCode ?? '').trim().toUpperCase(),
+      city: String(raw.city ?? '').trim(),
+      latitude: Number(raw.latitude),
+      longitude: Number(raw.longitude),
     };
   }
 }

@@ -1,23 +1,64 @@
-import { AbstractControl, FormArray, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 
-export const PUBLIC_PHONE_PATTERN = /^[+]?[\d\s()-]{7,20}$/;
+export const COUNTRY_CODE_3_PATTERN = /^[A-Z]{3}$/;
+export const CURRENCY_CODE_3_PATTERN = /^[A-Z]{3}$/;
 
-export const publicPhoneValidators = [Validators.required, Validators.pattern(PUBLIC_PHONE_PATTERN)];
+export const adminEmailValidators = [Validators.required, Validators.email];
 
-export function atLeastOneCategorySelected(): ValidatorFn {
+export function countryCode3Required(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
-    const array = control as FormArray;
-    if (!array?.controls?.length) {
-      return { atLeastOneCategory: true };
+    const value = String(control.value || '').trim().toUpperCase();
+    if (!value) {
+      return { required: true };
     }
-    const selected = array.controls.some((c) => c.value === true);
-    return selected ? null : { atLeastOneCategory: true };
+    return COUNTRY_CODE_3_PATTERN.test(value) ? null : { countryCode3: true };
   };
 }
 
-export function requiredFileSelected(): ValidatorFn {
+export function latitudeValidator(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
-    const value = control.value as File | null;
-    return value instanceof File ? null : { requiredFile: true };
+    const raw = String(control.value ?? '').trim();
+    if (!raw) {
+      return { required: true };
+    }
+    const value = Number(raw);
+    if (Number.isNaN(value) || value < -90 || value > 90) {
+      return { latitude: true };
+    }
+    return null;
+  };
+}
+
+export function longitudeValidator(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const raw = String(control.value ?? '').trim();
+    if (!raw) {
+      return { required: true };
+    }
+    const value = Number(raw);
+    if (Number.isNaN(value) || value < -180 || value > 180) {
+      return { longitude: true };
+    }
+    return null;
+  };
+}
+
+export function representativeFullNameValidator(firstNameKey: string, lastNameKey: string): ValidatorFn {
+  return (group: AbstractControl): ValidationErrors | null => {
+    const formGroup = group as FormGroup;
+    const first = String(formGroup.get(firstNameKey)?.value || '').trim();
+    const last = String(formGroup.get(lastNameKey)?.value || '').trim();
+    const combined = `${first} ${last}`.trim();
+    return /\S+\s+\S+/.test(combined) ? null : { representativeFullName: true };
+  };
+}
+
+export function currencyCode3Validator(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const value = String(control.value || '').trim().toUpperCase();
+    if (!value) {
+      return { required: true };
+    }
+    return CURRENCY_CODE_3_PATTERN.test(value) ? null : { currencyCode3: true };
   };
 }

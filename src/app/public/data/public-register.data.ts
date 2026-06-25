@@ -1,4 +1,4 @@
-import type { DonorCategoryId, RegistrationSelectionCard } from '../models/public-registration.model';
+import type { RegistrationSelectionCard } from '../models/public-registration.model';
 import {
   REGISTER_CHARITY_CENTER_PATH,
   REGISTER_DONOR_PATH,
@@ -35,15 +35,4 @@ export const REGISTRATION_SELECTION_CARDS: RegistrationSelectionCard[] = [
     route: REGISTER_CHARITY_CENTER_PATH,
     accentClass: 'selection-card__icon--accent',
   },
-];
-
-export const DONOR_CATEGORY_FORM_OPTIONS: { id: DonorCategoryId; labelKey: string }[] = [
-  { id: 'carpets', labelKey: 'public.landing.donate.carpetsLabel' },
-  { id: 'fans', labelKey: 'public.landing.donate.fansLabel' },
-  { id: 'sound', labelKey: 'public.landing.donate.soundLabel' },
-  { id: 'furniture', labelKey: 'public.landing.donate.furnitureLabel' },
-  { id: 'cleaning', labelKey: 'public.landing.donate.cleaningLabel' },
-  { id: 'maintenance', labelKey: 'public.landing.donate.maintenanceLabel' },
-  { id: 'painting', labelKey: 'public.landing.donate.paintingLabel' },
-  { id: 'lighting', labelKey: 'public.landing.donate.lightingLabel' },
 ];

@@ -22,7 +22,6 @@ import { ServicesSectionComponent } from './components/services-section/services
 import { ValidationSectionComponent } from './components/validation-section/validation-section.component';
 import { CallToActionSectionComponent } from './components/call-to-action-section/call-to-action-section.component';
 import { FooterSectionComponent } from './components/footer-section/footer-section.component';
-import { PublicFileUploadFieldComponent } from './components/public-file-upload-field/public-file-upload-field.component';
 import { PublicThemePreferenceService } from './services/public-theme-preference.service';
 import { PublicScrollRevealDirective } from './directives/public-scroll-reveal.directive';
 
@@ -36,7 +35,6 @@ import { PublicScrollRevealDirective } from './directives/public-scroll-reveal.d
     FacilityRegistrationComponent,
     VendorRegistrationComponent,
     CharityCenterRegistrationComponent,
-    PublicFileUploadFieldComponent,
     HeaderSectionComponent,
     HeroSectionComponent,
     TrustBarSectionComponent,

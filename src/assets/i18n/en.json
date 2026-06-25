@@ -2110,24 +2110,30 @@
             "title": "Contact Information",
             "editContactDetails": "Edit Contact Details",
             "address": "Address",
+            "city": "City",
+            "latitude": "Latitude",
+            "longitude": "Longitude",
+            "coordinates": "Coordinates",
             "phoneNumbers": "Phone Numbers",
-            "faxNumbers": "Fax Numbers",
             "emailAddresses": "Email Addresses",
             "noPhones": "No phone numbers added",
-            "noFaxes": "No fax numbers added",
             "noEmails": "No email addresses added",
             "editDialog": {
                 "title": "Update Contact Information",
                 "addressLabel": "Address",
                 "addressRequired": "Address is required.",
                 "addressPlaceholder": "Enter full address...",
+                "cityPlaceholder": "Enter city...",
+                "cityRequired": "City is required.",
+                "latitudePlaceholder": "e.g. 30.0444",
+                "latitudeRequired": "Latitude is required.",
+                "longitudePlaceholder": "e.g. 31.2357",
+                "longitudeRequired": "Longitude is required.",
                 "addPhone": "Add Phone",
-                "addFax": "Add Fax",
                 "addEmail": "Add Email",
                 "phonePlaceholder": "1234567890",
                 "emailPlaceholder": "contact@example.com",
                 "noPhonesYet": "No phone numbers added yet",
-                "noFaxAdded": "No fax numbers added",
                 "noEmailsAdded": "No email addresses added",
                 "digitsOnly": "Only digits allowed (e.g., 1234567890)",
                 "validEmail": "Please enter a valid email address",
@@ -2137,15 +2143,17 @@
             "toasts": {
                 "validationSummary": "Validation",
                 "addressRequired": "Address is required. Please fill in the address field.",
-                "fixFormErrors": "Please correct the errors in the form. Phone numbers, fax numbers, and emails must be in valid format if provided.",
+                "fixFormErrors": "Please correct the errors in the form. Phone numbers and emails must be in valid format if provided.",
                 "updatedSuccessfully": "Contact information updated successfully."
             },
             "errors": {
                 "invalidEntityId": "Invalid Entity ID",
                 "invalidAddressFormat": "Invalid format for provided Address",
                 "invalidPhoneFormat": "Invalid format for one or more of the provided phone numbers (only digits are allowed; no +, -, / or spaces)",
-                "invalidFaxFormat": "Invalid format for one or more of the provided fax numbers (only digits are allowed; no +, -, / or spaces)",
-                "invalidEmailFormat": "Invalid format for one or more of the provided email addresses"
+                "invalidEmailFormat": "Invalid format for one or more of the provided email addresses",
+                "invalidCity": "Invalid city",
+                "invalidLatitude": "Invalid latitude (must be between -90 and 90)",
+                "invalidLongitude": "Invalid longitude (must be between -180 and 180)"
             }
         },
         "assignAdmin": {
@@ -3765,7 +3773,35 @@
                 "backSelection": "Back to registration options",
                 "selectOption": "Select an option",
                 "secureNote": "Secure encrypted registration",
-                "select": "Select"
+                "select": "Select",
+                "back": "Back",
+                "next": "Next",
+                "submitting": "Submitting your registration…",
+                "passwordSetupInfo": "After registration, you will receive an email to set your password."
+            },
+            "fields": {
+                "countryCode": "Country",
+                "latitude": "Latitude",
+                "longitude": "Longitude",
+                "representativeFirstName": "Representative first name",
+                "representativeLastName": "Representative last name"
+            },
+            "placeholders": {
+                "selectCountry": "Select a country"
+            },
+            "messages": {
+                "invalidEmail": "The email address is not valid.",
+                "emailExists": "An account with this email already exists.",
+                "invalidFirstName": "The first name is not valid.",
+                "invalidLastName": "The last name is not valid.",
+                "invalidEntityName": "The entity name is not valid.",
+                "invalidEntityType": "The entity type is not valid.",
+                "invalidCountryCode": "Please select a valid 3-letter country code.",
+                "invalidCity": "The city is not valid.",
+                "invalidLatitude": "Latitude must be between -90 and 90.",
+                "invalidLongitude": "Longitude must be between -180 and 180.",
+                "registrationFailed": "Registration could not be completed. Please try again.",
+                "genericError": "Something went wrong. Please try again later."
             },
             "upload": {
                 "clickOrDrop": "Click to upload or drag and drop",
@@ -3784,7 +3820,11 @@
                 "passwordMin": "Password must be at least 8 characters.",
                 "passwordMatch": "Passwords do not match.",
                 "categoryRequired": "Select at least one category.",
-                "fileRequired": "Please upload a file."
+                "fileRequired": "Please upload a file.",
+                "countryCode": "Select a valid country.",
+                "latitude": "Enter a valid latitude (-90 to 90).",
+                "longitude": "Enter a valid longitude (-180 to 180).",
+                "representativeFullName": "Enter the representative's first and last name."
             },
             "policies": {
                 "physicalOnly": "I understand that {platformName} manages physical, non-cash donation requests only, does not collect money or process payments, and that any financial arrangement happens outside the platform."
@@ -3819,6 +3859,11 @@
             "donor": {
                 "title": "Join the community",
                 "subtitle": "Register as a donor to fulfill verified physical needs for masajid in your area.",
+                "steps": {
+                    "account": "Account",
+                    "preferences": "Preferences",
+                    "review": "Review & submit"
+                },
                 "sections": {
                     "account": "Account details",
                     "preferences": "Donation preferences"
@@ -3840,11 +3885,17 @@
                 },
                 "submit": "Create donor account",
                 "successTitle": "Registration complete",
-                "success": "Your donor account has been created. Please verify your email to continue."
+                "success": "Your donor account has been created. Please check your email to set your password and continue."
             },
             "facility": {
                 "title": "Facility registration",
                 "subtitle": "Register your facility to publish physical donation requests after review and approval.",
+                "steps": {
+                    "location": "Location",
+                    "representative": "Representative",
+                    "verification": "Verification",
+                    "review": "Review & submit"
+                },
                 "sections": {
                     "info": "Facility information",
                     "representative": "Representative information",
@@ -3885,11 +3936,17 @@
                 },
                 "submit": "Submit facility registration",
                 "successTitle": "Submitted for review",
-                "success": "Your facility registration has been submitted for review."
+                "success": "Your facility registration has been submitted for review. The representative will receive an email to set the account password."
             },
             "vendor": {
                 "title": "Join the Khidmah network",
                 "subtitle": "Partner with masajid to provide goods and services that fulfill verified physical donation requests.",
+                "steps": {
+                    "business": "Business",
+                    "representative": "Representative",
+                    "services": "Services",
+                    "review": "Review & submit"
+                },
                 "sections": {
                     "account": "Account details",
                     "business": "Business details",
@@ -3923,11 +3980,17 @@
                 "hasAccount": "Already have an account?",
                 "loginLink": "Log in here",
                 "successTitle": "Vendor account created",
-                "success": "Your vendor account has been created. Some features may require review before you can submit offers."
+                "success": "Your vendor account has been created. The representative will receive an email to set the account password. Some features may require review before submitting offers."
             },
             "charity": {
                 "title": "Charity center registration",
                 "subtitle": "Register your charity center to coordinate verified physical donation campaigns.",
+                "steps": {
+                    "center": "Center",
+                    "representative": "Representative",
+                    "verification": "Verification",
+                    "review": "Review & submit"
+                },
                 "sections": {
                     "center": "Center information",
                     "representative": "Representative info",
@@ -3963,7 +4026,7 @@
                 },
                 "submit": "Submit charity center registration",
                 "successTitle": "Submitted for review",
-                "success": "Your charity center registration has been submitted for review."
+                "success": "Your charity center registration has been submitted for review. The representative will receive an email to set the account password."
             }
         }
     }

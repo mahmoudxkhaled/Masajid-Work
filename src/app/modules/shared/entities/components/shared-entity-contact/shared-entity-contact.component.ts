@@ -10,8 +10,10 @@ import { LanguageDirService } from 'src/app/core/services/language-dir.service';
 interface EntityContact {
     address: string;
     addressRegional?: string;
+    city: string;
+    latitude: string;
+    longitude: string;
     phoneNumbers: string[];
-    faxNumbers: string[];
     emails: string[];
 }
 
@@ -86,11 +88,11 @@ export class SharedEntityContactComponent implements OnInit, OnDestroy {
         this.contacts = {
             address: data?.Address || '',
             addressRegional: data?.Address_Regional || '',
+            city: data?.City || '',
+            latitude: data?.Latitude != null ? String(data.Latitude) : '',
+            longitude: data?.Longitude != null ? String(data.Longitude) : '',
             phoneNumbers: Array.isArray(data?.PhoneNumbers)
                 ? data.PhoneNumbers
-                : [],
-            faxNumbers: Array.isArray(data?.FaxNumbers)
-                ? data.FaxNumbers
                 : [],
             emails: Array.isArray(data?.Emails)
                 ? data.Emails
@@ -102,8 +104,10 @@ export class SharedEntityContactComponent implements OnInit, OnDestroy {
         if (!this.contacts) {
             this.contacts = {
                 address: '',
+                city: '',
+                latitude: '',
+                longitude: '',
                 phoneNumbers: [],
-                faxNumbers: [],
                 emails: []
             };
         }
@@ -120,20 +124,16 @@ export class SharedEntityContactComponent implements OnInit, OnDestroy {
         this.editForm = this.fb.group({
             address: [address, [Validators.required]],
             isRegional: [this.isRegional, []],
+            city: [this.contacts?.city || '', [Validators.required]],
+            latitude: [this.contacts?.latitude || '', [Validators.required]],
+            longitude: [this.contacts?.longitude || '', [Validators.required]],
             phoneNumbers: this.fb.array([]),
-            faxNumbers: this.fb.array([]),
             emails: this.fb.array([])
         });
 
         if (this.contacts?.phoneNumbers && this.contacts.phoneNumbers.length > 0) {
             this.contacts.phoneNumbers.forEach(phone => {
                 this.addPhoneNumber(phone);
-            });
-        }
-
-        if (this.contacts?.faxNumbers && this.contacts.faxNumbers.length > 0) {
-            this.contacts.faxNumbers.forEach(fax => {
-                this.addFaxNumber(fax);
             });
         }
 
@@ -156,14 +156,6 @@ export class SharedEntityContactComponent implements OnInit, OnDestroy {
         return this.phoneNumbersFormArray.controls as FormControl[];
     }
 
-    get faxNumbersFormArray(): FormArray {
-        return this.editForm.get('faxNumbers') as FormArray;
-    }
-
-    get faxNumberControls(): FormControl[] {
-        return this.faxNumbersFormArray.controls as FormControl[];
-    }
-
     get emailsFormArray(): FormArray {
         return this.editForm.get('emails') as FormArray;
     }
@@ -179,15 +171,6 @@ export class SharedEntityContactComponent implements OnInit, OnDestroy {
 
     removePhoneNumber(index: number): void {
         this.phoneNumbersFormArray.removeAt(index);
-    }
-
-    addFaxNumber(value: string = ''): void {
-        const faxNumbersArray = this.faxNumbersFormArray;
-        faxNumbersArray.push(this.fb.control(value, [this.phoneNumberValidator]));
-    }
-
-    removeFaxNumber(index: number): void {
-        this.faxNumbersFormArray.removeAt(index);
     }
 
     addEmail(value: string = ''): void {
@@ -249,12 +232,11 @@ export class SharedEntityContactComponent implements OnInit, OnDestroy {
         const formValue = this.editForm.value;
         const address = formValue.address || '';
         const isRegional = formValue.isRegional || false;
+        const city = String(formValue.city || '').trim();
+        const latitude = String(formValue.latitude || '').trim();
+        const longitude = String(formValue.longitude || '').trim();
 
         const phoneNumbers = this.phoneNumbersFormArray.controls
-            .map(control => control.value)
-            .filter(value => value && value.trim() !== '');
-
-        const faxNumbers = this.faxNumbersFormArray.controls
             .map(control => control.value)
             .filter(value => value && value.trim() !== '');
 
@@ -269,8 +251,10 @@ export class SharedEntityContactComponent implements OnInit, OnDestroy {
             address,
             isRegional,
             phoneNumbers,
-            faxNumbers,
-            emails
+            emails,
+            city,
+            latitude,
+            longitude
         ).subscribe({
             next: (response: any) => {
                 if (!response?.success) {
@@ -321,10 +305,14 @@ export class SharedEntityContactComponent implements OnInit, OnDestroy {
                 return this.translate.instant('entities.contact.errors.invalidAddressFormat');
             case 'DAP11272':
                 return this.translate.instant('entities.contact.errors.invalidPhoneFormat');
-            case 'DAP11273':
-                return this.translate.instant('entities.contact.errors.invalidFaxFormat');
             case 'DAP11274':
                 return this.translate.instant('entities.contact.errors.invalidEmailFormat');
+            case 'DAP11259':
+                return this.translate.instant('entities.contact.errors.invalidCity');
+            case 'DAP11264':
+                return this.translate.instant('entities.contact.errors.invalidLatitude');
+            case 'DAP11265':
+                return this.translate.instant('entities.contact.errors.invalidLongitude');
         }
         return null;
     }
@@ -373,14 +361,6 @@ export class SharedEntityContactComponent implements OnInit, OnDestroy {
 
     getPhoneNumbersForDisplay(): string[] {
         return this.sanitizeList(this.contacts?.phoneNumbers);
-    }
-
-    hasFaxNumbers(): boolean {
-        return this.getFaxNumbersForDisplay().length > 0;
-    }
-
-    getFaxNumbersForDisplay(): string[] {
-        return this.sanitizeList(this.contacts?.faxNumbers);
     }
 
     hasEmails(): boolean {
