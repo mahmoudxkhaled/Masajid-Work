@@ -36,7 +36,7 @@
               <p-skeleton height="1.25rem" width="12rem"></p-skeleton>
             </ng-container>
             <ng-template #titleCell>
-              <span class="font-semibold">{{ row.title }}</span>
+              <span class="font-semibold">{{ getTitle(row) }}</span>
             </ng-template>
           </td>
           <td class="text-center">
@@ -45,8 +45,8 @@
             </ng-container>
             <ng-template #statusCell>
               <app-donation-status-badge
-                [label]="getStatusLabel(row.statusId)"
-                [severity]="getStatusSeverity(row.statusId)"
+                [label]="getStatusLabel(row.Donation_Request_Status_ID || 0)"
+                [severity]="getStatusSeverity(row.Donation_Request_Status_ID || 0)"
               ></app-donation-status-badge>
             </ng-template>
           </td>
@@ -63,7 +63,7 @@
               <p-skeleton height="1.25rem" width="7rem"></p-skeleton>
             </ng-container>
             <ng-template #createdCell>
-              <span>{{ row.createdAt || '-' }}</span>
+              <span>{{ row.Created_At || '-' }}</span>
             </ng-template>
           </td>
         </tr>

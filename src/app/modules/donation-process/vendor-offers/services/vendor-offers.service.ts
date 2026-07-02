@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, finalize } from 'rxjs';
 import { ApiService } from 'src/app/core/api/api.service';
 import { LocalStorageService } from 'src/app/core/services/local-storage.service';
-import { DonationRequestsService } from '../../facility-requests/services/donation-requests.service';
 
 @Injectable({
   providedIn: 'root',
@@ -13,7 +12,6 @@ export class VendorOffersService {
   constructor(
     private apiServices: ApiService,
     private localStorageService: LocalStorageService,
-    private donationRequestsService: DonationRequestsService,
   ) { }
 
   listRequestsForVendor(
@@ -34,14 +32,6 @@ export class VendorOffersService {
     return this.apiServices.callAPI(100700, this.getAccessToken(), params).pipe(
       finalize(() => this.isLoadingSubject.next(false)),
     );
-  }
-
-  extractRequests(message: Record<string, unknown> | undefined) {
-    return this.donationRequestsService.extractDonationRequests(message);
-  }
-
-  mapRequests(rawItems: Parameters<DonationRequestsService['mapDonationRequestListItems']>[0]) {
-    return this.donationRequestsService.mapDonationRequestListItems(rawItems);
   }
 
   private formatIntegerList(numbers: number[]): string {

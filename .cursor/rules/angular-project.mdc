@@ -39,6 +39,41 @@ reload() { ... }
 - Use **`// #region` / `// #endregion`** (or the same pattern the file already uses) so related functions, properties, or lifecycle hooks stay together and are easy to fold in the editor.
 - If the **user explicitly asks** for comments in code, follow that.
 
+## `console.log` (debugging)
+
+- **Do not remove** existing **`console.log`** (or similar debug logs) when editing a file — leave them in place unless the **user explicitly** asks to remove or clean them up.
+- **Do not** delete debug logs as drive-by cleanup, “production polish,” or lint hygiene during unrelated tasks.
+- Remove or replace logs **only** when the user clearly requests it (e.g. “remove console logs”, “clean up debugging”).
+
+### List & details API responses (mandatory)
+
+When you **add or change** code that calls an API returning a **list** or **details** (e.g. `List_*`, `Get_*_Details`, `Browse_*`, reference lookups used to bind a screen), log the **parsed response** in the **`subscribe` `next`** handler so the owner can verify the object shape in the browser console.
+
+- Log **once per call site** in the component (or the primary screen handler) — not inside shared services unless the task is service-only.
+- Use a **short, identifiable label** (operation / method name) + the **full response object**:
+
+```ts
+next: (response: any) => {
+  console.log('listEntityDonationRequests response', response);
+  if (!response?.success) {
+    return;
+  }
+  // ...
+},
+```
+
+```ts
+next: (results) => {
+  console.log('getDonationRequestDetails response', results);
+  // forkJoin / parallel loads — log the combined object
+},
+```
+
+- **`forkJoin` / multiple loads:** one log for the **combined** result object (or one log per stream if they are separate subscribes — match what is already in the file).
+- **Lookups** loaded for a list/details screen (statuses, types, categories): same rule, e.g. `console.log('statuses response', response);`
+- Do **not** wrap logs in `if (!environment.production)` unless the owner asks — these are intentional owner debug logs.
+- When implementing a **new** list or details screen, **include** these logs in the same change; when fixing mapping, **keep** existing logs and add any missing ones for that screen’s API calls.
+
 ## PrimeNG
 
 - Prefer **PrimeNG** components whenever possible (`p-button`, `p-table`, `p-dialog`, `p-inputText`, `p-dropdown`, etc.).

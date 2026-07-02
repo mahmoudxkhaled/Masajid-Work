@@ -5,6 +5,7 @@ export interface DonationTypeBackend {
   Name_Regional?: string;
   Description?: string;
   Description_Regional?: string;
+  Default_Order?: number;
   Is_Active?: boolean;
 }
 

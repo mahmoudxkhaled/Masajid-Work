@@ -36,7 +36,7 @@
               <p-skeleton height="1.25rem" width="12rem"></p-skeleton>
             </ng-container>
             <ng-template #titleCell>
-              <span class="font-semibold">{{ row.title }}</span>
+              <span class="font-semibold">{{ getTitle(row) }}</span>
             </ng-template>
           </td>
           <td class="text-center">
@@ -44,7 +44,7 @@
               <p-skeleton height="1.5rem" width="4.5rem" borderRadius="16px"></p-skeleton>
             </ng-container>
             <ng-template #statusCell>
-              <app-donation-status-badge [label]="getStatusLabel(row.statusId)"></app-donation-status-badge>
+              <app-donation-status-badge [label]="getStatusLabel(row.Donation_Request_Status_ID || 0)"></app-donation-status-badge>
             </ng-template>
           </td>
           <td class="text-center">
@@ -57,7 +57,7 @@
             <ng-container *ngIf="tableLoadingSpinner; else createdCell">
               <p-skeleton height="1.25rem" width="7rem"></p-skeleton>
             </ng-container>
-            <ng-template #createdCell>{{ row.createdAt || '-' }}</ng-template>
+            <ng-template #createdCell>{{ row.Created_At || '-' }}</ng-template>
           </td>
         </tr>
       </ng-template>

@@ -1271,6 +1271,9 @@
             "donations.title": "التبرعات",
             "donations.facility.title": "تبرعات المنشأة",
             "donations.facility.requests.title": "طلبات التبرع الخاصة بي",
+            "donations.facility.requests.details.title": "تفاصيل طلب التبرع",
+            "donations.facility.requests.form.createTitle": "إنشاء طلب تبرع",
+            "donations.facility.requests.form.editTitle": "تعديل طلب تبرع",
             "donations.browse.title": "تصفح التبرعات",
             "donations.commitments.title": "التزاماتي",
             "donations.adminReview.title": "مراجعة الإدارة",
@@ -3349,6 +3352,7 @@
         "title": "التبرعات",
         "facility": {
             "title": "تبرعات المنشأة",
+            "accessDenied": "ليس لديك صلاحية الوصول إلى إدارة طلبات تبرع المنشأة.",
             "requests": {
                 "title": "طلبات التبرع الخاصة بي",
                 "subtitle": "أنشئ طلبات التبرع وتابعها وأدرها لمنشأتك.",
@@ -3360,10 +3364,92 @@
                     "title": "العنوان",
                     "status": "الحالة",
                     "estimatedCost": "التكلفة التقديرية",
-                    "createdAt": "تاريخ الإنشاء"
+                    "createdAt": "تاريخ الإنشاء",
+                    "actions": "الإجراءات"
+                },
+                "actions": {
+                    "view": "عرض",
+                    "edit": "تعديل",
+                    "submit": "إرسال للمراجعة",
+                    "delete": "حذف"
+                },
+                "confirm": {
+                    "submitTitle": "إرسال للمراجعة",
+                    "submitMessage": "هل تريد إرسال طلب التبرع هذا لمراجعة الإدارة؟",
+                    "deleteTitle": "حذف الطلب",
+                    "deleteMessage": "هل تريد حذف مسودة طلب التبرع هذا؟ لا يمكن التراجع عن هذا الإجراء."
                 },
                 "messages": {
-                    "notOwnerFacility": "أنت لست ممثل المنشأة المالكة لهذه الطلبات."
+                    "notOwnerFacility": "غير مسموح لك بإدارة طلب المنشأة هذا.",
+                    "created": "تم حفظ طلب التبرع كمسودة.",
+                    "updated": "تم تحديث طلب التبرع بنجاح.",
+                    "submitted": "تم إرسال طلب التبرع لمراجعة الإدارة.",
+                    "deleted": "تم حذف مسودة طلب التبرع بنجاح."
+                },
+                "errors": {
+                    "invalidRequestId": "طلب تبرع غير صالح.",
+                    "invalidCategoryId": "فئة تبرع غير صالحة.",
+                    "invalidQuantity": "يجب أن تكون الكمية أكبر من صفر.",
+                    "invalidTitle": "صيغة العنوان غير صالحة.",
+                    "invalidCurrency": "رمز العملة غير صالح.",
+                    "invalidCountry": "رمز الدولة غير صالح.",
+                    "invalidUnit": "وحدة غير صالحة.",
+                    "invalidStatusForAction": "هذا الإجراء غير مسموح لحالة الطلب الحالية.",
+                    "deleteNotDraft": "يمكن حذف المسودات فقط.",
+                    "cannotModifyPublished": "لا يمكن تعديل هذا الطلب لأنه تم نشره بالفعل."
+                },
+                "form": {
+                    "createTitle": "إنشاء طلب تبرع",
+                    "editTitle": "تعديل طلب تبرع",
+                    "donationType": "نوع التبرع",
+                    "donationTypePlaceholder": "اختر نوع التبرع",
+                    "donationCategory": "فئة التبرع",
+                    "title": "العنوان",
+                    "description": "الوصف",
+                    "quantity": "الكمية",
+                    "unit": "الوحدة",
+                    "estimatedCost": "التكلفة التقديرية",
+                    "currency": "العملة",
+                    "currencyPlaceholder": "اختر العملة",
+                    "needsInstallation": "يتطلب تركيباً",
+                    "country": "الدولة",
+                    "countryPlaceholder": "اختر الدولة",
+                    "city": "المدينة",
+                    "address": "العنوان",
+                    "isRegional": "استخدام الحقول الإقليمية للغة",
+                    "saveDraft": "حفظ كمسودة",
+                    "saveAndSubmit": "حفظ وإرسال للمراجعة",
+                    "cancel": "إلغاء",
+                    "attachmentsTodoTitle": "المرفقات",
+                    "attachmentsTodo": "سيتم تنفيذ مرفقات طلب التبرع في مرحلة المرفقات باستخدام Add_Donation_Attachment 111000.",
+                    "validation": {
+                        "categoryRequired": "فئة التبرع مطلوبة.",
+                        "titleRequired": "العنوان مطلوب.",
+                        "descriptionRequired": "الوصف مطلوب.",
+                        "quantityInvalid": "يجب أن تكون الكمية أكبر من صفر.",
+                        "unitRequired": "الوحدة مطلوبة.",
+                        "estimatedCostInvalid": "يجب أن تكون التكلفة التقديرية صفراً أو أكثر.",
+                        "currencyInvalid": "يجب أن يكون رمز العملة 3 أحرف كبيرة.",
+                        "countryInvalid": "يجب أن يكون رمز الدولة 3 أحرف كبيرة.",
+                        "cityRequired": "المدينة مطلوبة.",
+                        "addressRequired": "العنوان مطلوب."
+                    }
+                },
+                "details": {
+                    "title": "تفاصيل طلب التبرع",
+                    "back": "العودة إلى القائمة",
+                    "coordinates": "الإحداثيات",
+                    "updatedAt": "تاريخ التحديث",
+                    "reviewNote": "ملاحظة مراجعة الإدارة",
+                    "workflowTitle": "سجل الحالة",
+                    "workflowEmpty": "لا يوجد سجل حالة متاح.",
+                    "unknownStatus": "حالة غير معروفة",
+                    "sections": {
+                        "donation": "معلومات التبرع",
+                        "location": "الموقع",
+                        "meta": "معلومات الطلب",
+                        "workflow": "سجل الحالة"
+                    }
                 }
             }
         },

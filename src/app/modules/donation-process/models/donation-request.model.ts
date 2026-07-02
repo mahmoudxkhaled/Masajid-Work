@@ -4,26 +4,121 @@ export interface DonationRequestBackend {
   Donation_Category_ID?: number;
   Title?: string;
   Title_Regional?: string;
-  Description?: string;
-  Description_Regional?: string;
-  Status_ID?: number;
+  Donation_Request_Status_ID?: number;
+  Status_Code?: string;
   Quantity?: number;
   Unit?: string;
   Estimated_Cost?: number;
   Currency_Code?: string;
-  Needs_Installation?: boolean;
   City?: string;
   Country_Code?: string;
   Created_At?: string;
-  Updated_At?: string;
+}
+
+export interface DonationRequestDetailsBackend extends DonationRequestBackend {
+  Entity_ID?: number;
+  Donation_Type_ID?: number;
+  Description?: string;
+  Description_Regional?: string;
+  Needs_Installation?: boolean;
+  Is_Regional?: boolean;
+  Address?: string;
+  Address_Regional?: string;
+  Latitude?: number;
+  Longitude?: number;
+  Admin_Review_Note?: string;
+  Review_Note?: string;
 }
 
 export interface DonationRequestListItem {
   id: string;
   title: string;
   statusId: number;
+  statusCode: string;
   categoryId: number;
+  quantity: number;
+  unit: string;
   estimatedCost: number;
   currencyCode: string;
+  city: string;
+  countryCode: string;
   createdAt: string;
+}
+
+export interface DonationRequestSummary extends DonationRequestListItem { }
+
+export interface DonationRequestDetails {
+  id: string;
+  entityId: number;
+  donationTypeId: number;
+  donationCategoryId: number;
+  title: string;
+  description: string;
+  statusId: number;
+  statusCode: string;
+  quantity: number;
+  unit: string;
+  estimatedCost: number;
+  currencyCode: string;
+  needsInstallation: boolean;
+  isRegional: boolean;
+  address: string;
+  latitude: number;
+  longitude: number;
+  city: string;
+  countryCode: string;
+  reviewNote: string;
+  createdAt: string;
+}
+
+export interface DonationRequestWorkflowItem {
+  statusId: number;
+  statusName: string;
+  changedAt: string;
+  changedBy: string;
+  note: string;
+}
+
+export interface CreateDonationRequestRequest {
+  entityId: number;
+  donationCategoryId: number;
+  title: string;
+  description: string;
+  isRegional: boolean;
+  quantity: number;
+  unit: string;
+  estimatedCost: number;
+  currencyCode: string;
+  needsInstallation: boolean;
+  address: string;
+  latitude: number;
+  longitude: number;
+  city: string;
+  countryCode: string;
+}
+
+export interface UpdateDonationRequestRequest {
+  donationRequestId: number;
+  donationCategoryId: number;
+  title: string;
+  description: string;
+  isRegional: boolean;
+  quantity: number;
+  unit: string;
+  estimatedCost: number;
+  currencyCode: string;
+  needsInstallation: boolean;
+  address: string;
+  latitude: number;
+  longitude: number;
+  city: string;
+  countryCode: string;
+}
+
+export interface ListEntityDonationRequestsRequest {
+  entityId: number;
+  statusFilter: number[];
+  lastRequestId: number;
+  filterCount: number;
+  textFilter: string;
 }

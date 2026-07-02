@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { COUNTRY_ALPHA3_TO_ALPHA2 } from '../data/country-alpha3-to-alpha2.data';
+import { MOCK_COUNTRIES } from '../data/mock-countries.data';
+import { MOCK_CURRENCIES } from '../data/mock-currencies.data';
 import { ApiService } from '../api/api.service';
 import { CountryLookup, CurrencyLookup } from '../models/lookup.model';
 
@@ -15,13 +17,19 @@ export class PublicLookupService {
 
   getCountries(): Observable<CountryLookup[]> {
     return this.apiService.callAPI(100107, '', []).pipe(
-      map((response) => this.mapCountriesResponse(response)),
+      map((response) => {
+        const mapped = this.mapCountriesResponse(response);
+        return mapped.length > 0 ? mapped : [...MOCK_COUNTRIES];
+      }),
     );
   }
 
   getCurrencies(): Observable<CurrencyLookup[]> {
     return this.apiService.callAPI(100108, '', []).pipe(
-      map((response) => this.mapCurrenciesResponse(response)),
+      map((response) => {
+        const mapped = this.mapCurrenciesResponse(response);
+        return mapped.length > 0 ? mapped : [...MOCK_CURRENCIES];
+      }),
     );
   }
 

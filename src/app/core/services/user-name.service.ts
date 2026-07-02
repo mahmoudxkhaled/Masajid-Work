@@ -11,7 +11,7 @@ export class UserNameService {
     constructor() { }
 
     updateUserName(userName: string): void {
-        console.log('UserNameService: Updating user name to:', userName);
+        // console.log('UserNameService: Updating user name to:', userName);
         this.userNameSubject.next(userName);
     }
 

@@ -2,8 +2,9 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { LanguageDirService } from 'src/app/core/services/language-dir.service';
+import { LocalStorageService } from 'src/app/core/services/local-storage.service';
 import { TranslationService } from 'src/app/core/services/translation.service';
-import { DonationRequestBackend, DonationRequestListItem } from '../../../models/donation-request.model';
+import { DonationRequestBackend } from '../../../models/donation-request.model';
 import { DonationRequestStatusBackend } from '../../../models/donation-request-status.model';
 import { DonationReferenceService } from '../../../services/donation-reference.service';
 import { DonationValidationService } from '../../services/donation-validation.service';
@@ -18,29 +19,28 @@ export class ValidationListComponent implements OnInit, OnDestroy {
   rows = 10;
   readonly rowsPerPageOptions = [10, 25, 50, 100];
 
-  requests: DonationRequestListItem[] = [];
+  requests: DonationRequestBackend[] = [];
   first = 0;
   totalRecords = 0;
   tableLoadingSpinner = false;
 
-  private rawRequests: DonationRequestBackend[] = [];
-  private rawStatuses: DonationRequestStatusBackend[] = [];
+  private statuses: DonationRequestStatusBackend[] = [];
   private statusLabelById: Record<number, string> = {};
   private subscriptions: Subscription[] = [];
 
   constructor(
     private donationValidationService: DonationValidationService,
     private donationReferenceService: DonationReferenceService,
+    private localStorageService: LocalStorageService,
     private languageDirService: LanguageDirService,
     private translate: TranslationService,
     private messageService: MessageService,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.subscriptions.push(
       this.languageDirService.userLanguageCode$.subscribe(() => {
-        this.remapRequests();
-        this.remapStatuses();
+        this.buildStatusMaps();
       }),
     );
     this.loadStatuses();
@@ -51,17 +51,9 @@ export class ValidationListComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
-  get tableValue(): DonationRequestListItem[] {
+  get tableValue(): DonationRequestBackend[] {
     if (this.tableLoadingSpinner && this.requests.length === 0) {
-      return Array(this.rows).fill(null).map(() => ({
-        id: '',
-        title: '',
-        statusId: 0,
-        categoryId: 0,
-        estimatedCost: 0,
-        currencyCode: '',
-        createdAt: '',
-      }));
+      return Array(this.rows).fill(null).map(() => ({}));
     }
     return this.requests;
   }
@@ -72,15 +64,23 @@ export class ValidationListComponent implements OnInit, OnDestroy {
     this.loadRequests();
   }
 
+  getTitle(row: DonationRequestBackend): string {
+    const isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
+    if (isRegional) {
+      return String(row.Title_Regional || row.Title || '');
+    }
+    return String(row.Title || '');
+  }
+
   getStatusLabel(statusId: number): string {
     return this.statusLabelById[statusId] || '';
   }
 
-  formatEstimatedCost(row: DonationRequestListItem): string {
-    if (!row.estimatedCost) {
+  formatEstimatedCost(row: DonationRequestBackend): string {
+    if (!row.Estimated_Cost) {
       return '-';
     }
-    return `${row.estimatedCost} ${row.currencyCode || ''}`.trim();
+    return `${row.Estimated_Cost} ${row.Currency_Code || ''}`.trim();
   }
 
   private loadStatuses(): void {
@@ -89,11 +89,8 @@ export class ValidationListComponent implements OnInit, OnDestroy {
         if (!response?.success) {
           return;
         }
-        this.rawStatuses = this.donationReferenceService.extractDictionaryItems<DonationRequestStatusBackend>(
-          response.message,
-          'Request_Statuses',
-        );
-        this.remapStatuses();
+        this.statuses = Object.values(response.message?.Request_Statuses ?? {});
+        this.buildStatusMaps();
       },
     });
     this.subscriptions.push(sub);
@@ -108,13 +105,13 @@ export class ValidationListComponent implements OnInit, OnDestroy {
       .listDonationsOpenForValidation([], lastRequestId, this.rows)
       .subscribe({
         next: (response: any) => {
+          console.log('validation list response', response);
           if (!response?.success) {
             this.tableLoadingSpinner = false;
             return;
           }
           this.totalRecords = Number(response.message?.Total_Count || 0);
-          this.rawRequests = this.donationValidationService.extractRequests(response.message);
-          this.remapRequests();
+          this.requests = response.message?.Donation_Requests ?? [];
         },
         error: () => {
           this.tableLoadingSpinner = false;
@@ -126,15 +123,17 @@ export class ValidationListComponent implements OnInit, OnDestroy {
     this.subscriptions.push(sub);
   }
 
-  private remapRequests(): void {
-    this.requests = this.donationValidationService.mapRequests(this.rawRequests);
-  }
-
-  private remapStatuses(): void {
-    const statuses = this.donationReferenceService.mapDonationRequestStatuses(this.rawStatuses);
-    this.statusLabelById = statuses.reduce<Record<number, string>>((acc, item) => {
-      acc[item.id] = item.name;
-      return acc;
-    }, {});
+  private buildStatusMaps(): void {
+    const isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
+    this.statusLabelById = {};
+    for (const item of this.statuses) {
+      const id = Number(item.Donation_Request_Status_ID || 0);
+      if (!id) {
+        continue;
+      }
+      this.statusLabelById[id] = isRegional
+        ? String(item.Name_Regional || item.Name || '')
+        : String(item.Name || '');
+    }
   }
 }

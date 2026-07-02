@@ -11,6 +11,8 @@ Below: (1) invoice-style summary table, (2) **detailed technical log** with comm
 | Date   | Category Code | Project      | Task              | Sub-Task (headline)                                                                 | Hours |
 | ------ | ------------- | ------------ | ----------------- | ----------------------------------------------------------------------------------- | ----- |
 | 06-Jun | Angular       | Masajid Work | Donation & Domain | Donation Process API spec; static nav Entity terminology; en/ar i18n alignment.       | 7     |
+| 12-Jun | Angular       | Masajid Work | Donation Module   | Full donation-process module scaffold; categories CRUD UI with dialogs & validation. | 7     |
+| 25-Jun | Angular       | Masajid Work | Registration & Nav | Entity contact geo fields; Leaflet location picker; Masajid user-type navigation.    | 5     |
 
 ---
 
@@ -26,13 +28,32 @@ Below: (1) invoice-style summary table, (2) **detailed technical log** with comm
 
 ---
 
+### 2026-06-12 — Friday — **7 hours**
+
+**Commits (newest first):** `50a7b19`, `56060e2`
+
+- **Donation module scaffold (`56060e2`):** Built the full **`donation-process`** feature area — parent routing module plus **9 sub-modules** (reference, facility-requests, admin-review, browse, commitments, charity-representation, vendor-offers, validation). Created **models** (donation request, category, type, status, commitment, entity extra data), **services** wired to API request codes, and **list components** for each workflow stage. Added shared **`DonationCategoryPicker`** and **`DonationStatusBadge`** components. Extended **`static-navigation.config.ts`** with donation function/modules and wired **`app-routing.module.ts`**. Added **114 en/ar translation keys** for donation titles and labels.
+- **Donation categories CRUD (`50a7b19`):** Refactored **`DonationCategoriesListComponent`** with improved table layout, sorting, and filtering. Introduced **create/edit form dialogs** with validation messages and business-error handling. Extended **`DonationReferenceService`** with add/update/activate/deactivate category API calls. Added **57 new en/ar keys** for form fields, actions, and validation copy.
+
+---
+
+### 2026-06-25 — Thursday — **5 hours**
+
+**Commits (newest first):** `968e286`, `257155d`, `df53fe7`
+
+- **Entity contact geo fields (`df53fe7`):** Added **city, latitude, and longitude** to entity contact management; removed fax number fields. Created **`PublicLookupService`** with country/currency mock data and alpha-3→alpha-2 mapping. Refactored all **4 registration components** (donor, vendor, facility, charity-centre) and **`PublicRegistrationService`** to the new data shape. Updated **`SharedEntityContactComponent`** UI and validation. Added **89 en/ar keys** for new contact/registration fields.
+- **Leaflet location picker (`257155d`):** Integrated **Leaflet** map library (package + types + bundled marker assets). Built **`RegisterLocationPickerComponent`** (318-line map picker with country-centroid defaults, click-to-place, and coordinate binding). Wired into donor, vendor, facility, and charity-centre registration forms. Updated **`angular.json`** styles and global SCSS for Leaflet CSS.
+- **Masajid user-type navigation (`968e286`):** Introduced **`MasajidUserType`** model and **`masajid-workspace.config.ts`** (281 lines) defining per-user-type function/module visibility. Added user-type persistence in **`LocalStorageService`** and dynamic function retrieval in **`ModuleNavigationService`**. Created **`DashboardResolverService`** for role-aware dashboard routing. Refactored **`AppMenuComponent`** and **`DashboardComponent`** to resolve modules by user type. Cleaned deprecated donation entries from static navigation config and improved icon mapping.
+
+---
+
 ## Summary
 
 | Metric | Value |
 | ------ | ----- |
-| **Working days (with commits)** | 1 |
-| **Total billable hours (schedule)** | **7** |
-| **Commits in period (`git rev-list`)** | **3** |
+| **Working days (with commits)** | 3 |
+| **Total billable hours (schedule)** | **19** |
+| **Commits in period (`git rev-list`)** | **8** |
 
 ### How to read this for "reliable hours"
 

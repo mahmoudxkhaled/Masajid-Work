@@ -29,12 +29,12 @@ This workspace is **pmat** (ERP frontend): Angular 17, PrimeNG 17, TypeScript 5.
 
 ## Conventions (pointers — avoid duplicating other rules)
 
-- **Code style:** **`angular-project`** (junior-friendly; **minimal scope** — no over-engineering or assumed requirements; only code needed for the feature; avoid RxJS when possible; PrimeNG; `#region`; no comments).
+- **Code style:** **`angular-project`** (junior-friendly; **minimal scope**; **do not remove existing `console.log`**; **add `console.log` on list/details API `subscribe`** unless asked).
 - **Strings & toasts:** **`i18n-translations`**. **Loading / skeleton UI:** **`ui-defaults`**.
 - **Regional API fields:** **`regional-data-remapping`** (keep raw data; rebuild displayed data on language changes).
 - **List tables (`p-table`):** **`table-defaults`** (canonical layout + skeleton row count = `[rows]`).
 - **Business API failures (`success: false`):** **`business-error-handling`** (component-local `handleBusinessError` + `switch` on codes).
 - **File-system / document-control APIs:** **`storage-file-system-api`** and **Docs/storage-management-file-system-api.md**.
-- **Donation process APIs:** **`donation-process-api`** and **Docs/donation-process-api.md**.
+- **Donation process APIs:** **`donation-process-api`** and **Docs/donation-process-api.md** — use documented **`response.message`** shapes directly; no defensive extract/map layers or assumed alternate keys.
 
 When starting a new task, use this context to locate the right module, routing, and existing patterns.

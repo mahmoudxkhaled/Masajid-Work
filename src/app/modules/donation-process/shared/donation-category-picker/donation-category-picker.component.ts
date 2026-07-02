@@ -28,7 +28,7 @@ export class DonationCategoryPickerComponent implements OnInit, OnChanges, OnDes
   constructor(
     private donationReferenceService: DonationReferenceService,
     private languageDirService: LanguageDirService,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.subscriptions.push(

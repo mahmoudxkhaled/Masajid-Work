@@ -2,8 +2,6 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, finalize } from 'rxjs';
 import { ApiService } from 'src/app/core/api/api.service';
 import { LocalStorageService } from 'src/app/core/services/local-storage.service';
-import { DonationRequestBackend } from '../../models/donation-request.model';
-import { DonationRequestsService } from '../../facility-requests/services/donation-requests.service';
 
 @Injectable({
   providedIn: 'root',
@@ -14,7 +12,6 @@ export class DonationBrowseService {
   constructor(
     private apiServices: ApiService,
     private localStorageService: LocalStorageService,
-    private donationRequestsService: DonationRequestsService,
   ) {}
 
   browseDonationRequests(
@@ -38,14 +35,6 @@ export class DonationBrowseService {
     return this.apiServices.callAPI(100400, this.getAccessToken(), params).pipe(
       finalize(() => this.isLoadingSubject.next(false)),
     );
-  }
-
-  mapBrowseRequests(rawItems: DonationRequestBackend[]) {
-    return this.donationRequestsService.mapDonationRequestListItems(rawItems);
-  }
-
-  extractBrowseRequests(message: Record<string, unknown> | undefined) {
-    return this.donationRequestsService.extractDonationRequests(message);
   }
 
   private formatIntegerList(numbers: number[]): string {

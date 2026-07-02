@@ -218,7 +218,7 @@ export class AuthService {
                 if (!response?.success) {
                     return;
                 }
-                console.log('loadUserPreferencesOnLogin response', response);
+                // console.log('loadUserPreferencesOnLogin response', response);
                 const message = response?.message;
                 const raw =
                     message?.User_Preferences ??

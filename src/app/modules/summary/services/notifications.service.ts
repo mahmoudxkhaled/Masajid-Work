@@ -669,7 +669,7 @@ export class NotificationsService {
             lastNotificationId.toString(),
             filterCount.toString()
         ];
-        console.log('params listAccountNotifications', params);
+        // console.log('params listAccountNotifications', params);
         return this.apiServices.callAPI(843, this.getAccessToken(), params).pipe(
             finalize(() => this.isLoadingSubject.next(false))
         );

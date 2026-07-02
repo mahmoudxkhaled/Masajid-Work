@@ -17,7 +17,6 @@
       [rowsPerPageOptions]="rowsPerPageOptions"
       [showCurrentPageReport]="true"
       [currentPageReportTemplate]="'donations.adminReview.pagination' | translate"
-      [globalFilterFields]="['title']"
       responsiveLayout="scroll"
       styleClass="p-datatable-sm"
       (onLazyLoad)="onPageChange($event)"
@@ -30,8 +29,9 @@
               pInputText
               type="text"
               class="w-full"
+              [(ngModel)]="textFilter"
               [placeholder]="'donations.adminReview.searchPlaceholder' | translate"
-              (input)="onSearchInput($any($event.target).value)"
+              (ngModelChange)="onSearchInput($event)"
             />
           </span>
         </div>
@@ -53,7 +53,7 @@
               <p-skeleton height="1.25rem" width="12rem"></p-skeleton>
             </ng-container>
             <ng-template #titleCell>
-              <span class="font-semibold">{{ row.title }}</span>
+              <span class="font-semibold">{{ getTitle(row) }}</span>
             </ng-template>
           </td>
           <td class="text-center">
@@ -61,7 +61,7 @@
               <p-skeleton height="1.5rem" width="4.5rem" borderRadius="16px"></p-skeleton>
             </ng-container>
             <ng-template #statusCell>
-              <app-donation-status-badge [label]="getStatusLabel(row.statusId)" severity="warning"></app-donation-status-badge>
+              <app-donation-status-badge [label]="getPendingReviewStatusLabel()" severity="warning"></app-donation-status-badge>
             </ng-template>
           </td>
           <td class="text-center">
@@ -74,7 +74,7 @@
             <ng-container *ngIf="tableLoadingSpinner; else createdCell">
               <p-skeleton height="1.25rem" width="7rem"></p-skeleton>
             </ng-container>
-            <ng-template #createdCell>{{ row.createdAt || '-' }}</ng-template>
+            <ng-template #createdCell>{{ row.Created_At || '-' }}</ng-template>
           </td>
         </tr>
       </ng-template>

@@ -1,16 +1,16 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { LanguageDirService } from 'src/app/core/services/language-dir.service';
 import { LocalStorageService } from 'src/app/core/services/local-storage.service';
 import { TranslationService } from 'src/app/core/services/translation.service';
-import { DonationRequestBackend, DonationRequestListItem } from '../../../models/donation-request.model';
-import { DonationRequestStatus, DonationRequestStatusBackend } from '../../../models/donation-request-status.model';
+import { DonationRequestBackend } from '../../../models/donation-request.model';
+import { DonationRequestStatusBackend } from '../../../models/donation-request-status.model';
 import { DonationReferenceService } from '../../../services/donation-reference.service';
 import { DonationRequestsService } from '../../services/donation-requests.service';
 
-type FacilityRequestsListContext = 'list';
+type FacilityRequestsListContext = 'list' | 'submit' | 'delete';
 
 @Component({
   standalone: false,
@@ -22,7 +22,7 @@ export class FacilityRequestsListComponent implements OnInit, OnDestroy {
   rows = 10;
   readonly rowsPerPageOptions = [10, 25, 50, 100];
 
-  requests: DonationRequestListItem[] = [];
+  requests: DonationRequestBackend[] = [];
   statusOptions: { label: string; value: number | null }[] = [];
   selectedStatusId: number | null = null;
   textFilter = '';
@@ -30,10 +30,14 @@ export class FacilityRequestsListComponent implements OnInit, OnDestroy {
   first = 0;
   totalRecords = 0;
   tableLoadingSpinner = false;
+  initialLoading = true;
 
-  private rawRequests: DonationRequestBackend[] = [];
-  private rawStatuses: DonationRequestStatusBackend[] = [];
+  menuItems: MenuItem[] = [];
+
+  private statuses: DonationRequestStatusBackend[] = [];
   private statusLabelById: Record<number, string> = {};
+  private statusCodeById: Record<number, string> = {};
+  private searchDebounceTimer: ReturnType<typeof setTimeout> | null = null;
   private subscriptions: Subscription[] = [];
 
   constructor(
@@ -43,14 +47,14 @@ export class FacilityRequestsListComponent implements OnInit, OnDestroy {
     private languageDirService: LanguageDirService,
     private translate: TranslationService,
     private messageService: MessageService,
+    private confirmationService: ConfirmationService,
     private router: Router,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.subscriptions.push(
       this.languageDirService.userLanguageCode$.subscribe(() => {
-        this.remapRequests();
-        this.remapStatuses();
+        this.buildStatusMaps();
       }),
     );
     this.loadStatuses();
@@ -58,20 +62,15 @@ export class FacilityRequestsListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    if (this.searchDebounceTimer) {
+      clearTimeout(this.searchDebounceTimer);
+    }
     this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
-  get tableValue(): DonationRequestListItem[] {
+  get tableValue(): DonationRequestBackend[] {
     if (this.tableLoadingSpinner && this.requests.length === 0) {
-      return Array(this.rows).fill(null).map(() => ({
-        id: '',
-        title: '',
-        statusId: 0,
-        categoryId: 0,
-        estimatedCost: 0,
-        currencyCode: '',
-        createdAt: '',
-      }));
+      return Array(this.rows).fill(null).map(() => ({}));
     }
     return this.requests;
   }
@@ -84,8 +83,13 @@ export class FacilityRequestsListComponent implements OnInit, OnDestroy {
 
   onSearchInput(value: string): void {
     this.textFilter = value;
-    this.first = 0;
-    this.loadRequests();
+    if (this.searchDebounceTimer) {
+      clearTimeout(this.searchDebounceTimer);
+    }
+    this.searchDebounceTimer = setTimeout(() => {
+      this.first = 0;
+      this.loadRequests();
+    }, 300);
   }
 
   onStatusFilterChange(): void {
@@ -94,7 +98,94 @@ export class FacilityRequestsListComponent implements OnInit, OnDestroy {
   }
 
   goToCreate(): void {
-    this.router.navigate(['/donations/facility/requests/new']);
+    this.router.navigate(['/donations/facility/requests/create']);
+  }
+
+  viewRequest(row: DonationRequestBackend, event?: Event): void {
+    event?.stopPropagation();
+    if (this.tableLoadingSpinner || !row.Donation_Request_ID) {
+      return;
+    }
+    this.router.navigate(['/donations/facility/requests', row.Donation_Request_ID]);
+  }
+
+  editRequest(row: DonationRequestBackend, event?: Event): void {
+    event?.stopPropagation();
+    if (this.tableLoadingSpinner || !row.Donation_Request_ID) {
+      return;
+    }
+    this.router.navigate(['/donations/facility/requests', row.Donation_Request_ID, 'edit']);
+  }
+
+  openMenu(menuRef: any, row: DonationRequestBackend, event: Event): void {
+    event.stopPropagation();
+    this.menuItems = this.getMenuItemsForRow(row);
+    menuRef.toggle(event);
+  }
+
+  getMenuItemsForRow(row: DonationRequestBackend): MenuItem[] {
+    const items: MenuItem[] = [
+      {
+        label: this.translate.getInstant('donations.facility.requests.actions.view'),
+        icon: 'pi pi-eye',
+        command: () => this.viewRequest(row),
+      },
+    ];
+
+    if (this.isDraft(row)) {
+      items.push(
+        {
+          label: this.translate.getInstant('donations.facility.requests.actions.edit'),
+          icon: 'pi pi-pencil',
+          command: () => this.editRequest(row),
+        },
+        {
+          label: this.translate.getInstant('donations.facility.requests.actions.submit'),
+          icon: 'pi pi-send',
+          command: () => this.confirmSubmit(row),
+        },
+        {
+          label: this.translate.getInstant('donations.facility.requests.actions.delete'),
+          icon: 'pi pi-trash',
+          command: () => this.confirmDelete(row),
+        },
+      );
+    }
+
+    return items;
+  }
+
+  confirmSubmit(row: DonationRequestBackend, event?: Event): void {
+    event?.stopPropagation();
+    this.confirmationService.confirm({
+      message: this.translate.getInstant('donations.facility.requests.confirm.submitMessage'),
+      header: this.translate.getInstant('donations.facility.requests.confirm.submitTitle'),
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => this.submitRequest(Number(row.Donation_Request_ID)),
+    });
+  }
+
+  confirmDelete(row: DonationRequestBackend, event?: Event): void {
+    event?.stopPropagation();
+    this.confirmationService.confirm({
+      message: this.translate.getInstant('donations.facility.requests.confirm.deleteMessage'),
+      header: this.translate.getInstant('donations.facility.requests.confirm.deleteTitle'),
+      icon: 'pi pi-exclamation-triangle',
+      acceptButtonStyleClass: 'p-button-danger',
+      accept: () => this.deleteRequest(Number(row.Donation_Request_ID)),
+    });
+  }
+
+  getTitle(row: DonationRequestBackend): string {
+    const isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
+    if (isRegional) {
+      return String(row.Title_Regional || row.Title || '');
+    }
+    return String(row.Title || '');
+  }
+
+  isDraft(row: DonationRequestBackend): boolean {
+    return String(row.Status_Code || '').toUpperCase() === 'DRAFT';
   }
 
   getStatusLabel(statusId: number): string {
@@ -102,7 +193,7 @@ export class FacilityRequestsListComponent implements OnInit, OnDestroy {
   }
 
   getStatusSeverity(statusId: number): 'success' | 'info' | 'warning' | 'danger' | 'secondary' | 'contrast' {
-    const code = this.rawStatuses.find((item) => Number(item.Status_ID) === statusId)?.Code || '';
+    const code = this.statusCodeById[statusId] || '';
     switch (String(code).toUpperCase()) {
       case 'DRAFT':
         return 'secondary';
@@ -125,24 +216,23 @@ export class FacilityRequestsListComponent implements OnInit, OnDestroy {
     }
   }
 
-  formatEstimatedCost(row: DonationRequestListItem): string {
-    if (!row.estimatedCost) {
+  formatEstimatedCost(row: DonationRequestBackend): string {
+    if (!row.Estimated_Cost) {
       return '-';
     }
-    return `${row.estimatedCost} ${row.currencyCode || ''}`.trim();
+    return `${row.Estimated_Cost} ${row.Currency_Code || ''}`.trim();
   }
 
   private loadStatuses(): void {
     const sub = this.donationReferenceService.listDonationRequestStatuses().subscribe({
       next: (response: any) => {
+        console.log('statuses response', response);
         if (!response?.success) {
           return;
         }
-        this.rawStatuses = this.donationReferenceService.extractDictionaryItems<DonationRequestStatusBackend>(
-          response.message,
-          'Request_Statuses',
-        );
-        this.remapStatuses();
+        this.statuses = Object.values(response.message ?? {});
+
+        this.buildStatusMaps();
       },
     });
     this.subscriptions.push(sub);
@@ -153,6 +243,7 @@ export class FacilityRequestsListComponent implements OnInit, OnDestroy {
     if (!entityId) {
       this.requests = [];
       this.totalRecords = 0;
+      this.initialLoading = false;
       return;
     }
 
@@ -162,7 +253,13 @@ export class FacilityRequestsListComponent implements OnInit, OnDestroy {
     const statusFilter = this.selectedStatusId ? [this.selectedStatusId] : [];
 
     const sub = this.donationRequestsService
-      .listEntityDonationRequests(entityId, statusFilter, lastRequestId, this.rows, this.textFilter)
+      .listEntityDonationRequests({
+        entityId,
+        statusFilter,
+        lastRequestId,
+        filterCount: this.rows,
+        textFilter: this.textFilter,
+      })
       .subscribe({
         next: (response: any) => {
           if (!response?.success) {
@@ -170,32 +267,83 @@ export class FacilityRequestsListComponent implements OnInit, OnDestroy {
             return;
           }
           this.totalRecords = Number(response.message?.Total_Count || 0);
-          this.rawRequests = this.donationRequestsService.extractDonationRequests(response.message);
-          this.remapRequests();
+          this.requests = response.message?.Donation_Requests ?? [];
         },
         error: () => {
           this.tableLoadingSpinner = false;
+          this.initialLoading = false;
         },
         complete: () => {
           this.tableLoadingSpinner = false;
+          this.initialLoading = false;
         },
       });
     this.subscriptions.push(sub);
   }
 
-  private remapRequests(): void {
-    this.requests = this.donationRequestsService.mapDonationRequestListItems(this.rawRequests);
+  private submitRequest(requestId: number): void {
+    const sub = this.donationRequestsService.submitDonationRequestForReview(requestId).subscribe({
+      next: (response: any) => {
+        if (!response?.success) {
+          this.handleBusinessError('submit', response);
+          return;
+        }
+        this.messageService.add({
+          severity: 'success',
+          summary: this.translate.getInstant('common.success'),
+          detail: this.translate.getInstant('donations.facility.requests.messages.submitted'),
+        });
+        this.loadRequests();
+      },
+    });
+    this.subscriptions.push(sub);
   }
 
-  private remapStatuses(): void {
-    const statuses: DonationRequestStatus[] = this.donationReferenceService.mapDonationRequestStatuses(this.rawStatuses);
-    this.statusLabelById = statuses.reduce<Record<number, string>>((acc, item) => {
-      acc[item.id] = item.name;
-      return acc;
-    }, {});
+  private deleteRequest(requestId: number): void {
+    const sub = this.donationRequestsService.deleteDonationRequest(requestId).subscribe({
+      next: (response: any) => {
+        if (!response?.success) {
+          this.handleBusinessError('delete', response);
+          return;
+        }
+        this.messageService.add({
+          severity: 'success',
+          summary: this.translate.getInstant('common.success'),
+          detail: this.translate.getInstant('donations.facility.requests.messages.deleted'),
+        });
+        this.loadRequests();
+      },
+    });
+    this.subscriptions.push(sub);
+  }
+
+  private buildStatusMaps(): void {
+    const isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
+
+    this.statusLabelById = {};
+    this.statusCodeById = {};
+
+    for (const item of this.statuses) {
+      const id = Number(item.Donation_Request_Status_ID || 0);
+      if (!id) {
+        continue;
+      }
+      this.statusLabelById[id] = isRegional
+        ? String(item.Name_Regional || item.Name || '')
+        : String(item.Name || '');
+      this.statusCodeById[id] = String(item.Code || '');
+    }
+
     this.statusOptions = [
       { label: this.translate.getInstant('donations.shared.filters.allStatuses'), value: null },
-      ...statuses.map((item) => ({ label: item.name, value: item.id })),
+      ...this.statuses
+        .filter((item) => Number(item.Donation_Request_Status_ID || 0) > 0)
+        .map((item) => ({
+          label: isRegional
+            ? String(item.Name_Regional || item.Name || '')
+            : String(item.Name || ''),
+          value: Number(item.Donation_Request_Status_ID),
+        })),
     ];
   }
 
@@ -207,6 +355,13 @@ export class FacilityRequestsListComponent implements OnInit, OnDestroy {
       case 'list':
         detail = this.getListErrorMessage(code);
         this.tableLoadingSpinner = false;
+        this.initialLoading = false;
+        break;
+      case 'submit':
+        detail = this.getSubmitErrorMessage(code);
+        break;
+      case 'delete':
+        detail = this.getDeleteErrorMessage(code);
         break;
     }
 
@@ -223,6 +378,28 @@ export class FacilityRequestsListComponent implements OnInit, OnDestroy {
     switch (code) {
       case 'DAP13013':
         return this.translate.getInstant('donations.facility.requests.messages.notOwnerFacility');
+      default:
+        return null;
+    }
+  }
+
+  private getSubmitErrorMessage(code: string): string | null {
+    switch (code) {
+      case 'DAP13000':
+        return this.translate.getInstant('donations.facility.requests.errors.invalidRequestId');
+      case 'DAP13010':
+        return this.translate.getInstant('donations.facility.requests.errors.invalidStatusForAction');
+      default:
+        return null;
+    }
+  }
+
+  private getDeleteErrorMessage(code: string): string | null {
+    switch (code) {
+      case 'DAP13000':
+        return this.translate.getInstant('donations.facility.requests.errors.invalidRequestId');
+      case 'DAP13031':
+        return this.translate.getInstant('donations.facility.requests.errors.deleteNotDraft');
       default:
         return null;
     }

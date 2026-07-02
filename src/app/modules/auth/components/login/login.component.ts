@@ -94,7 +94,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
 
     private handleBusinessError(error: any, email: string) {
-        const code = (error.message).toString();
+        const code = String(error?.message ?? '');
         switch (code) {
 
             case 'DAP11100':

@@ -37,7 +37,7 @@ export class SettingsApiService {
         this.isLoadingSubject.next(true);
         console.log('[settings-api] request', { requestCode, params });
         return this.apiServices.callAPI(requestCode, this.getAccessToken(), params).pipe(
-            tap((response: any) => console.log('[settings-api] response', { requestCode, response })),
+            // tap((response: any) => console.log('[settings-api] response', { requestCode, response })),
             finalize(() => this.isLoadingSubject.next(false))
         );
     }
@@ -106,10 +106,10 @@ export class SettingsApiService {
      * API Code: 763
      */
     getAccountSettings(accountId: number): Observable<any> {
-        console.log('[settings-api] Get_Account_Settings — accountId:', accountId);
+        // console.log('[settings-api] Get_Account_Settings — accountId:', accountId);
         return this.apiServices.callAPI(763, this.getAccessToken(), [accountId.toString()]).pipe(
             finalize(() => this.isLoadingSubject.next(false)),
-            tap((response: any) => console.log('[settings-api] Get_Account_Settings — response:', response))
+            // tap((response: any) => console.log('[settings-api] Get_Account_Settings — response:', response))
         );
     }
 
@@ -155,10 +155,10 @@ export class SettingsApiService {
      * API Code: 783
      */
     getEntitySettings(entityId: number): Observable<any> {
-        console.log('[settings-api] Get_Entity_Settings — entityId:', entityId);
+        // console.log('[settings-api] Get_Entity_Settings — entityId:', entityId);
         return this.apiServices.callAPI(783, this.getAccessToken(), [entityId.toString()]).pipe(
             finalize(() => this.isLoadingSubject.next(false)),
-            tap((response: any) => console.log('[settings-api] Get_Entity_Settings — response:', response))
+            // tap((response: any) => console.log('[settings-api] Get_Entity_Settings — response:', response))
         );
     }
 

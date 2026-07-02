@@ -11,7 +11,7 @@ import { DonorRegistrationComponent } from './pages/register-donor/register-dono
 import { FacilityRegistrationComponent } from './pages/register-facility/register-facility.component';
 import { VendorRegistrationComponent } from './pages/register-vendor/register-vendor.component';
 import { CharityCenterRegistrationComponent } from './pages/register-charity-center/register-charity-center.component';
-import { RegisterLocationPickerComponent } from './components/register-location-picker/register-location-picker.component';
+import { LocationPickerModule } from '../Shared/components/location-picker/location-picker.module';
 import { HeaderSectionComponent } from './components/header-section/header-section.component';
 import { HeroSectionComponent } from './components/hero-section/hero-section.component';
 import { TrustBarSectionComponent } from './components/trust-bar-section/trust-bar-section.component';
@@ -36,7 +36,6 @@ import { PublicScrollRevealDirective } from './directives/public-scroll-reveal.d
     FacilityRegistrationComponent,
     VendorRegistrationComponent,
     CharityCenterRegistrationComponent,
-    RegisterLocationPickerComponent,
     HeaderSectionComponent,
     HeroSectionComponent,
     TrustBarSectionComponent,
@@ -49,7 +48,7 @@ import { PublicScrollRevealDirective } from './directives/public-scroll-reveal.d
     CallToActionSectionComponent,
     FooterSectionComponent,
   ],
-  imports: [CommonModule, RouterModule, ReactiveFormsModule, TranslateModule, PublicRoutingModule],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, TranslateModule, PublicRoutingModule, LocationPickerModule],
   providers: [PublicThemePreferenceService],
 })
 export class PublicModule { }

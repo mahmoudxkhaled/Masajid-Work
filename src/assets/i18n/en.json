@@ -1270,6 +1270,9 @@
             "donations.title": "Donations",
             "donations.facility.title": "Facility Donations",
             "donations.facility.requests.title": "My Donation Requests",
+            "donations.facility.requests.details.title": "Donation Request Details",
+            "donations.facility.requests.form.createTitle": "Create Donation Request",
+            "donations.facility.requests.form.editTitle": "Edit Donation Request",
             "donations.browse.title": "Browse Donations",
             "donations.commitments.title": "My Commitments",
             "donations.adminReview.title": "Admin Review",
@@ -3490,6 +3493,7 @@
         "title": "Donations",
         "facility": {
             "title": "Facility Donations",
+            "accessDenied": "You do not have access to facility donation request management.",
             "requests": {
                 "title": "My Donation Requests",
                 "subtitle": "Create, track, and manage donation requests for your facility.",
@@ -3501,10 +3505,92 @@
                     "title": "Title",
                     "status": "Status",
                     "estimatedCost": "Estimated cost",
-                    "createdAt": "Created"
+                    "createdAt": "Created",
+                    "actions": "Actions"
+                },
+                "actions": {
+                    "view": "View",
+                    "edit": "Edit",
+                    "submit": "Submit for review",
+                    "delete": "Delete"
+                },
+                "confirm": {
+                    "submitTitle": "Submit for review",
+                    "submitMessage": "Submit this donation request for admin review?",
+                    "deleteTitle": "Delete request",
+                    "deleteMessage": "Delete this draft donation request? This action cannot be undone."
                 },
                 "messages": {
-                    "notOwnerFacility": "You are not the owner facility for these requests."
+                    "notOwnerFacility": "You are not allowed to manage this facility request.",
+                    "created": "Donation request saved as draft.",
+                    "updated": "Donation request updated successfully.",
+                    "submitted": "Donation request submitted for admin review.",
+                    "deleted": "Draft donation request deleted successfully."
+                },
+                "errors": {
+                    "invalidRequestId": "Invalid donation request.",
+                    "invalidCategoryId": "Invalid donation category.",
+                    "invalidQuantity": "Quantity must be greater than zero.",
+                    "invalidTitle": "Invalid title format.",
+                    "invalidCurrency": "Invalid currency code.",
+                    "invalidCountry": "Invalid country code.",
+                    "invalidUnit": "Invalid unit.",
+                    "invalidStatusForAction": "This action is not allowed for the current request status.",
+                    "deleteNotDraft": "Only draft requests can be deleted.",
+                    "cannotModifyPublished": "This request can no longer be edited because it has already been published."
+                },
+                "form": {
+                    "createTitle": "Create Donation Request",
+                    "editTitle": "Edit Donation Request",
+                    "donationType": "Donation type",
+                    "donationTypePlaceholder": "Select donation type",
+                    "donationCategory": "Donation category",
+                    "title": "Title",
+                    "description": "Description",
+                    "quantity": "Quantity",
+                    "unit": "Unit",
+                    "estimatedCost": "Estimated cost",
+                    "currency": "Currency",
+                    "currencyPlaceholder": "Select currency",
+                    "needsInstallation": "Needs installation",
+                    "country": "Country",
+                    "countryPlaceholder": "Select country",
+                    "city": "City",
+                    "address": "Address",
+                    "isRegional": "Use regional language fields",
+                    "saveDraft": "Save draft",
+                    "saveAndSubmit": "Save & submit for review",
+                    "cancel": "Cancel",
+                    "attachmentsTodoTitle": "Attachments",
+                    "attachmentsTodo": "Donation request attachments will be implemented in the attachments phase using Add_Donation_Attachment 111000.",
+                    "validation": {
+                        "categoryRequired": "Donation category is required.",
+                        "titleRequired": "Title is required.",
+                        "descriptionRequired": "Description is required.",
+                        "quantityInvalid": "Quantity must be greater than zero.",
+                        "unitRequired": "Unit is required.",
+                        "estimatedCostInvalid": "Estimated cost must be zero or greater.",
+                        "currencyInvalid": "Currency code must be 3 uppercase letters.",
+                        "countryInvalid": "Country code must be 3 uppercase letters.",
+                        "cityRequired": "City is required.",
+                        "addressRequired": "Address is required."
+                    }
+                },
+                "details": {
+                    "title": "Donation Request Details",
+                    "back": "Back to list",
+                    "coordinates": "Coordinates",
+                    "updatedAt": "Updated",
+                    "reviewNote": "Admin review note",
+                    "workflowTitle": "Status history",
+                    "workflowEmpty": "No workflow history available.",
+                    "unknownStatus": "Unknown status",
+                    "sections": {
+                        "donation": "Donation Information",
+                        "location": "Location",
+                        "meta": "Request Information",
+                        "workflow": "Status History"
+                    }
                 }
             }
         },

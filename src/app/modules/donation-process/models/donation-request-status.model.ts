@@ -1,8 +1,10 @@
 export interface DonationRequestStatusBackend {
-  Status_ID?: number;
+  Donation_Request_Status_ID?: number;
   Code?: string;
   Name?: string;
   Name_Regional?: string;
+  Is_Terminal?: boolean;
+  Sort_Order?: number;
 }
 
 export interface DonationRequestStatus {

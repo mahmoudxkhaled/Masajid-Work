@@ -1,9 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
-import { LanguageDirService } from 'src/app/core/services/language-dir.service';
+import { LocalStorageService } from 'src/app/core/services/local-storage.service';
 import { TranslationService } from 'src/app/core/services/translation.service';
-import { DonationRequestBackend, DonationRequestListItem } from '../../../models/donation-request.model';
+import { DonationRequestBackend } from '../../../models/donation-request.model';
 import { DonationRequestStatusBackend } from '../../../models/donation-request-status.model';
 import { DonationReferenceService } from '../../../services/donation-reference.service';
 import { DonationAdminService } from '../../services/donation-admin.service';
@@ -18,51 +18,40 @@ export class PendingReviewListComponent implements OnInit, OnDestroy {
   rows = 10;
   readonly rowsPerPageOptions = [10, 25, 50, 100];
 
-  requests: DonationRequestListItem[] = [];
+  requests: DonationRequestBackend[] = [];
   textFilter = '';
   first = 0;
   totalRecords = 0;
   tableLoadingSpinner = false;
+  initialLoading = true;
 
-  private rawRequests: DonationRequestBackend[] = [];
-  private rawStatuses: DonationRequestStatusBackend[] = [];
-  private statusLabelById: Record<number, string> = {};
+  private statuses: DonationRequestStatusBackend[] = [];
+  private searchDebounceTimer: ReturnType<typeof setTimeout> | null = null;
   private subscriptions: Subscription[] = [];
 
   constructor(
     private donationAdminService: DonationAdminService,
     private donationReferenceService: DonationReferenceService,
-    private languageDirService: LanguageDirService,
+    private localStorageService: LocalStorageService,
     private translate: TranslationService,
     private messageService: MessageService,
   ) { }
 
   ngOnInit(): void {
-    this.subscriptions.push(
-      this.languageDirService.userLanguageCode$.subscribe(() => {
-        this.remapRequests();
-        this.remapStatuses();
-      }),
-    );
     this.loadStatuses();
     this.loadRequests();
   }
 
   ngOnDestroy(): void {
+    if (this.searchDebounceTimer) {
+      clearTimeout(this.searchDebounceTimer);
+    }
     this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
-  get tableValue(): DonationRequestListItem[] {
+  get tableValue(): DonationRequestBackend[] {
     if (this.tableLoadingSpinner && this.requests.length === 0) {
-      return Array(this.rows).fill(null).map(() => ({
-        id: '',
-        title: '',
-        statusId: 0,
-        categoryId: 0,
-        estimatedCost: 0,
-        currencyCode: '',
-        createdAt: '',
-      }));
+      return Array(this.rows).fill(null).map(() => ({}));
     }
     return this.requests;
   }
@@ -75,19 +64,32 @@ export class PendingReviewListComponent implements OnInit, OnDestroy {
 
   onSearchInput(value: string): void {
     this.textFilter = value;
-    this.first = 0;
-    this.loadRequests();
+    if (this.searchDebounceTimer) {
+      clearTimeout(this.searchDebounceTimer);
+    }
+    this.searchDebounceTimer = setTimeout(() => {
+      this.first = 0;
+      this.loadRequests();
+    }, 300);
   }
 
-  getStatusLabel(statusId: number): string {
-    return this.statusLabelById[statusId] || '';
+  getTitle(row: DonationRequestBackend): string {
+    if (this.isArabic()) {
+      return String(row.Title_Regional || row.Title || '');
+    }
+    return String(row.Title || '');
   }
 
-  formatEstimatedCost(row: DonationRequestListItem): string {
-    if (!row.estimatedCost) {
+  getPendingReviewStatusLabel(): string {
+    const item = this.statuses.find((status) => String(status.Code || '').toUpperCase() === 'PENDING_REVIEW');
+    return item ? this.getStatusName(item) : '';
+  }
+
+  formatEstimatedCost(row: DonationRequestBackend): string {
+    if (!row.Estimated_Cost) {
       return '-';
     }
-    return `${row.estimatedCost} ${row.currencyCode || ''}`.trim();
+    return `${row.Estimated_Cost} ${row.Currency_Code || ''}`.trim();
   }
 
   private loadStatuses(): void {
@@ -96,11 +98,7 @@ export class PendingReviewListComponent implements OnInit, OnDestroy {
         if (!response?.success) {
           return;
         }
-        this.rawStatuses = this.donationReferenceService.extractDictionaryItems<DonationRequestStatusBackend>(
-          response.message,
-          'Request_Statuses',
-        );
-        this.remapStatuses();
+        this.statuses = Object.values(response.message ?? {});
       },
     });
     this.subscriptions.push(sub);
@@ -115,33 +113,35 @@ export class PendingReviewListComponent implements OnInit, OnDestroy {
       .listPendingReviewRequests(lastRequestId, this.rows, this.textFilter)
       .subscribe({
         next: (response: any) => {
+          console.log('listPendingReviewRequests response', response);
           if (!response?.success) {
             this.tableLoadingSpinner = false;
+            this.initialLoading = false;
             return;
           }
           this.totalRecords = Number(response.message?.Total_Count || 0);
-          this.rawRequests = this.donationAdminService.extractRequests(response.message);
-          this.remapRequests();
+          this.requests = response.message?.Donation_Requests ?? [];
         },
         error: () => {
           this.tableLoadingSpinner = false;
+          this.initialLoading = false;
         },
         complete: () => {
           this.tableLoadingSpinner = false;
+          this.initialLoading = false;
         },
       });
     this.subscriptions.push(sub);
   }
 
-  private remapRequests(): void {
-    this.requests = this.donationAdminService.mapRequests(this.rawRequests);
+  private getStatusName(item: DonationRequestStatusBackend): string {
+    if (this.isArabic()) {
+      return String(item.Name_Regional || item.Name || '');
+    }
+    return String(item.Name || '');
   }
 
-  private remapStatuses(): void {
-    const statuses = this.donationReferenceService.mapDonationRequestStatuses(this.rawStatuses);
-    this.statusLabelById = statuses.reduce<Record<number, string>>((acc, item) => {
-      acc[item.id] = item.name;
-      return acc;
-    }, {});
+  private isArabic(): boolean {
+    return this.localStorageService.getPreferredLanguageCode() === 'ar';
   }
 }

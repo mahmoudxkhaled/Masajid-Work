@@ -16,3 +16,72 @@ When working on **donation requests, categories, commitments, vendor offers, ful
 - List endpoints use **`Last_*_ID`** + **`Filter_Count`** pagination; **`List_Entities_Extra_Data`** requires **`Filter_Count`** between **5 and 100**.
 - File attachments and proof uploads depend on storage APIs — see **`Docs/storage-management-file-system-api.md`** for upload/download.
 - **`Country_Code`** is case-sensitive; entity types: `1` Facility, `2` Vendor, `3` CharityCenter.
+
+---
+
+## Response handling — documented shapes only (mandatory)
+
+**Do not assume undocumented payload shapes. Do not add defensive extract/map layers.**
+
+The API is documented in **`Docs/donation-process-api.md`**. Read the endpoint’s **Output** section and use that shape directly in components and services.
+
+### Do
+
+- After **`response?.success`**, read **`response.message`** with the **exact field names** from the doc (PascalCase).
+- **`List<Dictionary>`** outputs (e.g. **`Donation_Requests`**, **`History`**) — assign the array directly:
+
+```ts
+this.requests = response.message?.Donation_Requests ?? [];
+this.workflowItems = response.message?.History ?? [];
+```
+
+- **`Dictionary<int, object>`** outputs (e.g. **`Request_Statuses`**, **`Donation_Types`**, **`Donation_Categories`**) — use **`Object.values`** on the documented key:
+
+```ts
+this.statuses = Object.values(response.message?.Request_Statuses ?? {});
+this.types = Object.values(response.message?.Donation_Types ?? {}) as DonationTypeBackend[];
+```
+
+- **`Dictionary<string, object?>`** single-record outputs (e.g. **`Donation_Request`** on **`Get_Donation_Request_Details`**) — read the nested object directly:
+
+```ts
+const details = response.message?.Donation_Request;
+```
+
+- Type list/detail rows with the backend interfaces in **`donation-process/models/`** (e.g. **`DonationRequestBackend`**, **`DonationRequestDetailsBackend`**) and bind templates to those **PascalCase** fields (`Title`, `Status_Code`, `Donation_Request_Status_ID`, `Created_At`, …).
+- For Arabic/English display only, use a **small component helper** (e.g. **`getTitle(row)`**) or **`regional-data-remapping`** — pick **`Title_Regional` / `Title`** (or **`Name_Regional` / `Name`**) on language change. That is not a substitute for inventing alternate API keys.
+
+### Do not
+
+- Do **not** add **`extractDonationRequests`**, **`extractDictionaryItems`**, or similar helpers that try **array OR `Object.values` OR nested-key fallbacks** “just in case”.
+- Do **not** map the same list into a parallel camelCase view model (**`DonationRequestListItem`**) unless the task explicitly requires it — prefer documented backend fields in templates.
+- Do **not** guess alternate property names (`Status_ID`, `donation_Request_ID`, `Donation_Request_Statuses` vs `Request_Statuses`, mixed casing, etc.) when the doc names one field.
+- Do **not** reload or reshape API data to work around undocumented backend behaviour — if the live response differs from the doc, fix against the doc or ask; do not pile on defensive code.
+
+### Examples (from the spec)
+
+| Code | Documented output | Use |
+|------|-------------------|-----|
+| `100205` | `Total_Count`, `Donation_Requests` (list) | `response.message?.Donation_Requests` |
+| `100204` | `Donation_Request` (dictionary) | `response.message?.Donation_Request` |
+| `100206` | `History` (list) | `response.message?.History` |
+| `100106` | `Request_Statuses` (dictionary) | `Object.values(response.message?.Request_Statuses ?? {})` |
+| `100100` | `Donation_Types` (dictionary) | `Object.values(response.message?.Donation_Types ?? {})` |
+| `100101` | `Donation_Categories` (dictionary) | `Object.values(response.message?.Donation_Categories ?? {})` |
+
+Keep services thin: **`callAPI`**, loading flags, and param building only. Parsing belongs in the component (or one minimal mapper for details/workflow display + i18n), following the documented field names exactly.
+
+---
+
+## Owner debug logs (list / details)
+
+Per **`angular-project`** — in every donation list or details **`subscribe` `next`**, log the parsed response so the owner can confirm **`response.message`** shape matches the doc:
+
+```ts
+console.log('listPendingReviewRequests response', response);
+console.log('listEntityDonationRequests response', response);
+console.log('getDonationRequestDetails response', results);
+console.log('statuses response', response);
+```
+
+Do **not** remove these when editing the same file unless the owner asks.

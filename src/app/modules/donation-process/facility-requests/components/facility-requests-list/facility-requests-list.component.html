@@ -1,4 +1,6 @@
 <p-toast />
+<p-confirmDialog />
+
 <div class="block-section card">
   <div class="flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
     <div class="flex flex-column gap-2 flex-1 min-w-0">
@@ -6,62 +8,37 @@
       <p class="mb-0 text-500">{{ 'donations.facility.requests.subtitle' | translate }}</p>
     </div>
     <div class="flex-shrink-0">
-      <p-button
-        [label]="'donations.facility.requests.create' | translate"
-        icon="pi pi-plus"
-        (onClick)="goToCreate()"
-      ></p-button>
+      <p-button [label]="'donations.facility.requests.create' | translate" icon="pi pi-plus"
+        (onClick)="goToCreate()"></p-button>
     </div>
   </div>
 
   <div class="block-card">
-    <p-table
-      #facilityRequestsTable
-      [value]="tableValue"
-      [paginator]="true"
-      [lazy]="true"
-      [first]="first"
-      [rows]="rows"
-      [totalRecords]="totalRecords"
-      [rowsPerPageOptions]="rowsPerPageOptions"
-      [showCurrentPageReport]="true"
-      [currentPageReportTemplate]="'donations.facility.requests.pagination' | translate"
-      responsiveLayout="scroll"
-      styleClass="p-datatable-sm"
-      [globalFilterFields]="['title', 'currencyCode']"
-      (onLazyLoad)="onPageChange($event)"
-    >
+    <p-table #facilityRequestsTable [value]="tableValue" [paginator]="true" [lazy]="true" [first]="first" [rows]="rows"
+      [totalRecords]="totalRecords" [rowsPerPageOptions]="rowsPerPageOptions" [showCurrentPageReport]="true"
+      [currentPageReportTemplate]="'donations.facility.requests.pagination' | translate" responsiveLayout="scroll"
+      styleClass="p-datatable-sm" (onLazyLoad)="onPageChange($event)">
       <ng-template pTemplate="caption">
         <div class="flex align-items-center justify-content-between gap-3 mb-2 flex-wrap">
           <span class="p-input-icon-left flex-1 min-w-200px max-w-md">
-            <ng-container *ngIf="tableLoadingSpinner && requests.length === 0; else requestsSearchInput">
+            <ng-container *ngIf="initialLoading && requests.length === 0; else requestsSearchInput">
               <p-skeleton height="2.5rem" width="100%" borderRadius="6px"></p-skeleton>
             </ng-container>
             <ng-template #requestsSearchInput>
               <i class="pi pi-search"></i>
-              <input
-                pInputText
-                type="text"
-                class="w-full"
+              <input pInputText type="text" class="w-full" [(ngModel)]="textFilter"
                 [placeholder]="'donations.facility.requests.searchPlaceholder' | translate"
-                (input)="onSearchInput($any($event.target).value)"
-              />
+                (ngModelChange)="onSearchInput($event)" />
             </ng-template>
           </span>
           <div class="flex align-items-center gap-2">
             <label class="font-medium mb-0">{{ 'donations.shared.filters.status' | translate }}</label>
-            <ng-container *ngIf="tableLoadingSpinner && requests.length === 0; else statusFilter">
+            <ng-container *ngIf="initialLoading && requests.length === 0; else statusFilter">
               <p-skeleton height="2.5rem" width="12rem" borderRadius="6px"></p-skeleton>
             </ng-container>
             <ng-template #statusFilter>
-              <p-dropdown
-                [options]="statusOptions"
-                [(ngModel)]="selectedStatusId"
-                optionLabel="label"
-                optionValue="value"
-                [style]="{ width: '12rem' }"
-                (onChange)="onStatusFilterChange()"
-              ></p-dropdown>
+              <p-dropdown [options]="statusOptions" [(ngModel)]="selectedStatusId" optionLabel="label"
+                optionValue="value" [style]="{ width: '12rem' }" (onChange)="onStatusFilterChange()"></p-dropdown>
             </ng-template>
           </div>
         </div>
@@ -69,21 +46,27 @@
 
       <ng-template pTemplate="header">
         <tr>
-          <th style="width: 16rem">{{ 'donations.facility.requests.columns.title' | translate }}</th>
-          <th class="text-center" style="width: 9rem">{{ 'donations.facility.requests.columns.status' | translate }}</th>
-          <th class="text-center" style="width: 10rem">{{ 'donations.facility.requests.columns.estimatedCost' | translate }}</th>
-          <th class="text-center" style="width: 10rem">{{ 'donations.facility.requests.columns.createdAt' | translate }}</th>
+          <th style="width: 14rem">{{ 'donations.facility.requests.columns.title' | translate }}</th>
+          <th class="text-center" style="width: 9rem">{{ 'donations.facility.requests.columns.status' | translate }}
+          </th>
+          <th class="text-center" style="width: 10rem">{{ 'donations.facility.requests.columns.estimatedCost' |
+            translate }}</th>
+          <th class="text-center" style="width: 10rem">{{ 'donations.facility.requests.columns.createdAt' | translate }}
+          </th>
+          <th class="text-center" style="width: 12rem">{{ 'donations.facility.requests.columns.actions' | translate }}
+          </th>
         </tr>
       </ng-template>
 
       <ng-template pTemplate="body" let-row>
-        <tr class="facility-requests-row-clickable" [style.cursor]="tableLoadingSpinner ? 'default' : 'pointer'">
-          <td style="width: 16rem">
+        <tr class="facility-requests-row-clickable" [style.cursor]="tableLoadingSpinner ? 'default' : 'pointer'"
+          (click)="!tableLoadingSpinner && viewRequest(row)">
+          <td style="width: 14rem">
             <ng-container *ngIf="tableLoadingSpinner; else titleCell">
               <p-skeleton height="1.25rem" width="12rem"></p-skeleton>
             </ng-container>
             <ng-template #titleCell>
-              <span class="font-semibold text-overflow-ellipsis">{{ row.title }}</span>
+              <span class="font-semibold text-overflow-ellipsis">{{ getTitle(row) }}</span>
             </ng-template>
           </td>
           <td class="text-center" style="width: 9rem">
@@ -93,10 +76,8 @@
               </div>
             </ng-container>
             <ng-template #statusCell>
-              <app-donation-status-badge
-                [label]="getStatusLabel(row.statusId)"
-                [severity]="getStatusSeverity(row.statusId)"
-              ></app-donation-status-badge>
+              <app-donation-status-badge [label]="getStatusLabel(row.Donation_Request_Status_ID || 0)"
+                [severity]="getStatusSeverity(row.Donation_Request_Status_ID || 0)"></app-donation-status-badge>
             </ng-template>
           </td>
           <td class="text-center" style="width: 10rem">
@@ -112,7 +93,20 @@
               <p-skeleton height="1.25rem" width="7rem"></p-skeleton>
             </ng-container>
             <ng-template #createdCell>
-              <span>{{ row.createdAt || '-' }}</span>
+              <span dir="ltr">{{ row.Created_At ? (row.Created_At | date:'yyyy-MM-dd hh:mm a') : '-' }}</span>
+            </ng-template>
+          </td>
+          <td class="text-center" style="width: 12rem">
+            <ng-container *ngIf="tableLoadingSpinner; else actionsCell">
+              <div class="flex justify-content-center">
+                <p-skeleton height="2rem" width="2rem" borderRadius="50%"></p-skeleton>
+              </div>
+            </ng-container>
+            <ng-template #actionsCell>
+              <button pButton pRipple type="button" icon="pi pi-ellipsis-v"
+                class="p-button-rounded p-button-text p-button-plain"
+                (click)="openMenu(rowMenu, row, $event)"></button>
+              <p-menu #rowMenu [model]="menuItems" [popup]="true" [appendTo]="'body'"></p-menu>
             </ng-template>
           </td>
         </tr>
@@ -120,7 +114,7 @@
 
       <ng-template pTemplate="emptymessage">
         <tr>
-          <td colspan="4" class="text-center py-4">
+          <td colspan="5" class="text-center py-4">
             {{ 'donations.facility.requests.empty' | translate }}
           </td>
         </tr>

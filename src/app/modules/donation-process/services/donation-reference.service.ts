@@ -103,20 +103,27 @@ export class DonationReferenceService {
 
   mapDonationTypes(rawItems: DonationTypeBackend[]): DonationType[] {
     const isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
-    return rawItems.map((item) => {
-      const record = item as Record<string, unknown>;
-      return {
-        id: this.readNumber(record, 'Donation_Type_ID'),
-        code: this.readString(record, 'Code'),
-        name: isRegional
-          ? this.readString(record, 'Name_Regional') || this.readString(record, 'Name')
-          : this.readString(record, 'Name'),
-        description: isRegional
-          ? this.readString(record, 'Description_Regional') || this.readString(record, 'Description')
-          : this.readString(record, 'Description'),
-        active: this.readBoolean(record, 'Is_Active'),
-      };
-    });
+    return [...rawItems]
+      .sort(
+        (a, b) =>
+          this.readNumber(a as Record<string, unknown>, 'Default_Order', ['default_Order']) -
+          this.readNumber(b as Record<string, unknown>, 'Default_Order', ['default_Order']),
+      )
+      .map((item) => {
+        const record = item as Record<string, unknown>;
+        return {
+          id: this.readNumber(record, 'Donation_Type_ID'),
+          code: this.readString(record, 'Code'),
+          name: isRegional
+            ? this.readString(record, 'Name_Regional') || this.readString(record, 'Name')
+            : this.readString(record, 'Name'),
+          description: isRegional
+            ? this.readString(record, 'Description_Regional') || this.readString(record, 'Description')
+            : this.readString(record, 'Description'),
+          active: this.readBoolean(record, 'Is_Active', ['is_Active']),
+        };
+      })
+      .filter((item) => item.id > 0);
   }
 
   mapDonationCategories(rawItems: DonationCategoryBackend[]): DonationCategory[] {
@@ -141,16 +148,37 @@ export class DonationReferenceService {
 
   mapDonationRequestStatuses(rawItems: DonationRequestStatusBackend[]): DonationRequestStatus[] {
     const isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
-    return rawItems.map((item) => {
-      const record = item as Record<string, unknown>;
-      return {
-        id: this.readNumber(record, 'Status_ID'),
-        code: this.readString(record, 'Code'),
-        name: isRegional
-          ? this.readString(record, 'Name_Regional') || this.readString(record, 'Name')
-          : this.readString(record, 'Name'),
-      };
-    });
+    return rawItems
+      .map((item) => {
+        const record = item as Record<string, unknown>;
+        return {
+          id: this.readNumber(record, 'Donation_Request_Status_ID', ['Status_ID']),
+          code: this.readString(record, 'Code'),
+          name: isRegional
+            ? this.readString(record, 'Name_Regional') || this.readString(record, 'Name')
+            : this.readString(record, 'Name'),
+        };
+      })
+      .filter((item) => item.id > 0)
+      .sort((a, b) => a.id - b.id);
+  }
+
+  extractDonationTypes(message: Record<string, unknown> | undefined): DonationTypeBackend[] {
+    return this.extractDictionaryItems<DonationTypeBackend>(message, ['Donation_Types']);
+  }
+
+  extractDonationRequestStatuses(message: Record<string, unknown> | undefined): DonationRequestStatusBackend[] {
+    return this.extractDictionaryItems<DonationRequestStatusBackend>(message, [
+      'Request_Statuses',
+      'Donation_Request_Statuses',
+    ]);
+  }
+
+  findStatusIdByCode(rawItems: DonationRequestStatusBackend[], code: string): number {
+    const normalizedCode = code.toUpperCase();
+    return (
+      this.mapDonationRequestStatuses(rawItems).find((item) => item.code.toUpperCase() === normalizedCode)?.id ?? 0
+    );
   }
 
   parseListFromResponse<T>(response: any): T[] {
@@ -164,27 +192,29 @@ export class DonationReferenceService {
     return this.mapDonationTypes(rawTypes).map((item) => ({ label: item.name, value: item.id }));
   }
 
-  extractDictionaryItems<T>(message: Record<string, unknown> | undefined, key?: string): T[] {
+  extractDictionaryItems<T>(
+    message: Record<string, unknown> | undefined,
+    keys?: string | string[],
+  ): T[] {
     if (!message) {
       return [];
     }
 
-    let dictionary: unknown;
+    const keyList = keys ? (Array.isArray(keys) ? keys : [keys]) : [];
 
-    if (key) {
+    for (const key of keyList) {
       const nestedKey = key.charAt(0).toLowerCase() + key.slice(1);
-      dictionary = message[key] ?? message[nestedKey];
+      const dictionary = message[key] ?? message[nestedKey];
+      if (dictionary && typeof dictionary === 'object' && !Array.isArray(dictionary)) {
+        return Object.values(dictionary as Record<string, T>);
+      }
     }
 
-    if (!dictionary || typeof dictionary !== 'object' || Array.isArray(dictionary)) {
-      dictionary = this.isIndexedItemDictionary(message) ? message : undefined;
+    if (this.isIndexedItemDictionary(message)) {
+      return Object.values(message as Record<string, T>);
     }
 
-    if (!dictionary || typeof dictionary !== 'object' || Array.isArray(dictionary)) {
-      return [];
-    }
-
-    return Object.values(dictionary as Record<string, T>);
+    return [];
   }
 
   private isIndexedItemDictionary(message: Record<string, unknown>): boolean {
@@ -202,20 +232,39 @@ export class DonationReferenceService {
     );
   }
 
-  private readString(item: Record<string, unknown>, key: string): string {
-    const camelKey = key.charAt(0).toLowerCase() + key.slice(1);
-    const value = item[key] ?? item[camelKey];
-    return value === undefined || value === null ? '' : String(value);
+  private readString(item: Record<string, unknown>, key: string, alternateKeys: string[] = []): string {
+    for (const candidate of this.buildKeyCandidates(key, alternateKeys)) {
+      const value = item[candidate];
+      if (value !== undefined && value !== null) {
+        return String(value);
+      }
+    }
+    return '';
   }
 
-  private readNumber(item: Record<string, unknown>, key: string): number {
-    const camelKey = key.charAt(0).toLowerCase() + key.slice(1);
-    return Number(item[key] ?? item[camelKey] ?? 0);
+  private readNumber(item: Record<string, unknown>, key: string, alternateKeys: string[] = []): number {
+    for (const candidate of this.buildKeyCandidates(key, alternateKeys)) {
+      const value = item[candidate];
+      if (value !== undefined && value !== null && value !== '') {
+        return Number(value);
+      }
+    }
+    return 0;
   }
 
-  private readBoolean(item: Record<string, unknown>, key: string): boolean {
+  private readBoolean(item: Record<string, unknown>, key: string, alternateKeys: string[] = []): boolean {
+    for (const candidate of this.buildKeyCandidates(key, alternateKeys)) {
+      const value = item[candidate];
+      if (value !== undefined && value !== null) {
+        return Boolean(value);
+      }
+    }
+    return false;
+  }
+
+  private buildKeyCandidates(key: string, alternateKeys: string[]): string[] {
     const camelKey = key.charAt(0).toLowerCase() + key.slice(1);
-    return Boolean(item[key] ?? item[camelKey]);
+    return [...new Set([key, camelKey, ...alternateKeys])];
   }
 
   // #endregion

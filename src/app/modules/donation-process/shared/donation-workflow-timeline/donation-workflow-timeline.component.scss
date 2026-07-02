@@ -1,0 +1,37 @@
+.donation-workflow-timeline__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.donation-workflow-timeline__item {
+  display: flex;
+  gap: 1rem;
+  padding-bottom: 1.25rem;
+  position: relative;
+}
+
+.donation-workflow-timeline__item:not(.donation-workflow-timeline__item--last)::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: calc(0.5rem - 1px);
+  top: 1.25rem;
+  bottom: 0;
+  width: 2px;
+  background: var(--surface-border);
+}
+
+.donation-workflow-timeline__marker {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background: var(--primary-color);
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+  z-index: 1;
+}
+
+.donation-workflow-timeline__content {
+  flex: 1;
+  min-width: 0;
+}
