@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, Input, OnDestroy, ViewChild } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { Subscription, merge } from 'rxjs';
 import { getCountryCentroid } from 'src/app/core/data/country-centroids.data';
 import * as L from 'leaflet';
 
@@ -23,7 +23,9 @@ export class RegisterLocationPickerComponent implements AfterViewInit, OnDestroy
   private map?: L.Map;
   private marker?: L.Marker;
   private countrySubscription?: Subscription;
+  private coordSubscription?: Subscription;
   private resizeObserver?: ResizeObserver;
+  private lastCountryCode = '';
 
   private static readonly defaultLat = 30.0444;
   private static readonly defaultLng = 31.2357;
@@ -35,9 +37,19 @@ export class RegisterLocationPickerComponent implements AfterViewInit, OnDestroy
 
   ngAfterViewInit(): void {
     this.fixLeafletIcons();
+    this.lastCountryCode = this.getCountryCode();
 
     this.countrySubscription = this.countryCodeControl.valueChanges.subscribe(() => {
       this.onCountryChanged();
+    });
+
+    this.coordSubscription = merge(
+      this.latitudeControl.valueChanges,
+      this.longitudeControl.valueChanges,
+    ).subscribe(() => {
+      if (this.map) {
+        this.syncMarkerFromInputs();
+      }
     });
 
     setTimeout(() => this.initMap(), 300);
@@ -45,6 +57,7 @@ export class RegisterLocationPickerComponent implements AfterViewInit, OnDestroy
 
   ngOnDestroy(): void {
     this.countrySubscription?.unsubscribe();
+    this.coordSubscription?.unsubscribe();
     this.resizeObserver?.disconnect();
     this.map?.remove();
   }
@@ -80,6 +93,7 @@ export class RegisterLocationPickerComponent implements AfterViewInit, OnDestroy
     setTimeout(() => this.refreshMapSize(), 0);
     setTimeout(() => this.refreshMapSize(), 300);
     setTimeout(() => this.refreshMapSize(), 700);
+    setTimeout(() => this.syncMarkerFromInputs(), 100);
   }
 
   private observeMapResize(element: HTMLDivElement): void {
@@ -199,6 +213,13 @@ export class RegisterLocationPickerComponent implements AfterViewInit, OnDestroy
       return;
     }
 
+    const code = this.getCountryCode();
+    if (code === this.lastCountryCode) {
+      this.refreshMapSize();
+      return;
+    }
+
+    this.lastCountryCode = code;
     const view = this.getMapView();
 
     this.refreshMapSize();
@@ -264,7 +285,12 @@ export class RegisterLocationPickerComponent implements AfterViewInit, OnDestroy
   }
 
   private getMapView(): { lat: number; lng: number; zoom: number } {
-    const code = String(this.countryCodeControl.value ?? '').trim().toUpperCase();
+    const coords = this.readInitialCoords();
+    if (coords) {
+      return { lat: coords.lat, lng: coords.lng, zoom: 13 };
+    }
+
+    const code = this.getCountryCode();
     if (code) {
       const centroid = getCountryCentroid(code);
       if (centroid) {
@@ -291,6 +317,10 @@ export class RegisterLocationPickerComponent implements AfterViewInit, OnDestroy
       lng <= 180;
 
     return valid ? { lat, lng } : null;
+  }
+
+  private getCountryCode(): string {
+    return String(this.countryCodeControl.value ?? '').trim().toUpperCase();
   }
 
   private getGeolocationErrorKey(code: number): string {

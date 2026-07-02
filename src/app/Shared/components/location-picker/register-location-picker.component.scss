@@ -23,7 +23,7 @@
   height: 280px;
   border-radius: 0.5rem;
   overflow: hidden;
-  border: 1px solid var(--dh-outline-variant);
+  border: 1px solid var(--surface-border, var(--dh-outline-variant, #dee2e6));
 }
 
 .register-location-picker__map-box--invalid {
@@ -63,10 +63,10 @@
   gap: 0.35rem;
   min-height: 2.5rem;
   padding: 0.5rem 1rem;
-  border: 1px solid var(--dh-primary);
+  border: 1px solid var(--primary-color, var(--dh-primary, #6366f1));
   border-radius: 999px;
-  background: transparent;
-  color: var(--dh-primary);
+  background: var(--surface-card, transparent);
+  color: var(--primary-color, var(--dh-primary, #6366f1));
   font-family: inherit;
   font-size: 0.875rem;
   font-weight: 600;
@@ -74,7 +74,7 @@
 }
 
 .register-location-picker__geo-btn:hover:not(:disabled) {
-  background: rgb(79 55 138 / 0.08);
+  background: var(--surface-hover, rgb(79 55 138 / 0.08));
 }
 
 .register-location-picker__geo-btn:disabled {
@@ -107,10 +107,10 @@
 .register-location-picker__input {
   min-height: 3rem;
   padding: 0.65rem 1rem;
-  border: 1px solid var(--dh-outline-variant);
+  border: 1px solid var(--surface-border, var(--dh-outline-variant, #dee2e6));
   border-radius: 0.5rem;
-  background: var(--dh-surface-container-lowest);
-  color: var(--dh-on-surface);
+  background: var(--surface-card, var(--dh-surface-container-lowest, #fff));
+  color: var(--text-color, var(--dh-on-surface, inherit));
   font-family: inherit;
   font-size: 1rem;
   width: 100%;
@@ -120,8 +120,8 @@
 
 .register-location-picker__input:focus {
   outline: none;
-  border-color: var(--dh-primary);
-  box-shadow: 0 0 0 1px var(--dh-primary);
+  border-color: var(--primary-color, var(--dh-primary, #6366f1));
+  box-shadow: 0 0 0 1px var(--primary-color, var(--dh-primary, #6366f1));
 }
 
 .register-location-picker__input--invalid {
