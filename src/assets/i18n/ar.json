@@ -3362,6 +3362,8 @@
                 "empty": "لا توجد طلبات تبرع.",
                 "columns": {
                     "title": "العنوان",
+                    "category": "فئة التبرع",
+                    "country": "الدولة",
                     "status": "الحالة",
                     "estimatedCost": "التكلفة التقديرية",
                     "createdAt": "تاريخ الإنشاء",

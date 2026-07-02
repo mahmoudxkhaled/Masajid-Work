@@ -35,7 +35,7 @@ export class SettingsApiService {
 
     private executeSettingsRequest(requestCode: number, params: string[]): Observable<any> {
         this.isLoadingSubject.next(true);
-        console.log('[settings-api] request', { requestCode, params });
+        // console.log('[settings-api] request', { requestCode, params });
         return this.apiServices.callAPI(requestCode, this.getAccessToken(), params).pipe(
             // tap((response: any) => console.log('[settings-api] response', { requestCode, response })),
             finalize(() => this.isLoadingSubject.next(false))

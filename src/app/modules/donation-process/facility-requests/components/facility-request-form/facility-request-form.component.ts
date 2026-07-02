@@ -106,6 +106,9 @@ export class FacilityRequestFormComponent implements OnInit, OnDestroy {
   }
 
   onDonationTypeChange(typeId: number | null): void {
+    if (this.selectedDonationTypeId === typeId) {
+      return;
+    }
     this.selectedDonationTypeId = typeId;
     this.selectedCategoryId = null;
   }
@@ -270,8 +273,8 @@ export class FacilityRequestFormComponent implements OnInit, OnDestroy {
   }
 
   private patchFormFromDetails(details: DonationRequestDetails): void {
-    this.selectedDonationTypeId = details.donationTypeId || null;
-    this.selectedCategoryId = details.donationCategoryId || null;
+    this.selectedCategoryId = details.donationCategoryId > 0 ? details.donationCategoryId : null;
+    this.selectedDonationTypeId = this.resolveDonationTypeId(details);
     this.form.patchValue({
       title: details.title,
       description: details.description,
@@ -287,6 +290,18 @@ export class FacilityRequestFormComponent implements OnInit, OnDestroy {
       longitude: String(details.longitude),
       isRegional: details.isRegional,
     });
+  }
+
+  private resolveDonationTypeId(details: DonationRequestDetails): number | null {
+    if (details.donationTypeId > 0) {
+      return details.donationTypeId;
+    }
+
+    if (!this.typeOptions.length) {
+      return null;
+    }
+
+    return this.typeOptions[0].value;
   }
 
   private submitForm(submitAfterSave: boolean): void {

@@ -3503,6 +3503,8 @@
                 "empty": "No donation requests found.",
                 "columns": {
                     "title": "Title",
+                    "category": "Category",
+                    "country": "Country",
                     "status": "Status",
                     "estimatedCost": "Estimated cost",
                     "createdAt": "Created",

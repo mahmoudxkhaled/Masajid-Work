@@ -74,6 +74,14 @@ export const MASAJID_WORKSPACE_MODULES: IModulesDetails = {
     Default_Order: 30,
     URL: '/entity-administration/entities',
   },
+  DNREF: {
+    ModuleID: 306,
+    FunctionID: 11,
+    Name: 'Donation Categories',
+    Name_Regional: '\u062a\u0635\u0646\u064a\u0641\u0627\u062a \u0627\u0644\u062a\u0628\u0631\u0639\u0627\u062a',
+    Default_Order: 35,
+    URL: '/donations/reference/categories',
+  },
   ADM_ACC: {
     ModuleID: 304,
     FunctionID: 11,
@@ -256,6 +264,7 @@ export const MASAJID_WORKSPACE_MODULE_ROLE_VISIBILITY: Partial<Record<string, Ro
   ADM_REV: [Roles.Developer, Roles.SystemAdministrator],
   ADM_OVER: [Roles.Developer, Roles.SystemAdministrator],
   ADM_FAC: [Roles.Developer, Roles.SystemAdministrator],
+  DNREF: [Roles.Developer, Roles.SystemAdministrator],
   ADM_ACC: [Roles.Developer, Roles.SystemAdministrator],
   ADM_NOT: [Roles.Developer, Roles.SystemAdministrator, Roles.EntityAdministrator],
   FDRQ: DEFAULT_MODULE_VISIBLE_ROLES,

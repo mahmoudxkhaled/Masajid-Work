@@ -55,6 +55,7 @@
           <app-donation-category-picker
             [donationTypeId]="selectedDonationTypeId || 0"
             [selectedCategoryId]="selectedCategoryId"
+            [activeOnly]="!isEditMode"
             [disabled]="!selectedDonationTypeId"
             (selectedCategoryIdChange)="onCategoryChange($event)"
           ></app-donation-category-picker>

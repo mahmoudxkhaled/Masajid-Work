@@ -40,7 +40,7 @@ export class DonationCategoryPickerComponent implements OnInit, OnChanges, OnDes
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['donationTypeId'] && !changes['donationTypeId'].firstChange) {
+    if (changes['donationTypeId']) {
       this.loadCategories();
     }
   }

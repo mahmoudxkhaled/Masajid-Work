@@ -1,12 +1,16 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
-import { Subscription } from 'rxjs';
+import { Subscription, forkJoin } from 'rxjs';
+import { CountryLookup } from 'src/app/core/models/lookup.model';
 import { LanguageDirService } from 'src/app/core/services/language-dir.service';
 import { LocalStorageService } from 'src/app/core/services/local-storage.service';
+import { PublicLookupService } from 'src/app/core/services/public-lookup.service';
 import { TranslationService } from 'src/app/core/services/translation.service';
 import { DonationRequestBackend } from '../../../models/donation-request.model';
+import { DonationCategoryBackend } from '../../../models/donation-category.model';
 import { DonationRequestStatusBackend } from '../../../models/donation-request-status.model';
+import { DonationTypeBackend } from '../../../models/donation-type.model';
 import { DonationReferenceService } from '../../../services/donation-reference.service';
 import { DonationRequestsService } from '../../services/donation-requests.service';
 
@@ -35,8 +39,12 @@ export class FacilityRequestsListComponent implements OnInit, OnDestroy {
   menuItems: MenuItem[] = [];
 
   private statuses: DonationRequestStatusBackend[] = [];
+  private rawCategories: DonationCategoryBackend[] = [];
+  private countries: CountryLookup[] = [];
   private statusLabelById: Record<number, string> = {};
   private statusCodeById: Record<number, string> = {};
+  private categoryLabelById: Record<number, string> = {};
+  private countryLabelByCode: Record<string, string> = {};
   private searchDebounceTimer: ReturnType<typeof setTimeout> | null = null;
   private subscriptions: Subscription[] = [];
 
@@ -44,6 +52,7 @@ export class FacilityRequestsListComponent implements OnInit, OnDestroy {
     private donationRequestsService: DonationRequestsService,
     private donationReferenceService: DonationReferenceService,
     private localStorageService: LocalStorageService,
+    private lookupService: PublicLookupService,
     private languageDirService: LanguageDirService,
     private translate: TranslationService,
     private messageService: MessageService,
@@ -55,9 +64,12 @@ export class FacilityRequestsListComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.languageDirService.userLanguageCode$.subscribe(() => {
         this.buildStatusMaps();
+        this.buildCategoryMaps();
+        this.buildCountryMaps();
       }),
     );
     this.loadStatuses();
+    this.loadLookups();
     this.loadRequests();
   }
 
@@ -223,6 +235,65 @@ export class FacilityRequestsListComponent implements OnInit, OnDestroy {
     return `${row.Estimated_Cost} ${row.Currency_Code || ''}`.trim();
   }
 
+  getCategoryLabel(row: DonationRequestBackend): string {
+    const categoryId = Number(row.Donation_Category_ID || 0);
+    return this.categoryLabelById[categoryId] || '-';
+  }
+
+  getCountryLabel(row: DonationRequestBackend): string {
+    const code = String(row.Country_Code || '').trim().toUpperCase();
+    if (!code) {
+      return '-';
+    }
+    return this.countryLabelByCode[code] || code;
+  }
+
+  private loadLookups(): void {
+    const sub = forkJoin({
+      types: this.donationReferenceService.listDonationTypes(),
+      countries: this.lookupService.getCountries(),
+    }).subscribe({
+      next: (results) => {
+        console.log('listLookups response', results);
+        this.countries = this.lookupService.sortCountriesByLabel(
+          results.countries,
+          this.localStorageService.getPreferredLanguageCode() === 'ar',
+        );
+        this.buildCountryMaps();
+
+        if (!results.types?.success) {
+          return;
+        }
+
+        const rawTypes = Object.values(results.types.message ?? {}) as DonationTypeBackend[];
+        const mappedTypes = this.donationReferenceService.mapDonationTypes(rawTypes);
+        if (!mappedTypes.length) {
+          this.buildCategoryMaps();
+          return;
+        }
+
+        const categorySub = forkJoin(
+          mappedTypes.map((type) => this.donationReferenceService.listDonationCategories(type.id, false)),
+        ).subscribe({
+          next: (categoryResponses) => {
+            console.log('listCategories response', categoryResponses);
+            this.rawCategories = [];
+            categoryResponses.forEach((response: any) => {
+              if (response?.success) {
+                this.rawCategories.push(
+                  ...(Object.values(response.message ?? {}) as DonationCategoryBackend[]),
+                );
+              }
+            });
+            this.buildCategoryMaps();
+          },
+        });
+        this.subscriptions.push(categorySub);
+      },
+    });
+    this.subscriptions.push(sub);
+  }
+
   private loadStatuses(): void {
     const sub = this.donationReferenceService.listDonationRequestStatuses().subscribe({
       next: (response: any) => {
@@ -262,6 +333,7 @@ export class FacilityRequestsListComponent implements OnInit, OnDestroy {
       })
       .subscribe({
         next: (response: any) => {
+          console.log('loadRequests response', response);
           if (!response?.success) {
             this.handleBusinessError('list', response);
             return;
@@ -345,6 +417,30 @@ export class FacilityRequestsListComponent implements OnInit, OnDestroy {
           value: Number(item.Donation_Request_Status_ID),
         })),
     ];
+  }
+
+  private buildCategoryMaps(): void {
+    this.categoryLabelById = {};
+    const mappedCategories = this.donationReferenceService.mapDonationCategories(this.rawCategories);
+    for (const item of mappedCategories) {
+      if (!item.id) {
+        continue;
+      }
+      this.categoryLabelById[item.id] = item.name;
+    }
+  }
+
+  private buildCountryMaps(): void {
+    const isArabic = this.localStorageService.getPreferredLanguageCode() === 'ar';
+
+    this.countryLabelByCode = {};
+    for (const item of this.countries) {
+      const code = String(item.code || '').trim().toUpperCase();
+      if (!code) {
+        continue;
+      }
+      this.countryLabelByCode[code] = this.lookupService.getCountryLabel(item, isArabic);
+    }
   }
 
   private handleBusinessError(context: FacilityRequestsListContext, response: any): void {

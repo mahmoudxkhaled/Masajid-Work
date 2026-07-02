@@ -69,7 +69,7 @@ export class RegisterLocationPickerComponent implements AfterViewInit, OnDestroy
     }
 
     const view = this.getMapView();
-    this.map = L.map(element).setView([view.lat, view.lng], view.zoom);
+    this.map = L.map(element, { attributionControl: false }).setView([view.lat, view.lng], view.zoom);
 
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
@@ -287,7 +287,7 @@ export class RegisterLocationPickerComponent implements AfterViewInit, OnDestroy
   private getMapView(): { lat: number; lng: number; zoom: number } {
     const coords = this.readInitialCoords();
     if (coords) {
-      return { lat: coords.lat, lng: coords.lng, zoom: 13 };
+      return { lat: coords.lat, lng: coords.lng, zoom: 15 };
     }
 
     const code = this.getCountryCode();

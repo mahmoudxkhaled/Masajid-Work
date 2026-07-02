@@ -47,6 +47,8 @@
       <ng-template pTemplate="header">
         <tr>
           <th style="width: 14rem">{{ 'donations.facility.requests.columns.title' | translate }}</th>
+          <th style="width: 11rem">{{ 'donations.facility.requests.columns.category' | translate }}</th>
+          <th class="text-center" style="width: 9rem">{{ 'donations.facility.requests.columns.country' | translate }}</th>
           <th class="text-center" style="width: 9rem">{{ 'donations.facility.requests.columns.status' | translate }}
           </th>
           <th class="text-center" style="width: 10rem">{{ 'donations.facility.requests.columns.estimatedCost' |
@@ -67,6 +69,22 @@
             </ng-container>
             <ng-template #titleCell>
               <span class="font-semibold text-overflow-ellipsis">{{ getTitle(row) }}</span>
+            </ng-template>
+          </td>
+          <td style="width: 11rem">
+            <ng-container *ngIf="tableLoadingSpinner; else categoryCell">
+              <p-skeleton height="1.25rem" width="9rem"></p-skeleton>
+            </ng-container>
+            <ng-template #categoryCell>
+              <span class="text-overflow-ellipsis" [pTooltip]="getCategoryLabel(row)">{{ getCategoryLabel(row) }}</span>
+            </ng-template>
+          </td>
+          <td class="text-center" style="width: 9rem">
+            <ng-container *ngIf="tableLoadingSpinner; else countryCell">
+              <p-skeleton height="1.25rem" width="6rem"></p-skeleton>
+            </ng-container>
+            <ng-template #countryCell>
+              <span class="text-overflow-ellipsis" [pTooltip]="getCountryLabel(row)">{{ getCountryLabel(row) }}</span>
             </ng-template>
           </td>
           <td class="text-center" style="width: 9rem">
@@ -114,7 +132,7 @@
 
       <ng-template pTemplate="emptymessage">
         <tr>
-          <td colspan="5" class="text-center py-4">
+          <td colspan="7" class="text-center py-4">
             {{ 'donations.facility.requests.empty' | translate }}
           </td>
         </tr>
