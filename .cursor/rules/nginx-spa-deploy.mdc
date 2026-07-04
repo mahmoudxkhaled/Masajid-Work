@@ -1,0 +1,39 @@
+---
+description: Nginx SPA fallback for Angular production deploy (refresh on subroutes)
+globs: deploy/nginx/**,deploy.md
+alwaysApply: false
+---
+
+# Nginx — Angular SPA routing
+
+When adding or editing Nginx config for this app:
+
+## Build
+
+- Project: **Masajid-Work** → output **`dist/Masajid-Work`** (browser builder; **not** `…/browser`).
+- Domain root deploy: `npm run build` or `ng build --configuration production` (`baseHref: /` is set in `angular.json` build options).
+- GitHub Pages uses **`github-pages`** config (`baseHref: /Masajid-Work/`) — run `npm run build:gh-pages`.
+
+## Site config (required)
+
+```nginx
+root /var/www/masajid/dist/Masajid-Work;
+index index.html;
+
+location / {
+    try_files $uri $uri/ /index.html;
+}
+```
+
+## API routes
+
+Define **`location`** blocks for backend paths **before** the `/` fallback (e.g. `/SystemAPIs/`, `/api/`). Do not let `try_files` swallow API requests.
+
+## After editing
+
+```bash
+sudo nginx -t
+sudo systemctl reload nginx
+```
+
+Reference: **`deploy/nginx/masajid-work.conf`**, **`deploy.md`** (Nginx section).

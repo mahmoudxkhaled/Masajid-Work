@@ -1,4 +1,53 @@
-# GitHub Pages
+# Deployment
+
+## Nginx (production server)
+
+Angular client routes (e.g. `/auth`) need an SPA fallback on refresh. Without it, Nginx looks for a real `/auth` path and returns **404**.
+
+### Build
+
+```bash
+npm run build
+```
+
+Same as `ng build --configuration production`. Output uses **`baseHref: /`** by default (Nginx root deploy). GitHub Pages still uses `npm run build:gh-pages` (`baseHref: /Masajid-Work/`).
+
+Copy to the server (example):
+
+```bash
+sudo mkdir -p /var/www/masajid/dist/Masajid-Work
+sudo rsync -av --delete dist/Masajid-Work/ /var/www/masajid/dist/Masajid-Work/
+```
+
+### Nginx site config
+
+Template: **`deploy/nginx/masajid-work.conf`**
+
+Install:
+
+```bash
+sudo cp deploy/nginx/masajid-work.conf /etc/nginx/sites-available/masajid-work
+sudo ln -sf /etc/nginx/sites-available/masajid-work /etc/nginx/sites-enabled/masajid-work
+sudo nginx -t
+sudo systemctl reload nginx
+```
+
+Core SPA rule (API `location` blocks must come **before** this):
+
+```nginx
+root /var/www/masajid/dist/Masajid-Work;
+index index.html;
+
+location / {
+    try_files $uri $uri/ /index.html;
+}
+```
+
+Uncomment proxy blocks in the template for `/SystemAPIs/` or `/api/` when the backend runs on the same host.
+
+---
+
+## GitHub Pages
 
 **Live URL:** https://mahmoudxkhaled.github.io/Masajid-Work/
 
