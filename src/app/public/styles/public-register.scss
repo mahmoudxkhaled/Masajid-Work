@@ -57,14 +57,14 @@
 
 .register-card {
   background: var(--dh-surface-container-lowest);
-  border: 1px solid rgb(203 196 210 / 0.35);
+  border: 1px solid var(--dh-outline-variant);
   border-radius: 0.75rem;
   overflow: hidden;
 }
 
 .register-card__section {
   padding: 1.5rem;
-  border-bottom: 1px solid rgb(203 196 210 / 0.2);
+  border-bottom: 1px solid var(--dh-outline-variant);
 }
 
 @media (min-width: 768px) {
@@ -101,6 +101,7 @@
   margin: 0;
   font-size: 1.125rem;
   font-weight: 600;
+  color: var(--dh-on-surface);
 }
 
 .register-form__grid {
@@ -332,6 +333,7 @@
   margin: 0 0 0.75rem;
   font-size: 1.25rem;
   font-weight: 600;
+  color: var(--dh-on-surface);
 }
 
 .register-success__text {
@@ -377,10 +379,10 @@
   height: 100%;
   padding: 1.5rem;
   background: var(--dh-surface-container-lowest);
-  border: 1px solid rgb(203 196 210 / 0.35);
+  border: 1px solid var(--dh-outline-variant);
   border-radius: 0.75rem;
   text-decoration: none;
-  color: inherit;
+  color: var(--dh-on-surface);
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
@@ -423,6 +425,7 @@
   margin: 0 0 0.5rem;
   font-size: 1.125rem;
   font-weight: 600;
+  color: var(--dh-on-surface);
 }
 
 .selection-card__desc {
