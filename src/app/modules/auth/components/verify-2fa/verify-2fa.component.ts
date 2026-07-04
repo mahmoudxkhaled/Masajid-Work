@@ -80,13 +80,13 @@ export class Verify2FAComponent implements OnInit, OnDestroy, AfterViewInit {
       const verifySubscription = this.apiService.verify2FA(this.email, otp).subscribe({
         next: (response: any) => {
           console.log('verify2FA response', response);
-          if (response?.success) {
-            console.log('verify2FA response success');
-            this.handleSuccessfulLogin();
-          } else {
+          if (response?.success === false) {
             console.log('verify2FA response error', response);
             this.validationMessageKey = 'auth.verify2fa.invalidCode';
+            return;
           }
+          console.log('verify2FA response success');
+          this.handleSuccessfulLogin();
         },
       });
       this.unsubscribe.push(verifySubscription);

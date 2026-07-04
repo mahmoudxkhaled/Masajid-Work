@@ -82,7 +82,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
         const loginSubscription = this.authService.login(email, password).subscribe({
             next: (response: any) => {
-                if (!response?.success) {
+                if (response?.success === false) {
                     this.handleBusinessError(response, email);
                     return;
                 }
