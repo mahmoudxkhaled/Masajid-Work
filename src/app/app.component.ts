@@ -82,6 +82,8 @@ export class AppComponent implements OnInit, OnDestroy {
             this.rtlService.setGuestLanguageCode(userLangCode);
         }
 
+        this.isRtl = this.rtlService.isRtl;
+
         this.translationService.useLanguage(userLangCode || APP_DEFAULT_LANGUAGE).subscribe({
             next: () => {
                 if (!this.isPublicGuestBootstrapRoute()) {
@@ -91,9 +93,8 @@ export class AppComponent implements OnInit, OnDestroy {
             error: () => this.translationService.hideBootstrapPreloader(),
         });
 
-        this.isRtl = this.rtlService.getRtlFromStorage();
         if (this.localStorage.getAccessToken()) {
-            this.rtlService.setRtl(this.isRtl);
+            this.rtlService.setRtl(this.rtlService.isRtl);
         }
 
         this.rtlSubscription = this.rtlService.isRtl$.subscribe((isRtl) => {

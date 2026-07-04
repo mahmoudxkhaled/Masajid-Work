@@ -21,7 +21,6 @@ export class PublicLayoutComponent implements OnInit, OnDestroy, AfterViewInit {
   isDark = false;
 
   private langSub?: Subscription;
-  private rtlSub?: Subscription;
   private themeSub?: Subscription;
   private routerSub?: Subscription;
 
@@ -46,10 +45,6 @@ export class PublicLayoutComponent implements OnInit, OnDestroy, AfterViewInit {
       this.syncHtmlAndLayout(lang);
     });
 
-    this.rtlSub = this.languageDirService.isRtl$.subscribe((isRtl) => {
-      this.dir = isRtl ? 'rtl' : 'ltr';
-    });
-
     this.isDark = this.theme.isDark;
     this.applyThemeClass(this.isDark);
     this.themeSub = this.theme.isDark$.subscribe((dark) => {
@@ -68,7 +63,6 @@ export class PublicLayoutComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnDestroy(): void {
     this.langSub?.unsubscribe();
-    this.rtlSub?.unsubscribe();
     this.themeSub?.unsubscribe();
     this.routerSub?.unsubscribe();
     document.documentElement.classList.remove('dh-theme-dark');

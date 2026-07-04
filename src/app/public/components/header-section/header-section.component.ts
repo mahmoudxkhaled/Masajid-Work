@@ -50,7 +50,7 @@ export class HeaderSectionComponent implements OnInit, OnDestroy {
     private readonly languageDirService: LanguageDirService,
     private readonly translationService: TranslationService,
     private readonly theme: PublicThemePreferenceService,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     const code = this.languageDirService.getPublicLanguageCode();

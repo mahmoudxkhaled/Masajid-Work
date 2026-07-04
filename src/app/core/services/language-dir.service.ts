@@ -7,8 +7,8 @@ import { LocalStorageService } from './local-storage.service';
 })
 export class LanguageDirService {
 
-    private rtlSubject = new BehaviorSubject<boolean>(false);
-    isRtl$ = this.rtlSubject.asObservable();
+    private rtlSubject!: BehaviorSubject<boolean>;
+    isRtl$!: Observable<boolean>;
 
     private languageSubject!: BehaviorSubject<string>;
     userLanguageCode$!: Observable<string>;
@@ -17,6 +17,11 @@ export class LanguageDirService {
         this.languageSubject = new BehaviorSubject<string>(this.resolveBootstrapLanguageCode());
         this.rtlSubject = new BehaviorSubject<boolean>(this.getRtlFromStorage());
         this.userLanguageCode$ = this.languageSubject.asObservable();
+        this.isRtl$ = this.rtlSubject.asObservable();
+    }
+
+    get isRtl(): boolean {
+        return this.rtlSubject.value;
     }
 
     setRtl(isRtl: boolean) {
@@ -25,13 +30,15 @@ export class LanguageDirService {
     }
 
     getRtlFromStorage(): boolean {
+        if (!this.localStorage.getToken()) {
+            return this.getPublicLanguageCode() === 'ar';
+        }
+
         const stored = localStorage.getItem('isRtl');
         if (stored != null) {
             return JSON.parse(stored);
         }
-        if (!this.localStorage.getToken()) {
-            return this.getPublicLanguageCode() === 'ar';
-        }
+
         return this.localStorage.getPreferredLanguageCode() === 'ar';
     }
 
