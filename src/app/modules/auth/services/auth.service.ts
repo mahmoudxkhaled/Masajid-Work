@@ -51,7 +51,7 @@ export class AuthService {
                     return this.getLoginDataPackage(email).pipe(
                         switchMap((r) =>
                             this.getSettingsEngine()
-                                .loadAllLayers(true)
+                                .loadAllLayers(true, { applyShell: false })
                                 .pipe(
                                     catchError(() => of(null)),
                                     map(() => r)
@@ -105,7 +105,7 @@ export class AuthService {
                     return this.getLoginDataPackage(email).pipe(
                         switchMap((r) =>
                             this.getSettingsEngine()
-                                .loadAllLayers(true)
+                                .loadAllLayers(true, { applyShell: false })
                                 .pipe(
                                     catchError(() => of(null)),
                                     map(() => r)

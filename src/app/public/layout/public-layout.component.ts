@@ -39,7 +39,7 @@ export class PublicLayoutComponent implements OnInit, OnDestroy, AfterViewInit {
       return;
     }
 
-    const code = this.languageDirService.getLanguageFromStorage();
+    const code = this.languageDirService.getPublicLanguageCode();
     this.syncHtmlAndLayout(code);
 
     this.langSub = this.languageDirService.userLanguageCode$.subscribe((lang) => {

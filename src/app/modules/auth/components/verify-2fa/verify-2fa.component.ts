@@ -86,17 +86,10 @@ export class Verify2FAComponent implements OnInit, OnDestroy, AfterViewInit {
             return;
           }
           console.log('verify2FA response success');
-          this.handleSuccessfulLogin();
         },
       });
       this.unsubscribe.push(verifySubscription);
     }
-  }
-
-  handleSuccessfulLogin() {
-    const userLang = this.rtlService.getLanguageFromStorage();
-    this.rtlService.setUserLanguageCode(userLang);
-    this.rtlService.setRtl(userLang === 'ar');
   }
 
   moveToNext(event: any, nextInputId: string): void {

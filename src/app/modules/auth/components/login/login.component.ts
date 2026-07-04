@@ -3,7 +3,6 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
-import { LanguageDirService } from 'src/app/core/services/language-dir.service';
 import { LocalStorageService } from 'src/app/core/services/local-storage.service';
 import { resolvePostLoginUrl } from 'src/app/core/utils/post-login-navigation';
 
@@ -38,7 +37,6 @@ export class LoginComponent implements OnInit, OnDestroy {
         private authService: AuthService,
         private router: Router,
         private route: ActivatedRoute,
-        private rtlService: LanguageDirService,
         private localStorageService: LocalStorageService
     ) {
         this.isLoading$ = this.authService.isLoadingSubject;
@@ -57,8 +55,6 @@ export class LoginComponent implements OnInit, OnDestroy {
         }
 
         this.initForm();
-        const userLang = this.rtlService.getLanguageFromStorage();
-        this.rtlService.setRtl(userLang === 'ar');
     }
 
     initForm() {
@@ -136,9 +132,6 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     handleSuccessfulLogin() {
         this.clearLoginBanner();
-        const userLang = this.rtlService.getLanguageFromStorage();
-        this.rtlService.setUserLanguageCode(userLang);
-        this.rtlService.setRtl(userLang === 'ar');
     }
 
     togglePasswordVisibility(): void {

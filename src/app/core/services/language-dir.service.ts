@@ -36,4 +36,15 @@ export class LanguageDirService {
     getLanguageFromStorage(): string {
         return this.localStorage.getPreferredLanguageCode();
     }
+
+    getPublicLanguageCode(): string {
+        return this.localStorage.getGuestLanguageCode();
+    }
+
+    setGuestLanguageCode(lang: string) {
+        const code = lang === 'ar' ? 'ar' : 'en';
+        this.localStorage.setGuestLanguageCode(code);
+        this.languageSubject.next(code);
+        this.setRtl(code === 'ar');
+    }
 }

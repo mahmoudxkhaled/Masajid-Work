@@ -53,7 +53,7 @@ export class HeaderSectionComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    const code = this.languageDirService.getLanguageFromStorage();
+    const code = this.languageDirService.getPublicLanguageCode();
     this.currentLang = code === 'ar' ? 'ar' : 'en';
 
     this.langSub = this.languageDirService.userLanguageCode$.subscribe((lang) => {
@@ -90,8 +90,7 @@ export class HeaderSectionComponent implements OnInit, OnDestroy {
 
   setLang(lang: 'en' | 'ar'): void {
     this.langMenuOpen = false;
-    this.languageDirService.setUserLanguageCode(lang);
-    this.languageDirService.setRtl(lang === 'ar');
+    this.languageDirService.setGuestLanguageCode(lang);
     this.translationService.useLanguage(lang);
   }
 

@@ -8,6 +8,7 @@ import { LayoutService } from '../app-services/app.layout.service';
 import { MessageService } from 'primeng/api';
 import { LocalStorageService } from 'src/app/core/services/local-storage.service';
 import { NetworkStatusService } from 'src/app/core/services/network-status.service';
+import { SettingsEngineService } from 'src/app/modules/summary/services/settings-engine.service';
 
 @Component({
     selector: 'app-layout',
@@ -48,7 +49,8 @@ export class AppLayoutComponent implements OnInit, OnDestroy {
         private messageService: MessageService,
         private localStorage: LocalStorageService,
         private ref: ChangeDetectorRef,
-        private networkStatusService: NetworkStatusService
+        private networkStatusService: NetworkStatusService,
+        private settingsEngineService: SettingsEngineService,
     ) {
 
         this.networkStatusService.getNetworkStatus().subscribe((status) => {
@@ -144,6 +146,8 @@ export class AppLayoutComponent implements OnInit, OnDestroy {
     sessionWarningMessage = '';
 
     ngOnInit(): void {
+        this.settingsEngineService.applyRuntimeShell();
+
         this.responsiveOptions = [
             {
                 breakpoint: '1199px',

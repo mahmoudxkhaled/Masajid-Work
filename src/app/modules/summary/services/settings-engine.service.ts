@@ -9,6 +9,10 @@ import { SettingsApiService } from './settings-api.service';
 import { SettingsLayer, SettingsLayersState, SETTINGS_CACHE_KEY } from '../models/settings-engine.model';
 import { resolveSetting } from '../utils/settings-resolver';
 
+export interface LoadAllLayersOptions {
+    applyShell?: boolean;
+}
+
 @Injectable({
     providedIn: 'root',
 })
@@ -24,11 +28,11 @@ export class SettingsEngineService {
         private layoutService: LayoutService
     ) { }
 
-    loadAllLayers(forceReload = false): Observable<SettingsLayersState> {
+    loadAllLayers(forceReload = false, options?: LoadAllLayersOptions): Observable<SettingsLayersState> {
         if (!forceReload) {
             const cachedState = this.readCache();
             if (cachedState) {
-                this.commitState(cachedState);
+                this.commitState(cachedState, options);
                 return of(cachedState);
             }
         }
@@ -66,10 +70,14 @@ export class SettingsEngineService {
                     lastUpdatedAt: Date.now(),
                 };
 
-                this.commitState(nextState);
+                this.commitState(nextState, options);
                 return nextState;
             })
         );
+    }
+
+    applyRuntimeShell(): void {
+        this.applyEffectiveRuntimeToShell();
     }
 
     refreshRuntimeFromServer(): Observable<SettingsLayersState> {
@@ -207,10 +215,12 @@ export class SettingsEngineService {
         }, {});
     }
 
-    private commitState(nextState: SettingsLayersState): void {
+    private commitState(nextState: SettingsLayersState, options?: LoadAllLayersOptions): void {
         this.stateSubject.next(nextState);
         this.writeCache(nextState);
-        this.applyEffectiveRuntimeToShell();
+        if (options?.applyShell !== false) {
+            this.applyEffectiveRuntimeToShell();
+        }
     }
 
     private getFallbackState(): SettingsLayersState {

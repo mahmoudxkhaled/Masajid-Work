@@ -34,6 +34,23 @@ export class LocalStorageService {
   // #endregion
 
   // #region Language & Theme preferences (source of truth: Account_Settings)
+  private static readonly GUEST_LANGUAGE_KEY = 'guest_language';
+
+  getGuestLanguageCode(): 'en' | 'ar' {
+    const raw = (localStorage.getItem(LocalStorageService.GUEST_LANGUAGE_KEY) || '').trim().toLowerCase();
+    if (raw === 'en' || raw === 'english') {
+      return 'en';
+    }
+    if (raw === 'ar' || raw === 'arabic' || raw === 'العربية') {
+      return 'ar';
+    }
+    return APP_DEFAULT_LANGUAGE;
+  }
+
+  setGuestLanguageCode(code: 'en' | 'ar'): void {
+    localStorage.setItem(LocalStorageService.GUEST_LANGUAGE_KEY, code);
+  }
+
   getPreferredLanguageCode(): 'en' | 'ar' {
     const lang = (this.getAccountSettings()?.Language || '').toString().trim().toLowerCase();
     if (lang === 'en' || lang === 'english') {
@@ -65,6 +82,11 @@ export class LocalStorageService {
     const settings = this.getAccountSettings() || ({} as IAccountSettings);
     settings.Language = code === 'ar' ? 'Arabic' : 'English';
     this.setItem('Account_Settings', settings);
+    this.setGuestLanguageCode(code);
+  }
+
+  syncGuestLanguageFromAccountSettings(): void {
+    this.setGuestLanguageCode(this.getPreferredLanguageCode());
   }
 
   getPreferredTheme(): 'light' | 'dark' {
@@ -133,6 +155,9 @@ export class LocalStorageService {
   mergeAccountSettings(partial: Partial<IAccountSettings>): void {
     const current = this.getAccountSettings() || ({} as IAccountSettings);
     this.setItem('Account_Settings', { ...current, ...partial });
+    if (partial.Language != null && String(partial.Language).trim() !== '') {
+      this.syncGuestLanguageFromAccountSettings();
+    }
   }
 
   getUserAccounts(): IUserAccountItem[] | null {
@@ -204,15 +229,8 @@ export class LocalStorageService {
     }
 
     if (accountData.Account_Settings) {
-      const existingSettings = this.getAccountSettings();
-      const settingsToSave = { ...accountData.Account_Settings };
-      if (existingSettings?.Language) {
-        settingsToSave.Language = existingSettings.Language;
-      }
-      if (existingSettings?.Theme) {
-        settingsToSave.Theme = existingSettings.Theme;
-      }
-      this.setItem('Account_Settings', settingsToSave);
+      this.setItem('Account_Settings', { ...accountData.Account_Settings });
+      this.syncGuestLanguageFromAccountSettings();
     }
 
     if (accountData.User_Accounts) {
@@ -221,7 +239,11 @@ export class LocalStorageService {
   }
 
   clearLoginDataPackage(): void {
+    const guestLanguage = localStorage.getItem(LocalStorageService.GUEST_LANGUAGE_KEY);
     this.clearAll();
+    if (guestLanguage != null && guestLanguage !== '') {
+      localStorage.setItem(LocalStorageService.GUEST_LANGUAGE_KEY, guestLanguage);
+    }
   }
   // #endregion
 }
