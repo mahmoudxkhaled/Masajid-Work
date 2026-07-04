@@ -3,8 +3,10 @@
 }
 
 .header {
-  position: sticky;
+  position: fixed;
   inset-block-start: 0;
+  inset-inline: 0;
+  width: 100%;
   z-index: 50;
   background-color: var(--dh-surface, #fdf7ff);
   box-shadow: 0 1px 3px var(--dh-header-shadow, rgb(0 0 0 / 0.08));

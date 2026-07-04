@@ -31,6 +31,7 @@
   --dh-cta-solid-bg: #ffffff;
   --dh-cta-solid-fg: #4f378a;
   --dh-cta-shadow: rgb(79 55 138 / 0.35);
+  --dh-header-height: 64px;
   --dh-header-shadow: rgb(0 0 0 / 0.08);
   --dh-dropdown-shadow: rgb(0 0 0 / 0.12);
 
@@ -38,6 +39,16 @@
   background-color: var(--dh-surface);
   color: var(--dh-on-surface);
   font-family: 'IBM Plex Sans', system-ui, sans-serif;
+}
+
+.dh main {
+  padding-block-start: var(--dh-header-height);
+}
+
+@media (min-width: 768px) {
+  .dh {
+    --dh-header-height: 87px;
+  }
 }
 
 .dh--dark {

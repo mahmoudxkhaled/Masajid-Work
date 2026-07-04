@@ -32,12 +32,6 @@ export class PublicThemePreferenceService {
     if (saved === 'dark') {
       return true;
     }
-    if (saved === 'light') {
-      return false;
-    }
-    if (typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      return true;
-    }
     return false;
   }
 }
