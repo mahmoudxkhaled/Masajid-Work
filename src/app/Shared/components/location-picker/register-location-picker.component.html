@@ -19,7 +19,7 @@
       type="button"
       class="register-location-picker__geo-btn"
       (click)="useMyLocation()"
-      [disabled]="locating || !hasCountryCode"
+      [disabled]="locating"
     >
       <span class="material-symbols-outlined">my_location</span>
       <ng-container *ngIf="locating; else geoLabel">

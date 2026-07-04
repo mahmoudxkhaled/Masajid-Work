@@ -3883,15 +3883,17 @@
             },
             "location": {
                 "title": "Location on map",
-                "hint": "Click the map or drag the pin to set your location. You can also use your current location.",
-                "selectCountryFirst": "Select a country above to load the map centered on that region.",
+                "hint": "Click the map or drag the pin to set your location. Use your current location to detect the country automatically.",
+                "selectCountryFirst": "Select a country above, or use your current location to detect it automatically.",
                 "useMyLocation": "Use my current location",
                 "locating": "Getting your location…",
                 "errors": {
                     "unsupported": "Geolocation is not supported by your browser.",
                     "denied": "Location permission was denied. Please pick a point on the map.",
                     "unavailable": "Your location could not be determined. Please pick a point on the map.",
-                    "timeout": "Location request timed out. Please pick a point on the map."
+                    "timeout": "Location request timed out. Please pick a point on the map.",
+                    "countryResolveFailed": "Could not determine your country from GPS. Please select a country manually.",
+                    "countryNotInList": "Your detected country is not available for registration. Please select a country from the list."
                 }
             },
             "messages": {

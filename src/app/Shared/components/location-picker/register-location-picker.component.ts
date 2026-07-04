@@ -1,7 +1,10 @@
-import { AfterViewInit, Component, ElementRef, Input, OnDestroy, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { Subscription, merge } from 'rxjs';
 import { getCountryCentroid } from 'src/app/core/data/country-centroids.data';
+import { PublicLookupService } from 'src/app/core/services/public-lookup.service';
+import { ReverseGeocodeService } from 'src/app/core/services/reverse-geocode.service';
+import { alpha2ToAlpha3 } from 'src/app/core/utils/country-code.util';
 import * as L from 'leaflet';
 
 @Component({
@@ -10,7 +13,7 @@ import * as L from 'leaflet';
   templateUrl: './register-location-picker.component.html',
   styleUrl: './register-location-picker.component.scss',
 })
-export class RegisterLocationPickerComponent implements AfterViewInit, OnDestroy {
+export class RegisterLocationPickerComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('map') mapElement?: ElementRef<HTMLDivElement>;
 
   @Input({ required: true }) latitudeControl!: AbstractControl;
@@ -24,8 +27,12 @@ export class RegisterLocationPickerComponent implements AfterViewInit, OnDestroy
   private marker?: L.Marker;
   private countrySubscription?: Subscription;
   private coordSubscription?: Subscription;
+  private countriesSubscription?: Subscription;
   private resizeObserver?: ResizeObserver;
   private lastCountryCode = '';
+  private skipCountryClear = false;
+  private allowedCountryCodes = new Set<string>();
+  private pendingGeoCoords: { lat: number; lng: number } | null = null;
 
   private static readonly defaultLat = 30.0444;
   private static readonly defaultLng = 31.2357;
@@ -33,6 +40,17 @@ export class RegisterLocationPickerComponent implements AfterViewInit, OnDestroy
 
   get hasCountryCode(): boolean {
     return String(this.countryCodeControl.value ?? '').trim().length > 0;
+  }
+
+  constructor(
+    private readonly reverseGeocode: ReverseGeocodeService,
+    private readonly lookupService: PublicLookupService,
+  ) {}
+
+  ngOnInit(): void {
+    this.countriesSubscription = this.lookupService.getCountries().subscribe((countries) => {
+      this.allowedCountryCodes = new Set(countries.map((c) => c.code.toUpperCase()));
+    });
   }
 
   ngAfterViewInit(): void {
@@ -58,6 +76,7 @@ export class RegisterLocationPickerComponent implements AfterViewInit, OnDestroy
   ngOnDestroy(): void {
     this.countrySubscription?.unsubscribe();
     this.coordSubscription?.unsubscribe();
+    this.countriesSubscription?.unsubscribe();
     this.resizeObserver?.disconnect();
     this.map?.remove();
   }
@@ -84,16 +103,20 @@ export class RegisterLocationPickerComponent implements AfterViewInit, OnDestroy
     });
 
     const initial = this.readInitialCoords();
-    if (initial) {
-      this.placeMarker(initial.lat, initial.lng);
+    if (this.pendingGeoCoords) {
+      this.placeMarker(this.pendingGeoCoords.lat, this.pendingGeoCoords.lng, false);
+      this.pendingGeoCoords = null;
+    } else if (initial) {
+      this.placeMarker(initial.lat, initial.lng, false);
+    } else if (this.getCountryCode()) {
+      this.recenterMapOnCountry(this.getCountryCode(), false);
     }
+
+    this.lastCountryCode = this.getCountryCode();
 
     this.observeMapResize(element);
 
-    setTimeout(() => this.refreshMapSize(), 0);
-    setTimeout(() => this.refreshMapSize(), 300);
-    setTimeout(() => this.refreshMapSize(), 700);
-    setTimeout(() => this.syncMarkerFromInputs(), 100);
+    this.scheduleMapRefresh();
   }
 
   private observeMapResize(element: HTMLDivElement): void {
@@ -116,12 +139,15 @@ export class RegisterLocationPickerComponent implements AfterViewInit, OnDestroy
     });
   }
 
+  private scheduleMapRefresh(): void {
+    this.refreshMapSize();
+    setTimeout(() => this.refreshMapSize(), 0);
+    setTimeout(() => this.refreshMapSize(), 150);
+    setTimeout(() => this.refreshMapSize(), 400);
+  }
+
   useMyLocation(): void {
     this.locationErrorKey = '';
-
-    if (!this.hasCountryCode) {
-      return;
-    }
 
     if (!navigator.geolocation) {
       this.locationErrorKey = 'public.register.location.errors.unsupported';
@@ -131,8 +157,7 @@ export class RegisterLocationPickerComponent implements AfterViewInit, OnDestroy
     this.locating = true;
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        this.placeMarker(position.coords.latitude, position.coords.longitude);
-        this.locating = false;
+        this.resolveAndApplyGeolocation(position.coords.latitude, position.coords.longitude);
       },
       (error) => {
         this.locating = false;
@@ -182,6 +207,63 @@ export class RegisterLocationPickerComponent implements AfterViewInit, OnDestroy
     this.syncMarkerFromInputs();
   }
 
+  private resolveAndApplyGeolocation(lat: number, lng: number): void {
+    this.reverseGeocode.resolveCountryAlpha2(lat, lng).subscribe({
+      next: (alpha2) => {
+        if (!alpha2) {
+          this.locating = false;
+          this.locationErrorKey = 'public.register.location.errors.countryResolveFailed';
+          return;
+        }
+
+        const alpha3 = alpha2ToAlpha3(alpha2);
+        if (!alpha3) {
+          this.locating = false;
+          this.locationErrorKey = 'public.register.location.errors.countryResolveFailed';
+          return;
+        }
+
+        if (this.allowedCountryCodes.size > 0 && !this.allowedCountryCodes.has(alpha3)) {
+          this.locating = false;
+          this.locationErrorKey = 'public.register.location.errors.countryNotInList';
+          return;
+        }
+
+        this.applyCountryAndCoordinates(alpha3, lat, lng);
+        this.locating = false;
+      },
+      error: () => {
+        this.locating = false;
+        this.locationErrorKey = 'public.register.location.errors.countryResolveFailed';
+      },
+    });
+  }
+
+  private applyCountryAndCoordinates(alpha3: string, lat: number, lng: number): void {
+    this.skipCountryClear = true;
+
+    if (this.getCountryCode() !== alpha3) {
+      this.lastCountryCode = alpha3;
+      this.countryCodeControl.setValue(alpha3);
+      this.countryCodeControl.markAsDirty();
+      this.countryCodeControl.markAsTouched();
+      this.countryCodeControl.updateValueAndValidity();
+    }
+
+    this.skipCountryClear = false;
+    this.locationErrorKey = '';
+
+    this.updateForm(lat, lng);
+
+    if (this.map) {
+      this.placeMarker(lat, lng, false);
+      this.scheduleMapRefresh();
+      return;
+    }
+
+    this.pendingGeoCoords = { lat, lng };
+  }
+
   private syncMarkerFromInputs(): void {
     if (!this.map) {
       return;
@@ -209,31 +291,63 @@ export class RegisterLocationPickerComponent implements AfterViewInit, OnDestroy
   }
 
   private onCountryChanged(): void {
-    if (!this.map) {
-      return;
-    }
-
     const code = this.getCountryCode();
+
     if (code === this.lastCountryCode) {
-      this.refreshMapSize();
+      if (this.map) {
+        this.refreshMapSize();
+      }
       return;
     }
 
     this.lastCountryCode = code;
-    const view = this.getMapView();
 
-    this.refreshMapSize();
+    if (this.skipCountryClear) {
+      if (this.map) {
+        this.refreshMapSize();
+      }
+      return;
+    }
 
-    setTimeout(() => {
-      this.map?.setView([view.lat, view.lng], view.zoom);
-      this.refreshMapSize();
-    }, 100);
+    if (!code) {
+      if (this.map) {
+        this.removeMarker();
+        this.clearCoordinates();
+      }
+      return;
+    }
 
-    this.removeMarker();
-    this.clearCoordinates();
+    if (!this.map) {
+      return;
+    }
+
+    this.recenterMapOnCountry(code, true);
   }
 
-  private placeMarker(lat: number, lng: number): void {
+  private recenterMapOnCountry(code: string, clearCoords: boolean): void {
+    const centroid = getCountryCentroid(code);
+    if (!centroid || !this.map) {
+      return;
+    }
+
+    if (clearCoords) {
+      this.removeMarker();
+      this.clearCoordinates();
+    }
+
+    this.map.setView([centroid.lat, centroid.lng], centroid.zoom);
+    this.scheduleMapRefresh();
+
+    setTimeout(() => {
+      if (!this.map || this.getCountryCode() !== code) {
+        return;
+      }
+      this.map.setView([centroid.lat, centroid.lng], centroid.zoom);
+      this.refreshMapSize();
+    }, 200);
+  }
+
+  private placeMarker(lat: number, lng: number, updateFormValues = true): void {
     if (!this.map) {
       return;
     }
@@ -251,7 +365,9 @@ export class RegisterLocationPickerComponent implements AfterViewInit, OnDestroy
     }
 
     this.map.setView(latlng, Math.max(this.map.getZoom(), 13));
-    this.updateForm(lat, lng);
+    if (updateFormValues) {
+      this.updateForm(lat, lng);
+    }
     this.locationErrorKey = '';
   }
 
