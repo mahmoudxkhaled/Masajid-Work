@@ -8,6 +8,7 @@ import { APP_DEFAULT_LANGUAGE } from '../config/app-branding.config';
 })
 export class TranslationService {
     private availableLanguages = ['en', 'ar'];
+    private preloaderHideTimer?: ReturnType<typeof setTimeout>;
 
     constructor(private translate: TranslateService) {
         this.setDefaultLang(APP_DEFAULT_LANGUAGE);
@@ -22,8 +23,23 @@ export class TranslationService {
         return this.translate.use(code);
     }
 
+    showBootstrapPreloader(): void {
+        document.getElementById('app-preloader')?.classList.remove('app-preloader--hidden');
+    }
+
     hideBootstrapPreloader(): void {
-        document.getElementById('app-preloader')?.remove();
+        document.getElementById('app-preloader')?.classList.add('app-preloader--hidden');
+    }
+
+    showLanguageSwitchPreloader(durationMs = 500): void {
+        if (this.preloaderHideTimer) {
+            clearTimeout(this.preloaderHideTimer);
+        }
+        this.showBootstrapPreloader();
+        this.preloaderHideTimer = setTimeout(() => {
+            this.hideBootstrapPreloader();
+            this.preloaderHideTimer = undefined;
+        }, durationMs);
     }
     getCurrentLang(): Observable<string> {
         return this.translate.onLangChange.pipe(map((event) => event.lang));

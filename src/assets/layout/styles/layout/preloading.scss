@@ -18,6 +18,10 @@ $bgColor:#3f51b5;
     min-height: 100vh;
 }
 
+#app-preloader.app-preloader--hidden {
+    display: none;
+}
+
 .layout-preloader-content {
     text-align: center;
     position: absolute;

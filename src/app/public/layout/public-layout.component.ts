@@ -23,6 +23,7 @@ export class PublicLayoutComponent implements OnInit, OnDestroy, AfterViewInit {
   private langSub?: Subscription;
   private themeSub?: Subscription;
   private routerSub?: Subscription;
+  private bootstrapPreloaderDone = false;
 
   constructor(
     private readonly languageDirService: LanguageDirService,
@@ -30,7 +31,7 @@ export class PublicLayoutComponent implements OnInit, OnDestroy, AfterViewInit {
     private readonly translationService: TranslationService,
     private readonly theme: PublicThemePreferenceService,
     private readonly router: Router,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     if (this.localStorageService.getToken()) {
@@ -143,8 +144,18 @@ export class PublicLayoutComponent implements OnInit, OnDestroy, AfterViewInit {
     document.documentElement.lang = this.lang;
     document.documentElement.setAttribute('dir', this.dir);
     this.translationService.useLanguage(this.lang).subscribe({
-      next: () => this.translationService.hideBootstrapPreloader(),
-      error: () => this.translationService.hideBootstrapPreloader(),
+      next: () => {
+        if (!this.bootstrapPreloaderDone) {
+          this.bootstrapPreloaderDone = true;
+          this.translationService.hideBootstrapPreloader();
+        }
+      },
+      error: () => {
+        if (!this.bootstrapPreloaderDone) {
+          this.bootstrapPreloaderDone = true;
+          this.translationService.hideBootstrapPreloader();
+        }
+      },
     });
   }
 

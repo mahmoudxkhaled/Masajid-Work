@@ -89,9 +89,12 @@ export class HeaderSectionComponent implements OnInit, OnDestroy {
   }
 
   setLang(lang: 'en' | 'ar'): void {
+    if (lang === this.currentLang) {
+      return;
+    }
     this.langMenuOpen = false;
+    this.translationService.showLanguageSwitchPreloader();
     this.languageDirService.setGuestLanguageCode(lang);
-    this.translationService.useLanguage(lang);
   }
 
   toggleTheme(): void {
