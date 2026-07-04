@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+﻿import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
@@ -60,7 +60,7 @@ export class SharedEntityFormComponent implements OnInit, OnDestroy {
     ) { }
 
     ngOnInit(): void {
-        this.isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
+        this.isRegional = this.localStorageService.isArabicUi();
 
         this.entityId = this.route.snapshot.paramMap.get('id') || '';
         this.isEdit = !!this.entityId;
@@ -74,7 +74,7 @@ export class SharedEntityFormComponent implements OnInit, OnDestroy {
         this.initializeRoleBasedLogic();
         this.subscriptions.push(
             this.languageDirService.userLanguageCode$.subscribe(() => {
-                this.isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
+                this.isRegional = this.localStorageService.isArabicUi();
                 this.mapRawEntitiesForSelection();
             })
         );
@@ -306,7 +306,7 @@ export class SharedEntityFormComponent implements OnInit, OnDestroy {
             return;
         }
 
-        const isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
+        const isRegional = this.localStorageService.isRegionalApiInput();
 
         this.loading = true;
         const { code, name, description, parentEntityId, isPersonal, email, firstName, lastName } = this.form.value;
@@ -461,12 +461,17 @@ export class SharedEntityFormComponent implements OnInit, OnDestroy {
     }
 
     private mapRawEntitiesForSelection(): void {
-        const isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
         let allEntities = this.rawEntitiesForSelection.map((item) => ({
             id: String(item?.Entity_ID || ''),
             code: item?.Code || '',
-            name: isRegional ? (item?.Name_Regional || item?.Name || '') : (item?.Name || ''),
-            description: isRegional ? (item?.Description_Regional || item?.Description || '') : (item?.Description || ''),
+            name: this.localStorageService.pickLocalizedField(
+                item?.Name || '',
+                item?.Name_Regional || '',
+            ),
+            description: this.localStorageService.pickLocalizedField(
+                item?.Description || '',
+                item?.Description_Regional || '',
+            ),
             parentEntityId: item?.Parent_Entity_ID ? String(item?.Parent_Entity_ID) : '',
             active: Boolean(item?.Is_Active),
             isPersonal: Boolean(item?.Is_Personal)

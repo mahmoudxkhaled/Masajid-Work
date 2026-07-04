@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+﻿import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { MenuItem, MessageService } from 'primeng/api';
 import { Observable, Subscription } from 'rxjs';
@@ -415,7 +415,7 @@ export class SystemNotificationsListComponent implements OnInit, OnDestroy {
     }
 
     private mapRawNotificationCategories(): void {
-        const isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
+        const isRegional = this.localStorageService.isArabicUi();
         this.notificationCategories = this.rawNotificationCategories.map((item) => ({
             Category_ID: item?.Category_ID || 0,
             Title: isRegional ? (item?.Title_Regional || item?.Title || '') : (item?.Title || ''),
@@ -424,7 +424,7 @@ export class SystemNotificationsListComponent implements OnInit, OnDestroy {
     }
 
     private mapRawNotifications(): void {
-        const isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
+        const isRegional = this.localStorageService.isArabicUi();
         this.notifications = this.rawNotifications.map((notificationBackend) => ({
             id: notificationBackend?.Notification_ID || 0,
             moduleId: notificationBackend?.Module_ID || 0,

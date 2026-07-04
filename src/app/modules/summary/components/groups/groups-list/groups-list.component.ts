@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+﻿import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MenuItem, MessageService } from 'primeng/api';
@@ -314,7 +314,7 @@ export class GroupsListComponent implements OnInit, OnDestroy {
     }
 
     private mapRawGroups(): void {
-        const isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
+        const isRegional = this.localStorageService.isArabicUi();
         this.groups = this.rawGroups.map((groupBackend) => ({
             id: String(groupBackend?.groupID || ''),
             title: isRegional ? (groupBackend?.title_Regional || groupBackend?.title || '') : (groupBackend?.title || ''),

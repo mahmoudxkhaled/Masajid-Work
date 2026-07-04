@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+﻿import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
@@ -195,7 +195,7 @@ export class RoleDetailsComponent implements OnInit, OnDestroy {
             return;
         }
 
-        const isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
+        const isRegional = this.localStorageService.isArabicUi();
         this.roleDetails = {
             id: String(this.rawRole?.Entity_Role_ID || ''),
             entityId: String(this.rawRole?.Entity_ID || ''),
@@ -215,7 +215,7 @@ export class RoleDetailsComponent implements OnInit, OnDestroy {
             return;
         }
 
-        const isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
+        const isRegional = this.localStorageService.isArabicUi();
         this.entityName = isRegional
             ? (this.rawEntity?.Name_Regional || this.rawEntity?.Name || '')
             : (this.rawEntity?.Name || '');

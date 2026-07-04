@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
+﻿import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
@@ -153,7 +153,7 @@ export class SharedAccountListComponent implements OnInit, OnDestroy, OnChanges 
     private languageDirService: LanguageDirService,
     private translationService: TranslationService
   ) {
-    this.isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
+    this.isRegional = this.localStorageService.isArabicUi();
   }
 
   ngOnInit(): void {
@@ -163,7 +163,7 @@ export class SharedAccountListComponent implements OnInit, OnDestroy, OnChanges 
     this.initAccountManagementForms();
     this.subscriptions.push(
       this.languageDirService.userLanguageCode$.subscribe(() => {
-        this.isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
+        this.isRegional = this.localStorageService.isArabicUi();
         this.mapContextEntityName();
         this.mapRawEntityRoles();
         this.mapRawSystemRoles();

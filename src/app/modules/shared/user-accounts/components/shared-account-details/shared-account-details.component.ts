@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
+﻿import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
@@ -53,13 +53,13 @@ export class SharedAccountDetailsComponent implements OnInit, OnDestroy, OnChang
     private languageDirService: LanguageDirService,
     private permissionService: PermissionService
   ) {
-    this.isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
+    this.isRegional = this.localStorageService.isArabicUi();
   }
 
   ngOnInit(): void {
     this.subscriptions.push(
       this.languageDirService.userLanguageCode$.subscribe(() => {
-        this.isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
+        this.isRegional = this.localStorageService.isArabicUi();
         this.mapDescriptionForCurrentLanguage();
         this.mapEntityAndRoleLabels();
       })
@@ -220,7 +220,7 @@ export class SharedAccountDetailsComponent implements OnInit, OnDestroy, OnChang
     const description = this.descriptionFormControl.value || '';
     this.savingAccountDetails = true;
 
-    const sub = this.entitiesService.updateAccountDetails(this.email, description, this.isRegional).subscribe({
+    const sub = this.entitiesService.updateAccountDetails(this.email, description, this.localStorageService.isRegionalApiInput()).subscribe({
       next: (response: any) => {
         this.savingAccountDetails = false;
         if (!response?.success) {

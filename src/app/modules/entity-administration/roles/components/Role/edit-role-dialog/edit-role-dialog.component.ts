@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
+﻿import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { MessageService } from 'primeng/api';
@@ -103,7 +103,7 @@ export class EditRoleDialogComponent implements OnInit, OnChanges, OnDestroy {
                 }
 
                 const details = response.message || {};
-                const isRegional = this.accountSettings?.Language !== 'English';
+                const isRegional = this.localStorageService.isArabicUi();
 
                 this.form.patchValue({
                     title: isRegional ? (details?.Title_Regional || details?.Title || '') : (details?.Title || ''),
@@ -159,7 +159,7 @@ export class EditRoleDialogComponent implements OnInit, OnChanges, OnDestroy {
         }
 
         const { title, description } = this.form.value;
-        const isRegional = this.accountSettings?.Language !== 'English';
+        const isRegional = this.localStorageService.isRegionalApiInput();
 
         this.saving = true;
         const sub = this.rolesService

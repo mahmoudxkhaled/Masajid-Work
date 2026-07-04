@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
+﻿import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
@@ -42,7 +42,7 @@ export class EntityGroupFormComponent implements OnInit, OnDestroy, OnChanges {
         private permissionService: PermissionService
     ) {
         this.accountSettings = this.localStorageService.getAccountSettings() as IAccountSettings;
-        this.isRegional = this.accountSettings?.Language !== 'English';
+        this.isRegional = this.localStorageService.isArabicUi();
     }
 
     ngOnInit(): void {
@@ -169,7 +169,7 @@ export class EntityGroupFormComponent implements OnInit, OnDestroy, OnChanges {
                 this.groupId,
                 title,
                 description,
-                this.isRegional
+                this.localStorageService.isRegionalApiInput()
             ).subscribe({
                 next: (response: any) => {
                     if (!response?.success) {

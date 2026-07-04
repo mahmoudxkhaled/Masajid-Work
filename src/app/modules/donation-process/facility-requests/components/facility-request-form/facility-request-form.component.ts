@@ -12,6 +12,7 @@ import { EntitiesService } from 'src/app/modules/entity-administration/entities/
 import {
   CreateDonationRequestRequest,
   DonationRequestDetails,
+  DonationRequestDetailsBackend,
   UpdateDonationRequestRequest,
 } from '../../../models/donation-request.model';
 import { DonationRequestStatusBackend } from '../../../models/donation-request-status.model';
@@ -53,6 +54,7 @@ export class FacilityRequestFormComponent implements OnInit, OnDestroy {
   private currencies: CurrencyLookup[] = [];
   private rawTypes: DonationTypeBackend[] = [];
   private rawStatuses: DonationRequestStatusBackend[] = [];
+  private rawDetails: DonationRequestDetailsBackend | null = null;
   private subscriptions: Subscription[] = [];
 
   form = this.fb.group({
@@ -95,6 +97,7 @@ export class FacilityRequestFormComponent implements OnInit, OnDestroy {
       this.languageDirService.userLanguageCode$.subscribe(() => {
         this.remapTypes();
         this.remapLookups();
+        this.patchRegionalFormState();
       }),
     );
 
@@ -173,7 +176,7 @@ export class FacilityRequestFormComponent implements OnInit, OnDestroy {
 
         this.countries = this.lookupService.sortCountriesByLabel(
           results.countries,
-          this.localStorageService.getPreferredLanguageCode() === 'ar',
+          this.localStorageService.isArabicUi(),
         );
         this.currencies = results.currencies;
         this.remapLookups();
@@ -195,13 +198,15 @@ export class FacilityRequestFormComponent implements OnInit, OnDestroy {
   private loadExistingRequest(): void {
     const sub = this.donationRequestsService.getDonationRequestDetails(this.requestId).subscribe({
       next: (response: any) => {
+        console.log('getDonationRequestDetails response', response);
         if (!response?.success) {
           this.handleBusinessError('load', response);
           this.loading = false;
           return;
         }
 
-        const details = this.donationRequestsService.mapDonationRequestDetails(response.message);
+        this.rawDetails = this.donationRequestsService.extractDonationRequestDetails(response.message ?? {});
+        const details = this.donationRequestsService.mapDonationRequestDetails(this.rawDetails);
         if (!details) {
           this.loading = false;
           this.router.navigate(['/donations/facility/requests']);
@@ -240,7 +245,7 @@ export class FacilityRequestFormComponent implements OnInit, OnDestroy {
     }).subscribe({
       next: (results) => {
         const patch: Record<string, string | boolean> = {
-          isRegional: this.localStorageService.getPreferredLanguageCode() === 'ar',
+          isRegional: this.localStorageService.isRegionalApiInput(),
         };
 
         if (results.contacts?.success) {
@@ -288,8 +293,31 @@ export class FacilityRequestFormComponent implements OnInit, OnDestroy {
       address: details.address,
       latitude: String(details.latitude),
       longitude: String(details.longitude),
-      isRegional: details.isRegional,
+      isRegional: this.localStorageService.isRegionalApiInput(),
     });
+  }
+
+  private patchRegionalFormState(): void {
+    const patch: Record<string, string | boolean> = {
+      isRegional: this.localStorageService.isRegionalApiInput(),
+    };
+
+    if (this.isEditMode && this.rawDetails) {
+      patch['title'] = this.localStorageService.pickRequestContentField(
+        String(this.rawDetails.Title || ''),
+        String(this.rawDetails.Title_Regional || ''),
+      );
+      patch['description'] = this.localStorageService.pickRequestContentField(
+        String(this.rawDetails.Description || ''),
+        String(this.rawDetails.Description_Regional || ''),
+      );
+      patch['address'] = this.localStorageService.pickRequestContentField(
+        String(this.rawDetails.Address || ''),
+        String(this.rawDetails.Address_Regional || ''),
+      );
+    }
+
+    this.form.patchValue(patch, { emitEvent: false });
   }
 
   private resolveDonationTypeId(details: DonationRequestDetails): number | null {
@@ -321,7 +349,7 @@ export class FacilityRequestFormComponent implements OnInit, OnDestroy {
       donationCategoryId: this.selectedCategoryId,
       title: String(raw.title ?? '').trim(),
       description: String(raw.description ?? '').trim(),
-      isRegional: Boolean(raw.isRegional),
+      isRegional: this.localStorageService.isRegionalApiInput(),
       quantity: Number(raw.quantity),
       unit: String(raw.unit ?? '').trim(),
       estimatedCost: Number(raw.estimatedCost ?? 0),
@@ -415,7 +443,7 @@ export class FacilityRequestFormComponent implements OnInit, OnDestroy {
   }
 
   private remapLookups(): void {
-    const isArabic = this.localStorageService.getPreferredLanguageCode() === 'ar';
+    const isArabic = this.localStorageService.isArabicUi();
     this.countryOptions = this.countries.map((item) => ({
       label: this.lookupService.getCountryLabel(item, isArabic),
       value: item.code,

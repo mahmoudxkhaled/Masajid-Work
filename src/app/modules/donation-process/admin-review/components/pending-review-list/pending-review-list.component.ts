@@ -74,10 +74,10 @@ export class PendingReviewListComponent implements OnInit, OnDestroy {
   }
 
   getTitle(row: DonationRequestBackend): string {
-    if (this.isArabic()) {
-      return String(row.Title_Regional || row.Title || '');
-    }
-    return String(row.Title || '');
+    return this.localStorageService.pickRequestContentField(
+      String(row.Title || ''),
+      String(row.Title_Regional || ''),
+    );
   }
 
   getPendingReviewStatusLabel(): string {
@@ -135,13 +135,9 @@ export class PendingReviewListComponent implements OnInit, OnDestroy {
   }
 
   private getStatusName(item: DonationRequestStatusBackend): string {
-    if (this.isArabic()) {
-      return String(item.Name_Regional || item.Name || '');
-    }
-    return String(item.Name || '');
-  }
-
-  private isArabic(): boolean {
-    return this.localStorageService.getPreferredLanguageCode() === 'ar';
+    return this.localStorageService.pickLocalizedField(
+      String(item.Name || ''),
+      String(item.Name_Regional || ''),
+    );
   }
 }

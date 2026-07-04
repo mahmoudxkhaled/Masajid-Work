@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+﻿import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
@@ -59,13 +59,13 @@ export class NotificationsInboxComponent implements OnInit, OnDestroy {
     ) {
         const accountDetails = this.localStorageService.getAccountDetails() as IAccountDetails;
         this.currentAccountId = accountDetails?.Account_ID || 0;
-        this.isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
+        this.isRegional = this.localStorageService.isArabicUi();
     }
 
     ngOnInit(): void {
         this.subscriptions.push(
             this.languageDirService.userLanguageCode$.subscribe(() => {
-                this.isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
+                this.isRegional = this.localStorageService.isArabicUi();
                 this.mapRawNotifications();
             })
         );

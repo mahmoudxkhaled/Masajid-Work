@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { APP_DEFAULT_LANGUAGE } from '../config/app-branding.config';
+import { isRegionalApiInput, pickLocalizedField, pickRequestContentField } from '../utils/regional-language.util';
 import { IUserDetails, IAccountDetails, IEntityDetails, IAccountSettings, IAccountStatusResponse, IUserAccountItem } from '../models/account-status.model';
 import { MasajidUserType } from '../models/masajid-user-type.model';
 
@@ -42,6 +43,22 @@ export class LocalStorageService {
       return 'ar';
     }
     return APP_DEFAULT_LANGUAGE;
+  }
+
+  isArabicUi(): boolean {
+    return this.getPreferredLanguageCode() === 'ar';
+  }
+
+  isRegionalApiInput(): boolean {
+    return isRegionalApiInput(this.getPreferredLanguageCode());
+  }
+
+  pickLocalizedField(defaultField: string, regionalField: string): string {
+    return pickLocalizedField(defaultField, regionalField, this.getPreferredLanguageCode());
+  }
+
+  pickRequestContentField(defaultField: string, regionalField: string): string {
+    return pickRequestContentField(defaultField, regionalField, this.getPreferredLanguageCode());
   }
 
   setPreferredLanguageCode(code: 'en' | 'ar'): void {

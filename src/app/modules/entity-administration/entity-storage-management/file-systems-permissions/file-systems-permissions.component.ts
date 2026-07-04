@@ -1,4 +1,4 @@
-import { Component, DestroyRef, OnInit } from '@angular/core';
+﻿import { Component, DestroyRef, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
@@ -93,10 +93,10 @@ export class FileSystemsPermissionsComponent implements OnInit {
 
   ngOnInit(): void {
     this.currentEntityId = Number(this.localStorageService.getEntityId() || 0);
-    this.isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
+    this.isRegional = this.localStorageService.isArabicUi();
     this.buildStaticOptions();
     this.languageDirService.userLanguageCode$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
-      this.isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
+      this.isRegional = this.localStorageService.isArabicUi();
       this.clearAccessibleEntitiesCache();
       if (this.addDialogVisible && this.addAccessType !== null) {
         this.loadRelatedTargets();

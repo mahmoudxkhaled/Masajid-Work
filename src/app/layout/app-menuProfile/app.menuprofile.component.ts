@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
+﻿import { Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { LayoutService } from '../app-services/app.layout.service';
@@ -83,7 +83,7 @@ export class AppMenuProfileComponent implements OnInit, OnDestroy {
         this.account = this.localStorage.getAccountDetails() as IAccountDetails;
         this.accountSettings = this.localStorage.getAccountSettings() as IAccountSettings;
 
-        const isRegional = this.accountSettings?.Language !== 'English';
+        const isRegional = this.localStorage.isArabicUi();
 
         if (this.user) {
             let regionalName = '';

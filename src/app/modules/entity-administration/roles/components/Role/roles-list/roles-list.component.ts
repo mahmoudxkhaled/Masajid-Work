@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
+﻿import { Component, Input, OnInit, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
 import { Router } from '@angular/router';
 import { MenuItem, MessageService } from 'primeng/api';
 import { Observable, Subscription } from 'rxjs';
@@ -356,7 +356,7 @@ export class RolesListComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     private mapRawRoles(): void {
-        const isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
+        const isRegional = this.localStorageService.isArabicUi();
         this.roles = this.rawRoles.map((item) => ({
             id: String(item?.Entity_Role_ID || ''),
             entityId: String(item?.Entity_ID || ''),
@@ -374,7 +374,7 @@ export class RolesListComponent implements OnInit, OnDestroy, OnChanges {
             return;
         }
 
-        const isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
+        const isRegional = this.localStorageService.isArabicUi();
         this.entityNameForDialog = isRegional
             ? (this.rawEntityForDialog.Name_Regional || this.rawEntityForDialog.Name || '')
             : (this.rawEntityForDialog.Name || '');

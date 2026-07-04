@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+﻿import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { MenuItem, MessageService } from 'primeng/api';
 import { Observable, Subscription } from 'rxjs';
 import { LocalStorageService } from 'src/app/core/services/local-storage.service';
@@ -324,7 +324,7 @@ export class SystemCategoriesListComponent implements OnInit, OnDestroy {
     }
 
     private mapRawCategories(): void {
-        const isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
+        const isRegional = this.localStorageService.isArabicUi();
         this.categories = this.rawCategories.map((categoryBackend) => {
             const entityId: any = categoryBackend?.Entity_ID;
             const hasEntityId = entityId !== null &&

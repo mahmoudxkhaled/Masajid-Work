@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+﻿import { ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { ListboxChangeEvent } from 'primeng/listbox';
 import { OverlayPanel } from 'primeng/overlaypanel';
@@ -230,20 +230,13 @@ export class AppTopbarComponent implements OnInit, OnDestroy {
         if (!this.entityLogo) {
             this.entityLogo = this.imageService.toImageDataUrl(this.entityDetails?.Logo);
         }
-        const isRegional = langCode === 'ar';
-        this.isRegional = isRegional;
+        this.isRegional = this.localStorage.isArabicUi();
 
         if (this.entityDetails) {
-            if (isRegional) {
-                const nameRegional = this.entityDetails.Name_Regional || '';
-                if (nameRegional.trim()) {
-                    this.entityName = nameRegional;
-                } else {
-                    this.entityName = this.entityDetails.Name || '';
-                }
-            } else {
-                this.entityName = this.entityDetails.Name || '';
-            }
+            this.entityName = this.localStorage.pickLocalizedField(
+                this.entityDetails.Name || '',
+                this.entityDetails.Name_Regional || '',
+            );
             const rawParentId = this.entityDetails.Parent_Entity_ID;
             const parentIdStr = rawParentId == null ? '' : String(rawParentId).trim();
             const isSubEntity = parentIdStr !== '' && parentIdStr !== '0';
@@ -277,7 +270,7 @@ export class AppTopbarComponent implements OnInit, OnDestroy {
 
         if (this.user) {
             let regionalName = '';
-            if (isRegional) {
+            if (this.isRegional) {
                 const firstNameRegional = this.user.First_Name_Regional || '';
                 const lastNameRegional = this.user.Last_Name_Regional || '';
                 regionalName = (firstNameRegional + ' ' + lastNameRegional).trim();
@@ -287,7 +280,7 @@ export class AppTopbarComponent implements OnInit, OnDestroy {
             const lastNameEnglish = this.user.Last_Name || '';
             const englishName = (firstNameEnglish + ' ' + lastNameEnglish).trim();
 
-            if (isRegional && regionalName) {
+            if (this.isRegional && regionalName) {
                 this.userName = regionalName;
             } else if (englishName) {
                 this.userName = englishName;

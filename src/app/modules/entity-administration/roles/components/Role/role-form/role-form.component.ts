@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+﻿import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
@@ -58,7 +58,7 @@ export class RoleFormComponent implements OnInit, OnDestroy {
         private localStorageService: LocalStorageService
     ) {
         this.accountSettings = this.localStorageService.getAccountSettings() as IAccountSettings;
-        this.isRegional = this.accountSettings?.Language !== 'English';
+        this.isRegional = this.localStorageService.isArabicUi();
     }
 
     ngOnInit(): void {
@@ -151,7 +151,7 @@ export class RoleFormComponent implements OnInit, OnDestroy {
         }
 
         const { entityId, title, description } = this.form.value;
-        const isRegional = this.accountSettings?.Language !== 'English';
+        const isRegional = this.localStorageService.isRegionalApiInput();
 
         this.loading = true;
 

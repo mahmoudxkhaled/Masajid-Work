@@ -77,18 +77,19 @@ export class DonationRequestsService {
       return null;
     }
 
-    const isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
     return {
       id: String(raw.Donation_Request_ID || ''),
       entityId: Number(raw.Entity_ID || 0),
       donationTypeId: Number(raw.Donation_Type_ID || 0),
       donationCategoryId: Number(raw.Donation_Category_ID || 0),
-      title: isRegional
-        ? String(raw.Title_Regional || raw.Title || '')
-        : String(raw.Title || ''),
-      description: isRegional
-        ? String(raw.Description_Regional || raw.Description || '')
-        : String(raw.Description || ''),
+      title: this.localStorageService.pickRequestContentField(
+        String(raw.Title || ''),
+        String(raw.Title_Regional || ''),
+      ),
+      description: this.localStorageService.pickRequestContentField(
+        String(raw.Description || ''),
+        String(raw.Description_Regional || ''),
+      ),
       statusId: Number(raw.Donation_Request_Status_ID || 0),
       statusCode: String(raw.Status_Code || ''),
       quantity: Number(raw.Quantity || 0),
@@ -97,9 +98,10 @@ export class DonationRequestsService {
       currencyCode: String(raw.Currency_Code || ''),
       needsInstallation: Boolean(raw.Needs_Installation),
       isRegional: Boolean(raw.Is_Regional),
-      address: isRegional
-        ? String(raw.Address_Regional || raw.Address || '')
-        : String(raw.Address || ''),
+      address: this.localStorageService.pickRequestContentField(
+        String(raw.Address || ''),
+        String(raw.Address_Regional || ''),
+      ),
       latitude: Number(raw.Latitude || 0),
       longitude: Number(raw.Longitude || 0),
       city: String(raw.City || ''),
@@ -109,22 +111,76 @@ export class DonationRequestsService {
     };
   }
 
+  extractDonationRequestDetails(message: Record<string, unknown> | undefined): DonationRequestDetailsBackend | null {
+    if (!message) {
+      return null;
+    }
+
+    const nested = message['Donation_Request'] ?? message['donation_Request'];
+    if (nested && typeof nested === 'object' && !Array.isArray(nested)) {
+      return nested as DonationRequestDetailsBackend;
+    }
+
+    if (
+      message['Donation_Request_ID'] !== undefined ||
+      message['Donation_Category_ID'] !== undefined
+    ) {
+      return message as DonationRequestDetailsBackend;
+    }
+
+    return null;
+  }
+
+  extractWorkflowHistory(message: unknown): Record<string, unknown>[] {
+    if (!message) {
+      return [];
+    }
+
+    if (Array.isArray(message)) {
+      return message as Record<string, unknown>[];
+    }
+
+    if (typeof message !== 'object') {
+      return [];
+    }
+
+    const record = message as Record<string, unknown>;
+    const nestedHistory = record['History'] ?? record['history'];
+    if (nestedHistory) {
+      return this.extractWorkflowHistory(nestedHistory);
+    }
+
+    return Object.values(record).filter(
+      (entry) => entry !== null && typeof entry === 'object' && !Array.isArray(entry),
+    ) as Record<string, unknown>[];
+  }
+
   mapDonationRequestWorkflow(history: Record<string, unknown>[] | null | undefined): DonationRequestWorkflowItem[] {
     if (!history?.length) {
       return [];
     }
 
-    const isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
-
     return history.map((item) => ({
-      statusId: Number(item['New_Status_ID'] ?? 0),
-      statusName: isRegional
-        ? String(item['Status_Name_Regional'] ?? item['Status_Name'] ?? '')
-        : String(item['Status_Name'] ?? ''),
-      changedAt: String(item['Created_At'] ?? ''),
-      changedBy: String(item['Actor_User_ID'] ?? ''),
-      note: String(item['Note'] ?? ''),
+      statusId: Number(item['New_Status_ID'] ?? item['new_Status_ID'] ?? 0),
+      statusName: this.localStorageService.pickLocalizedField(
+        this.readWorkflowField(item, 'Status_Name'),
+        this.readWorkflowField(item, 'Status_Name_Regional'),
+      ),
+      changedAt: this.readWorkflowField(item, 'Created_At'),
+      changedBy: this.readWorkflowField(item, 'Actor_User_ID'),
+      note: this.readWorkflowField(item, 'Note'),
     }));
+  }
+
+  private readWorkflowField(item: Record<string, unknown>, key: string): string {
+    const camelKey = key.charAt(0).toLowerCase() + key.slice(1);
+    for (const candidate of [key, camelKey]) {
+      const value = item[candidate];
+      if (value !== undefined && value !== null) {
+        return String(value);
+      }
+    }
+    return '';
   }
 
   private createDonationRequestRaw(params: string[]): Observable<any> {

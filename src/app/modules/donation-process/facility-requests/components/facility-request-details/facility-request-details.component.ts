@@ -3,8 +3,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Subscription, forkJoin } from 'rxjs';
 import { LanguageDirService } from 'src/app/core/services/language-dir.service';
+import { LocalStorageService } from 'src/app/core/services/local-storage.service';
 import { TranslationService } from 'src/app/core/services/translation.service';
-import { DonationRequestDetails, DonationRequestWorkflowItem } from '../../../models/donation-request.model';
+import {
+  DonationRequestDetails,
+  DonationRequestDetailsBackend,
+  DonationRequestWorkflowItem,
+} from '../../../models/donation-request.model';
 import { DonationRequestStatusBackend } from '../../../models/donation-request-status.model';
 import { DonationCategoryBackend } from '../../../models/donation-category.model';
 import { DonationTypeBackend } from '../../../models/donation-type.model';
@@ -31,7 +36,16 @@ export class FacilityRequestDetailsComponent implements OnInit, OnDestroy {
   statusLabel = '';
   statusSeverity: 'success' | 'info' | 'warning' | 'danger' | 'secondary' | 'contrast' = 'info';
 
-  private rawStatuses: DonationRequestStatusBackend[] = [];
+  private rawDetails: DonationRequestDetailsBackend | null = null;
+  private rawWorkflow: Record<string, unknown>[] = [];
+  private statuses: DonationRequestStatusBackend[] = [];
+  private rawTypes: DonationTypeBackend[] = [];
+  private rawCategories: DonationCategoryBackend[] = [];
+  private statusLabelById: Record<number, string> = {};
+  private statusCodeById: Record<number, string> = {};
+  private typeLabelById: Record<number, string> = {};
+  private categoryLabelById: Record<number, string> = {};
+  private categoryTypeIdById: Record<number, number> = {};
   private subscriptions: Subscription[] = [];
 
   constructor(
@@ -39,6 +53,7 @@ export class FacilityRequestDetailsComponent implements OnInit, OnDestroy {
     private router: Router,
     private donationRequestsService: DonationRequestsService,
     private donationReferenceService: DonationReferenceService,
+    private localStorageService: LocalStorageService,
     private languageDirService: LanguageDirService,
     private translate: TranslationService,
     private messageService: MessageService,
@@ -49,9 +64,13 @@ export class FacilityRequestDetailsComponent implements OnInit, OnDestroy {
     this.requestId = Number(this.route.snapshot.paramMap.get('id') || 0);
     this.subscriptions.push(
       this.languageDirService.userLanguageCode$.subscribe(() => {
-        this.remapLabels();
+        this.buildStatusMaps();
+        this.buildTypeMaps();
+        this.buildCategoryMaps();
+        this.refreshDisplay();
       }),
     );
+    this.loadLookups();
     this.loadPageData();
   }
 
@@ -104,21 +123,74 @@ export class FacilityRequestDetailsComponent implements OnInit, OnDestroy {
     return `${this.details.latitude}, ${this.details.longitude}`;
   }
 
+  // #region Load data
+
+  private loadLookups(): void {
+    const sub = forkJoin({
+      statuses: this.donationReferenceService.listDonationRequestStatuses(),
+      types: this.donationReferenceService.listDonationTypes(),
+    }).subscribe({
+      next: (results) => {
+        if (results.statuses?.success) {
+          this.statuses = Object.values(results.statuses.message ?? {});
+          this.buildStatusMaps();
+        }
+
+        if (!results.types?.success) {
+          this.refreshDisplay();
+          return;
+        }
+
+        this.rawTypes = Object.values(results.types.message ?? {}) as DonationTypeBackend[];
+        this.buildTypeMaps();
+
+        const mappedTypes = this.donationReferenceService.mapDonationTypes(this.rawTypes);
+        if (!mappedTypes.length) {
+          this.rawCategories = [];
+          this.buildCategoryMaps();
+          this.refreshDisplay();
+          return;
+        }
+
+        const categorySub = forkJoin(
+          mappedTypes.map((type) => this.donationReferenceService.listDonationCategories(type.id, false)),
+        ).subscribe({
+          next: (categoryResponses) => {
+            console.log('listCategories response', categoryResponses);
+            this.rawCategories = [];
+            categoryResponses.forEach((response: any, index) => {
+              if (!response?.success) {
+                return;
+              }
+              const typeId = mappedTypes[index]?.id || 0;
+              const items = Object.values(response.message ?? {}) as DonationCategoryBackend[];
+              items.forEach((item) => {
+                this.rawCategories.push({
+                  ...item,
+                  Donation_Type_ID: Number(item.Donation_Type_ID || typeId),
+                });
+              });
+            });
+            this.buildCategoryMaps();
+            this.refreshDisplay();
+          },
+        });
+        this.subscriptions.push(categorySub);
+      },
+    });
+    this.subscriptions.push(sub);
+  }
+
   private loadPageData(): void {
     this.loading = true;
     this.workflowLoading = true;
 
     const sub = forkJoin({
-      statuses: this.donationReferenceService.listDonationRequestStatuses(),
-      types: this.donationReferenceService.listDonationTypes(),
       details: this.donationRequestsService.getDonationRequestDetails(this.requestId),
       workflow: this.donationRequestsService.getDonationRequestWorkflow(this.requestId),
     }).subscribe({
       next: (results) => {
         console.log('getDonationRequestDetails response', results);
-        if (results.statuses?.success) {
-          this.rawStatuses = Object.values(results.statuses.message ?? {});
-        }
 
         if (!results.details?.success) {
           this.handleBusinessError('load', results.details);
@@ -127,15 +199,19 @@ export class FacilityRequestDetailsComponent implements OnInit, OnDestroy {
           return;
         }
 
-        this.details = this.donationRequestsService.mapDonationRequestDetails(results.details.message);
-        this.loading = false;
+        this.rawDetails = this.donationRequestsService.extractDonationRequestDetails(
+          results.details.message ?? {},
+        );
 
         if (results.workflow?.success) {
-          this.workflowItems = this.donationRequestsService.mapDonationRequestWorkflow(results.workflow.message);
+          this.rawWorkflow = this.donationRequestsService.extractWorkflowHistory(results.workflow.message);
+        } else {
+          this.rawWorkflow = [];
         }
-        this.workflowLoading = false;
 
-        this.resolveReferenceLabels(results.types);
+        this.loading = false;
+        this.workflowLoading = false;
+        this.refreshDisplay();
       },
       error: () => {
         this.loading = false;
@@ -145,41 +221,69 @@ export class FacilityRequestDetailsComponent implements OnInit, OnDestroy {
     this.subscriptions.push(sub);
   }
 
-  private resolveReferenceLabels(typesResponse: any): void {
+  private refreshDisplay(): void {
+    if (this.rawDetails) {
+      this.details = this.donationRequestsService.mapDonationRequestDetails(this.rawDetails);
+    }
+    this.workflowItems = this.donationRequestsService.mapDonationRequestWorkflow(this.rawWorkflow);
+
     if (!this.details) {
       return;
     }
 
-    if (!typesResponse?.success) {
-      this.remapLabels();
-      return;
-    }
+    this.statusLabel = this.statusLabelById[this.details.statusId] || '';
+    this.statusSeverity = this.getStatusSeverity(this.statusCodeById[this.details.statusId] || '');
+    this.categoryLabel = this.categoryLabelById[this.details.donationCategoryId] || '';
 
-    const rawTypes = Object.values(typesResponse.message ?? {}) as DonationTypeBackend[];
-    const mappedTypes = this.donationReferenceService.mapDonationTypes(rawTypes);
-    if (!mappedTypes.length) {
-      this.remapLabels();
-      return;
-    }
-
-    const type = mappedTypes[0];
-    this.typeLabel = type.name;
-
-    const sub = this.donationReferenceService.listDonationCategories(type.id, false).subscribe({
-      next: (response: any) => {
-        if (!response?.success) {
-          this.remapLabels();
-          return;
-        }
-        const rawCategories = Object.values(response.message ?? {}) as DonationCategoryBackend[];
-        const mappedCategories = this.donationReferenceService.mapDonationCategories(rawCategories);
-        this.categoryLabel =
-          mappedCategories.find((item) => item.id === this.details!.donationCategoryId)?.name || '';
-        this.remapLabels();
-      },
-    });
-    this.subscriptions.push(sub);
+    const typeId =
+      Number(this.details.donationTypeId || 0) ||
+      Number(this.categoryTypeIdById[this.details.donationCategoryId] || 0);
+    this.typeLabel = this.typeLabelById[typeId] || '';
   }
+
+  private buildStatusMaps(): void {
+    this.statusLabelById = {};
+    this.statusCodeById = {};
+
+    for (const item of this.statuses) {
+      const id = Number(item.Donation_Request_Status_ID || 0);
+      if (!id) {
+        continue;
+      }
+      this.statusLabelById[id] = this.localStorageService.pickLocalizedField(
+        String(item.Name || ''),
+        String(item.Name_Regional || ''),
+      );
+      this.statusCodeById[id] = String(item.Code || '');
+    }
+  }
+
+  private buildTypeMaps(): void {
+    this.typeLabelById = {};
+    for (const item of this.donationReferenceService.mapDonationTypes(this.rawTypes)) {
+      if (!item.id) {
+        continue;
+      }
+      this.typeLabelById[item.id] = item.name;
+    }
+  }
+
+  private buildCategoryMaps(): void {
+    this.categoryLabelById = {};
+    this.categoryTypeIdById = {};
+
+    for (const item of this.donationReferenceService.mapDonationCategories(this.rawCategories)) {
+      if (!item.id) {
+        continue;
+      }
+      this.categoryLabelById[item.id] = item.name;
+      if (item.donationTypeId > 0) {
+        this.categoryTypeIdById[item.id] = item.donationTypeId;
+      }
+    }
+  }
+
+  // #endregion
 
   private submitForReview(): void {
     const sub = this.donationRequestsService.submitDonationRequestForReview(this.requestId).subscribe({
@@ -215,17 +319,6 @@ export class FacilityRequestDetailsComponent implements OnInit, OnDestroy {
       },
     });
     this.subscriptions.push(sub);
-  }
-
-  private remapLabels(): void {
-    if (!this.details) {
-      return;
-    }
-
-    const statuses = this.donationReferenceService.mapDonationRequestStatuses(this.rawStatuses);
-    const status = statuses.find((item) => item.id === this.details!.statusId);
-    this.statusLabel = status?.name || '';
-    this.statusSeverity = this.getStatusSeverity(status?.code || '');
   }
 
   private getStatusSeverity(code: string): 'success' | 'info' | 'warning' | 'danger' | 'secondary' | 'contrast' {

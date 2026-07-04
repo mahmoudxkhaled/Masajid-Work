@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+﻿import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
@@ -108,7 +108,7 @@ export class SendNotificationComponent implements OnInit, OnDestroy {
         private permissionService: PermissionService
     ) {
         this.accountSettings = this.localStorageService.getAccountSettings() as IAccountSettings;
-        this.isRegional = this.accountSettings?.Language !== 'English';
+        this.isRegional = this.localStorageService.isArabicUi();
         const accountDetails = this.localStorageService.getAccountDetails() as IAccountDetails;
         this.currentAccountId = accountDetails?.Account_ID || 0;
         this.currentEntityId = this.notificationsService.getCurrentEntityId();

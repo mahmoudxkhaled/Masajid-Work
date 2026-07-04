@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+﻿import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { LanguageDirService } from 'src/app/core/services/language-dir.service';
@@ -65,11 +65,10 @@ export class ValidationListComponent implements OnInit, OnDestroy {
   }
 
   getTitle(row: DonationRequestBackend): string {
-    const isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
-    if (isRegional) {
-      return String(row.Title_Regional || row.Title || '');
-    }
-    return String(row.Title || '');
+    return this.localStorageService.pickRequestContentField(
+      String(row.Title || ''),
+      String(row.Title_Regional || ''),
+    );
   }
 
   getStatusLabel(statusId: number): string {
@@ -124,16 +123,16 @@ export class ValidationListComponent implements OnInit, OnDestroy {
   }
 
   private buildStatusMaps(): void {
-    const isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
     this.statusLabelById = {};
     for (const item of this.statuses) {
       const id = Number(item.Donation_Request_Status_ID || 0);
       if (!id) {
         continue;
       }
-      this.statusLabelById[id] = isRegional
-        ? String(item.Name_Regional || item.Name || '')
-        : String(item.Name || '');
+      this.statusLabelById[id] = this.localStorageService.pickLocalizedField(
+        String(item.Name || ''),
+        String(item.Name_Regional || ''),
+      );
     }
   }
 }

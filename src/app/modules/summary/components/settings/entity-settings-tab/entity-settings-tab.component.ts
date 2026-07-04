@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { PermissionService } from 'src/app/core/services/permission.service';
 import { Roles } from 'src/app/core/models/system-roles';
 import { LocalStorageService } from 'src/app/core/services/local-storage.service';
@@ -195,7 +195,7 @@ export class EntitySettingsTabComponent implements OnInit {
                 this.entityTableTotalRecords = Number(response.message.Total_Count || 0);
                 const entitiesData = response.message.Entities_List || response.message.Entities || {};
                 const rawEntities = Object.values(entitiesData) as EntityBackend[];
-                const isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
+                const isRegional = this.localStorageService.isArabicUi();
                 this.entitiesForSelection = rawEntities.map((item) => ({
                     id: String(item?.Entity_ID || ''),
                     code: item?.Code || '',

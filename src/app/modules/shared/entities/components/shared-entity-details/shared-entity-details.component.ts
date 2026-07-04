@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+﻿import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { FileUpload } from 'primeng/fileupload';
@@ -57,7 +57,7 @@ export class SharedEntityDetailsComponent implements OnInit, OnDestroy {
         private translate: TranslateService
     ) {
         this.accountSettings = this.localStorageService.getAccountSettings() as IAccountSettings;
-        this.isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
+        this.isRegional = this.localStorageService.isArabicUi();
     }
 
     ngOnInit(): void {
@@ -74,7 +74,7 @@ export class SharedEntityDetailsComponent implements OnInit, OnDestroy {
         this.bindTabFromQueryParam();
         this.subscriptions.push(
             this.languageDirService.userLanguageCode$.subscribe(() => {
-                this.isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
+                this.isRegional = this.localStorageService.isArabicUi();
             })
         );
         this.bindEntityIdFromRoute();

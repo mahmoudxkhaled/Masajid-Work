@@ -1,0 +1,77 @@
+---
+description: Donation-process feature components — lookups, details, parsing, minimal scope
+globs: src/app/modules/donation-process/**/*
+alwaysApply: false
+---
+
+# Donation-process component patterns
+
+Applies to facility requests, admin review, browse, reference screens, etc.
+
+---
+
+## Scope — do not over-build
+
+- Implement **only** what the task asks; no defensive extract/map layers for guessed API shapes.
+- Confirm response shape from **docs** (`Docs/donation-process-api.md`) or **one console log**, then parse in the **service**.
+- Components: load → store raw → build maps → `refreshDisplay()`. Match **`facility-requests-list`**.
+
+---
+
+## Lookups (types, categories, statuses)
+
+Reference: `facility-requests-list.component.ts`
+
+```ts
+// Types / statuses from list API
+this.rawTypes = Object.values(results.types.message ?? {}) as DonationTypeBackend[];
+this.statuses = Object.values(results.statuses.message ?? {});
+
+// Categories — load per type, merge
+forkJoin(mappedTypes.map((t) => listDonationCategories(t.id, false))).subscribe(...)
+```
+
+**Details output keys** (when not flat indexed dict): unwrap in service — e.g. `Donation_Request`, `Donation_Types`, `Donation_Categories`, `History` via `donation-reference.service` / `donation-requests.service` extractors.
+
+---
+
+## Type label when details omit `Donation_Type_ID`
+
+Details API often has `Donation_Category_ID` only. When loading categories per type, **stamp** parent type on each row if API omits it:
+
+```ts
+items.forEach((item) => {
+  this.rawCategories.push({
+    ...item,
+    Donation_Type_ID: Number(item.Donation_Type_ID || typeId),
+  });
+});
+```
+
+Resolve type for display: `details.donationTypeId` or `categoryTypeIdById[donationCategoryId]`.
+
+---
+
+## Details / list display
+
+| Data | Pattern |
+|------|---------|
+| Status, type, category labels | Label maps + `pickLocalizedField` (reference convention) |
+| Request title, description, address | `pickRequestContentField` in `mapDonationRequestDetails` or list `getTitle()` |
+| Workflow timeline | Parent passes pre-localized `workflowItems`; timeline is display-only |
+
+---
+
+## Services own parsing and mapping
+
+- `mapDonationRequestDetails`, `mapDonationRequestWorkflow`, `mapDonationTypes`, … — use `pickLocalizedField` only for **reference** fields.
+- `extractDonationRequestDetails`, `extractWorkflowHistory`, `extractDonationTypes` — live in services, not duplicated in components.
+
+---
+
+## Cross-references
+
+- **`regional-language`** — save vs display, two field conventions
+- **`regional-data-remapping`** — raw cache + language subscription
+- **`donation-process-api`** — request codes and response keys
+- **`business-error-handling`** — feature-local error switches

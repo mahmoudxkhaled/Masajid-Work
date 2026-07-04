@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+﻿import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
@@ -110,7 +110,7 @@ export class EntityGroupDetailsComponent implements OnInit, OnDestroy {
             return;
         }
 
-        const isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
+        const isRegional = this.localStorageService.isArabicUi();
         this.group = {
             id: String(this.groupDetails?.Group_ID || this.groupDetails?.groupID || this.groupId),
             title: isRegional

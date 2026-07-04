@@ -1,0 +1,83 @@
+---
+description: App language defaults, Is_Regional on save, and which API field to show per UI language
+alwaysApply: true
+---
+
+# Regional language (authoritative)
+
+## App languages
+
+- **Default UI language:** `ar` (`APP_DEFAULT_LANGUAGE` in `app-branding.config.ts`)
+- **Secondary UI language:** `en`
+
+Use helpers in `src/app/core/utils/regional-language.util.ts` and `LocalStorageService` wrappers — do not reimplement.
+
+---
+
+## Save (`Is_Regional` / API input)
+
+When **creating or updating** user-entered bilingual content:
+
+| UI language | `Is_Regional` |
+|-------------|---------------|
+| Arabic (`ar`) | `false` |
+| English (`en`) or any non-`ar` | `true` |
+
+```ts
+isRegional: this.localStorageService.isRegionalApiInput()
+// isRegionalApiInput(lang) => lang !== 'ar'
+```
+
+**Never** bind `Is_Regional` to a manual checkbox unless the feature explicitly requires it.
+
+---
+
+## Display — two ERP field conventions
+
+Do **not** use one rule for every field. There are **two** conventions:
+
+### 1. Reference / lookup data (statuses, types, categories, workflow status names)
+
+ERP convention: **`Name` = English**, **`Name_Regional` = Arabic**.
+
+```ts
+this.localStorageService.pickLocalizedField(
+  String(item.Name || ''),
+  String(item.Name_Regional || ''),
+)
+// Arabic UI → Name_Regional; English UI → Name
+```
+
+### 2. User-entered donation request content (`Title`, `Description`, `Address`, …)
+
+ERP convention: **`Title` = Arabic**, **`Title_Regional` = English** (matches save: EN → `Is_Regional = true`).
+
+```ts
+this.localStorageService.pickRequestContentField(
+  String(raw.Title || ''),
+  String(raw.Title_Regional || ''),
+)
+// Arabic UI → Title; English UI → Title_Regional
+```
+
+Use **`pickRequestContentField`** (in `regional-language.util.ts` / `LocalStorageService`) — not manual `if (isArabicUi)` blocks and not `pickLocalizedField`.
+
+---
+
+## Save vs display
+
+| Concern | Use |
+|---------|-----|
+| Save / API write | `isRegionalApiInput()` |
+| Reference labels | `pickLocalizedField(Name, Name_Regional)` |
+| Request title/description/address | Explicit AR→default, EN→`*_Regional` (convention **2**) |
+
+Never invert or reuse save logic for display.
+
+---
+
+## Language change
+
+- Keep **raw** API objects (`rawDetails`, list rows, lookup arrays).
+- On `LanguageDirService.userLanguageCode$`, **rebuild displayed labels** from raw data — do not reload the API unless only one language was returned.
+- See **`regional-data-remapping`** for component structure.

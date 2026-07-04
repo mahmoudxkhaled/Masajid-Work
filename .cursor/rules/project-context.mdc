@@ -31,7 +31,8 @@ This workspace is **pmat** (ERP frontend): Angular 17, PrimeNG 17, TypeScript 5.
 
 - **Code style:** **`angular-project`** (junior-friendly; **minimal scope**; **do not remove existing `console.log`**; **add `console.log` on list/details API `subscribe`** unless asked).
 - **Strings & toasts:** **`i18n-translations`**. **Loading / skeleton UI:** **`ui-defaults`**.
-- **Regional API fields:** **`regional-data-remapping`** (keep raw data; rebuild displayed data on language changes).
+- **Regional API fields:** **`regional-language`** (save vs display, two field conventions) and **`regional-data-remapping`** (raw cache + rebuild on language change).
+- **Donation-process screens:** **`donation-process-components`** (list/details lookups, minimal parsing).
 - **List tables (`p-table`):** **`table-defaults`** (canonical layout + skeleton row count = `[rows]`).
 - **Business API failures (`success: false`):** **`business-error-handling`** (component-local `handleBusinessError` + `switch` on codes).
 - **File-system / document-control APIs:** **`storage-file-system-api`** and **Docs/storage-management-file-system-api.md**.

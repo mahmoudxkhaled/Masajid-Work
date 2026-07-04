@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+﻿import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslationService } from 'src/app/core/services/translation.service';
@@ -83,7 +83,7 @@ export class ProfileEditComponent implements OnInit, OnDestroy {
         this.entityDetails = this.localStorageService.getEntityDetails();
         this.accountSettings = this.localStorageService.getAccountSettings();
 
-        this.isRegional = this.accountSettings?.Language !== 'English';
+        this.isRegional = this.localStorageService.isArabicUi();
     }
 
     loadUserDetailsFromAPI(): void {
@@ -232,7 +232,7 @@ export class ProfileEditComponent implements OnInit, OnDestroy {
             Middle_Name?.trim() || '',
             Last_Name?.trim() || '',
             Prefix?.trim() || '',
-            this.isRegional,
+            this.localStorageService.isRegionalApiInput(),
             Gender !== undefined ? Gender : true
         ).subscribe({
             next: (response: any) => {
@@ -391,7 +391,7 @@ export class ProfileEditComponent implements OnInit, OnDestroy {
         const sub = this.profileApiService.updateUserContactInfo(
             this.currentUserId,
             address?.trim() || '',
-            this.isRegional,
+            this.localStorageService.isRegionalApiInput(),
             phoneNumbersArray,
             linkedinPage?.trim() || '',
             facebookPage?.trim() || '',
@@ -463,7 +463,7 @@ export class ProfileEditComponent implements OnInit, OnDestroy {
     private syncUserName(): void {
         if (!this.userDetails) return;
 
-        const isRegional = this.accountSettings?.Language !== 'English';
+        const isRegional = this.localStorageService.isArabicUi();
         let displayName = '';
 
         if (isRegional) {

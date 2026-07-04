@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+﻿import { Injectable } from '@angular/core';
 import { LocalStorageService } from './local-storage.service';
 import { PermissionService } from './permission.service';
 import {
@@ -42,7 +42,7 @@ export class ModuleNavigationService {
     }
 
     private buildLegacyFunctionsWithModules(userType: MasajidUserType | null | undefined): IMenuFunction[] {
-        const isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
+        const isRegional = this.localStorageService.isArabicUi();
         const functionsArray: IMenuFunction[] = [];
 
         Object.entries(STATIC_FUNCTIONS_DETAILS).forEach(([functionCode, functionData]) => {
@@ -77,7 +77,7 @@ export class ModuleNavigationService {
             return [];
         }
 
-        const isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
+        const isRegional = this.localStorageService.isArabicUi();
         const functionsArray: IMenuFunction[] = [];
 
         Object.entries(MASAJID_WORKSPACE_FUNCTIONS).forEach(([functionCode, functionData]) => {

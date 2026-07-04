@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
+﻿import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
@@ -53,7 +53,7 @@ export class NotificationFormComponent implements OnInit, OnDestroy, OnChanges {
         private permissionService: PermissionService
     ) {
         this.accountSettings = this.localStorageService.getAccountSettings() as IAccountSettings;
-        this.isRegional = this.accountSettings?.Language !== 'English';
+        this.isRegional = this.localStorageService.isArabicUi();
         this.currentEntityId = this.notificationsService.getCurrentEntityId();
     }
 
@@ -246,7 +246,7 @@ export class NotificationFormComponent implements OnInit, OnDestroy, OnChanges {
                     categoryId,
                     title,
                     message,
-                    this.isRegional,
+                    this.localStorageService.isRegionalApiInput(),
                     referenceType,
                     referenceId
                 )
@@ -255,7 +255,7 @@ export class NotificationFormComponent implements OnInit, OnDestroy, OnChanges {
                     categoryId,
                     title,
                     message,
-                    this.isRegional,
+                    this.localStorageService.isRegionalApiInput(),
                     referenceType,
                     referenceId
                 )

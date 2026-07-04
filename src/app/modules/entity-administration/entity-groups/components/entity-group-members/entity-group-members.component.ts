@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild, ElementRef } from '@angular/core';
+﻿import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild, ElementRef } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { EntityGroupsService } from '../../services/entity-groups.service';
@@ -73,13 +73,13 @@ export class EntityGroupMembersComponent implements OnInit, OnDestroy {
         private localStorageService: LocalStorageService,
         private languageDirService: LanguageDirService
     ) {
-        this.isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
+        this.isRegional = this.localStorageService.isArabicUi();
     }
 
     ngOnInit(): void {
         this.subscriptions.push(
             this.languageDirService.userLanguageCode$.subscribe(() => {
-                this.isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
+                this.isRegional = this.localStorageService.isArabicUi();
                 this.mapRawGroup();
             })
         );

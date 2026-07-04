@@ -102,7 +102,6 @@ export class DonationReferenceService {
   // #region Mapping
 
   mapDonationTypes(rawItems: DonationTypeBackend[]): DonationType[] {
-    const isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
     return [...rawItems]
       .sort(
         (a, b) =>
@@ -114,12 +113,14 @@ export class DonationReferenceService {
         return {
           id: this.readNumber(record, 'Donation_Type_ID'),
           code: this.readString(record, 'Code'),
-          name: isRegional
-            ? this.readString(record, 'Name_Regional') || this.readString(record, 'Name')
-            : this.readString(record, 'Name'),
-          description: isRegional
-            ? this.readString(record, 'Description_Regional') || this.readString(record, 'Description')
-            : this.readString(record, 'Description'),
+          name: this.localStorageService.pickLocalizedField(
+            this.readString(record, 'Name'),
+            this.readString(record, 'Name_Regional'),
+          ),
+          description: this.localStorageService.pickLocalizedField(
+            this.readString(record, 'Description'),
+            this.readString(record, 'Description_Regional'),
+          ),
           active: this.readBoolean(record, 'Is_Active', ['is_Active']),
         };
       })
@@ -127,7 +128,6 @@ export class DonationReferenceService {
   }
 
   mapDonationCategories(rawItems: DonationCategoryBackend[]): DonationCategory[] {
-    const isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
     return rawItems
       .map((item) => {
         const record = item as Record<string, unknown>;
@@ -135,9 +135,10 @@ export class DonationReferenceService {
           id: this.readNumber(record, 'Donation_Category_ID'),
           donationTypeId: this.readNumber(record, 'Donation_Type_ID'),
           code: this.readString(record, 'Code'),
-          name: isRegional
-            ? this.readString(record, 'Name_Regional') || this.readString(record, 'Name')
-            : this.readString(record, 'Name'),
+          name: this.localStorageService.pickLocalizedField(
+            this.readString(record, 'Name'),
+            this.readString(record, 'Name_Regional'),
+          ),
           isService: this.readBoolean(record, 'Is_Service'),
           defaultOrder: this.readNumber(record, 'Default_Order'),
           active: this.readBoolean(record, 'Is_Active'),
@@ -147,20 +148,24 @@ export class DonationReferenceService {
   }
 
   mapDonationRequestStatuses(rawItems: DonationRequestStatusBackend[]): DonationRequestStatus[] {
-    const isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
     return rawItems
       .map((item) => {
         const record = item as Record<string, unknown>;
         return {
           id: this.readNumber(record, 'Donation_Request_Status_ID', ['Status_ID']),
           code: this.readString(record, 'Code'),
-          name: isRegional
-            ? this.readString(record, 'Name_Regional') || this.readString(record, 'Name')
-            : this.readString(record, 'Name'),
+          name: this.localStorageService.pickLocalizedField(
+            this.readString(record, 'Name'),
+            this.readString(record, 'Name_Regional'),
+          ),
         };
       })
       .filter((item) => item.id > 0)
       .sort((a, b) => a.id - b.id);
+  }
+
+  extractDonationCategories(message: Record<string, unknown> | undefined): DonationCategoryBackend[] {
+    return this.extractDictionaryItems<DonationCategoryBackend>(message, ['Donation_Categories']);
   }
 
   extractDonationTypes(message: Record<string, unknown> | undefined): DonationTypeBackend[] {

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, OnDestroy, Output } from '@angular/core';
+﻿import { Component, EventEmitter, Input, OnInit, OnDestroy, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
@@ -50,7 +50,7 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
         private permissionService: PermissionService
     ) {
         this.accountSettings = this.localStorageService.getAccountSettings() as IAccountSettings;
-        this.isRegional = this.accountSettings?.Language !== 'English';
+        this.isRegional = this.localStorageService.isArabicUi();
         this.currentEntityId = this.notificationsService.getCurrentEntityId();
         this.isSystemAdmin = this.notificationsService.isSystemAdmin();
         this.isEntityAdmin = this.notificationsService.isEntityAdmin();

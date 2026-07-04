@@ -1,47 +1,57 @@
 ---
-description: Regional API data display pattern — keep raw fields and remap on language changes
+description: Keep raw API bilingual fields and rebuild display on language change (component pattern)
 globs: src/app/**/*.ts
 alwaysApply: false
 ---
 
-# Regional Data Remapping
+# Regional data remapping
 
-When API data includes both default and regional fields, keep the raw API data and rebuild displayed data from it whenever language changes.
+When API data has default + regional field pairs, **store raw API data** and rebuild UI text when language changes.
 
-Applies to fields like:
+Field conventions (which field is Arabic vs English): see **`regional-language`** — reference data and request content differ.
 
-- `Name` / `Name_Regional`
-- `Description` / `Description_Regional`
-- `Title` / `Title_Regional`
-- `Message` / `Message_Regional`
-- lower-case backend variants like `title_Regional`
+---
 
-## Required Pattern
+## Required component pattern
 
-1. Store raw API rows/details unchanged, e.g. `rawEntities`, `rawRoles`, `rawDetails`.
-2. Map displayed UI models in a small method, e.g. `mapRawEntities()`.
-3. Use `LocalStorageService.getPreferredLanguageCode() === 'ar'` for the current regional state.
-4. Subscribe to `LanguageDirService.userLanguageCode$` and re-run the mapping method.
-5. Do not reload the API just because language changed, unless the backend returned only one language.
+1. **Store raw** — e.g. `rawDetails`, `rawCategories`, `statuses`, list rows unchanged.
+2. **Build label maps** or map once — e.g. `buildStatusMaps()`, `buildCategoryMaps()`, `refreshDisplay()`.
+3. **Subscribe** to `languageDirService.userLanguageCode$` → rebuild maps + refresh display.
+4. **Do not** reload the API on language change unless the backend returned a single language only.
+
+### Canonical list-style pattern
+
+Reference: `facility-requests-list.component.ts`
+
+```ts
+// Language change
+this.languageDirService.userLanguageCode$.subscribe(() => {
+  this.buildStatusMaps();
+  this.buildCategoryMaps();
+  this.refreshDisplay(); // or rebuild row getters
+});
+
+// Maps use pickLocalizedField for reference data (convention 1)
+this.statusLabelById[id] = this.localStorageService.pickLocalizedField(
+  String(item.Name || ''),
+  String(item.Name_Regional || ''),
+);
+```
+
+Request **title** under a details header: read `Title` / `Title_Regional` from raw details with convention **2** (see `getRequestTitle()` in `facility-request-details.component.ts`).
+
+---
 
 ## Avoid
 
-- Do not calculate `isRegional` once inside `load...()` and permanently map `name`, `description`, `title`, or `message`.
-- Do not keep only final displayed text when raw regional fields are available.
-- Do not let request signature / duplicate-load guards block local remapping.
-- Do not remap active edit form inputs while the user may have unsaved changes.
+- Mapping `name` / `title` / `description` once in `load()` and never updating on language change.
+- Storing only the final displayed string when raw `*_Regional` fields exist.
+- Multiple remap methods (`remapLocalizedContent`, `remapReferenceLabels`, …) — prefer **one** `refreshDisplay()` + small `build*Maps()` helpers.
+- **Dual API parsing fallbacks** in components (`extractX` then `parseListFromResponse` then `Object.values`) — pick **one** approach in the **service** after confirming response shape.
+- **Triple ID resolution fallbacks** — resolve from API/docs once; stamp missing parent IDs in the service when loading child lookups if needed.
 
-## Example
+---
 
-```ts
-private rawEntities: EntityBackend[] = [];
+## Forms
 
-private mapRawEntities(): void {
-  const isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
-  this.entities = this.rawEntities.map((item) => ({
-    id: String(item.Entity_ID || ''),
-    name: isRegional ? (item.Name_Regional || item.Name || '') : (item.Name || ''),
-    description: isRegional ? (item.Description_Regional || item.Description || '') : (item.Description || '')
-  }));
-}
-```
+Do not remap active edit form controls on language change while the user may have unsaved edits.

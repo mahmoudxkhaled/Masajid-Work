@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, OnDestroy, ViewChild } from '@angular/core';
+﻿import { Component, ElementRef, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslationService } from 'src/app/core/services/translation.service';
 import { MenuItem, MessageService } from 'primeng/api';
@@ -88,7 +88,7 @@ export class ProfileOverviewComponent implements OnInit, OnDestroy {
         this.loadUserData();
         this.subscriptions.push(
             this.languageDirService.userLanguageCode$.subscribe(() => {
-                this.isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
+                this.isRegional = this.localStorageService.isArabicUi();
                 this.mapRawContactInfo();
                 this.mapRawAccountRole();
             })
@@ -125,7 +125,7 @@ export class ProfileOverviewComponent implements OnInit, OnDestroy {
         const accounts = this.localStorageService.getUserAccounts();
         this.userAccounts = accounts || [];
 
-        this.isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
+        this.isRegional = this.localStorageService.isArabicUi();
     }
 
     getEntityNameForAccount(entityId: number): string {
@@ -653,7 +653,7 @@ export class ProfileOverviewComponent implements OnInit, OnDestroy {
         const email = this.accountBeingEdited.Email;
         const description = this.editAccountTitleValue.trim();
         this.savingAccountTitle = true;
-        const sub = this.profileApiService.updateAccountDetails(email, description, this.isRegional).subscribe({
+        const sub = this.profileApiService.updateAccountDetails(email, description, this.localStorageService.isRegionalApiInput()).subscribe({
             next: (response: any) => {
                 this.savingAccountTitle = false;
                 if (response?.success) {

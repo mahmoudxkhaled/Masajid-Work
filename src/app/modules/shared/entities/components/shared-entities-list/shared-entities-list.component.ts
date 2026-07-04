@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+﻿import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MenuItem, MessageService } from 'primeng/api';
@@ -344,7 +344,7 @@ export class SharedEntitiesListComponent implements OnInit, OnDestroy {
     }
 
     private mapRawEntities(): void {
-        const isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
+        const isRegional = this.localStorageService.isArabicUi();
         this.entities = this.rawEntities.map((item: EntityBackend) => ({
             id: String(item?.Entity_ID || ''),
             code: item?.Code || '',

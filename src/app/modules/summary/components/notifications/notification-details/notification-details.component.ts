@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+﻿import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
@@ -102,7 +102,7 @@ export class NotificationDetailsComponent implements OnInit, OnDestroy {
 
     mapNotification(): void {
         const notificationData = this.rawNotification;
-        const isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
+        const isRegional = this.localStorageService.isArabicUi();
         if (!notificationData) {
             return;
         }

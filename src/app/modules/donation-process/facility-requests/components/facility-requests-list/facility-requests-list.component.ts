@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+﻿import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { Subscription, forkJoin } from 'rxjs';
@@ -189,11 +189,10 @@ export class FacilityRequestsListComponent implements OnInit, OnDestroy {
   }
 
   getTitle(row: DonationRequestBackend): string {
-    const isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
-    if (isRegional) {
-      return String(row.Title_Regional || row.Title || '');
-    }
-    return String(row.Title || '');
+    return this.localStorageService.pickRequestContentField(
+      String(row.Title || ''),
+      String(row.Title_Regional || ''),
+    );
   }
 
   isDraft(row: DonationRequestBackend): boolean {
@@ -257,7 +256,7 @@ export class FacilityRequestsListComponent implements OnInit, OnDestroy {
         console.log('listLookups response', results);
         this.countries = this.lookupService.sortCountriesByLabel(
           results.countries,
-          this.localStorageService.getPreferredLanguageCode() === 'ar',
+          this.localStorageService.isArabicUi(),
         );
         this.buildCountryMaps();
 
@@ -390,8 +389,6 @@ export class FacilityRequestsListComponent implements OnInit, OnDestroy {
   }
 
   private buildStatusMaps(): void {
-    const isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
-
     this.statusLabelById = {};
     this.statusCodeById = {};
 
@@ -400,9 +397,10 @@ export class FacilityRequestsListComponent implements OnInit, OnDestroy {
       if (!id) {
         continue;
       }
-      this.statusLabelById[id] = isRegional
-        ? String(item.Name_Regional || item.Name || '')
-        : String(item.Name || '');
+      this.statusLabelById[id] = this.localStorageService.pickLocalizedField(
+        String(item.Name || ''),
+        String(item.Name_Regional || ''),
+      );
       this.statusCodeById[id] = String(item.Code || '');
     }
 
@@ -411,9 +409,10 @@ export class FacilityRequestsListComponent implements OnInit, OnDestroy {
       ...this.statuses
         .filter((item) => Number(item.Donation_Request_Status_ID || 0) > 0)
         .map((item) => ({
-          label: isRegional
-            ? String(item.Name_Regional || item.Name || '')
-            : String(item.Name || ''),
+          label: this.localStorageService.pickLocalizedField(
+            String(item.Name || ''),
+            String(item.Name_Regional || ''),
+          ),
           value: Number(item.Donation_Request_Status_ID),
         })),
     ];
@@ -431,7 +430,7 @@ export class FacilityRequestsListComponent implements OnInit, OnDestroy {
   }
 
   private buildCountryMaps(): void {
-    const isArabic = this.localStorageService.getPreferredLanguageCode() === 'ar';
+    const isArabic = this.localStorageService.isArabicUi();
 
     this.countryLabelByCode = {};
     for (const item of this.countries) {

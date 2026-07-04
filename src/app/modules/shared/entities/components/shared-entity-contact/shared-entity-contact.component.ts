@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+﻿import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { MessageService } from 'primeng/api';
@@ -43,13 +43,13 @@ export class SharedEntityContactComponent implements OnInit, OnDestroy {
         private languageDirService: LanguageDirService,
         private translate: TranslateService
     ) {
-        this.isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
+        this.isRegional = this.localStorageService.isArabicUi();
     }
 
     ngOnInit(): void {
         this.subscriptions.push(
             this.languageDirService.userLanguageCode$.subscribe(() => {
-                this.isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
+                this.isRegional = this.localStorageService.isArabicUi();
             })
         );
         if (this.entityId) {
@@ -231,7 +231,7 @@ export class SharedEntityContactComponent implements OnInit, OnDestroy {
 
         const formValue = this.editForm.value;
         const address = formValue.address || '';
-        const isRegional = formValue.isRegional || false;
+        const isRegional = this.localStorageService.isRegionalApiInput();
         const city = String(formValue.city || '').trim();
         const latitude = String(formValue.latitude || '').trim();
         const longitude = String(formValue.longitude || '').trim();
