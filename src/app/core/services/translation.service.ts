@@ -17,12 +17,13 @@ export class TranslationService {
         this.translate.setDefaultLang(lang);
     }
 
-    useLanguage(lang: string) {
-        if (this.availableLanguages.includes(lang)) {
-            this.translate.use(lang);
-        } else {
-            this.translate.use(APP_DEFAULT_LANGUAGE);
-        }
+    useLanguage(lang: string): Observable<unknown> {
+        const code = this.availableLanguages.includes(lang) ? lang : APP_DEFAULT_LANGUAGE;
+        return this.translate.use(code);
+    }
+
+    hideBootstrapPreloader(): void {
+        document.getElementById('app-preloader')?.remove();
     }
     getCurrentLang(): Observable<string> {
         return this.translate.onLangChange.pipe(map((event) => event.lang));

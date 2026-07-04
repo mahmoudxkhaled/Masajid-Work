@@ -74,12 +74,27 @@ export class AppComponent implements OnInit, OnDestroy {
 
         this.primengConfig.ripple = true;
 
-        const userLangCode = this.rtlService.getLanguageFromStorage();
+        const userLangCode = this.localStorage.getAccessToken()
+            ? this.rtlService.getLanguageFromStorage()
+            : this.rtlService.getPublicLanguageCode();
 
-        this.translationService.useLanguage(userLangCode || APP_DEFAULT_LANGUAGE);
+        if (!this.localStorage.getAccessToken()) {
+            this.rtlService.setGuestLanguageCode(userLangCode);
+        }
+
+        this.translationService.useLanguage(userLangCode || APP_DEFAULT_LANGUAGE).subscribe({
+            next: () => {
+                if (!this.isPublicGuestBootstrapRoute()) {
+                    this.translationService.hideBootstrapPreloader();
+                }
+            },
+            error: () => this.translationService.hideBootstrapPreloader(),
+        });
 
         this.isRtl = this.rtlService.getRtlFromStorage();
-        this.rtlService.setRtl(this.isRtl);
+        if (this.localStorage.getAccessToken()) {
+            this.rtlService.setRtl(this.isRtl);
+        }
 
         this.rtlSubscription = this.rtlService.isRtl$.subscribe((isRtl) => {
             this.isRtl = isRtl;
@@ -142,6 +157,14 @@ export class AppComponent implements OnInit, OnDestroy {
         this.isRtl = !this.isRtl;
         this.rtlService.setRtl(this.isRtl);
         this.translationService.useLanguage(this.isRtl ? 'ar' : 'en');
+    }
+
+    private isPublicGuestBootstrapRoute(): boolean {
+        if (this.localStorage.getAccessToken()) {
+            return false;
+        }
+        const path = typeof window !== 'undefined' ? window.location.pathname : '';
+        return path === '' || path === '/' || path.startsWith('/register');
     }
 
     ngOnDestroy(): void {

@@ -40,7 +40,7 @@ export class PublicLayoutComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     const code = this.languageDirService.getPublicLanguageCode();
-    this.syncHtmlAndLayout(code);
+    this.languageDirService.setGuestLanguageCode(code);
 
     this.langSub = this.languageDirService.userLanguageCode$.subscribe((lang) => {
       this.syncHtmlAndLayout(lang);
@@ -148,7 +148,10 @@ export class PublicLayoutComponent implements OnInit, OnDestroy, AfterViewInit {
     this.dir = this.lang === 'ar' ? 'rtl' : 'ltr';
     document.documentElement.lang = this.lang;
     document.documentElement.setAttribute('dir', this.dir);
-    this.translationService.useLanguage(this.lang);
+    this.translationService.useLanguage(this.lang).subscribe({
+      next: () => this.translationService.hideBootstrapPreloader(),
+      error: () => this.translationService.hideBootstrapPreloader(),
+    });
   }
 
   private applyThemeClass(isDark: boolean): void {

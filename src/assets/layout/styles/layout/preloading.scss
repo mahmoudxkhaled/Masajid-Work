@@ -11,6 +11,13 @@ $bgColor:#3f51b5;
     position: absolute;
 }
 
+#app-preloader {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    min-height: 100vh;
+}
+
 .layout-preloader-content {
     text-align: center;
     position: absolute;

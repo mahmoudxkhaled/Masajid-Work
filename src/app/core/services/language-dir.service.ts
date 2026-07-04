@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { LocalStorageService } from './local-storage.service';
 
 @Injectable({
@@ -7,13 +7,17 @@ import { LocalStorageService } from './local-storage.service';
 })
 export class LanguageDirService {
 
-    private rtlSubject = new BehaviorSubject<boolean>(this.getRtlFromStorage());
+    private rtlSubject = new BehaviorSubject<boolean>(false);
     isRtl$ = this.rtlSubject.asObservable();
 
-    private languageSubject = new BehaviorSubject<string>(this.getLanguageFromStorage());
-    userLanguageCode$ = this.languageSubject.asObservable();
+    private languageSubject!: BehaviorSubject<string>;
+    userLanguageCode$!: Observable<string>;
 
-    constructor(private localStorage: LocalStorageService) { }
+    constructor(private localStorage: LocalStorageService) {
+        this.languageSubject = new BehaviorSubject<string>(this.resolveBootstrapLanguageCode());
+        this.rtlSubject = new BehaviorSubject<boolean>(this.getRtlFromStorage());
+        this.userLanguageCode$ = this.languageSubject.asObservable();
+    }
 
     setRtl(isRtl: boolean) {
         this.rtlSubject.next(isRtl);
@@ -25,16 +29,19 @@ export class LanguageDirService {
         if (stored != null) {
             return JSON.parse(stored);
         }
+        if (!this.localStorage.getToken()) {
+            return this.getPublicLanguageCode() === 'ar';
+        }
         return this.localStorage.getPreferredLanguageCode() === 'ar';
+    }
+
+    getLanguageFromStorage(): string {
+        return this.localStorage.getPreferredLanguageCode();
     }
 
     setUserLanguageCode(lang: string) {
         this.languageSubject.next(lang);
         this.localStorage.setPreferredLanguageCode(lang === 'ar' ? 'ar' : 'en');
-    }
-
-    getLanguageFromStorage(): string {
-        return this.localStorage.getPreferredLanguageCode();
     }
 
     getPublicLanguageCode(): string {
@@ -46,5 +53,12 @@ export class LanguageDirService {
         this.localStorage.setGuestLanguageCode(code);
         this.languageSubject.next(code);
         this.setRtl(code === 'ar');
+    }
+
+    private resolveBootstrapLanguageCode(): string {
+        if (this.localStorage.getToken()) {
+            return this.getLanguageFromStorage();
+        }
+        return this.getPublicLanguageCode();
     }
 }
