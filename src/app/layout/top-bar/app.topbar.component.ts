@@ -368,10 +368,12 @@ export class AppTopbarComponent implements OnInit, OnDestroy {
     }
 
     changeUserLanguage(event: ListboxChangeEvent) {
-        if (!event.value || this.langLoading) {
+        if (!event.value || this.langLoading || event.value === this.userLanguageCode) {
             return;
         }
         this.langLoading = true;
+        // Language-switch preloader (500ms). Revert: delete next line; guard was only: !event.value || this.langLoading
+        this.translate.showLanguageSwitchPreloader();
         this.userLanguageCode = event.value;
         this.userLanguageId = event.value;
 

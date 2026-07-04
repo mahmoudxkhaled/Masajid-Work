@@ -144,6 +144,8 @@ export class PublicLayoutComponent implements OnInit, OnDestroy, AfterViewInit {
     document.documentElement.lang = this.lang;
     document.documentElement.setAttribute('dir', this.dir);
     this.translationService.useLanguage(this.lang).subscribe({
+      // bootstrapPreloaderDone: hide preloader only on first load, not on lang switch (spinner handled in header).
+      // Revert: always call hideBootstrapPreloader() here; remove bootstrapPreloaderDone field + checks.
       next: () => {
         if (!this.bootstrapPreloaderDone) {
           this.bootstrapPreloaderDone = true;

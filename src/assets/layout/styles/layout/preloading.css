@@ -12,6 +12,7 @@
   min-height: 100vh;
 }
 
+/* Revert lang-switch preloader: remove rule below; hideBootstrapPreloader() can use .remove() again on first load only */
 #app-preloader.app-preloader--hidden {
   display: none;
 }
