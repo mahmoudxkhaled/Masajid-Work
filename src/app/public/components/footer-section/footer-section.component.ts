@@ -15,6 +15,7 @@ import { PublicThemePreferenceService } from '../../services/public-theme-prefer
   styleUrl: './footer-section.component.scss',
 })
 export class FooterSectionComponent implements OnInit, OnDestroy {
+  yearNow = new Date().getFullYear();
   readonly logoSrcLight = LOGO_SRC;
   readonly logoSrcDark = LOGO_SRC_DARK;
   readonly quickLinks = FOOTER_QUICK_LINKS;

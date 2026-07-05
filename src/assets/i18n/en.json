@@ -3858,7 +3858,7 @@
                 "vendorPortal": "Vendor Portal",
                 "privacy": "Privacy Policy",
                 "emailDisplay": "support@masajidwork.org",
-                "copy": "© 2024 Masajid Work. Built on principles of Amanah and Khidmah."
+                "copy": "© {year} Masajid Work. Built on principles of Amanah and Khidmah."
             }
         },
         "register": {

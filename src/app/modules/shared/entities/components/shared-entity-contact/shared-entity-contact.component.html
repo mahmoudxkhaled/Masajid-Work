@@ -150,126 +150,113 @@
     </div>
 </p-panel>
 
-<!-- Enhanced Edit Dialog -->
-<p-dialog [(visible)]="editDialog" [modal]="true" [style]="{ width: '680px', maxWidth: '95vw' }" [closable]="true"
-    [draggable]="false" [resizable]="false" [header]="''" styleClass="contact-edit-dialog">
-
-
-
+<p-dialog [(visible)]="editDialog" [modal]="true" [style]="{ width: '560px', maxWidth: '95vw' }" [closable]="true"
+    [draggable]="false" [resizable]="false" (onHide)="onCancelEdit()">
     <ng-template pTemplate="header">
-        <div class="flex align-items-center gap-3 w-full border-bottom-1 surface-border pb-3">
-            <i class="pi pi-building text-primary text-2xl"></i>
-            <div>
-                <h3 class="m-0 text-xl font-semibold">{{ 'entities.contact.editDialog.title' | translate }}</h3>
-                <small class="text-500">{{ entityName }}</small>
-            </div>
-        </div>
+        <h3>{{ 'entities.contact.editDialog.title' | translate }}</h3>
     </ng-template>
 
-    <form *ngIf="editForm" [formGroup]="editForm" class="mt-4">
-        <div class="grid form-grid gap-4">
+    <form *ngIf="editForm" [formGroup]="editForm" (ngSubmit)="submitUpdate()">
+        <div class="flex flex-column gap-3">
+            <div class="contact-details-content" *ngIf="entityName">
+                <div class="contact-details-row contact-details-name">
+                    <span class="contact-details-label">{{ 'entities.form.companyName' | translate }}</span>
+                    <span class="contact-details-value contact-details-description-value font-semibold">{{ entityName }}</span>
+                </div>
+                <div class="contact-details-divider"></div>
+            </div>
 
-            <!-- Address -->
-            <div class="col-12">
-                <label for="address" class="block font-medium mb-2">
-                    <i class="pi pi-home mr-2"></i>{{ 'entities.contact.editDialog.addressLabel' | translate }} <span class="text-red-500">*</span>
-                </label>
+            <div class="field p-fluid">
+                <label for="address">{{ 'entities.contact.editDialog.addressLabel' | translate }} <span class="text-red-500">*</span></label>
                 <textarea id="address" pInputTextarea rows="3" formControlName="address"
-                    [placeholder]="'entities.contact.editDialog.addressPlaceholder' | translate" class="w-full">
-          </textarea>
+                    [placeholder]="'entities.contact.editDialog.addressPlaceholder' | translate" class="w-full"
+                    [class.ng-invalid]="submitted && f['address']?.invalid"></textarea>
                 <small class="p-error" *ngIf="submitted && f['address']?.errors?.['required']">
                     {{ 'entities.contact.editDialog.addressRequired' | translate }}
                 </small>
             </div>
 
-            <!-- City -->
-            <div class="col-12 md:col-4">
-                <label for="city" class="block font-medium mb-2">
-                    <i class="pi pi-map-marker mr-2"></i>{{ 'entities.contact.city' | translate }} <span class="text-red-500">*</span>
-                </label>
-                <input id="city" type="text" pInputText formControlName="city" class="w-full"
-                    [placeholder]="'entities.contact.editDialog.cityPlaceholder' | translate" />
-                <small class="p-error" *ngIf="submitted && f['city']?.errors?.['required']">
-                    {{ 'entities.contact.editDialog.cityRequired' | translate }}
-                </small>
-            </div>
-
-            <div class="col-12 md:col-4">
-                <label for="latitude" class="block font-medium mb-2">
-                    <i class="pi pi-compass mr-2"></i>{{ 'entities.contact.latitude' | translate }} <span class="text-red-500">*</span>
-                </label>
-                <input id="latitude" type="text" pInputText formControlName="latitude" class="w-full"
-                    [placeholder]="'entities.contact.editDialog.latitudePlaceholder' | translate" />
-                <small class="p-error" *ngIf="submitted && f['latitude']?.errors?.['required']">
-                    {{ 'entities.contact.editDialog.latitudeRequired' | translate }}
-                </small>
-            </div>
-
-            <div class="col-12 md:col-4">
-                <label for="longitude" class="block font-medium mb-2">
-                    <i class="pi pi-compass mr-2"></i>{{ 'entities.contact.longitude' | translate }} <span class="text-red-500">*</span>
-                </label>
-                <input id="longitude" type="text" pInputText formControlName="longitude" class="w-full"
-                    [placeholder]="'entities.contact.editDialog.longitudePlaceholder' | translate" />
-                <small class="p-error" *ngIf="submitted && f['longitude']?.errors?.['required']">
-                    {{ 'entities.contact.editDialog.longitudeRequired' | translate }}
-                </small>
-            </div>
-
-            <!-- Phone Numbers -->
-            <div class="col-12 md:col-6">
-                <div class="flex justify-content-between align-items-center mb-2">
-                    <label class="font-medium">
-                        <i class="pi pi-phone mr-2"></i>{{ 'entities.contact.phoneNumbers' | translate }}
-                    </label>
-                    <p-button [label]="'entities.contact.editDialog.addPhone' | translate" icon="pi pi-plus" size="small" severity="help"
-                        (onClick)="addPhoneNumber()">
-                    </p-button>
+            <div class="grid">
+                <div class="col-12 md:col-4">
+                    <div class="field p-fluid mb-0">
+                        <label for="city">{{ 'entities.contact.city' | translate }} <span class="text-red-500">*</span></label>
+                        <input id="city" type="text" pInputText formControlName="city" class="w-full"
+                            [placeholder]="'entities.contact.editDialog.cityPlaceholder' | translate"
+                            [class.ng-invalid]="submitted && f['city']?.invalid" />
+                        <small class="p-error" *ngIf="submitted && f['city']?.errors?.['required']">
+                            {{ 'entities.contact.editDialog.cityRequired' | translate }}
+                        </small>
+                    </div>
                 </div>
-                <div formArrayName="phoneNumbers" class="flex flex-column gap-3">
-                    <div *ngFor="let control of phoneNumberControls; let i = index" class="field-group">
-                        <div class="p-inputgroup">
-                            <span class="p-inputgroup-addon"><i class="pi pi-phone"></i></span>
-                            <input type="text" pInputText [formControl]="control" [placeholder]="'entities.contact.editDialog.phonePlaceholder' | translate"
-                                class="w-full" />
-                            <p-button icon="pi pi-trash" severity="danger" [text]="true"
-                                (onClick)="removePhoneNumber(i)">
-                            </p-button>
+                <div class="col-12 md:col-4">
+                    <div class="field p-fluid mb-0">
+                        <label for="latitude">{{ 'entities.contact.latitude' | translate }} <span class="text-red-500">*</span></label>
+                        <input id="latitude" type="text" pInputText formControlName="latitude" class="w-full"
+                            [placeholder]="'entities.contact.editDialog.latitudePlaceholder' | translate"
+                            [class.ng-invalid]="submitted && f['latitude']?.invalid" />
+                        <small class="p-error" *ngIf="submitted && f['latitude']?.errors?.['required']">
+                            {{ 'entities.contact.editDialog.latitudeRequired' | translate }}
+                        </small>
+                    </div>
+                </div>
+                <div class="col-12 md:col-4">
+                    <div class="field p-fluid mb-0">
+                        <label for="longitude">{{ 'entities.contact.longitude' | translate }} <span class="text-red-500">*</span></label>
+                        <input id="longitude" type="text" pInputText formControlName="longitude" class="w-full"
+                            [placeholder]="'entities.contact.editDialog.longitudePlaceholder' | translate"
+                            [class.ng-invalid]="submitted && f['longitude']?.invalid" />
+                        <small class="p-error" *ngIf="submitted && f['longitude']?.errors?.['required']">
+                            {{ 'entities.contact.editDialog.longitudeRequired' | translate }}
+                        </small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="field p-fluid mb-0">
+                <div class="flex justify-content-between align-items-center mb-2">
+                    <label class="mb-0">{{ 'entities.contact.phoneNumbers' | translate }}</label>
+                    <p-button [label]="'entities.contact.editDialog.addPhone' | translate" icon="pi pi-plus" size="small"
+                        [text]="true" (onClick)="addPhoneNumber()" [disabled]="savingContact"></p-button>
+                </div>
+                <div formArrayName="phoneNumbers" class="flex flex-column gap-2">
+                    <div *ngFor="let control of phoneNumberControls; let i = index">
+                        <div class="flex align-items-start gap-2">
+                            <input type="text" pInputText [formControl]="control" class="flex-1 min-w-0"
+                                [placeholder]="'entities.contact.editDialog.phonePlaceholder' | translate"
+                                [class.ng-invalid]="submitted && control.invalid" />
+                            <p-button icon="pi pi-trash" severity="danger" [text]="true" (onClick)="removePhoneNumber(i)"
+                                [disabled]="savingContact"></p-button>
                         </div>
                         <small class="p-error" *ngIf="submitted && control.invalid">
                             {{ 'entities.contact.editDialog.digitsOnly' | translate }}
                         </small>
                     </div>
-                    <small *ngIf="phoneNumbersFormArray.length === 0" class="text-500 italic">
+                    <small *ngIf="phoneNumbersFormArray.length === 0" class="text-500">
                         {{ 'entities.contact.editDialog.noPhonesYet' | translate }}
                     </small>
                 </div>
             </div>
 
-            <!-- Emails -->
-            <div class="col-12">
+            <div class="field p-fluid mb-0">
                 <div class="flex justify-content-between align-items-center mb-2">
-                    <label class="font-medium">
-                        <i class="pi pi-envelope mr-2"></i>{{ 'entities.contact.emailAddresses' | translate }}
-                    </label>
-                    <p-button [label]="'entities.contact.editDialog.addEmail' | translate" icon="pi pi-plus" size="small" severity="success"
-                        (onClick)="addEmail()">
-                    </p-button>
+                    <label class="mb-0">{{ 'entities.contact.emailAddresses' | translate }}</label>
+                    <p-button [label]="'entities.contact.editDialog.addEmail' | translate" icon="pi pi-plus" size="small"
+                        [text]="true" (onClick)="addEmail()" [disabled]="savingContact"></p-button>
                 </div>
-                <div formArrayName="emails" class="flex flex-column gap-3">
-                    <div *ngFor="let control of emailControls; let i = index" class="field-group">
-                        <div class="p-inputgroup">
-                            <span class="p-inputgroup-addon">&#64;</span>
-                            <input type="email" pInputText [formControl]="control" [placeholder]="'entities.contact.editDialog.emailPlaceholder' | translate"
-                                class="w-full" />
-                            <p-button icon="pi pi-trash" severity="danger" [text]="true" (onClick)="removeEmail(i)">
-                            </p-button>
+                <div formArrayName="emails" class="flex flex-column gap-2">
+                    <div *ngFor="let control of emailControls; let i = index">
+                        <div class="flex align-items-start gap-2">
+                            <input type="email" pInputText [formControl]="control" class="flex-1 min-w-0"
+                                [placeholder]="'entities.contact.editDialog.emailPlaceholder' | translate"
+                                [class.ng-invalid]="submitted && control.invalid" />
+                            <p-button icon="pi pi-trash" severity="danger" [text]="true" (onClick)="removeEmail(i)"
+                                [disabled]="savingContact"></p-button>
                         </div>
                         <small class="p-error" *ngIf="submitted && control.invalid">
                             {{ 'entities.contact.editDialog.validEmail' | translate }}
                         </small>
                     </div>
-                    <small *ngIf="emailsFormArray.length === 0" class="text-500 italic">
+                    <small *ngIf="emailsFormArray.length === 0" class="text-500">
                         {{ 'entities.contact.editDialog.noEmailsAdded' | translate }}
                     </small>
                 </div>
@@ -278,12 +265,11 @@
     </form>
 
     <ng-template pTemplate="footer">
-        <div class="flex justify-content-end gap-3 pt-3 border-top-1 surface-border">
-            <p-button [label]="'entities.contact.editDialog.cancel' | translate" icon="pi pi-times" severity="secondary" [text]="true" (onClick)="onCancelEdit()"
-                [disabled]="savingContact">
-            </p-button>
-            <p-button [label]="'entities.contact.editDialog.saveChanges' | translate" icon="pi pi-check" [loading]="savingContact" (onClick)="submitUpdate()">
-            </p-button>
+        <div class="flex justify-content-end gap-2">
+            <p-button [label]="'common.cancel' | translate" icon="pi pi-times" class="p-button-text" (onClick)="onCancelEdit()"
+                [disabled]="savingContact"></p-button>
+            <p-button [label]="'entities.contact.editDialog.saveChanges' | translate" icon="pi pi-check" (onClick)="submitUpdate()"
+                [loading]="savingContact" [disabled]="savingContact"></p-button>
         </div>
     </ng-template>
 </p-dialog>
