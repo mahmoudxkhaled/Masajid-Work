@@ -39,7 +39,6 @@ export class SharedAccountDetailsComponent implements OnInit, OnDestroy, OnChang
 
   loadingAccountDetails: boolean = false;
   savingAccountDetails: boolean = false;
-  isRegional: boolean = false;
 
   private subscriptions: Subscription[] = [];
   private rawEntity: any = null;
@@ -52,14 +51,11 @@ export class SharedAccountDetailsComponent implements OnInit, OnDestroy, OnChang
     private localStorageService: LocalStorageService,
     private languageDirService: LanguageDirService,
     private permissionService: PermissionService
-  ) {
-    this.isRegional = this.localStorageService.isArabicUi();
-  }
+  ) { }
 
   ngOnInit(): void {
     this.subscriptions.push(
       this.languageDirService.userLanguageCode$.subscribe(() => {
-        this.isRegional = this.localStorageService.isArabicUi();
         this.mapDescriptionForCurrentLanguage();
         this.mapEntityAndRoleLabels();
       })
@@ -235,6 +231,11 @@ export class SharedAccountDetailsComponent implements OnInit, OnDestroy, OnChang
         });
 
         this.originalDescription = description;
+        if (this.localStorageService.isRegionalApiInput()) {
+          this.descriptionRegional = description;
+        } else {
+          this.description = description;
+        }
         this.saved.emit();
         if (this.dialogMode === 'editDescription') {
           this.closeDialog();
@@ -273,9 +274,10 @@ export class SharedAccountDetailsComponent implements OnInit, OnDestroy, OnChang
       return;
     }
 
-    const descriptionToShow = this.isRegional
-      ? (this.descriptionRegional || this.description)
-      : (this.description || this.descriptionRegional);
+    const descriptionToShow = this.localStorageService.pickRequestContentField(
+      this.description,
+      this.descriptionRegional,
+    );
 
     this.descriptionFormControl.setValue(descriptionToShow, { emitEvent: false });
     this.originalDescription = descriptionToShow;
@@ -283,16 +285,18 @@ export class SharedAccountDetailsComponent implements OnInit, OnDestroy, OnChang
 
   private mapEntityAndRoleLabels(): void {
     if (this.rawEntity) {
-      this.entityNameLabel = this.isRegional
-        ? (this.rawEntity?.Name_Regional || this.rawEntity?.Name || '')
-        : (this.rawEntity?.Name || '');
+      this.entityNameLabel = this.localStorageService.pickRequestContentField(
+        String(this.rawEntity?.Name || ''),
+        String(this.rawEntity?.Name_Regional || ''),
+      );
     }
 
     const role = this.rawRoles.find((item) => Number(item?.Entity_Role_ID || 0) === this.entityRoleId);
     if (role) {
-      this.entityRoleNameLabel = this.isRegional
-        ? (role?.Title_Regional || role?.Title || '')
-        : (role?.Title || '');
+      this.entityRoleNameLabel = this.localStorageService.pickLocalizedField(
+        String(role?.Title || ''),
+        String(role?.Title_Regional || ''),
+      );
     }
   }
 

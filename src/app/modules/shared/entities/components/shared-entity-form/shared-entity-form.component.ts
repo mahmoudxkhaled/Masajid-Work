@@ -42,10 +42,10 @@ export class SharedEntityFormComponent implements OnInit, OnDestroy {
     entityTableTotalRecords: number = 0;
     entityTableTextFilter: string = '';
     loadingEntitiesTable: boolean = false;
-    isRegional: boolean = false;
 
     private subscriptions: Subscription[] = [];
     private rawEntitiesForSelection: EntityBackend[] = [];
+    private rawEntityDetails: any = null;
 
     constructor(
         private fb: FormBuilder,
@@ -60,8 +60,6 @@ export class SharedEntityFormComponent implements OnInit, OnDestroy {
     ) { }
 
     ngOnInit(): void {
-        this.isRegional = this.localStorageService.isArabicUi();
-
         this.entityId = this.route.snapshot.paramMap.get('id') || '';
         this.isEdit = !!this.entityId;
 
@@ -74,8 +72,10 @@ export class SharedEntityFormComponent implements OnInit, OnDestroy {
         this.initializeRoleBasedLogic();
         this.subscriptions.push(
             this.languageDirService.userLanguageCode$.subscribe(() => {
-                this.isRegional = this.localStorageService.isArabicUi();
                 this.mapRawEntitiesForSelection();
+                if (this.isEdit && this.rawEntityDetails) {
+                    this.patchEntityFormFromRaw();
+                }
             })
         );
 
@@ -241,34 +241,14 @@ export class SharedEntityFormComponent implements OnInit, OnDestroy {
         this.loading = true;
         const sub = this.entitiesService.getEntityDetails(this.entityId).subscribe({
             next: (response: any) => {
+                console.log('getEntityDetails response', response);
                 if (!response?.success) {
                     this.handleBusinessError('details', response);
                     return;
                 }
 
-                const entity = response?.message ?? {};
-                const parentId = entity?.Parent_Entity_ID;
-                const parentEntityId = parentId === null || parentId === undefined || parentId === '' || parentId === '0'
-                    ? 0
-                    : Number(parentId) || 0;
-
-                this.form.patchValue({
-                    code: entity?.Code ?? '',
-                    name: entity?.Name ?? '',
-                    description: entity?.Description ?? '',
-                    parentEntityId: parentEntityId,
-                    isPersonal: entity?.Is_Personal || false
-                });
-
-                if (parentEntityId && parentEntityId !== 0) {
-                    this.selectedParentEntity = undefined;
-                } else {
-                    this.selectedParentEntity = undefined;
-                }
-
-                if (!this.showIsPersonal) {
-                    this.form.patchValue({ isPersonal: false });
-                }
+                this.rawEntityDetails = response?.message ?? {};
+                this.patchEntityFormFromRaw();
             },
             complete: () => this.loading = false
         });
@@ -329,10 +309,13 @@ export class SharedEntityFormComponent implements OnInit, OnDestroy {
 
                     const currentEntity = this.localStorageService.getEntityDetails() as IEntityDetails | null;
                     if (currentEntity && String(currentEntity.Entity_ID) === this.entityId) {
-                        currentEntity.Name = name;
-                        currentEntity.Name_Regional = name;
-                        currentEntity.Description = description;
-                        currentEntity.Description_Regional = description;
+                        if (isRegional) {
+                            currentEntity.Name_Regional = name;
+                            currentEntity.Description_Regional = description;
+                        } else {
+                            currentEntity.Name = name;
+                            currentEntity.Description = description;
+                        }
                         this.localStorageService.setItem('Entity_Details', currentEntity);
                         this.entityDetailsRefreshService.requestRefresh();
                     }
@@ -460,15 +443,47 @@ export class SharedEntityFormComponent implements OnInit, OnDestroy {
         return null;
     }
 
+    private patchEntityFormFromRaw(): void {
+        const entity = this.rawEntityDetails;
+        if (!entity) {
+            return;
+        }
+
+        const parentId = entity?.Parent_Entity_ID;
+        const parentEntityId = parentId === null || parentId === undefined || parentId === '' || parentId === '0'
+            ? 0
+            : Number(parentId) || 0;
+
+        this.form.patchValue({
+            code: entity?.Code ?? '',
+            name: this.localStorageService.pickRequestContentField(
+                String(entity?.Name ?? ''),
+                String(entity?.Name_Regional ?? ''),
+            ),
+            description: this.localStorageService.pickRequestContentField(
+                String(entity?.Description ?? ''),
+                String(entity?.Description_Regional ?? ''),
+            ),
+            parentEntityId: parentEntityId,
+            isPersonal: entity?.Is_Personal || false
+        });
+
+        this.selectedParentEntity = undefined;
+
+        if (!this.showIsPersonal) {
+            this.form.patchValue({ isPersonal: false });
+        }
+    }
+
     private mapRawEntitiesForSelection(): void {
         let allEntities = this.rawEntitiesForSelection.map((item) => ({
             id: String(item?.Entity_ID || ''),
             code: item?.Code || '',
-            name: this.localStorageService.pickLocalizedField(
+            name: this.localStorageService.pickRequestContentField(
                 item?.Name || '',
                 item?.Name_Regional || '',
             ),
-            description: this.localStorageService.pickLocalizedField(
+            description: this.localStorageService.pickRequestContentField(
                 item?.Description || '',
                 item?.Description_Regional || '',
             ),

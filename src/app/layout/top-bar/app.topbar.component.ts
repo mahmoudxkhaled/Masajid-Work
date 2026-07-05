@@ -128,6 +128,17 @@ export class AppTopbarComponent implements OnInit, OnDestroy {
         return sub ? `${parent} – ${sub}` : parent;
     }
 
+    private mapEntityDisplayName(): void {
+        if (!this.entityDetails) {
+            this.entityName = '';
+            return;
+        }
+        this.entityName = this.localStorage.pickRequestContentField(
+            String(this.entityDetails.Name || ''),
+            String(this.entityDetails.Name_Regional || ''),
+        );
+    }
+
     private persistTopbarHeaderCacheIfReady(): void {
         if (this.headerTitleLoading) {
             return;
@@ -194,6 +205,10 @@ export class AppTopbarComponent implements OnInit, OnDestroy {
             this.rtlService.userLanguageCode$.subscribe((lang) => {
                 this.userLanguageCode = lang || 'ar';
                 this.userLanguageId = this.userLanguageCode;
+                this.mapEntityDisplayName();
+                if (!this.headerTitleLoading) {
+                    this.persistTopbarHeaderCacheIfReady();
+                }
                 this.ref.detectChanges();
             })
         );
@@ -233,10 +248,7 @@ export class AppTopbarComponent implements OnInit, OnDestroy {
         this.isRegional = this.localStorage.isArabicUi();
 
         if (this.entityDetails) {
-            this.entityName = this.localStorage.pickLocalizedField(
-                this.entityDetails.Name || '',
-                this.entityDetails.Name_Regional || '',
-            );
+            this.mapEntityDisplayName();
             const rawParentId = this.entityDetails.Parent_Entity_ID;
             const parentIdStr = rawParentId == null ? '' : String(rawParentId).trim();
             const isSubEntity = parentIdStr !== '' && parentIdStr !== '0';

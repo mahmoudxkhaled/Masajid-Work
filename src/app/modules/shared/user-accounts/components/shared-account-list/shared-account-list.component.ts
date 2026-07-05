@@ -40,8 +40,6 @@ export class SharedAccountListComponent implements OnInit, OnDestroy, OnChanges 
   rows: number = 10;
   totalRecords: number = 0;
 
-  isRegional: boolean = false;
-
   // Entity roles map for lookup
   entityRolesMap: Map<number, string> = new Map();
   systemEntityRolesMap: Map<string, string> = new Map();
@@ -152,9 +150,7 @@ export class SharedAccountListComponent implements OnInit, OnDestroy, OnChanges 
     private rolesService: RolesService,
     private languageDirService: LanguageDirService,
     private translationService: TranslationService
-  ) {
-    this.isRegional = this.localStorageService.isArabicUi();
-  }
+  ) { }
 
   ngOnInit(): void {
     this.applyIncludeSubentitiesMode();
@@ -163,7 +159,6 @@ export class SharedAccountListComponent implements OnInit, OnDestroy, OnChanges 
     this.initAccountManagementForms();
     this.subscriptions.push(
       this.languageDirService.userLanguageCode$.subscribe(() => {
-        this.isRegional = this.localStorageService.isArabicUi();
         this.mapContextEntityName();
         this.mapRawEntityRoles();
         this.mapRawSystemRoles();
@@ -702,7 +697,7 @@ export class SharedAccountListComponent implements OnInit, OnDestroy, OnChanges 
 
   getCreateEntityDisplayText(): string {
     if (!this.selectedCreateEntity) {
-      return this.isRegional ? 'اختر الجهة' : 'Select entity';
+      return this.translationService.getInstant('entityAccounts.list.addAccountDialog.selectEntity');
     }
     return `${this.selectedCreateEntity.name} (${this.selectedCreateEntity.code})`;
   }
@@ -713,7 +708,7 @@ export class SharedAccountListComponent implements OnInit, OnDestroy, OnChanges 
       this.messageService.add({
         severity: 'warn',
         summary: 'Validation',
-        detail: this.isRegional ? 'يرجى اختيار الجهة أولاً.' : 'Please select an entity first.'
+        detail: this.translationService.getInstant('entityAccounts.update.selectEntityFirst')
       });
       return;
     }
@@ -778,7 +773,7 @@ export class SharedAccountListComponent implements OnInit, OnDestroy, OnChanges 
 
   getCreateRoleDisplayText(): string {
     if (!this.selectedCreateRole) {
-      return this.isRegional ? 'اختر دور الجهة' : 'Select entity role';
+      return this.translationService.getInstant('entityAccounts.list.addAccountDialog.selectEntityRole');
     }
     return this.selectedCreateRole.title;
   }
@@ -1070,9 +1065,10 @@ export class SharedAccountListComponent implements OnInit, OnDestroy, OnChanges 
       return;
     }
 
-    this.entityName = this.isRegional
-      ? (this.rawContextEntity?.Name_Regional || this.rawContextEntity?.Name || '')
-      : (this.rawContextEntity?.Name || '');
+    this.entityName = this.localStorageService.pickRequestContentField(
+      String(this.rawContextEntity?.Name || ''),
+      String(this.rawContextEntity?.Name_Regional || ''),
+    );
 
     const ctxId = parseInt(this.entityId, 10);
     if (!isNaN(ctxId) && ctxId > 0 && this.entityName) {
@@ -1084,9 +1080,10 @@ export class SharedAccountListComponent implements OnInit, OnDestroy, OnChanges 
     this.entityRolesMap.clear();
     this.rawEntityRoles.forEach((item: any) => {
       const roleId = item?.Entity_Role_ID || 0;
-      const roleName = this.isRegional
-        ? (item?.Title_Regional || item?.Title || '')
-        : (item?.Title || '');
+      const roleName = this.localStorageService.pickLocalizedField(
+        String(item?.Title || ''),
+        String(item?.Title_Regional || ''),
+      );
       if (roleId > 0) {
         this.entityRolesMap.set(roleId, roleName);
       }
@@ -1102,9 +1099,10 @@ export class SharedAccountListComponent implements OnInit, OnDestroy, OnChanges 
           return;
         }
 
-        const roleName = this.isRegional
-          ? (item?.Title_Regional || item?.Title || '')
-          : (item?.Title || '');
+        const roleName = this.localStorageService.pickLocalizedField(
+          String(item?.Title || ''),
+          String(item?.Title_Regional || ''),
+        );
         this.systemEntityRolesMap.set(`${entityId}_${roleId}`, roleName || String(roleId));
       });
     });
@@ -1112,9 +1110,10 @@ export class SharedAccountListComponent implements OnInit, OnDestroy, OnChanges 
 
   private mapRawAccountEntityNames(): void {
     this.rawAccountEntitiesById.forEach((entity, id) => {
-      const name = this.isRegional
-        ? (entity?.Name_Regional || entity?.Name || '')
-        : (entity?.Name || '');
+      const name = this.localStorageService.pickRequestContentField(
+        String(entity?.Name || ''),
+        String(entity?.Name_Regional || ''),
+      );
       this.accountEntityNamesMap.set(id, name || '');
     });
   }
@@ -1123,8 +1122,14 @@ export class SharedAccountListComponent implements OnInit, OnDestroy, OnChanges 
     this.entitiesForSelection = this.rawEntitiesForSelection.map((item) => ({
       id: String(item?.Entity_ID || ''),
       code: item?.Code || '',
-      name: this.isRegional ? (item?.Name_Regional || item?.Name || '') : (item?.Name || ''),
-      description: this.isRegional ? (item?.Description_Regional || item?.Description || '') : (item?.Description || ''),
+      name: this.localStorageService.pickRequestContentField(
+        String(item?.Name || ''),
+        String(item?.Name_Regional || ''),
+      ),
+      description: this.localStorageService.pickRequestContentField(
+        String(item?.Description || ''),
+        String(item?.Description_Regional || ''),
+      ),
       parentEntityId: item?.Parent_Entity_ID ? String(item?.Parent_Entity_ID) : '',
       active: Boolean(item?.Is_Active),
       isPersonal: Boolean(item?.Is_Personal)
@@ -1141,7 +1146,10 @@ export class SharedAccountListComponent implements OnInit, OnDestroy, OnChanges 
     this.rolesForSelection = this.rawRolesForSelection
       .map((item: any) => ({
         id: Number(item?.Entity_Role_ID || 0),
-        title: this.isRegional ? (item?.Title_Regional || item?.Title || '') : (item?.Title || '')
+        title: this.localStorageService.pickLocalizedField(
+          String(item?.Title || ''),
+          String(item?.Title_Regional || ''),
+        )
       }))
       .filter((item: { id: number; title: string }) => item.id > 0);
 

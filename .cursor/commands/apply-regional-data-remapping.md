@@ -66,17 +66,27 @@ this.mapRawEntities();
 
 ### 2. Map displayed data in one method
 
+Use **`pickLocalizedField`** for reference/lookup data (`Name` = EN, `Name_Regional` = AR).
+
+Use **`pickRequestContentField`** for user-entered content (`Name` = AR default, `Name_Regional` = EN).
+
 ```ts
 private mapRawEntities(): void {
-  const isRegional = this.localStorageService.getPreferredLanguageCode() === 'ar';
-
   this.entities = this.rawEntities.map((item) => ({
     id: String(item.Entity_ID || ''),
-    name: isRegional ? (item.Name_Regional || item.Name || '') : (item.Name || ''),
-    description: isRegional ? (item.Description_Regional || item.Description || '') : (item.Description || '')
+    name: this.localStorageService.pickRequestContentField(
+      String(item.Name || ''),
+      String(item.Name_Regional || ''),
+    ),
+    description: this.localStorageService.pickRequestContentField(
+      String(item.Description || ''),
+      String(item.Description_Regional || ''),
+    ),
   }));
 }
 ```
+
+For the full convention table, save rules, and anti-patterns, use **`.cursor/commands/apply-regional-language.md`**.
 
 ### 3. Remap on language changes
 
@@ -97,7 +107,7 @@ Use existing cleanup patterns:
 
 ## STRICT RULES
 
-- Use `LocalStorageService.getPreferredLanguageCode() === 'ar'`, not one-time `accountSettings.Language !== 'English'`.
+- Use `pickLocalizedField` / `pickRequestContentField` / `isRegionalApiInput()` from `LocalStorageService` — not manual `isArabicUi()` or `lang === 'ar' ? *_Regional : *` (see **`apply-regional-language`**).
 - Do not reload the API just because language changed, unless the backend returns only one language version.
 - Do not let duplicate request signatures block local remapping; if a same-request guard returns early, call the map method first.
 - Do not keep only final displayed text when raw regional fields are available.
@@ -120,6 +130,7 @@ Use existing cleanup patterns:
 
 ## Related rules / commands
 
-- **`regional-data-remapping`** (`.cursor/rules/regional-data-remapping.mdc`)
+- **`regional-language`** (`.cursor/rules/regional-language.mdc`)
+- **`apply-regional-language`** (`.cursor/commands/apply-regional-language.md`) — which helper to use, save rules, anti-patterns
 - **`i18n-translations`** — translation keys and toasts
 - **`apply-table-defaults`** — when touched screens are `p-table` list screens

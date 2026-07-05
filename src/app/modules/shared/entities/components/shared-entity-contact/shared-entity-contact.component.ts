@@ -32,7 +32,6 @@ export class SharedEntityContactComponent implements OnInit, OnDestroy {
     editDialog = false;
     editForm!: FormGroup;
     submitted = false;
-    isRegional: boolean = false;
     private subscriptions: Subscription[] = [];
 
     constructor(
@@ -42,14 +41,19 @@ export class SharedEntityContactComponent implements OnInit, OnDestroy {
         private localStorageService: LocalStorageService,
         private languageDirService: LanguageDirService,
         private translate: TranslateService
-    ) {
-        this.isRegional = this.localStorageService.isArabicUi();
-    }
+    ) { }
 
     ngOnInit(): void {
         this.subscriptions.push(
             this.languageDirService.userLanguageCode$.subscribe(() => {
-                this.isRegional = this.localStorageService.isArabicUi();
+                if (this.editDialog && this.editForm && this.contacts) {
+                    this.editForm.patchValue({
+                        address: this.localStorageService.pickRequestContentField(
+                            this.contacts.address || '',
+                            this.contacts.addressRegional || '',
+                        ),
+                    }, { emitEvent: false });
+                }
             })
         );
         if (this.entityId) {
@@ -69,6 +73,7 @@ export class SharedEntityContactComponent implements OnInit, OnDestroy {
         this.loading = true;
         const sub = this.entitiesService.getEntityContacts(this.entityId).subscribe({
             next: (response: any) => {
+                console.log('getEntityContacts response', response);
                 if (!response?.success) {
                     this.handleBusinessError(response);
                     return;
@@ -91,12 +96,8 @@ export class SharedEntityContactComponent implements OnInit, OnDestroy {
             city: data?.City || '',
             latitude: data?.Latitude != null ? String(data.Latitude) : '',
             longitude: data?.Longitude != null ? String(data.Longitude) : '',
-            phoneNumbers: Array.isArray(data?.PhoneNumbers)
-                ? data.PhoneNumbers
-                : [],
-            emails: Array.isArray(data?.Emails)
-                ? data.Emails
-                : []
+            phoneNumbers: this.normalizeStringList(data?.Phone_Numbers),
+            emails: this.normalizeStringList(data?.Emails),
         };
     }
 
@@ -117,13 +118,13 @@ export class SharedEntityContactComponent implements OnInit, OnDestroy {
     }
 
     initEditForm(): void {
-        const address = this.isRegional && this.contacts?.addressRegional
-            ? this.contacts.addressRegional
-            : (this.contacts?.address || '');
+        const address = this.localStorageService.pickRequestContentField(
+            this.contacts?.address || '',
+            this.contacts?.addressRegional || '',
+        );
 
         this.editForm = this.fb.group({
             address: [address, [Validators.required]],
-            isRegional: [this.isRegional, []],
             city: [this.contacts?.city || '', [Validators.required]],
             latitude: [this.contacts?.latitude || '', [Validators.required]],
             longitude: [this.contacts?.longitude || '', [Validators.required]],
@@ -251,10 +252,10 @@ export class SharedEntityContactComponent implements OnInit, OnDestroy {
             address,
             isRegional,
             phoneNumbers,
-            emails,
             city,
             latitude,
-            longitude
+            longitude,
+            emails
         ).subscribe({
             next: (response: any) => {
                 if (!response?.success) {
@@ -333,9 +334,26 @@ export class SharedEntityContactComponent implements OnInit, OnDestroy {
         if (!this.contacts) {
             return '';
         }
-        return this.isRegional && this.contacts.addressRegional
-            ? this.contacts.addressRegional
-            : (this.contacts.address || '');
+        return this.localStorageService.pickRequestContentField(
+            this.contacts.address,
+            this.contacts.addressRegional || '',
+        );
+    }
+
+    private normalizeStringList(value: unknown): string[] {
+        if (Array.isArray(value)) {
+            return value
+                .map((item) => String(item ?? '').trim())
+                .filter((item) => item !== '');
+        }
+
+        if (value && typeof value === 'object') {
+            return Object.values(value as Record<string, unknown>)
+                .map((item) => String(item ?? '').trim())
+                .filter((item) => item !== '');
+        }
+
+        return [];
     }
 
     private sanitizeList(list?: string[]): string[] {

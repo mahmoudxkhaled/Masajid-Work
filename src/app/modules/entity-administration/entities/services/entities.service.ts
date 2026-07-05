@@ -136,10 +136,10 @@ export class EntitiesService {
         address: string,
         isRegional: boolean,
         phoneNumbers: string[],
-        emails: string[],
         city: string,
         latitude: string,
-        longitude: string
+        longitude: string,
+        emails: string[]
     ): Observable<any> {
         this.isLoadingSubject.next(true);
         const params = [
@@ -147,11 +147,12 @@ export class EntitiesService {
             address,
             isRegional.toString(),
             JSON.stringify(phoneNumbers),
-            JSON.stringify(emails),
             city,
             latitude,
-            longitude
+            longitude,
+            JSON.stringify(emails),
         ];
+        console.log('params', params);
         return this.apiServices.callAPI(408, this.getAccessToken(), params).pipe(
             finalize(() => this.isLoadingSubject.next(false))
         );

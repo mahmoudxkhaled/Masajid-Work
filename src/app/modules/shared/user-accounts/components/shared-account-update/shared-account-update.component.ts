@@ -49,7 +49,6 @@ export class SharedAccountUpdateComponent implements OnInit, OnChanges, OnDestro
   savingAccountEntity: boolean = false;
   loadingAccountDetails: boolean = false;
   accountSettings: IAccountSettings;
-  isRegional: boolean = false;
 
   private subscriptions: Subscription[] = [];
   private rawEntitiesForSelection: EntityBackend[] = [];
@@ -64,14 +63,12 @@ export class SharedAccountUpdateComponent implements OnInit, OnChanges, OnDestro
     private rolesService: RolesService
   ) {
     this.accountSettings = this.localStorageService.getAccountSettings() as IAccountSettings;
-    this.isRegional = this.localStorageService.isArabicUi();
     this.initForm();
   }
 
   ngOnInit(): void {
     this.subscriptions.push(
       this.languageDirService.userLanguageCode$.subscribe(() => {
-        this.isRegional = this.localStorageService.isArabicUi();
         this.mapRawEntitiesForSelection();
         this.mapSelectedEntityForUpdate();
         this.mapRawEntityRoles();
@@ -367,8 +364,7 @@ export class SharedAccountUpdateComponent implements OnInit, OnChanges, OnDestro
   }
 
   private mapRawEntitiesForSelection(): void {
-    const isRegional = this.localStorageService.isArabicUi();
-    this.entitiesForSelection = this.rawEntitiesForSelection.map((item) => this.mapEntity(item, isRegional));
+    this.entitiesForSelection = this.rawEntitiesForSelection.map((item) => this.mapEntity(item));
     if (this.rawSelectedEntityForUpdate) {
       this.mapSelectedEntityForUpdate();
     }
@@ -379,16 +375,21 @@ export class SharedAccountUpdateComponent implements OnInit, OnChanges, OnDestro
       return;
     }
 
-    const isRegional = this.localStorageService.isArabicUi();
-    this.selectedEntityForUpdate = this.mapEntity(this.rawSelectedEntityForUpdate, isRegional, fallbackId);
+    this.selectedEntityForUpdate = this.mapEntity(this.rawSelectedEntityForUpdate, fallbackId);
   }
 
-  private mapEntity(item: EntityBackend, isRegional: boolean, fallbackId: number = 0): Entity {
+  private mapEntity(item: EntityBackend, fallbackId: number = 0): Entity {
     return {
       id: String(item?.Entity_ID || fallbackId || ''),
       code: item?.Code || '',
-      name: isRegional ? (item?.Name_Regional || item?.Name || '') : (item?.Name || ''),
-      description: isRegional ? (item?.Description_Regional || item?.Description || '') : (item?.Description || ''),
+      name: this.localStorageService.pickRequestContentField(
+        String(item?.Name || ''),
+        String(item?.Name_Regional || ''),
+      ),
+      description: this.localStorageService.pickRequestContentField(
+        String(item?.Description || ''),
+        String(item?.Description_Regional || ''),
+      ),
       parentEntityId: item?.Parent_Entity_ID ? String(item?.Parent_Entity_ID) : '',
       active: Boolean(item?.Is_Active),
       isPersonal: Boolean(item?.Is_Personal)
@@ -396,9 +397,11 @@ export class SharedAccountUpdateComponent implements OnInit, OnChanges, OnDestro
   }
 
   private mapRawEntityRoles(): void {
-    const isRegional = this.localStorageService.isArabicUi();
     this.entityRoleOptions = this.rawEntityRoles.map((item: any) => ({
-      label: isRegional ? (item?.Title_Regional || item?.Title || '') : (item?.Title || ''),
+      label: this.localStorageService.pickLocalizedField(
+        String(item?.Title || ''),
+        String(item?.Title_Regional || ''),
+      ),
       value: item?.Entity_Role_ID || 0
     }));
   }

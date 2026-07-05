@@ -33,7 +33,6 @@ export class SharedEntityDetailsComponent implements OnInit, OnDestroy {
     hasPhoto: boolean = false;
 
     accountSettings: IAccountSettings;
-    isRegional: boolean = false;
     requestedSystemRole: number = 0;
 
     canManageEntityPhoto = false;
@@ -57,7 +56,6 @@ export class SharedEntityDetailsComponent implements OnInit, OnDestroy {
         private translate: TranslateService
     ) {
         this.accountSettings = this.localStorageService.getAccountSettings() as IAccountSettings;
-        this.isRegional = this.localStorageService.isArabicUi();
     }
 
     ngOnInit(): void {
@@ -73,9 +71,7 @@ export class SharedEntityDetailsComponent implements OnInit, OnDestroy {
         this.applyTabIndexFromQuery(this.route.snapshot.queryParamMap);
         this.bindTabFromQueryParam();
         this.subscriptions.push(
-            this.languageDirService.userLanguageCode$.subscribe(() => {
-                this.isRegional = this.localStorageService.isArabicUi();
-            })
+            this.languageDirService.userLanguageCode$.subscribe(() => {})
         );
         this.bindEntityIdFromRoute();
     }
@@ -166,6 +162,7 @@ export class SharedEntityDetailsComponent implements OnInit, OnDestroy {
 
         const sub = this.entitiesService.getEntityDetails(this.entityId).subscribe({
             next: (response: any) => {
+                console.log('getEntityDetails response', response);
                 if (!response?.success) {
                     this.handleBusinessError('details', response);
                     this.loading = false;
@@ -251,16 +248,18 @@ export class SharedEntityDetailsComponent implements OnInit, OnDestroy {
 
     getEntityName(): string {
         if (!this.entityDetails) return '';
-        return this.isRegional
-            ? (this.entityDetails.Name_Regional || this.entityDetails.name_Regional || this.entityDetails.name || this.entityDetails.Name || '')
-            : (this.entityDetails.Name || this.entityDetails.name || '');
+        return this.localStorageService.pickRequestContentField(
+            String(this.entityDetails.Name || this.entityDetails.name || ''),
+            String(this.entityDetails.Name_Regional || this.entityDetails.name_Regional || ''),
+        );
     }
 
     getEntityDescription(): string {
         if (!this.entityDetails) return '';
-        return this.isRegional
-            ? (this.entityDetails.Description_Regional || this.entityDetails.description_Regional || this.entityDetails.description || this.entityDetails.Description || '')
-            : (this.entityDetails.Description || this.entityDetails.description || '');
+        return this.localStorageService.pickRequestContentField(
+            String(this.entityDetails.Description || this.entityDetails.description || ''),
+            String(this.entityDetails.Description_Regional || this.entityDetails.description_Regional || ''),
+        );
     }
 
     getEntityCode(): string {

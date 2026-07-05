@@ -344,12 +344,17 @@ export class SharedEntitiesListComponent implements OnInit, OnDestroy {
     }
 
     private mapRawEntities(): void {
-        const isRegional = this.localStorageService.isArabicUi();
         this.entities = this.rawEntities.map((item: EntityBackend) => ({
             id: String(item?.Entity_ID || ''),
             code: item?.Code || '',
-            name: isRegional ? (item?.Name_Regional || item?.Name || '') : (item?.Name || ''),
-            description: isRegional ? (item?.Description_Regional || item?.Description || '') : (item?.Description || ''),
+            name: this.localStorageService.pickRequestContentField(
+                String(item?.Name || ''),
+                String(item?.Name_Regional || ''),
+            ),
+            description: this.localStorageService.pickRequestContentField(
+                String(item?.Description || ''),
+                String(item?.Description_Regional || ''),
+            ),
             parentEntityId: item?.Parent_Entity_ID ? String(item?.Parent_Entity_ID) : '',
             active: Boolean(item?.Is_Active),
             isPersonal: Boolean(item?.Is_Personal)
