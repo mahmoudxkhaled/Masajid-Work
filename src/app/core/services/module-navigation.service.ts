@@ -42,7 +42,6 @@ export class ModuleNavigationService {
     }
 
     private buildLegacyFunctionsWithModules(userType: MasajidUserType | null | undefined): IMenuFunction[] {
-        const isRegional = this.localStorageService.isArabicUi();
         const functionsArray: IMenuFunction[] = [];
 
         Object.entries(STATIC_FUNCTIONS_DETAILS).forEach(([functionCode, functionData]) => {
@@ -58,7 +57,6 @@ export class ModuleNavigationService {
                 functionData.FunctionID,
                 STATIC_MODULES_DETAILS,
                 functionCode,
-                isRegional,
                 (moduleCode) => this.canSeeLegacyModule(moduleCode),
             );
 
@@ -66,7 +64,7 @@ export class ModuleNavigationService {
                 return;
             }
 
-            functionsArray.push(this.toMenuFunction(functionCode, functionData, modules, isRegional));
+            functionsArray.push(this.toMenuFunction(functionCode, functionData, modules));
         });
 
         return functionsArray;
@@ -77,7 +75,6 @@ export class ModuleNavigationService {
             return [];
         }
 
-        const isRegional = this.localStorageService.isArabicUi();
         const functionsArray: IMenuFunction[] = [];
 
         Object.entries(MASAJID_WORKSPACE_FUNCTIONS).forEach(([functionCode, functionData]) => {
@@ -93,7 +90,6 @@ export class ModuleNavigationService {
                 functionData.FunctionID,
                 MASAJID_WORKSPACE_MODULES,
                 functionCode,
-                isRegional,
                 (moduleCode) => this.canSeeWorkspaceModule(moduleCode),
             );
 
@@ -101,7 +97,7 @@ export class ModuleNavigationService {
                 return;
             }
 
-            functionsArray.push(this.toMenuFunction(functionCode, functionData, modules, isRegional));
+            functionsArray.push(this.toMenuFunction(functionCode, functionData, modules));
         });
 
         return functionsArray;
@@ -111,11 +107,10 @@ export class ModuleNavigationService {
         functionCode: string,
         functionData: IFunctionDetail,
         modules: IMenuModule[],
-        isRegional: boolean,
     ): IMenuFunction {
         return {
             code: functionCode,
-            name: isRegional ? (functionData.Name_Regional || functionData.Name || '') : (functionData.Name || ''),
+            name: this.getLocalizedName(functionData.Name || '', functionData.Name_Regional || ''),
             nameRegional: functionData.Name_Regional || '',
             defaultOrder: functionData.Default_Order || 0,
             icon: undefined,
@@ -160,7 +155,6 @@ export class ModuleNavigationService {
         functionId: number,
         modulesDetails: IModulesDetails,
         functionCode: string,
-        isRegional: boolean,
         canSee: (moduleCode: string) => boolean,
     ): IMenuModule[] {
         const modules: IMenuModule[] = [];
@@ -170,14 +164,16 @@ export class ModuleNavigationService {
                 return;
             }
 
+            const url = this.resolveModuleUrl(moduleCode, moduleData.URL || '');
+
             modules.push({
                 code: moduleCode,
-                name: isRegional ? (moduleData.Name_Regional || moduleData.Name || '') : (moduleData.Name || ''),
+                name: this.getLocalizedName(moduleData.Name || '', moduleData.Name_Regional || ''),
                 nameRegional: moduleData.Name_Regional || '',
                 defaultOrder: moduleData.Default_Order || 0,
-                url: moduleData.URL || '',
+                url,
                 icon: undefined,
-                isImplemented: moduleData.URL.trim() !== '',
+                isImplemented: url.trim() !== '',
                 moduleId: moduleData.ModuleID,
                 functionCode,
             });
@@ -185,6 +181,21 @@ export class ModuleNavigationService {
 
         modules.sort((a, b) => (a.defaultOrder || 0) - (b.defaultOrder || 0));
         return modules;
+    }
+
+    private getLocalizedName(name: string, nameRegional: string): string {
+        return this.localStorageService.pickLocalizedField(name, nameRegional);
+    }
+
+    private resolveModuleUrl(moduleCode: string, staticUrl: string): string {
+        const entityProfileCodes = ['FAC_PROFILE', 'VND_PROFILE', 'CHR_PROFILE'];
+        if (entityProfileCodes.includes(moduleCode)) {
+            const entityId = String(this.localStorageService.getEntityId() || '').trim();
+            if (entityId) {
+                return `/entity-administration/entities/${entityId}`;
+            }
+        }
+        return staticUrl || '';
     }
 
     getFunctionByCode(functionCode: string): IFunctionDetail | null {

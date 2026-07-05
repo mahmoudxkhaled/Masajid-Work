@@ -178,7 +178,8 @@
                                     <div class="col-12 md:col-4 flex justify-content-center">
                                         <ng-container *ngIf="canManageEntityPhoto; else photoReadOnly">
                                             <div class="identity-logo-wrapper" role="button" tabindex="0"
-                                                [attr.aria-label]="'entities.details.logo.uploadPhoto' | translate" (click)="onPhotoAreaClick()"
+                                                [attr.aria-label]="'entities.details.logo.uploadPhoto' | translate"
+                                                (click)="onPhotoAreaClick()"
                                                 (keydown.enter)="onPhotoAreaKeydown($event)"
                                                 (keydown.space)="onPhotoAreaKeydown($event)">
                                                 <div class="identity-logo">
@@ -241,7 +242,8 @@
                                         <ng-template #photoReadOnly>
                                             <div class="identity-logo-wrapper identity-logo-wrapper--readonly">
                                                 <div class="identity-logo">
-                                                    <ng-container *ngIf="photoAwaitingApi; else sharedEntityPhotoImgReadonly">
+                                                    <ng-container
+                                                        *ngIf="photoAwaitingApi; else sharedEntityPhotoImgReadonly">
                                                         <p-skeleton width="100%" height="100%"
                                                             borderRadius="8px"></p-skeleton>
                                                     </ng-container>
@@ -309,29 +311,29 @@
                 </p-tabPanel>
 
                 <!-- Tab 2: Accounts -->
-                <p-tabPanel [header]="'entities.details.tabs.accounts' | translate">
+                <!-- <p-tabPanel [header]="'entities.details.tabs.accounts' | translate">
                     <app-shared-account-list [entityId]="entityId" [requestedSystemRole]="requestedSystemRole"
                         (accountCreated)="handleEntityUpdated()"
                         (accountUpdated)="handleEntityUpdated()"></app-shared-account-list>
-                </p-tabPanel>
+                </p-tabPanel> -->
 
                 <!-- Tab 3: Admins -->
-                <p-tabPanel [header]="'entities.details.tabs.admins' | translate">
+                <!-- <p-tabPanel [header]="'entities.details.tabs.admins' | translate">
                     <app-entity-account-admin-list [entityId]="entityId" [requestedSystemRole]="requestedSystemRole"
                         (adminCreated)="handleEntityUpdated()"
                         (adminUpdated)="handleEntityUpdated()"></app-entity-account-admin-list>
-                </p-tabPanel>
+                </p-tabPanel> -->
 
                 <!-- Tab 4: Roles & Permissions -->
-                <p-tabPanel [header]="'entities.details.tabs.rolesPermissions' | translate">
+                <!-- <p-tabPanel [header]="'entities.details.tabs.rolesPermissions' | translate">
                     <app-roles-list [entityId]="getEntityIdAsNumber()"></app-roles-list>
-                </p-tabPanel>
+                </p-tabPanel> -->
 
                 <!-- Tab 5: Entity Groups -->
-                <p-tabPanel [header]="'entities.details.tabs.entityGroups' | translate">
+                <!-- <p-tabPanel [header]="'entities.details.tabs.entityGroups' | translate">
                     <app-entity-groups-list [entityId]="getEntityIdAsNumber()"
                         [showHeader]="false"></app-entity-groups-list>
-                </p-tabPanel>
+                </p-tabPanel> -->
             </p-tabView>
         </ng-template>
     </div>

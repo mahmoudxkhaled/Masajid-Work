@@ -149,13 +149,13 @@ export class PublicLayoutComponent implements OnInit, OnDestroy, AfterViewInit {
       next: () => {
         if (!this.bootstrapPreloaderDone) {
           this.bootstrapPreloaderDone = true;
-          this.translationService.hideBootstrapPreloader();
+          this.translationService.hideBootstrapPreloaderWhenStable();
         }
       },
       error: () => {
         if (!this.bootstrapPreloaderDone) {
           this.bootstrapPreloaderDone = true;
-          this.translationService.hideBootstrapPreloader();
+          this.translationService.hideBootstrapPreloaderWhenStable();
         }
       },
     });

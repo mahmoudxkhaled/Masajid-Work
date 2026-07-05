@@ -2,9 +2,10 @@ import { Component } from '@angular/core';
 import { ActivatedRouteSnapshot, NavigationEnd, Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { ChangeDetectorRef } from '@angular/core';
 import { TranslationService } from 'src/app/core/services/translation.service';
 import { ModuleNavigationService } from 'src/app/core/services/module-navigation.service';
+import { LocalStorageService } from 'src/app/core/services/local-storage.service';
+import { MasajidUserType } from 'src/app/core/models/masajid-user-type.model';
 
 interface Breadcrumb {
     label: string;
@@ -24,14 +25,15 @@ export class AppBreadcrumbComponent {
     constructor(
         private router: Router,
         private translate: TranslationService,
-        private moduleNavigationService: ModuleNavigationService
+        private moduleNavigationService: ModuleNavigationService,
+        private localStorageService: LocalStorageService,
     ) {
-        this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(event => {
+        this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {
             const root = this.router.routerState.snapshot.root;
             const breadcrumbs: Breadcrumb[] = [];
             this.addBreadcrumb(root, [], breadcrumbs);
 
-            this._breadcrumbs$.next(breadcrumbs);
+            this._breadcrumbs$.next(this.applyWorkspaceEntityProfileBreadcrumbLabels(breadcrumbs));
         });
     }
 
@@ -85,5 +87,58 @@ export class AppBreadcrumbComponent {
             });
         }
         // If not a module, let default routerLink handle navigation
+    }
+
+    private readonly workspaceEntityProfileBreadcrumbKeys: Partial<
+        Record<MasajidUserType, { administration: string; details: string }>
+    > = {
+        [MasajidUserType.FacilityRepresentative]: {
+            administration: 'facilityAdministration',
+            details: 'facilityDetails',
+        },
+        [MasajidUserType.Vendor]: {
+            administration: 'vendorAdministration',
+            details: 'vendorDetails',
+        },
+        [MasajidUserType.CharityCenterRepresentative]: {
+            administration: 'charityAdministration',
+            details: 'charityDetails',
+        },
+    };
+
+    private applyWorkspaceEntityProfileBreadcrumbLabels(breadcrumbs: Breadcrumb[]): Breadcrumb[] {
+        const keys = this.getWorkspaceEntityProfileBreadcrumbKeys();
+        if (!keys || !this.isWorkspaceEntityProfileRoute()) {
+            return breadcrumbs;
+        }
+
+        return breadcrumbs
+            .filter((crumb) => crumb.label !== 'companyDetails')
+            .map((crumb) => {
+                if (crumb.label === 'companyAdministration') {
+                    return { ...crumb, label: keys.administration };
+                }
+                if (crumb.label === 'entityDetails' || crumb.label === 'editEntity') {
+                    return { ...crumb, label: keys.details };
+                }
+                return crumb;
+            });
+    }
+
+    private getWorkspaceEntityProfileBreadcrumbKeys(): { administration: string; details: string } | null {
+        const userType = this.localStorageService.getMasajidUserType();
+        if (!userType) {
+            return null;
+        }
+        return this.workspaceEntityProfileBreadcrumbKeys[userType] ?? null;
+    }
+
+    private isWorkspaceEntityProfileRoute(): boolean {
+        if (!this.getWorkspaceEntityProfileBreadcrumbKeys()) {
+            return false;
+        }
+
+        const path = this.router.url.split('?')[0].split('#')[0];
+        return /^\/entity-administration\/entities\/(?!list$|new$)[^/]+/.test(path);
     }
 }

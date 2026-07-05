@@ -885,7 +885,7 @@ export class SharedAccountListComponent implements OnInit, OnDestroy, OnChanges 
 
     const sub = this.entitiesService.deleteAccount(email).subscribe({
       next: (response: any) => {
-        
+
         if (!response?.success) {
           this.handleAccountError('delete', response);
           return;

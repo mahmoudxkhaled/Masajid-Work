@@ -38,6 +38,14 @@ export class TranslationService {
         document.getElementById('app-preloader')?.classList.add('app-preloader--hidden');
     }
 
+    hideBootstrapPreloaderWhenStable(): void {
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                this.hideBootstrapPreloader();
+            });
+        });
+    }
+
     showLanguageSwitchPreloader(durationMs = 300): void {
         if (this.preloaderHideTimer) {
             clearTimeout(this.preloaderHideTimer);

@@ -128,7 +128,7 @@ export const MASAJID_WORKSPACE_MODULES: IModulesDetails = {
     Name: 'Facility Profile',
     Name_Regional: '\u0645\u0644\u0641 \u0627\u0644\u0645\u0646\u0634\u0623\u0629',
     Default_Order: 40,
-    URL: '/entity-administration/my-entity',
+    URL: '/entity-administration/entities',
   },
   FAC_NOT: {
     ModuleID: 315,
@@ -208,7 +208,7 @@ export const MASAJID_WORKSPACE_MODULES: IModulesDetails = {
     Name: 'Vendor Profile',
     Name_Regional: '\u0645\u0644\u0641 \u0627\u0644\u0645\u0648\u0631\u062f',
     Default_Order: 40,
-    URL: '/entity-administration/my-entity',
+    URL: '/entity-administration/entities',
   },
   VND_NOT: {
     ModuleID: 335,
@@ -248,7 +248,7 @@ export const MASAJID_WORKSPACE_MODULES: IModulesDetails = {
     Name: 'Charity Center Profile',
     Name_Regional: '\u0645\u0644\u0641 \u0627\u0644\u0645\u0631\u0643\u0632 \u0627\u0644\u062e\u064a\u0631\u064a',
     Default_Order: 40,
-    URL: '/entity-administration/my-entity',
+    URL: '/entity-administration/entities',
   },
   CHR_NOT: {
     ModuleID: 345,

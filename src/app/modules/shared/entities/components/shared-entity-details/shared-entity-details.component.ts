@@ -71,7 +71,7 @@ export class SharedEntityDetailsComponent implements OnInit, OnDestroy {
         this.applyTabIndexFromQuery(this.route.snapshot.queryParamMap);
         this.bindTabFromQueryParam();
         this.subscriptions.push(
-            this.languageDirService.userLanguageCode$.subscribe(() => {})
+            this.languageDirService.userLanguageCode$.subscribe(() => { })
         );
         this.bindEntityIdFromRoute();
     }

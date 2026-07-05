@@ -146,8 +146,6 @@ export class AppLayoutComponent implements OnInit, OnDestroy {
     sessionWarningMessage = '';
 
     ngOnInit(): void {
-        this.settingsEngineService.applyRuntimeShell();
-
         this.responsiveOptions = [
             {
                 breakpoint: '1199px',

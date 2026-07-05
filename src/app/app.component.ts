@@ -3,7 +3,7 @@ import { NavigationEnd, Router } from '@angular/router';
 import { Chart } from 'chart.js';
 import { PrimeNGConfig } from 'primeng/api';
 import { Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { catchError, filter, switchMap } from 'rxjs/operators';
 import { LanguageDirService } from './core/services/language-dir.service';
 import { LocalStorageService } from './core/services/local-storage.service';
 import { NetworkStatusService } from './core/services/network-status.service';
@@ -35,8 +35,6 @@ export class AppComponent implements OnInit, OnDestroy {
         private settingsEngineService: SettingsEngineService,
         private brandingService: BrandingService
     ) {
-        this.refreshLoginDataPackage();
-
         this.translationService.setDefaultLang(APP_DEFAULT_LANGUAGE);
         const documentStyle = getComputedStyle(document.documentElement);
         const textColor = documentStyle.getPropertyValue('--primary-color');
@@ -65,6 +63,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private rtlSubscription: Subscription;
     private languageSubscription: Subscription;
     private routerSubscription: Subscription;
+    private runtimeLanguageActive = false;
 
     isRtl = false;
     userLanguageCode: string | null = null;
@@ -74,48 +73,38 @@ export class AppComponent implements OnInit, OnDestroy {
 
         this.primengConfig.ripple = true;
 
-        const userLangCode = this.localStorage.getAccessToken()
-            ? this.rtlService.getLanguageFromStorage()
-            : this.rtlService.getPublicLanguageCode();
-
-        if (!this.localStorage.getAccessToken()) {
-            this.rtlService.setGuestLanguageCode(userLangCode);
-        }
-
-        this.isRtl = this.rtlService.isRtl;
-
-        this.translationService.useLanguage(userLangCode || APP_DEFAULT_LANGUAGE).subscribe({
-            next: () => {
-                if (!this.isPublicGuestBootstrapRoute()) {
-                    this.translationService.hideBootstrapPreloader();
-                }
-            },
-            error: () => this.translationService.hideBootstrapPreloader(),
-        });
-
-        if (this.localStorage.getAccessToken()) {
-            this.rtlService.setRtl(this.rtlService.isRtl);
-        }
+        const isAuthenticated = !!this.localStorage.getAccessToken();
 
         this.rtlSubscription = this.rtlService.isRtl$.subscribe((isRtl) => {
             this.isRtl = isRtl;
-            this.ref.detectChanges(); // Manually trigger change detection
+            this.ref.detectChanges();
         });
         this.languageSubscription = this.rtlService.userLanguageCode$.subscribe((lang) => {
-            this.translationService.useLanguage(lang);
-            this.ref.detectChanges(); // Manually trigger change detection
+            if (!this.runtimeLanguageActive) {
+                return;
+            }
+            this.translationService.useLanguage(lang).subscribe(() => this.ref.detectChanges());
         });
 
-        // Request notification refresh on page load so topbar can show new notifications / unread count
-        if (this.localStorage.getAccessToken()) {
-            this.settingsEngineService.loadAllLayers().subscribe({
-                next: () => { },
-                error: () => { },
+        if (!isAuthenticated) {
+            const userLangCode = this.rtlService.getPublicLanguageCode();
+            this.rtlService.setGuestLanguageCode(userLangCode);
+            this.translationService.useLanguage(userLangCode || APP_DEFAULT_LANGUAGE).subscribe({
+                next: () => {
+                    this.runtimeLanguageActive = true;
+                    if (!this.isPublicGuestBootstrapRoute()) {
+                        this.translationService.hideBootstrapPreloaderWhenStable();
+                    }
+                },
+                error: () => {
+                    this.runtimeLanguageActive = true;
+                    this.translationService.hideBootstrapPreloaderWhenStable();
+                },
             });
-            this.notificationRefreshService.requestRefresh();
+        } else {
+            this.bootstrapAuthenticatedApp();
         }
 
-        // Scroll smoothly to top on every route change
         this.routerSubscription = this.router.events
             .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
             .subscribe(() => {
@@ -123,35 +112,44 @@ export class AppComponent implements OnInit, OnDestroy {
             });
     }
 
-    /**
-     * Refresh login data package on window reload
-     * Only runs if user is authenticated (has access token)
-     * Runs silently in the background without error handling
-     */
-    private refreshLoginDataPackage(): void {
-        const accessToken = this.localStorage.getAccessToken();
+    private bootstrapAuthenticatedApp(): void {
+        const email = this.localStorage.getAccountDetails()?.Email;
 
-        // Only proceed if user is authenticated
-        if (accessToken) {
-            const accountDetails = this.localStorage.getAccountDetails();
-            const email = accountDetails?.Email;
+        const settingsReady$ = email
+            ? this.authService.getLoginDataPackage(email).pipe(
+                switchMap(() => this.settingsEngineService.loadAllLayers(true, { applyShell: false })),
+                catchError(() => this.settingsEngineService.loadAllLayers(false, { applyShell: false }))
+            )
+            : this.settingsEngineService.loadAllLayers(false, { applyShell: false });
 
-            // Only call API if email is available
-            if (email) {
-                // Call silently in background - no error handling needed
-                this.authService.getLoginDataPackage(email).subscribe({
+        settingsReady$.subscribe({
+            next: () => {
+                this.settingsEngineService.applyRuntimeShell().subscribe({
                     next: () => {
-                        this.settingsEngineService.loadAllLayers(true).subscribe({
-                            next: () => { },
-                            error: () => { },
-                        });
+                        this.runtimeLanguageActive = true;
+                        this.translationService.hideBootstrapPreloaderWhenStable();
                     },
                     error: () => {
-                        // Silently fail - no error handling needed
-                    }
+                        this.runtimeLanguageActive = true;
+                        this.translationService.hideBootstrapPreloaderWhenStable();
+                    },
                 });
-            }
-        }
+            },
+            error: () => {
+                this.settingsEngineService.applyRuntimeShell().subscribe({
+                    next: () => {
+                        this.runtimeLanguageActive = true;
+                        this.translationService.hideBootstrapPreloaderWhenStable();
+                    },
+                    error: () => {
+                        this.runtimeLanguageActive = true;
+                        this.translationService.hideBootstrapPreloaderWhenStable();
+                    },
+                });
+            },
+        });
+
+        this.notificationRefreshService.requestRefresh();
     }
 
     toggleDirection() {

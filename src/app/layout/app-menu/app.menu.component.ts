@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 import { LogoutComponent } from 'src/app/modules/auth/components/logout/logout.component';
 import { IMenuFunction, IMenuModule } from '../../core/models/account-status.model';
 import { DashboardResolverService } from '../../core/services/dashboard-resolver.service';
+import { LanguageDirService } from '../../core/services/language-dir.service';
 import { ModuleNavigationService } from '../../core/services/module-navigation.service';
 import { TranslationService } from '../../core/services/translation.service';
 
@@ -15,22 +16,32 @@ export class AppMenuComponent implements OnInit, OnDestroy {
     model: any[] = [];
     currentPages: any;
     showLogoutDialog: boolean = false;
-    private menuSub: Subscription;
-    private langSub: Subscription;
+    private menuSub?: Subscription;
+    private langSub?: Subscription;
+    private buildGeneration = 0;
 
     constructor(
         private translate: TranslationService,
         private dialogService: DialogService,
         private moduleNavigationService: ModuleNavigationService,
-        private dashboardResolverService: DashboardResolverService
+        private dashboardResolverService: DashboardResolverService,
+        private languageDirService: LanguageDirService,
     ) {
     }
 
     ngOnInit(): void {
         this.buildMenu();
-        this.langSub = this.translate.getCurrentLang().subscribe(() => {
-            this.onLangChange();
-        });
+        this.langSub = new Subscription();
+        this.langSub.add(
+            this.languageDirService.userLanguageCode$.subscribe(() => {
+                this.onLangChange();
+            })
+        );
+        this.langSub.add(
+            this.translate.getCurrentLang().subscribe(() => {
+                this.onLangChange();
+            })
+        );
     }
 
     onLangChange(): void {
@@ -38,8 +49,13 @@ export class AppMenuComponent implements OnInit, OnDestroy {
     }
 
     buildMenu(): void {
+        const generation = ++this.buildGeneration;
         this.menuSub?.unsubscribe();
         this.menuSub = this.dashboardResolverService.resolveCurrentUserType().subscribe((userType) => {
+            if (generation !== this.buildGeneration) {
+                return;
+            }
+
             const functions = this.moduleNavigationService
                 .getFunctionsWithModules(userType)
                 .filter((func) => Array.isArray(func.modules) && func.modules.length > 0);

@@ -34,11 +34,6 @@ export class LanguageDirService {
             return this.getPublicLanguageCode() === 'ar';
         }
 
-        const stored = localStorage.getItem('isRtl');
-        if (stored != null) {
-            return JSON.parse(stored);
-        }
-
         return this.localStorage.getPreferredLanguageCode() === 'ar';
     }
 
@@ -47,8 +42,11 @@ export class LanguageDirService {
     }
 
     setUserLanguageCode(lang: string) {
-        this.languageSubject.next(lang);
-        this.localStorage.setPreferredLanguageCode(lang === 'ar' ? 'ar' : 'en');
+        const code = lang === 'ar' ? 'ar' : 'en';
+        this.localStorage.setPreferredLanguageCode(code);
+        this.languageSubject.next(code);
+        this.setRtl(code === 'ar');
+        this.syncDocumentLanguage(code);
     }
 
     getPublicLanguageCode(): string {
@@ -60,6 +58,15 @@ export class LanguageDirService {
         this.localStorage.setGuestLanguageCode(code);
         this.languageSubject.next(code);
         this.setRtl(code === 'ar');
+        this.syncDocumentLanguage(code);
+    }
+
+    private syncDocumentLanguage(code: 'en' | 'ar'): void {
+        if (typeof document === 'undefined') {
+            return;
+        }
+        document.documentElement.lang = code === 'ar' ? 'ar' : 'en';
+        document.documentElement.setAttribute('dir', code === 'ar' ? 'rtl' : 'ltr');
     }
 
     private resolveBootstrapLanguageCode(): string {

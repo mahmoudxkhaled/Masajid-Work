@@ -76,8 +76,8 @@ export class SettingsEngineService {
         );
     }
 
-    applyRuntimeShell(): void {
-        this.applyEffectiveRuntimeToShell();
+    applyRuntimeShell(): Observable<unknown> {
+        return this.applyEffectiveRuntimeToShell();
     }
 
     refreshRuntimeFromServer(): Observable<SettingsLayersState> {
@@ -219,7 +219,7 @@ export class SettingsEngineService {
         this.stateSubject.next(nextState);
         this.writeCache(nextState);
         if (options?.applyShell !== false) {
-            this.applyEffectiveRuntimeToShell();
+            this.applyEffectiveRuntimeToShell().subscribe();
         }
     }
 
@@ -259,19 +259,12 @@ export class SettingsEngineService {
         return null;
     }
 
-    private applyEffectiveRuntimeToShell(): void {
+    private applyEffectiveRuntimeToShell(): Observable<unknown> {
         const lang = this.normalizeResolvedLanguage(this.getSetting('language'));
         const theme = this.normalizeResolvedTheme(this.getSetting('theme'));
-        this.localStorageService.setPreferredLanguageCode(lang);
         this.localStorageService.setPreferredTheme(theme);
         this.languageDirService.setUserLanguageCode(lang);
-        this.languageDirService.setRtl(lang === 'ar');
-        this.translationService.useLanguage(lang);
         this.layoutService.applyUserTheme(theme);
-        if (typeof document !== 'undefined') {
-            document.documentElement.lang = lang === 'ar' ? 'ar' : 'en';
-            document.documentElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
-        }
         const patch: Partial<IAccountSettings> = {};
         const fo = this.getSetting('Functions_Order') ?? this.getSetting('functions_order');
         const mo = this.getSetting('Modules_Order') ?? this.getSetting('modules_order');
@@ -284,11 +277,12 @@ export class SettingsEngineService {
         if (Object.keys(patch).length > 0) {
             this.localStorageService.mergeAccountSettings(patch);
         }
+        return this.translationService.useLanguage(lang);
     }
 
     private normalizeResolvedLanguage(raw: string | null): 'en' | 'ar' {
         if (raw == null || raw === '') {
-            return 'ar';
+            return this.localStorageService.getPreferredLanguageCode();
         }
         const s = String(raw).trim().toLowerCase();
         if (s === 'en' || s === 'english') {
@@ -297,7 +291,7 @@ export class SettingsEngineService {
         if (s === 'ar' || s === 'arabic' || s === 'العربية') {
             return 'ar';
         }
-        return 'ar';
+        return this.localStorageService.getPreferredLanguageCode();
     }
 
     private normalizeResolvedTheme(raw: string | null): 'light' | 'dark' {

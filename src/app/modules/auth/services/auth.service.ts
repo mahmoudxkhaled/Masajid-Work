@@ -53,7 +53,10 @@ export class AuthService {
                             this.getSettingsEngine()
                                 .loadAllLayers(true, { applyShell: false })
                                 .pipe(
-                                    catchError(() => of(null)),
+                                    switchMap(() => this.getSettingsEngine().applyRuntimeShell()),
+                                    catchError(() =>
+                                        this.getSettingsEngine().applyRuntimeShell().pipe(map(() => null))
+                                    ),
                                     map(() => r)
                                 )
                         ),
@@ -107,7 +110,10 @@ export class AuthService {
                             this.getSettingsEngine()
                                 .loadAllLayers(true, { applyShell: false })
                                 .pipe(
-                                    catchError(() => of(null)),
+                                    switchMap(() => this.getSettingsEngine().applyRuntimeShell()),
+                                    catchError(() =>
+                                        this.getSettingsEngine().applyRuntimeShell().pipe(map(() => null))
+                                    ),
                                     map(() => r)
                                 )
                         ),
