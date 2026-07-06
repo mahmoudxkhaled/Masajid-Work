@@ -17,8 +17,6 @@
           <div class="donation-workflow-timeline__content">
             <div class="font-semibold">{{ item.statusName || ('donations.facility.requests.details.unknownStatus' | translate) }}</div>
             <div class="text-500 text-sm" dir="ltr" *ngIf="item.changedAt">{{ item.changedAt | date:'yyyy-MM-dd hh:mm a' }}</div>
-            <div class="text-700 text-sm mt-1" *ngIf="item.changedBy">{{ item.changedBy }}</div>
-            <div class="text-700 text-sm mt-1" *ngIf="item.note">{{ item.note }}</div>
           </div>
         </li>
       </ul>

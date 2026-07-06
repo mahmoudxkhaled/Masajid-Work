@@ -68,8 +68,8 @@ export class DonationRequestsService {
     );
   }
 
-  extractDonationRequestId(message: Record<string, unknown> | undefined): number {
-    return Number(message?.['Donation_Request_ID'] ?? 0);
+  extractDonationRequestId(message: unknown): number {
+    return Number(message);
   }
 
   mapDonationRequestDetails(raw: DonationRequestDetailsBackend | null | undefined): DonationRequestDetails | null {
@@ -167,8 +167,6 @@ export class DonationRequestsService {
         this.readWorkflowField(item, 'Status_Name_Regional'),
       ),
       changedAt: this.readWorkflowField(item, 'Created_At'),
-      changedBy: this.readWorkflowField(item, 'Actor_User_ID'),
-      note: this.readWorkflowField(item, 'Note'),
     }));
   }
 
