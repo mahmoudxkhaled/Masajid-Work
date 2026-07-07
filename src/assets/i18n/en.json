@@ -2146,6 +2146,8 @@
                 "noEmailsAdded": "No email addresses added",
                 "digitsOnly": "Only digits allowed (e.g., 1234567890)",
                 "validEmail": "Please enter a valid email address",
+                "pickOnMap": "Pick on map",
+                "mapPickerTitle": "Pick location on map",
                 "cancel": "Cancel",
                 "saveChanges": "Save Changes"
             },

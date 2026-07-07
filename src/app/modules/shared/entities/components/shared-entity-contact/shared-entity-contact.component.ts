@@ -1,9 +1,12 @@
-﻿import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+﻿import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
+import { CountryLookup } from 'src/app/core/models/lookup.model';
+import { PublicLookupService } from 'src/app/core/services/public-lookup.service';
 import { EntitiesService } from 'src/app/modules/entity-administration/entities/services/entities.service';
+import { EntityExtraDataService } from 'src/app/modules/donation-process/services/entity-extra-data.service';
 import { LocalStorageService } from 'src/app/core/services/local-storage.service';
 import { LanguageDirService } from 'src/app/core/services/language-dir.service';
 
@@ -22,21 +25,32 @@ interface EntityContact {
     templateUrl: './shared-entity-contact.component.html',
     styleUrls: ['./shared-entity-contact.component.scss']
 })
-export class SharedEntityContactComponent implements OnInit, OnDestroy {
+export class SharedEntityContactComponent implements OnInit, OnChanges, OnDestroy {
     @Input() entityId: string = '';
     @Input() entityName: string = '';
 
     loading = false;
     savingContact = false;
     contacts: EntityContact | null = null;
+    displayAddress = '';
+    displayPhoneNumbers: string[] = [];
+    displayEmails: string[] = [];
     editDialog = false;
+    mapPickerVisible = false;
+    mapPickerReady = false;
+    mapCountryCodeControl = new FormControl('');
+    countryOptions: { label: string; value: string }[] = [];
     editForm!: FormGroup;
     submitted = false;
     private subscriptions: Subscription[] = [];
+    private countries: CountryLookup[] = [];
+    private entityCountryCode = '';
 
     constructor(
         private fb: FormBuilder,
         private entitiesService: EntitiesService,
+        private entityExtraDataService: EntityExtraDataService,
+        private lookupService: PublicLookupService,
         private messageService: MessageService,
         private localStorageService: LocalStorageService,
         private languageDirService: LanguageDirService,
@@ -46,23 +60,35 @@ export class SharedEntityContactComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.subscriptions.push(
             this.languageDirService.userLanguageCode$.subscribe(() => {
+                this.refreshDisplayLabels();
+                this.remapCountryOptions();
                 if (this.editDialog && this.editForm && this.contacts) {
                     this.editForm.patchValue({
-                        address: this.localStorageService.pickRequestContentField(
-                            this.contacts.address || '',
-                            this.contacts.addressRegional || '',
-                        ),
+                        address: this.displayAddress,
                     }, { emitEvent: false });
                 }
             })
         );
-        if (this.entityId) {
-            this.loadContacts();
+        this.loadCountryOptions();
+        this.tryLoadContacts();
+        this.tryLoadEntityCountry();
+    }
+
+    ngOnChanges(changes: SimpleChanges): void {
+        if (changes['entityId'] && !changes['entityId'].firstChange) {
+            this.tryLoadContacts();
+            this.tryLoadEntityCountry();
         }
     }
 
     ngOnDestroy(): void {
         this.subscriptions.forEach((sub) => sub.unsubscribe());
+    }
+
+    private tryLoadContacts(): void {
+        if (this.entityId) {
+            this.loadContacts();
+        }
     }
 
     loadContacts(): void {
@@ -78,8 +104,10 @@ export class SharedEntityContactComponent implements OnInit, OnDestroy {
                     this.handleBusinessError(response);
                     return;
                 }
-                this.mapContactsData(response?.message || {});
-                this.loading = false;
+                setTimeout(() => {
+                    this.mapContactsData(response?.message || {});
+                    this.loading = false;
+                });
             },
             error: () => {
                 this.loading = false;
@@ -96,9 +124,26 @@ export class SharedEntityContactComponent implements OnInit, OnDestroy {
             city: data?.City || '',
             latitude: data?.Latitude != null ? String(data.Latitude) : '',
             longitude: data?.Longitude != null ? String(data.Longitude) : '',
-            phoneNumbers: this.normalizeStringList(data?.Phone_Numbers),
+            phoneNumbers: this.normalizeStringList(data?.PhoneNumbers),
             emails: this.normalizeStringList(data?.Emails),
         };
+        this.refreshDisplayLabels();
+    }
+
+    private refreshDisplayLabels(): void {
+        if (!this.contacts) {
+            this.displayAddress = '';
+            this.displayPhoneNumbers = [];
+            this.displayEmails = [];
+            return;
+        }
+
+        this.displayAddress = this.localStorageService.pickRequestContentField(
+            this.contacts.address,
+            this.contacts.addressRegional || '',
+        );
+        this.displayPhoneNumbers = [...this.contacts.phoneNumbers];
+        this.displayEmails = [...this.contacts.emails];
     }
 
     openEditDialog(): void {
@@ -118,7 +163,7 @@ export class SharedEntityContactComponent implements OnInit, OnDestroy {
     }
 
     initEditForm(): void {
-        const address = this.localStorageService.pickRequestContentField(
+        const address = this.displayAddress || this.localStorageService.pickRequestContentField(
             this.contacts?.address || '',
             this.contacts?.addressRegional || '',
         );
@@ -202,8 +247,61 @@ export class SharedEntityContactComponent implements OnInit, OnDestroy {
 
     onCancelEdit(): void {
         this.editDialog = false;
+        this.mapPickerVisible = false;
+        this.mapPickerReady = false;
         this.editForm.reset();
         this.submitted = false;
+    }
+
+    openMapPicker(): void {
+        const open = (countryCode: string) => {
+            this.mapPickerReady = false;
+            this.mapCountryCodeControl.setValue(countryCode || '');
+            this.mapPickerVisible = true;
+        };
+
+        if (this.entityCountryCode) {
+            open(this.entityCountryCode);
+            return;
+        }
+
+        if (!this.entityId) {
+            open('');
+            return;
+        }
+
+        const sub = this.entityExtraDataService.getEntityExtraData(Number(this.entityId)).subscribe({
+            next: (response: any) => {
+                if (response?.success) {
+                    const mapped = this.entityExtraDataService.mapEntityExtraData(response.message || {});
+                    this.entityCountryCode = String(mapped.countryCode || '').trim().toUpperCase();
+                }
+                open(this.entityCountryCode);
+            },
+            error: () => open(''),
+        });
+        this.subscriptions.push(sub);
+    }
+
+    closeMapPicker(): void {
+        this.mapPickerVisible = false;
+        this.mapPickerReady = false;
+    }
+
+    onMapPickerShown(): void {
+        setTimeout(() => {
+            this.mapPickerReady = true;
+        }, 100);
+    }
+
+    confirmMapPicker(): void {
+        this.editForm.get('latitude')?.markAsDirty();
+        this.editForm.get('latitude')?.markAsTouched();
+        this.editForm.get('latitude')?.updateValueAndValidity();
+        this.editForm.get('longitude')?.markAsDirty();
+        this.editForm.get('longitude')?.markAsTouched();
+        this.editForm.get('longitude')?.updateValueAndValidity();
+        this.mapPickerVisible = false;
     }
 
     submitUpdate(): void {
@@ -271,10 +369,10 @@ export class SharedEntityContactComponent implements OnInit, OnDestroy {
                 });
 
                 this.editDialog = false;
-                this.editForm.reset();
                 this.submitted = false;
-                this.loadContacts();
                 this.savingContact = false;
+                this.editForm.reset();
+                setTimeout(() => this.loadContacts());
             },
             error: () => {
                 this.savingContact = false;
@@ -327,17 +425,9 @@ export class SharedEntityContactComponent implements OnInit, OnDestroy {
                 detail: this.translate.instant('entities.contact.errors.invalidEntityId')
             });
         }
-        this.loading = false;
-    }
-
-    getDisplayAddress(): string {
-        if (!this.contacts) {
-            return '';
-        }
-        return this.localStorageService.pickRequestContentField(
-            this.contacts.address,
-            this.contacts.addressRegional || '',
-        );
+        setTimeout(() => {
+            this.loading = false;
+        });
     }
 
     private normalizeStringList(value: unknown): string[] {
@@ -356,36 +446,40 @@ export class SharedEntityContactComponent implements OnInit, OnDestroy {
         return [];
     }
 
-    private sanitizeList(list?: string[]): string[] {
-        if (!Array.isArray(list)) {
-            return [];
+    private loadCountryOptions(): void {
+        const sub = this.lookupService.getCountries().subscribe((countries) => {
+            this.countries = this.lookupService.sortCountriesByLabel(
+                countries,
+                this.localStorageService.isArabicUi(),
+            );
+            this.remapCountryOptions();
+        });
+        this.subscriptions.push(sub);
+    }
+
+    private tryLoadEntityCountry(): void {
+        if (!this.entityId) {
+            this.entityCountryCode = '';
+            return;
         }
-        return list
-            .map(item => (item ?? '').toString().trim())
-            .filter(item => item !== '');
+
+        const sub = this.entityExtraDataService.getEntityExtraData(Number(this.entityId)).subscribe({
+            next: (response: any) => {
+                if (!response?.success) {
+                    return;
+                }
+                const mapped = this.entityExtraDataService.mapEntityExtraData(response.message || {});
+                this.entityCountryCode = String(mapped.countryCode || '').trim().toUpperCase();
+            },
+        });
+        this.subscriptions.push(sub);
     }
 
-    formatPhoneDisplay(phone: string): string {
-        const cleaned = phone.replace(/\D/g, '');
-        if (cleaned.length === 10) {
-            return cleaned.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
-        }
-        return phone;
-    }
-
-    hasPhoneNumbers(): boolean {
-        return this.getPhoneNumbersForDisplay().length > 0;
-    }
-
-    getPhoneNumbersForDisplay(): string[] {
-        return this.sanitizeList(this.contacts?.phoneNumbers);
-    }
-
-    hasEmails(): boolean {
-        return this.getEmailsForDisplay().length > 0;
-    }
-
-    getEmailsForDisplay(): string[] {
-        return this.sanitizeList(this.contacts?.emails);
+    private remapCountryOptions(): void {
+        const isArabic = this.localStorageService.isArabicUi();
+        this.countryOptions = this.countries.map((country) => ({
+            label: this.lookupService.getCountryLabel(country, isArabic),
+            value: country.code,
+        }));
     }
 }

@@ -1,5 +1,5 @@
-<div class="register-location-picker">
-  <div class="register-location-picker__head">
+<div class="register-location-picker" [class.register-location-picker--compact]="!showCoordinates">
+  <div class="register-location-picker__head" *ngIf="showCoordinates">
     <span class="register-field__label">{{ 'public.register.location.title' | translate }}</span>
     <p class="register-location-picker__hint">{{ 'public.register.location.hint' | translate }}</p>
   </div>
@@ -9,12 +9,19 @@
     [class.register-location-picker__map-box--invalid]="showLocationError"
   >
     <div #map class="register-location-picker__map" [attr.aria-label]="'public.register.location.title' | translate"></div>
-    <div class="register-location-picker__map-overlay" *ngIf="!hasCountryCode">
+    <div class="register-location-picker__map-loading" *ngIf="mapLoading">
+      <p-skeleton height="100%" width="100%" borderRadius="8px"></p-skeleton>
+    </div>
+    <div class="register-location-picker__map-overlay" *ngIf="!mapLoading && requireCountry && !hasCountryCode">
       {{ 'public.register.location.selectCountryFirst' | translate }}
     </div>
   </div>
 
   <div class="register-location-picker__actions">
+    <ng-container *ngIf="mapLoading; else geoButton">
+      <p-skeleton height="2.5rem" width="10rem" borderRadius="999px"></p-skeleton>
+    </ng-container>
+    <ng-template #geoButton>
     <button
       type="button"
       class="register-location-picker__geo-btn"
@@ -27,9 +34,10 @@
       </ng-container>
       <ng-template #geoLabel>{{ 'public.register.location.useMyLocation' | translate }}</ng-template>
     </button>
+    </ng-template>
   </div>
 
-  <div class="register-location-picker__coords">
+  <div class="register-location-picker__coords" *ngIf="showCoordinates">
     <div class="register-location-picker__coord-field">
       <label class="register-location-picker__coord-label" for="register-location-latitude">
         {{ 'public.register.fields.latitude' | translate }}
