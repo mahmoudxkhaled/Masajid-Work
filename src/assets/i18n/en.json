@@ -1313,7 +1313,10 @@
             "vendorAdministration": "Vendor Administration",
             "vendorDetails": "Vendor Details",
             "charityAdministration": "Charity Administration",
-            "charityDetails": "Charity Details",
+            "charityDetails": "Charity Center Details",
+            "editFacility": "Edit Facility",
+            "editVendor": "Edit Vendor",
+            "editCharity": "Edit Charity Center",
             "roles&Permissions": "Roles & Permissions",
             "usersDetails": "Users Details",
             "newEntity": "New Entity",
@@ -1446,7 +1449,7 @@
             "samlNotificationRecipients": "SAML Notification Recipients",
             "idPSSOTargetURL": "IDP SSO Target URL",
             "currentAuthnRequestCertificate": "Current Authn Request Certificate",
-            "entityId": "Entity ID",
+            "entityId": "ID",
             "ssoSignInURL": "SSO Sign In URL",
             "ssoSignOutURL": "SSO Sign Out URL",
             "ssoCallbackURL": "SSO Callback URL",
@@ -2071,6 +2074,28 @@
             "backToList": "Back to List",
             "editEntity": "Edit Entity",
             "profile": "Entity Profile",
+            "byType": {
+                "facility": {
+                    "title": "Facility Details",
+                    "profile": "Facility Profile",
+                    "editEntity": "Edit Facility"
+                },
+                "vendor": {
+                    "title": "Vendor Details",
+                    "profile": "Vendor Profile",
+                    "editEntity": "Edit Vendor"
+                },
+                "charity": {
+                    "title": "Charity Center Details",
+                    "profile": "Charity Center Profile",
+                    "editEntity": "Edit Charity Center"
+                },
+                "default": {
+                    "title": "Entity Details",
+                    "profile": "Entity Profile",
+                    "editEntity": "Edit Entity"
+                }
+            },
             "tabs": {
                 "basicInfoContacts": "Basic Information & Contacts",
                 "accounts": "Accounts",
@@ -2099,7 +2124,7 @@
             },
             "fields": {
                 "code": "Code:",
-                "entityId": "Entity ID:",
+                "entityId": "ID:",
                 "parentEntity": "Parent Entity:",
                 "description": "Description"
             },
@@ -2382,7 +2407,7 @@
             "email": "Email",
             "entity": "Entity",
             "entityRole": "Entity role",
-            "entityId": "Entity ID",
+            "entityId": "ID",
             "entityRoleId": "Entity Role ID",
             "accountState": "Account State",
             "description": "Description",

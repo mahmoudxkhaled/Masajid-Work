@@ -5,7 +5,14 @@ import { filter } from 'rxjs/operators';
 import { TranslationService } from 'src/app/core/services/translation.service';
 import { ModuleNavigationService } from 'src/app/core/services/module-navigation.service';
 import { LocalStorageService } from 'src/app/core/services/local-storage.service';
-import { MasajidUserType } from 'src/app/core/models/masajid-user-type.model';
+import {
+    EntityProfileLabelType,
+    entityTypeIdToProfileLabelType,
+    getBreadcrumbAdministrationKey,
+    getBreadcrumbEditEntityKey,
+    getBreadcrumbEntityDetailsKey,
+    masajidUserTypeToProfileLabelType,
+} from 'src/app/core/utils/entity-profile-label.util';
 
 interface Breadcrumb {
     label: string;
@@ -33,7 +40,7 @@ export class AppBreadcrumbComponent {
             const breadcrumbs: Breadcrumb[] = [];
             this.addBreadcrumb(root, [], breadcrumbs);
 
-            this._breadcrumbs$.next(this.applyWorkspaceEntityProfileBreadcrumbLabels(breadcrumbs));
+            this._breadcrumbs$.next(this.applyEntityProfileBreadcrumbLabels(breadcrumbs));
         });
     }
 
@@ -89,26 +96,9 @@ export class AppBreadcrumbComponent {
         // If not a module, let default routerLink handle navigation
     }
 
-    private readonly workspaceEntityProfileBreadcrumbKeys: Partial<
-        Record<MasajidUserType, { administration: string; details: string }>
-    > = {
-        [MasajidUserType.FacilityRepresentative]: {
-            administration: 'facilityAdministration',
-            details: 'facilityDetails',
-        },
-        [MasajidUserType.Vendor]: {
-            administration: 'vendorAdministration',
-            details: 'vendorDetails',
-        },
-        [MasajidUserType.CharityCenterRepresentative]: {
-            administration: 'charityAdministration',
-            details: 'charityDetails',
-        },
-    };
-
-    private applyWorkspaceEntityProfileBreadcrumbLabels(breadcrumbs: Breadcrumb[]): Breadcrumb[] {
-        const keys = this.getWorkspaceEntityProfileBreadcrumbKeys();
-        if (!keys || !this.isWorkspaceEntityProfileRoute()) {
+    private applyEntityProfileBreadcrumbLabels(breadcrumbs: Breadcrumb[]): Breadcrumb[] {
+        const labelType = this.resolveEntityProfileLabelType();
+        if (labelType === 'default' || !this.isEntityProfileRoute()) {
             return breadcrumbs;
         }
 
@@ -116,28 +106,27 @@ export class AppBreadcrumbComponent {
             .filter((crumb) => crumb.label !== 'companyDetails')
             .map((crumb) => {
                 if (crumb.label === 'companyAdministration') {
-                    return { ...crumb, label: keys.administration };
+                    return { ...crumb, label: getBreadcrumbAdministrationKey(labelType) };
                 }
-                if (crumb.label === 'entityDetails' || crumb.label === 'editEntity') {
-                    return { ...crumb, label: keys.details };
+                if (crumb.label === 'entityDetails') {
+                    return { ...crumb, label: getBreadcrumbEntityDetailsKey(labelType) };
+                }
+                if (crumb.label === 'editEntity') {
+                    return { ...crumb, label: getBreadcrumbEditEntityKey(labelType) };
                 }
                 return crumb;
             });
     }
 
-    private getWorkspaceEntityProfileBreadcrumbKeys(): { administration: string; details: string } | null {
-        const userType = this.localStorageService.getMasajidUserType();
-        if (!userType) {
-            return null;
+    private resolveEntityProfileLabelType(): EntityProfileLabelType {
+        const entityTypeId = this.localStorageService.getEntityTypeId();
+        if (entityTypeId !== null) {
+            return entityTypeIdToProfileLabelType(entityTypeId);
         }
-        return this.workspaceEntityProfileBreadcrumbKeys[userType] ?? null;
+        return masajidUserTypeToProfileLabelType(this.localStorageService.getMasajidUserType());
     }
 
-    private isWorkspaceEntityProfileRoute(): boolean {
-        if (!this.getWorkspaceEntityProfileBreadcrumbKeys()) {
-            return false;
-        }
-
+    private isEntityProfileRoute(): boolean {
         const path = this.router.url.split('?')[0].split('#')[0];
         return /^\/entity-administration\/entities\/(?!list$|new$)[^/]+/.test(path);
     }

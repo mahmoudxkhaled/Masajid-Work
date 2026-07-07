@@ -1,7 +1,7 @@
 <div class="card">
     <div class="flex justify-content-between align-items-center mb-4">
         <h2>
-            {{ 'entities.details.title' | translate }}
+            {{ getDetailsLabelKey('title') | translate }}
         </h2>
         <p-button [label]="'entities.details.backToList' | translate" icon="pi pi-arrow-left" class="p-button-secondary"
             (onClick)="navigateBack()" [disabled]="loading && !entityDetails">
@@ -17,7 +17,7 @@
                             <div class="flex align-items-center justify-content-between w-full">
                                 <div class="flex align-items-center gap-3">
                                     <i class="pi pi-briefcase text-primary text-2xl"></i>
-                                    <span class="text-xl font-semibold">{{ 'entities.details.profile' | translate
+                                    <span class="text-xl font-semibold">{{ getDetailsLabelKey('profile') | translate
                                         }}</span>
                                 </div>
                                 <p-skeleton height="2.25rem" width="8rem" borderRadius="4px"></p-skeleton>
@@ -157,13 +157,13 @@
                             <div class="flex align-items-center justify-content-between w-full">
                                 <div class="flex align-items-center gap-3">
                                     <i class="pi pi-briefcase text-primary text-2xl"></i>
-                                    <span class="text-xl font-semibold">{{ 'entities.details.profile' | translate
+                                    <span class="text-xl font-semibold">{{ getDetailsLabelKey('profile') | translate
                                         }}</span>
                                 </div>
                                 <p-button *ngIf="canEditEntityDetails"
-                                    [label]="'entities.details.editEntity' | translate" icon="pi pi-pencil" size="small"
-                                    severity="contrast" (onClick)="openEditEntityDialog()" [disabled]="loading"
-                                    class="edit-entity-btn">
+                                    [label]="getDetailsLabelKey('editEntity') | translate" icon="pi pi-pencil"
+                                    size="small" severity="contrast" (onClick)="openEditEntityDialog()"
+                                    [disabled]="loading" class="edit-entity-btn">
                                 </p-button>
                             </div>
                         </ng-template>
@@ -268,13 +268,13 @@
                                                     <span><strong>{{ 'entities.details.fields.code' | translate
                                                             }}</strong> {{ getEntityCode() || '—' }}</span>
                                                 </div>
-                                                <div class="flex align-items-center gap-3 text-700">
+                                                <!-- <div class="flex align-items-center gap-3 text-700">
                                                     <span><strong>{{ 'entities.details.fields.entityId' | translate
                                                             }}</strong> #{{ entityId || '—' }}</span>
                                                     <span><strong>{{ 'entities.details.fields.parentEntity' | translate
                                                             }}</strong> #{{ getParentEntityLabel() || '—'
                                                         }}</span>
-                                                </div>
+                                                </div> -->
                                             </div>
 
                                             <div class="flex gap-3 mt-4">

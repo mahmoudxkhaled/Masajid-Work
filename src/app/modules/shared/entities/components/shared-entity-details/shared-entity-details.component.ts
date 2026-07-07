@@ -12,6 +12,13 @@ import { PermissionService } from 'src/app/core/services/permission.service';
 import { IAccountSettings, IEntityDetails } from 'src/app/core/models/account-status.model';
 import { AuthService } from 'src/app/modules/auth/services/auth.service';
 import { TranslateService } from '@ngx-translate/core';
+import { EntityExtraDataService } from 'src/app/modules/donation-process/services/entity-extra-data.service';
+import {
+    EntityProfileLabelType,
+    entityTypeIdToProfileLabelType,
+    getEntityDetailsLabelKey,
+    masajidUserTypeToProfileLabelType,
+} from 'src/app/core/utils/entity-profile-label.util';
 
 @Component({
     selector: 'app-shared-entity-details',
@@ -37,6 +44,7 @@ export class SharedEntityDetailsComponent implements OnInit, OnDestroy {
 
     canManageEntityPhoto = false;
     canEditEntityDetails = false;
+    entityProfileLabelType: EntityProfileLabelType = 'default';
 
     private subscriptions: Subscription[] = [];
     private getEntityPhotoSub?: Subscription;
@@ -53,7 +61,8 @@ export class SharedEntityDetailsComponent implements OnInit, OnDestroy {
         private permissionService: PermissionService,
         private languageDirService: LanguageDirService,
         private authService: AuthService,
-        private translate: TranslateService
+        private translate: TranslateService,
+        private entityExtraDataService: EntityExtraDataService,
     ) {
         this.accountSettings = this.localStorageService.getAccountSettings() as IAccountSettings;
     }
@@ -94,6 +103,7 @@ export class SharedEntityDetailsComponent implements OnInit, OnDestroy {
             this.currentEntityId = nextId;
             this.entityId = nextId;
             this.resetViewStateForEntityChange();
+            this.loadEntityProfileLabelType();
             this.preloadEntityDetailsFromAccountStorageIfSameEntity();
             this.loadAllData();
         });
@@ -107,7 +117,41 @@ export class SharedEntityDetailsComponent implements OnInit, OnDestroy {
         this.loadingDetails = true;
         this.loadingPhoto = false;
         this.photoAwaitingApi = true;
+        this.entityProfileLabelType = 'default';
         this.setPlaceholderPhoto();
+    }
+
+    getDetailsLabelKey(field: 'title' | 'profile' | 'editEntity'): string {
+        return getEntityDetailsLabelKey(this.entityProfileLabelType, field);
+    }
+
+    private loadEntityProfileLabelType(): void {
+        const accountEntityId = String(this.localStorageService.getEntityDetails()?.Entity_ID || '');
+        const cachedTypeId = this.localStorageService.getEntityTypeId();
+        if (accountEntityId === this.entityId && cachedTypeId !== null) {
+            this.entityProfileLabelType = entityTypeIdToProfileLabelType(cachedTypeId);
+            return;
+        }
+
+        const sub = this.entityExtraDataService.getEntityExtraData(Number(this.entityId)).subscribe({
+            next: (response: any) => {
+                console.log('getEntityExtraData response', response);
+                if (!response?.success) {
+                    this.entityProfileLabelType = masajidUserTypeToProfileLabelType(
+                        this.localStorageService.getMasajidUserType(),
+                    );
+                    return;
+                }
+                const mapped = this.entityExtraDataService.mapEntityExtraData(response.message || {});
+                this.entityProfileLabelType = entityTypeIdToProfileLabelType(mapped.entityTypeId);
+            },
+            error: () => {
+                this.entityProfileLabelType = masajidUserTypeToProfileLabelType(
+                    this.localStorageService.getMasajidUserType(),
+                );
+            },
+        });
+        this.subscriptions.push(sub);
     }
 
     private parseTabIndex(raw: string | null): number | null {

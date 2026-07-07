@@ -57,7 +57,7 @@ export class ModuleNavigationService {
                 functionData.FunctionID,
                 STATIC_MODULES_DETAILS,
                 functionCode,
-                (moduleCode) => this.canSeeLegacyModule(moduleCode),
+                (moduleCode) => this.canSeeLegacyModule(moduleCode, userType),
             );
 
             if (!modules.length) {
@@ -119,7 +119,15 @@ export class ModuleNavigationService {
         };
     }
 
-    private canSeeLegacyModule(moduleCode: string): boolean {
+    private canSeeLegacyModule(moduleCode: string, userType?: MasajidUserType | null): boolean {
+        if (moduleCode === 'FAC_PROFILE') {
+            return userType === MasajidUserType.FacilityRepresentative;
+        }
+
+        if (moduleCode === 'VND_PROFILE') {
+            return userType === MasajidUserType.Vendor;
+        }
+
         const roleId = this.permissionService.getCurrentRoleId();
         if (!roleId) {
             return false;

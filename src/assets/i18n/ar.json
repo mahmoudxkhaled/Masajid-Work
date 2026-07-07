@@ -1316,6 +1316,9 @@
             "vendorDetails": "تفاصيل المورد",
             "charityAdministration": "إدارة المركز الخيري",
             "charityDetails": "تفاصيل المركز الخيري",
+            "editFacility": "تعديل المنشأة",
+            "editVendor": "تعديل المورد",
+            "editCharity": "تعديل المركز الخيري",
             "usersDetails": "تفاصيل المستخدمين",
             "newEntity": "شركة جديدة",
             "entityDetails": "تفاصيل الشركة",
@@ -1930,6 +1933,28 @@
             "backToList": "العودة للقائمة",
             "editEntity": "تعديل الشركة",
             "profile": "ملف الشركة",
+            "byType": {
+                "facility": {
+                    "title": "تفاصيل المنشأة",
+                    "profile": "ملف المنشأة",
+                    "editEntity": "تعديل المنشأة"
+                },
+                "vendor": {
+                    "title": "تفاصيل المورد",
+                    "profile": "ملف المورد",
+                    "editEntity": "تعديل المورد"
+                },
+                "charity": {
+                    "title": "تفاصيل المركز الخيري",
+                    "profile": "ملف المركز الخيري",
+                    "editEntity": "تعديل المركز الخيري"
+                },
+                "default": {
+                    "title": "تفاصيل الشركة",
+                    "profile": "ملف الشركة",
+                    "editEntity": "تعديل الشركة"
+                }
+            },
             "tabs": {
                 "basicInfoContacts": "المعلومات الأساسية والاتصال",
                 "accounts": "الحسابات",
@@ -1958,7 +1983,7 @@
             },
             "fields": {
                 "code": "الكود:",
-                "entityId": "معرف الشركة:",
+                "entityId": "المٌعرف :",
                 "parentEntity": "الشركة الأم:",
                 "description": "الوصف"
             },
@@ -2241,7 +2266,7 @@
             "email": "البريد الإلكتروني",
             "entity": "الشركة",
             "entityRole": "دور الشركة",
-            "entityId": "معرف الشركة",
+            "entityId": "المٌعرف ",
             "entityRoleId": "معرف دور الشركة",
             "accountState": "حالة الحساب",
             "description": "الوصف",
