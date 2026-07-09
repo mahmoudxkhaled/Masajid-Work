@@ -167,6 +167,7 @@ export class DonationRequestsService {
         this.readWorkflowField(item, 'Status_Name_Regional'),
       ),
       changedAt: this.readWorkflowField(item, 'Created_At'),
+      note: this.readWorkflowField(item, 'Note').trim(),
     }));
   }
 

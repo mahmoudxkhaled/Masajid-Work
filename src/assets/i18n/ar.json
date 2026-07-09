@@ -3478,6 +3478,7 @@
                     "reviewNote": "ملاحظة مراجعة الإدارة",
                     "workflowTitle": "سجل الحالة",
                     "workflowEmpty": "لا يوجد سجل حالة متاح.",
+                    "workflowNote": "ملاحظة",
                     "unknownStatus": "حالة غير معروفة",
                     "sections": {
                         "donation": "معلومات التبرع",
@@ -3512,7 +3513,49 @@
             "subtitle": "راجع ووافق على طلبات التبرع المعلقة للنشر.",
             "searchPlaceholder": "ابحث في الطلبات...",
             "pagination": "عرض '{first}' إلى '{last}' من أصل '{totalRecords}'",
-            "empty": "لا توجد طلبات بانتظار المراجعة."
+            "empty": "لا توجد طلبات بانتظار المراجعة.",
+            "columns": {
+                "category": "الفئة",
+                "quantity": "الكمية",
+                "country": "الدولة",
+                "actions": "الإجراءات"
+            },
+            "actions": {
+                "review": "مراجعة",
+                "approve": "موافقة",
+                "reject": "رفض"
+            },
+            "details": {
+                "title": "مراجعة طلب التبرع",
+                "back": "العودة إلى المراجعة المعلقة",
+                "entityId": "معرف المنشأة",
+                "reviewNote": "ملاحظة المراجعة",
+                "coordinates": "الإحداثيات",
+                "sections": {
+                    "donation": "تفاصيل التبرع",
+                    "location": "الموقع",
+                    "meta": "معلومات الطلب",
+                    "workflow": "سجل سير العمل"
+                }
+            },
+            "dialogs": {
+                "approveTitle": "الموافقة على طلب التبرع",
+                "rejectTitle": "رفض طلب التبرع",
+                "reviewNote": "ملاحظة المراجعة",
+                "reviewNoteOptional": "ملاحظة مراجعة اختيارية",
+                "reviewNoteRequired": "ملاحظة المراجعة مطلوبة عند رفض الطلب."
+            },
+            "messages": {
+                "approved": "تمت الموافقة على طلب التبرع ونشره بنجاح.",
+                "rejected": "تم رفض طلب التبرع بنجاح.",
+                "notPendingReview": "هذا الطلب لم يعد بانتظار المراجعة. إجراءات الموافقة والرفض غير متاحة."
+            },
+            "errors": {
+                "requestNotFound": "لم يتم العثور على طلب التبرع.",
+                "invalidStatus": "هذا الإجراء غير مسموح لحالة الطلب الحالية.",
+                "accessDenied": "ليس لديك صلاحية لتنفيذ هذا الإجراء.",
+                "sessionExpired": "انتهت صلاحية جلستك. يرجى تسجيل الدخول مرة أخرى."
+            }
         },
         "vendorOffers": {
             "title": "عروض الموردين",
@@ -3601,6 +3644,10 @@
             "filters": {
                 "status": "الحالة",
                 "allStatuses": "كل الحالات"
+            },
+            "locationMap": {
+                "title": "الموقع على الخريطة",
+                "viewOnMap": "عرض على الخريطة"
             },
             "categoryPicker": {
                 "placeholder": "اختر التصنيف"

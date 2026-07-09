@@ -135,7 +135,7 @@ export class DonationReferenceService {
           id: this.readNumber(record, 'Donation_Category_ID'),
           donationTypeId: this.readNumber(record, 'Donation_Type_ID'),
           code: this.readString(record, 'Code'),
-          name: this.localStorageService.pickRequestContentField(
+          name: this.localStorageService.pickLocalizedField(
             this.readString(record, 'Name'),
             this.readString(record, 'Name_Regional'),
           ),

@@ -1,12 +1,19 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
-import { Subscription } from 'rxjs';
+import { Subscription, forkJoin } from 'rxjs';
+import { LanguageDirService } from 'src/app/core/services/language-dir.service';
 import { LocalStorageService } from 'src/app/core/services/local-storage.service';
+import { PublicLookupService } from 'src/app/core/services/public-lookup.service';
 import { TranslationService } from 'src/app/core/services/translation.service';
+import { CountryLookup } from 'src/app/core/models/lookup.model';
 import { DonationRequestBackend } from '../../../models/donation-request.model';
-import { DonationRequestStatusBackend } from '../../../models/donation-request-status.model';
+import { DonationCategoryBackend } from '../../../models/donation-category.model';
+import { DonationTypeBackend } from '../../../models/donation-type.model';
 import { DonationReferenceService } from '../../../services/donation-reference.service';
 import { DonationAdminService } from '../../services/donation-admin.service';
+
+type PendingReviewListContext = 'list';
 
 @Component({
   standalone: false,
@@ -22,10 +29,13 @@ export class PendingReviewListComponent implements OnInit, OnDestroy {
   textFilter = '';
   first = 0;
   totalRecords = 0;
-  tableLoadingSpinner = false;
+  tableLoadingSpinner = true;
   initialLoading = true;
 
-  private statuses: DonationRequestStatusBackend[] = [];
+  private rawCategories: DonationCategoryBackend[] = [];
+  private countries: CountryLookup[] = [];
+  private categoryLabelById: Record<number, string> = {};
+  private countryLabelByCode: Record<string, string> = {};
   private searchDebounceTimer: ReturnType<typeof setTimeout> | null = null;
   private subscriptions: Subscription[] = [];
 
@@ -33,12 +43,21 @@ export class PendingReviewListComponent implements OnInit, OnDestroy {
     private donationAdminService: DonationAdminService,
     private donationReferenceService: DonationReferenceService,
     private localStorageService: LocalStorageService,
+    private lookupService: PublicLookupService,
+    private languageDirService: LanguageDirService,
     private translate: TranslationService,
     private messageService: MessageService,
+    private router: Router,
   ) { }
 
   ngOnInit(): void {
-    this.loadStatuses();
+    this.subscriptions.push(
+      this.languageDirService.userLanguageCode$.subscribe(() => {
+        this.buildCategoryMaps();
+        this.buildCountryMaps();
+      }),
+    );
+    this.loadLookups();
     this.loadRequests();
   }
 
@@ -73,6 +92,14 @@ export class PendingReviewListComponent implements OnInit, OnDestroy {
     }, 300);
   }
 
+  reviewRequest(row: DonationRequestBackend, event?: Event): void {
+    event?.stopPropagation();
+    if (this.tableLoadingSpinner || !row.Donation_Request_ID) {
+      return;
+    }
+    this.router.navigate(['/donations/admin/pending-review', row.Donation_Request_ID]);
+  }
+
   getTitle(row: DonationRequestBackend): string {
     return this.localStorageService.pickRequestContentField(
       String(row.Title || ''),
@@ -80,9 +107,24 @@ export class PendingReviewListComponent implements OnInit, OnDestroy {
     );
   }
 
-  getPendingReviewStatusLabel(): string {
-    const item = this.statuses.find((status) => String(status.Code || '').toUpperCase() === 'PENDING_REVIEW');
-    return item ? this.getStatusName(item) : '';
+  getCategoryLabel(row: DonationRequestBackend): string {
+    const categoryId = Number(row.Donation_Category_ID || 0);
+    return this.categoryLabelById[categoryId] || '-';
+  }
+
+  getQuantityLabel(row: DonationRequestBackend): string {
+    if (!row.Quantity) {
+      return '-';
+    }
+    return `${row.Quantity} ${row.Unit || ''}`.trim();
+  }
+
+  getCountryLabel(row: DonationRequestBackend): string {
+    const code = String(row.Country_Code || '').trim().toUpperCase();
+    if (!code) {
+      return '-';
+    }
+    return this.countryLabelByCode[code] || code;
   }
 
   formatEstimatedCost(row: DonationRequestBackend): string {
@@ -92,13 +134,49 @@ export class PendingReviewListComponent implements OnInit, OnDestroy {
     return `${row.Estimated_Cost} ${row.Currency_Code || ''}`.trim();
   }
 
-  private loadStatuses(): void {
-    const sub = this.donationReferenceService.listDonationRequestStatuses().subscribe({
-      next: (response: any) => {
-        if (!response?.success) {
+  // #region Load data
+
+  private loadLookups(): void {
+    const sub = forkJoin({
+      types: this.donationReferenceService.listDonationTypes(),
+      countries: this.lookupService.getCountries(),
+    }).subscribe({
+      next: (results) => {
+        this.countries = this.lookupService.sortCountriesByLabel(
+          results.countries,
+          this.localStorageService.isArabicUi(),
+        );
+        this.buildCountryMaps();
+
+        if (!results.types?.success) {
           return;
         }
-        this.statuses = Object.values(response.message ?? {});
+
+        const rawTypes = this.donationReferenceService.parseListFromResponse<DonationTypeBackend>(results.types);
+        const mappedTypes = this.donationReferenceService.mapDonationTypes(rawTypes);
+        if (!mappedTypes.length) {
+          this.buildCategoryMaps();
+          return;
+        }
+
+        const categorySub = forkJoin(
+          mappedTypes.map((type) => this.donationReferenceService.listDonationCategories(type.id, false)),
+        ).subscribe({
+          next: (categoryResponses) => {
+            console.log('categoryResponses', categoryResponses);
+            this.rawCategories = [];
+            categoryResponses.forEach((response: any) => {
+              if (!response?.success) {
+                return;
+              }
+              this.rawCategories.push(
+                ...this.donationReferenceService.parseListFromResponse<DonationCategoryBackend>(response),
+              );
+            });
+            this.buildCategoryMaps();
+          },
+        });
+        this.subscriptions.push(categorySub);
       },
     });
     this.subscriptions.push(sub);
@@ -115,8 +193,7 @@ export class PendingReviewListComponent implements OnInit, OnDestroy {
         next: (response: any) => {
           console.log('listPendingReviewRequests response', response);
           if (!response?.success) {
-            this.tableLoadingSpinner = false;
-            this.initialLoading = false;
+            this.handleBusinessError('list', response);
             return;
           }
           this.totalRecords = Number(response.message?.Total_Count || 0);
@@ -134,10 +211,58 @@ export class PendingReviewListComponent implements OnInit, OnDestroy {
     this.subscriptions.push(sub);
   }
 
-  private getStatusName(item: DonationRequestStatusBackend): string {
-    return this.localStorageService.pickLocalizedField(
-      String(item.Name || ''),
-      String(item.Name_Regional || ''),
-    );
+  // #endregion
+
+  private buildCategoryMaps(): void {
+    this.categoryLabelById = {};
+    for (const item of this.donationReferenceService.mapDonationCategories(this.rawCategories)) {
+      this.categoryLabelById[item.id] = item.name;
+    }
+  }
+
+  private buildCountryMaps(): void {
+    const isArabic = this.localStorageService.isArabicUi();
+    this.countryLabelByCode = {};
+    for (const item of this.countries) {
+      const code = String(item.code || '').trim().toUpperCase();
+      if (!code) {
+        continue;
+      }
+      this.countryLabelByCode[code] = this.lookupService.getCountryLabel(item, isArabic);
+    }
+  }
+
+  private handleBusinessError(context: PendingReviewListContext, response: any): void {
+    const code = String(response?.message || '');
+    let detail: string | null = null;
+
+    switch (context) {
+      case 'list':
+        detail = this.getListErrorMessage(code);
+        this.tableLoadingSpinner = false;
+        this.initialLoading = false;
+        break;
+    }
+
+    if (detail) {
+      this.messageService.add({
+        severity: 'error',
+        summary: this.translate.getInstant('common.error'),
+        detail,
+      });
+    }
+  }
+
+  private getListErrorMessage(code: string): string | null {
+    switch (code) {
+      case 'DAP11055':
+        return this.translate.getInstant('donations.adminReview.errors.accessDenied');
+      case 'DAP11040':
+      case 'DAP11041':
+      case 'DAP11042':
+        return this.translate.getInstant('donations.adminReview.errors.sessionExpired');
+      default:
+        return null;
+    }
   }
 }

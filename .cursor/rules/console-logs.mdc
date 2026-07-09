@@ -1,0 +1,22 @@
+---
+description: Never remove existing console.log statements — preserve debug logging in all edits
+alwaysApply: true
+---
+
+# Console logs — do not remove
+
+## Mandatory rule
+
+- **Never remove** existing `console.log` (or `console.debug`, `console.warn`, `console.error`) statements when editing code.
+- **Do not** delete them as cleanup, polish, lint fixes, refactors, or “production readiness” unless the user **explicitly** asks to remove a specific log.
+- **Do not** replace them with comments or remove them because they look temporary.
+
+## When editing a file
+
+- If you touch a file that already has `console.log` calls, **leave them in place** (same message and placement unless the user asks to change them).
+- If you add new logging for debugging, that is fine — but **never** remove unrelated existing logs in the same pass.
+
+## Exceptions (only when the user explicitly requests)
+
+- User says: “remove console.log”, “clean up logs”, “remove debug logging”, or points at a specific log to delete.
+- Otherwise: **preserve all console logs.**

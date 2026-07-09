@@ -67,3 +67,9 @@
   color: var(--text-color);
   word-break: break-word;
 }
+
+.review-note-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}

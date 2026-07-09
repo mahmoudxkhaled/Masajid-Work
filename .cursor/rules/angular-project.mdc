@@ -41,9 +41,10 @@ reload() { ... }
 
 ## `console.log` (debugging)
 
-- **Do not remove** existing **`console.log`** (or similar debug logs) when editing a file — leave them in place unless the **user explicitly** asks to remove or clean them up.
-- **Do not** delete debug logs as drive-by cleanup, “production polish,” or lint hygiene during unrelated tasks.
-- Remove or replace logs **only** when the user clearly requests it (e.g. “remove console logs”, “clean up debugging”).
+See **`console-logs`** for the full mandatory rule. Summary:
+
+- **Never remove** existing debug logs unless the user explicitly asks.
+- **Add** `console.log` on list/details API `subscribe` handlers (see examples below).
 
 ### List & details API responses (mandatory)
 

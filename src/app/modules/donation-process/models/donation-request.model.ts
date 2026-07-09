@@ -75,6 +75,7 @@ export interface DonationRequestWorkflowItem {
   statusId: number;
   statusName: string;
   changedAt: string;
+  note: string;
 }
 
 export interface CreateDonationRequestRequest {

@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { MessageService } from 'primeng/api';
 import { Subscription, forkJoin } from 'rxjs';
 import { LanguageDirService } from 'src/app/core/services/language-dir.service';
 import { LocalStorageService } from 'src/app/core/services/local-storage.service';
@@ -14,28 +14,35 @@ import { DonationRequestStatusBackend } from '../../../models/donation-request-s
 import { DonationCategoryBackend } from '../../../models/donation-category.model';
 import { DonationTypeBackend } from '../../../models/donation-type.model';
 import { DonationReferenceService } from '../../../services/donation-reference.service';
-import { DonationRequestsService } from '../../services/donation-requests.service';
+import { DonationRequestsService } from '../../../facility-requests/services/donation-requests.service';
+import { DonationAdminService } from '../../services/donation-admin.service';
 
-type FacilityRequestDetailsContext = 'load' | 'submit' | 'delete';
+type PendingReviewDetailsContext = 'load' | 'approve' | 'reject';
 
 @Component({
   standalone: false,
-  selector: 'app-facility-request-details',
-  templateUrl: './facility-request-details.component.html',
-  styleUrl: './facility-request-details.component.scss',
+  selector: 'app-pending-review-details',
+  templateUrl: './pending-review-details.component.html',
+  styleUrl: './pending-review-details.component.scss',
 })
-export class FacilityRequestDetailsComponent implements OnInit, OnDestroy {
+export class PendingReviewDetailsComponent implements OnInit, OnDestroy {
   requestId = 0;
   loading = true;
   workflowLoading = true;
   details: DonationRequestDetails | null = null;
   workflowItems: DonationRequestWorkflowItem[] = [];
-  locationMapVisible = false;
 
   typeLabel = '';
   categoryLabel = '';
   statusLabel = '';
   statusSeverity: 'success' | 'info' | 'warning' | 'danger' | 'secondary' | 'contrast' = 'info';
+
+  approveDialogVisible = false;
+  rejectDialogVisible = false;
+  locationMapVisible = false;
+  reviewNote = '';
+
+  isLoading$ = this.donationAdminService.isLoadingSubject.asObservable();
 
   private rawDetails: DonationRequestDetailsBackend | null = null;
   private rawWorkflow: Record<string, unknown>[] = [];
@@ -53,12 +60,12 @@ export class FacilityRequestDetailsComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private donationRequestsService: DonationRequestsService,
+    private donationAdminService: DonationAdminService,
     private donationReferenceService: DonationReferenceService,
     private localStorageService: LocalStorageService,
     private languageDirService: LanguageDirService,
     private translate: TranslationService,
     private messageService: MessageService,
-    private confirmationService: ConfirmationService,
   ) { }
 
   ngOnInit(): void {
@@ -79,35 +86,70 @@ export class FacilityRequestDetailsComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
-  get isDraft(): boolean {
-    return String(this.details?.statusCode || '').toUpperCase() === 'DRAFT';
+  get isPendingReview(): boolean {
+    return String(this.details?.statusCode || '').toUpperCase() === 'PENDING_REVIEW';
   }
 
   backToList(): void {
-    this.router.navigate(['/donations/facility/requests']);
+    this.router.navigate(['/donations/admin/pending-review']);
   }
 
-  goToEdit(): void {
-    this.router.navigate(['/donations/facility/requests', this.requestId, 'edit']);
+  openApproveDialog(): void {
+    this.reviewNote = '';
+    this.approveDialogVisible = true;
   }
 
-  confirmSubmit(): void {
-    this.confirmationService.confirm({
-      message: this.translate.getInstant('donations.facility.requests.confirm.submitMessage'),
-      header: this.translate.getInstant('donations.facility.requests.confirm.submitTitle'),
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => this.submitForReview(),
+  openRejectDialog(): void {
+    this.reviewNote = '';
+    this.rejectDialogVisible = true;
+  }
+
+  closeApproveDialog(): void {
+    this.approveDialogVisible = false;
+    this.reviewNote = '';
+  }
+
+  closeRejectDialog(): void {
+    this.rejectDialogVisible = false;
+    this.reviewNote = '';
+  }
+
+  confirmApprove(): void {
+    const sub = this.donationAdminService.approveDonationRequest(this.requestId, this.reviewNote).subscribe({
+      next: (response: any) => {
+        if (!response?.success) {
+          this.handleBusinessError('approve', response);
+          return;
+        }
+        this.messageService.add({
+          severity: 'success',
+          summary: this.translate.getInstant('common.success'),
+          detail: this.translate.getInstant('donations.adminReview.messages.approved'),
+        });
+        this.closeApproveDialog();
+        this.router.navigate(['/donations/admin/pending-review']);
+      },
     });
+    this.subscriptions.push(sub);
   }
 
-  confirmDelete(): void {
-    this.confirmationService.confirm({
-      message: this.translate.getInstant('donations.facility.requests.confirm.deleteMessage'),
-      header: this.translate.getInstant('donations.facility.requests.confirm.deleteTitle'),
-      icon: 'pi pi-exclamation-triangle',
-      acceptButtonStyleClass: 'p-button-danger',
-      accept: () => this.deleteRequest(),
+  confirmReject(): void {
+    const sub = this.donationAdminService.rejectDonationRequest(this.requestId, this.reviewNote).subscribe({
+      next: (response: any) => {
+        if (!response?.success) {
+          this.handleBusinessError('reject', response);
+          return;
+        }
+        this.messageService.add({
+          severity: 'success',
+          summary: this.translate.getInstant('common.success'),
+          detail: this.translate.getInstant('donations.adminReview.messages.rejected'),
+        });
+        this.closeRejectDialog();
+        this.router.navigate(['/donations/admin/pending-review']);
+      },
     });
+    this.subscriptions.push(sub);
   }
 
   formatCost(): string {
@@ -130,7 +172,10 @@ export class FacilityRequestDetailsComponent implements OnInit, OnDestroy {
     }).subscribe({
       next: (results) => {
         if (results.statuses?.success) {
-          this.statuses = Object.values(results.statuses.message ?? {});
+          this.statuses = this.donationReferenceService.extractDictionaryItems<DonationRequestStatusBackend>(
+            results.statuses.message,
+            'Request_Statuses',
+          );
           this.buildStatusMaps();
         }
 
@@ -139,7 +184,7 @@ export class FacilityRequestDetailsComponent implements OnInit, OnDestroy {
           return;
         }
 
-        this.rawTypes = Object.values(results.types.message ?? {}) as DonationTypeBackend[];
+        this.rawTypes = this.donationReferenceService.parseListFromResponse<DonationTypeBackend>(results.types);
         this.buildTypeMaps();
 
         const mappedTypes = this.donationReferenceService.mapDonationTypes(this.rawTypes);
@@ -154,14 +199,13 @@ export class FacilityRequestDetailsComponent implements OnInit, OnDestroy {
           mappedTypes.map((type) => this.donationReferenceService.listDonationCategories(type.id, false)),
         ).subscribe({
           next: (categoryResponses) => {
-            console.log('listCategories response', categoryResponses);
             this.rawCategories = [];
             categoryResponses.forEach((response: any, index) => {
               if (!response?.success) {
                 return;
               }
               const typeId = mappedTypes[index]?.id || 0;
-              const items = Object.values(response.message ?? {}) as DonationCategoryBackend[];
+              const items = this.donationReferenceService.parseListFromResponse<DonationCategoryBackend>(response);
               items.forEach((item) => {
                 this.rawCategories.push({
                   ...item,
@@ -188,8 +232,6 @@ export class FacilityRequestDetailsComponent implements OnInit, OnDestroy {
       workflow: this.donationRequestsService.getDonationRequestWorkflow(this.requestId),
     }).subscribe({
       next: (results) => {
-        console.log('getDonationRequestDetails response', results);
-
         if (!results.details?.success) {
           this.handleBusinessError('load', results.details);
           this.loading = false;
@@ -230,7 +272,7 @@ export class FacilityRequestDetailsComponent implements OnInit, OnDestroy {
     }
 
     this.statusLabel = this.statusLabelById[this.details.statusId] || '';
-    this.statusSeverity = this.getStatusSeverity(this.statusCodeById[this.details.statusId] || '');
+    this.statusSeverity = this.getStatusSeverity(this.statusCodeById[this.details.statusId] || this.details.statusCode);
     this.categoryLabel = this.categoryLabelById[this.details.donationCategoryId] || '';
 
     const typeId =
@@ -283,42 +325,6 @@ export class FacilityRequestDetailsComponent implements OnInit, OnDestroy {
 
   // #endregion
 
-  private submitForReview(): void {
-    const sub = this.donationRequestsService.submitDonationRequestForReview(this.requestId).subscribe({
-      next: (response: any) => {
-        if (!response?.success) {
-          this.handleBusinessError('submit', response);
-          return;
-        }
-        this.messageService.add({
-          severity: 'success',
-          summary: this.translate.getInstant('common.success'),
-          detail: this.translate.getInstant('donations.facility.requests.messages.submitted'),
-        });
-        this.loadPageData();
-      },
-    });
-    this.subscriptions.push(sub);
-  }
-
-  private deleteRequest(): void {
-    const sub = this.donationRequestsService.deleteDonationRequest(this.requestId).subscribe({
-      next: (response: any) => {
-        if (!response?.success) {
-          this.handleBusinessError('delete', response);
-          return;
-        }
-        this.messageService.add({
-          severity: 'success',
-          summary: this.translate.getInstant('common.success'),
-          detail: this.translate.getInstant('donations.facility.requests.messages.deleted'),
-        });
-        this.router.navigate(['/donations/facility/requests']);
-      },
-    });
-    this.subscriptions.push(sub);
-  }
-
   private getStatusSeverity(code: string): 'success' | 'info' | 'warning' | 'danger' | 'secondary' | 'contrast' {
     switch (String(code).toUpperCase()) {
       case 'DRAFT':
@@ -338,7 +344,7 @@ export class FacilityRequestDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  private handleBusinessError(context: FacilityRequestDetailsContext, response: any): void {
+  private handleBusinessError(context: PendingReviewDetailsContext, response: any): void {
     const code = String(response?.message || '');
     let detail: string | null = null;
 
@@ -346,11 +352,11 @@ export class FacilityRequestDetailsComponent implements OnInit, OnDestroy {
       case 'load':
         detail = this.getLoadErrorMessage(code);
         break;
-      case 'submit':
-        detail = this.getSubmitErrorMessage(code);
+      case 'approve':
+        detail = this.getApproveErrorMessage(code);
         break;
-      case 'delete':
-        detail = this.getDeleteErrorMessage(code);
+      case 'reject':
+        detail = this.getRejectErrorMessage(code);
         break;
     }
 
@@ -366,29 +372,38 @@ export class FacilityRequestDetailsComponent implements OnInit, OnDestroy {
   private getLoadErrorMessage(code: string): string | null {
     switch (code) {
       case 'DAP13000':
-        return this.translate.getInstant('donations.facility.requests.errors.invalidRequestId');
+        return this.translate.getInstant('donations.adminReview.errors.requestNotFound');
+      case 'DAP11055':
+        return this.translate.getInstant('donations.adminReview.errors.accessDenied');
+      case 'DAP11040':
+      case 'DAP11041':
+      case 'DAP11042':
+        return this.translate.getInstant('donations.adminReview.errors.sessionExpired');
       default:
         return null;
     }
   }
 
-  private getSubmitErrorMessage(code: string): string | null {
+  private getApproveErrorMessage(code: string): string | null {
+    return this.getActionErrorMessage(code);
+  }
+
+  private getRejectErrorMessage(code: string): string | null {
+    return this.getActionErrorMessage(code);
+  }
+
+  private getActionErrorMessage(code: string): string | null {
     switch (code) {
       case 'DAP13000':
-        return this.translate.getInstant('donations.facility.requests.errors.invalidRequestId');
+        return this.translate.getInstant('donations.adminReview.errors.requestNotFound');
       case 'DAP13010':
-        return this.translate.getInstant('donations.facility.requests.errors.invalidStatusForAction');
-      default:
-        return null;
-    }
-  }
-
-  private getDeleteErrorMessage(code: string): string | null {
-    switch (code) {
-      case 'DAP13000':
-        return this.translate.getInstant('donations.facility.requests.errors.invalidRequestId');
-      case 'DAP13031':
-        return this.translate.getInstant('donations.facility.requests.errors.deleteNotDraft');
+        return this.translate.getInstant('donations.adminReview.errors.invalidStatus');
+      case 'DAP11055':
+        return this.translate.getInstant('donations.adminReview.errors.accessDenied');
+      case 'DAP11040':
+      case 'DAP11041':
+      case 'DAP11042':
+        return this.translate.getInstant('donations.adminReview.errors.sessionExpired');
       default:
         return null;
     }

@@ -1,0 +1,19 @@
+<p-dialog [(visible)]="visible" [modal]="true" [style]="{ width: '640px', maxWidth: '95vw' }" [draggable]="false"
+  [resizable]="false" (onShow)="onDialogShow()" (onHide)="onDialogHide()">
+  <ng-template pTemplate="header">
+    <h3 class="m-0">{{ 'donations.shared.locationMap.title' | translate }}</h3>
+  </ng-template>
+
+  <div class="donation-location-map-dialog__map-box">
+    <div #map class="donation-location-map-dialog__map"
+      [attr.aria-label]="'donations.shared.locationMap.title' | translate"></div>
+    <div class="donation-location-map-dialog__loading" *ngIf="mapLoading">
+      <p-skeleton height="100%" width="100%" borderRadius="8px"></p-skeleton>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <p-button [label]="'shared.actions.close' | translate" icon="pi pi-times" severity="secondary" [outlined]="true"
+      (onClick)="closeDialog()"></p-button>
+  </ng-template>
+</p-dialog>

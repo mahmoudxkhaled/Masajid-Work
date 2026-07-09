@@ -3619,6 +3619,7 @@
                     "reviewNote": "Admin review note",
                     "workflowTitle": "Status history",
                     "workflowEmpty": "No workflow history available.",
+                    "workflowNote": "Note",
                     "unknownStatus": "Unknown status",
                     "sections": {
                         "donation": "Donation Information",
@@ -3653,7 +3654,49 @@
             "subtitle": "Review and approve donation requests pending publication.",
             "searchPlaceholder": "Search requests...",
             "pagination": "Showing '{first}' to '{last}' of '{totalRecords}'",
-            "empty": "No requests pending review."
+            "empty": "No requests pending review.",
+            "columns": {
+                "category": "Category",
+                "quantity": "Quantity",
+                "country": "Country",
+                "actions": "Actions"
+            },
+            "actions": {
+                "review": "Review",
+                "approve": "Approve",
+                "reject": "Reject"
+            },
+            "details": {
+                "title": "Review Donation Request",
+                "back": "Back to pending review",
+                "entityId": "Facility ID",
+                "reviewNote": "Review note",
+                "coordinates": "Coordinates",
+                "sections": {
+                    "donation": "Donation details",
+                    "location": "Location",
+                    "meta": "Request information",
+                    "workflow": "Workflow history"
+                }
+            },
+            "dialogs": {
+                "approveTitle": "Approve donation request",
+                "rejectTitle": "Reject donation request",
+                "reviewNote": "Review note",
+                "reviewNoteOptional": "Optional review note",
+                "reviewNoteRequired": "Review note is required when rejecting a request."
+            },
+            "messages": {
+                "approved": "Donation request approved and published successfully.",
+                "rejected": "Donation request rejected successfully.",
+                "notPendingReview": "This request is no longer pending review. Approve and reject actions are not available."
+            },
+            "errors": {
+                "requestNotFound": "Donation request was not found.",
+                "invalidStatus": "This action is not allowed for the current request status.",
+                "accessDenied": "You do not have permission to perform this action.",
+                "sessionExpired": "Your session has expired. Please login again."
+            }
         },
         "vendorOffers": {
             "title": "Vendor Offers",
@@ -3742,6 +3785,10 @@
             "filters": {
                 "status": "Status",
                 "allStatuses": "All statuses"
+            },
+            "locationMap": {
+                "title": "Location on map",
+                "viewOnMap": "View on map"
             },
             "categoryPicker": {
                 "placeholder": "Select category"

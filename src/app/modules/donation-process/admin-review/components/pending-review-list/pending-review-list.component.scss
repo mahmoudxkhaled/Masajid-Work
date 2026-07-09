@@ -1,1 +1,16 @@
+:host ::ng-deep {
+  .p-datatable .p-datatable-tbody > tr.admin-review-row-clickable {
+    transition: background-color 0.2s ease;
+  }
 
+  .p-datatable .p-datatable-tbody > tr.admin-review-row-clickable:hover {
+    background-color: var(--surface-hover);
+  }
+}
+
+.text-overflow-ellipsis {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

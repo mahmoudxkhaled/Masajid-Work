@@ -29,7 +29,7 @@ This workspace is **pmat** (ERP frontend): Angular 17, PrimeNG 17, TypeScript 5.
 
 ## Conventions (pointers — avoid duplicating other rules)
 
-- **Code style:** **`angular-project`** (junior-friendly; **minimal scope**; **do not remove existing `console.log`**; **add `console.log` on list/details API `subscribe`** unless asked).
+- **Code style:** **`angular-project`** (junior-friendly; **minimal scope**). **Console logs:** **`console-logs`** — never remove existing logs; add on list/details API `subscribe` unless asked.
 - **Strings & toasts:** **`i18n-translations`**. **Loading / skeleton UI:** **`ui-defaults`**.
 - **Regional API fields:** **`regional-language`** (save vs display, two field conventions) and **`regional-data-remapping`** (raw cache + rebuild on language change).
 - **Donation-process screens:** **`donation-process-components`** (list/details lookups, minimal parsing).

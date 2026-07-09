@@ -12,12 +12,28 @@ export class DonationAdminService {
   constructor(
     private apiServices: ApiService,
     private localStorageService: LocalStorageService,
-  ) {}
+  ) { }
 
   listPendingReviewRequests(lastRequestId: number, filterCount: number, textFilter: string): Observable<any> {
     this.isLoadingSubject.next(true);
     const params = [lastRequestId.toString(), filterCount.toString(), textFilter || ''];
     return this.apiServices.callAPI(100300, this.getAccessToken(), params).pipe(
+      finalize(() => this.isLoadingSubject.next(false)),
+    );
+  }
+
+  approveDonationRequest(donationRequestId: number, reviewNote: string): Observable<any> {
+    this.isLoadingSubject.next(true);
+    const params = [donationRequestId.toString(), reviewNote.trim()];
+    return this.apiServices.callAPI(100301, this.getAccessToken(), params).pipe(
+      finalize(() => this.isLoadingSubject.next(false)),
+    );
+  }
+
+  rejectDonationRequest(donationRequestId: number, reviewNote: string): Observable<any> {
+    this.isLoadingSubject.next(true);
+    const params = [donationRequestId.toString(), reviewNote.trim()];
+    return this.apiServices.callAPI(100302, this.getAccessToken(), params).pipe(
       finalize(() => this.isLoadingSubject.next(false)),
     );
   }
