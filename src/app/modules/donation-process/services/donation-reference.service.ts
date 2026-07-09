@@ -73,7 +73,7 @@ export class DonationReferenceService {
       donationCategoryId.toString(),
       code,
       name,
-      isService.toString(),
+      this.localStorageService.isRegionalApiInput().toString(),
       isService.toString(),
       defaultOrder.toString(),
     ];
@@ -135,7 +135,7 @@ export class DonationReferenceService {
           id: this.readNumber(record, 'Donation_Category_ID'),
           donationTypeId: this.readNumber(record, 'Donation_Type_ID'),
           code: this.readString(record, 'Code'),
-          name: this.localStorageService.pickLocalizedField(
+          name: this.localStorageService.pickRequestContentField(
             this.readString(record, 'Name'),
             this.readString(record, 'Name_Regional'),
           ),
