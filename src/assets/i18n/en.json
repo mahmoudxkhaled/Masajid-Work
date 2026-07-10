@@ -3631,10 +3631,63 @@
             }
         },
         "browse": {
-            "title": "Browse Donations",
+            "title": "Browse Donation Requests",
             "subtitle": "Explore published donation requests open for donor commitment.",
             "pagination": "Showing '{first}' to '{last}' of '{totalRecords}'",
-            "empty": "No published donation requests found."
+            "empty": "No published donation requests found.",
+            "yes": "Yes",
+            "no": "No",
+            "filters": {
+                "open": "Filter",
+                "dialogTitle": "Filter requests",
+                "maxCost": "Max estimated cost",
+                "sortBy": "Sort by",
+                "apply": "Apply",
+                "reset": "Reset filters",
+                "allTypes": "All types",
+                "allCategories": "All categories",
+                "allCountries": "All countries"
+            },
+            "sortOptions": {
+                "default": "Default",
+                "costAsc": "Estimated cost (low to high)",
+                "costDesc": "Estimated cost (high to low)"
+            },
+            "columns": {
+                "facility": "Facility",
+                "category": "Category",
+                "quantity": "Quantity",
+                "location": "City / Country",
+                "needsInstallation": "Needs installation",
+                "actions": "Actions",
+                "viewDetails": "View details"
+            },
+            "details": {
+                "title": "Donation Request Details",
+                "back": "Back to browse",
+                "acceptDonation": "Accept Donation",
+                "acceptPlaceholder": "Accept donation will be implemented in the next phase.",
+                "sections": {
+                    "donation": "Donation Information",
+                    "facility": "Facility Information",
+                    "location": "Location"
+                }
+            },
+            "validation": {
+                "countryInvalid": "Country code must be exactly 3 uppercase letters.",
+                "latitudeInvalid": "Latitude must be between -90 and 90.",
+                "longitudeInvalid": "Longitude must be between -180 and 180.",
+                "maxCostInvalid": "Max estimated cost must be zero or greater."
+            },
+            "errors": {
+                "requestNotFound": "Donation request was not found.",
+                "invalidCategory": "Selected donation category is invalid.",
+                "invalidType": "Selected donation type is invalid.",
+                "invalidCurrency": "Selected currency code is invalid.",
+                "invalidCountry": "Selected country code is invalid.",
+                "accessDenied": "You do not have permission to access this section.",
+                "sessionExpired": "Your session has expired. Please login again."
+            }
         },
         "commitments": {
             "title": "My Commitments",

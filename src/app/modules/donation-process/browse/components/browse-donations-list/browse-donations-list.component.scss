@@ -1,1 +1,17 @@
+:host ::ng-deep {
+  .p-datatable .p-datatable-tbody > tr.browse-row-clickable {
+    transition: background-color 0.2s ease;
 
+    &:hover {
+      background-color: var(--surface-hover);
+    }
+  }
+}
+
+.text-overflow-ellipsis {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}

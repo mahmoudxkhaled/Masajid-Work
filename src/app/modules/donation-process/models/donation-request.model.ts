@@ -13,6 +13,32 @@ export interface DonationRequestBackend {
   City?: string;
   Country_Code?: string;
   Created_At?: string;
+  Published_At?: string;
+  Needs_Installation?: boolean;
+}
+
+export interface BrowseDonationRequestsFilter {
+  categoryFilter: number[];
+  latitude: number;
+  longitude: number;
+  radiusKm: number;
+  maxEstimatedCost: number;
+  countryCode: string;
+  city: string;
+  sortBy: number;
+  lastRequestId: number;
+  filterCount: number;
+}
+
+export interface DonationBrowseFilterForm {
+  donationTypeId: number | null;
+  donationCategoryId: number | null;
+  countryCode: string;
+  city: string;
+  latitude: number | null;
+  longitude: number | null;
+  maxEstimatedCost: number | null;
+  sortBy: number;
 }
 
 export interface DonationRequestDetailsBackend extends DonationRequestBackend {

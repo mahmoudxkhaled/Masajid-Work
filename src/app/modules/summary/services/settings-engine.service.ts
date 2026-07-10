@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, catchError, forkJoin, map, of } from 'rxjs';
 import { IAccountSettings } from 'src/app/core/models/account-status.model';
 import { LanguageDirService } from 'src/app/core/services/language-dir.service';
+import { DashboardResolverService } from 'src/app/core/services/dashboard-resolver.service';
 import { LocalStorageService } from 'src/app/core/services/local-storage.service';
 import { TranslationService } from 'src/app/core/services/translation.service';
 import { LayoutService } from 'src/app/layout/app-services/app.layout.service';
@@ -23,6 +24,7 @@ export class SettingsEngineService {
     constructor(
         private settingsApiService: SettingsApiService,
         private localStorageService: LocalStorageService,
+        private dashboardResolverService: DashboardResolverService,
         private languageDirService: LanguageDirService,
         private translationService: TranslationService,
         private layoutService: LayoutService
@@ -41,13 +43,14 @@ export class SettingsEngineService {
         const entityDetails = this.localStorageService.getEntityDetails();
         const accountId = Number(accountDetails?.Account_ID || 0);
         const entityId = Number(entityDetails?.Entity_ID || 0);
+        const isDonorAccount = this.dashboardResolverService.isDonorAccount();
         const fallbackState = this.getFallbackState();
 
         return forkJoin({
             account: accountId
                 ? this.settingsApiService.getAccountSettings(accountId).pipe(catchError(() => of(null)))
                 : of(null),
-            entity: entityId
+            entity: entityId && !isDonorAccount
                 ? this.settingsApiService.getEntitySettings(entityId).pipe(catchError(() => of(null)))
                 : of(null),
         }).pipe(

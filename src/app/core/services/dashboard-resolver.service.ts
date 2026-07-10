@@ -25,6 +25,11 @@ export class DashboardResolverService {
       return of(this.cacheUserType(systemAdminType));
     }
 
+    const donorType = this.tryResolveDonorFromAccount();
+    if (donorType) {
+      return of(donorType);
+    }
+
     const entityId = Number(this.localStorageService.getAccountDetails()?.Entity_ID || 0);
     if (!entityId) {
       return of(this.cacheUserType(MasajidUserType.Unknown));
@@ -52,6 +57,19 @@ export class DashboardResolverService {
     this.localStorageService.clearMasajidUserContext();
   }
 
+  isDonorAccount(): boolean {
+    return Number(this.localStorageService.getAccountDetails()?.Entity_Role_ID ?? -1) === 0;
+  }
+
+  private tryResolveDonorFromAccount(): MasajidUserType | null {
+    if (!this.isDonorAccount()) {
+      return null;
+    }
+
+    this.localStorageService.setEntityTypeId(EntityTypeId.Donor);
+    return this.cacheUserType(MasajidUserType.Donor);
+  }
+
   private detectSystemAdmin(): MasajidUserType | null {
     const systemRoleId = Number(this.localStorageService.getAccountDetails()?.System_Role_ID || 0);
     if (systemRoleId === Roles.Developer || systemRoleId === Roles.SystemAdministrator) {
@@ -61,14 +79,11 @@ export class DashboardResolverService {
   }
 
   private resolveDonorFallback(): MasajidUserType {
-    const account = this.localStorageService.getAccountDetails();
-    const entityRoleId = Number(account?.Entity_Role_ID ?? -1);
-
-    if (entityRoleId === 0) {
+    if (this.isDonorAccount()) {
       return this.cacheUserType(MasajidUserType.Donor);
     }
 
-    const systemRoleId = Number(account?.System_Role_ID || 0);
+    const systemRoleId = Number(this.localStorageService.getAccountDetails()?.System_Role_ID || 0);
     if (systemRoleId === Roles.SystemUser || systemRoleId === Roles.Guest) {
       return this.cacheUserType(MasajidUserType.Donor);
     }

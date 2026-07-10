@@ -1,0 +1,83 @@
+<div class="browse-filters-toolbar flex align-items-center justify-content-end gap-2">
+  <ng-container *ngIf="initialLoading; else filterTrigger">
+    <p-skeleton height="2.5rem" width="6rem" borderRadius="6px"></p-skeleton>
+    <p-skeleton height="2.5rem" width="6rem" borderRadius="6px"></p-skeleton>
+  </ng-container>
+
+  <ng-template #filterTrigger>
+    <p-button [label]="'donations.browse.filters.reset' | translate" icon="pi pi-refresh" severity="secondary"
+      [outlined]="true" (onClick)="resetAppliedFilters()" [disabled]="loading || activeFilterCount === 0"></p-button>
+    <p-button [label]="'donations.browse.filters.open' | translate" icon="pi pi-filter" [outlined]="true"
+      (onClick)="openFilterDialog()" [disabled]="loading"
+      [badge]="activeFilterCount > 0 ? activeFilterCount.toString() : undefined" badgeSeverity="info"></p-button>
+  </ng-template>
+</div>
+
+<p-dialog [(visible)]="filterDialogVisible" [modal]="true" [style]="{ width: '640px' }" [draggable]="false"
+  [resizable]="false" (onHide)="onFilterDialogHide()">
+  <ng-template pTemplate="header">
+    <h3 class="m-0">{{ 'donations.browse.filters.dialogTitle' | translate }}</h3>
+  </ng-template>
+
+  <div class="grid">
+    <div class="col-12 md:col-6">
+      <div class="filter-field">
+        <label class="font-medium">{{ 'donations.facility.requests.form.donationType' | translate }}</label>
+        <p-dropdown [appendTo]="'body'" [options]="typeOptions" [(ngModel)]="draftFilters.donationTypeId"
+          optionLabel="label" optionValue="value"
+          [placeholder]="'donations.facility.requests.form.donationTypePlaceholder' | translate" [showClear]="true"
+          [style]="{ width: '100%' }" (onChange)="onDraftTypeChange()"></p-dropdown>
+      </div>
+    </div>
+
+    <div class="col-12 md:col-6">
+      <div class="filter-field">
+        <label class="font-medium">{{ 'donations.facility.requests.form.donationCategory' | translate }}</label>
+        <p-dropdown [appendTo]="'body'" [options]="categoryOptions" [(ngModel)]="draftFilters.donationCategoryId"
+          optionLabel="label" optionValue="value"
+          [placeholder]="'donations.shared.categoryPicker.placeholder' | translate" [showClear]="true"
+          [disabled]="!draftFilters.donationTypeId" [style]="{ width: '100%' }"></p-dropdown>
+      </div>
+    </div>
+
+    <div class="col-12 md:col-6">
+      <div class="filter-field">
+        <label class="font-medium">{{ 'donations.facility.requests.form.country' | translate }}</label>
+        <p-dropdown [appendTo]="'body'" [options]="countryOptions" [(ngModel)]="draftFilters.countryCode"
+          optionLabel="label" optionValue="value"
+          [placeholder]="'donations.facility.requests.form.countryPlaceholder' | translate" [showClear]="true"
+          [filter]="true" [style]="{ width: '100%' }"></p-dropdown>
+      </div>
+    </div>
+
+    <div class="col-12 md:col-6">
+      <div class="filter-field">
+        <label class="font-medium">{{ 'donations.facility.requests.form.city' | translate }}</label>
+        <input pInputText type="text" class="w-full" [(ngModel)]="draftFilters.city" />
+      </div>
+    </div>
+
+    <div class="col-12 md:col-6">
+      <div class="filter-field">
+        <label class="font-medium">{{ 'donations.browse.filters.maxCost' | translate }}</label>
+        <p-inputNumber [(ngModel)]="draftFilters.maxEstimatedCost" [min]="0" [useGrouping]="false"
+          styleClass="w-full"></p-inputNumber>
+      </div>
+    </div>
+
+    <div class="col-12 md:col-6">
+      <div class="filter-field">
+        <label class="font-medium">{{ 'donations.browse.filters.sortBy' | translate }}</label>
+        <p-dropdown [appendTo]="'body'" [options]="sortOptions" [(ngModel)]="draftFilters.sortBy" optionLabel="label"
+          optionValue="value" [style]="{ width: '100%' }"></p-dropdown>
+      </div>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <p-button [label]="'common.cancel' | translate" icon="pi pi-times" severity="secondary" [outlined]="true"
+      (onClick)="filterDialogVisible = false" [disabled]="loading"></p-button>
+    <p-button [label]="'donations.browse.filters.apply' | translate" icon="pi pi-check" (onClick)="applyFilters()"
+      [disabled]="loading"></p-button>
+  </ng-template>
+</p-dialog>

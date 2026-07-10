@@ -3490,10 +3490,63 @@
             }
         },
         "browse": {
-            "title": "تصفح التبرعات",
+            "title": "تصفح طلبات التبرع",
             "subtitle": "استكشف طلبات التبرع المنشورة المتاحة للالتزام.",
             "pagination": "عرض '{first}' إلى '{last}' من أصل '{totalRecords}'",
-            "empty": "لا توجد طلبات تبرع منشورة."
+            "empty": "لا توجد طلبات تبرع منشورة.",
+            "yes": "نعم",
+            "no": "لا",
+            "filters": {
+                "open": "تصفية",
+                "dialogTitle": "معايير التصفية",
+                "maxCost": "الحد الأقصى للتكلفة التقديرية",
+                "sortBy": "ترتيب النتائج",
+                "apply": "تطبيق",
+                "reset": "إعادة تعيين",
+                "allTypes": "جميع الأنواع",
+                "allCategories": "جميع الفئات",
+                "allCountries": "جميع الدول"
+            },
+            "sortOptions": {
+                "default": "افتراضي",
+                "costAsc": "التكلفة التقديرية (من الأقل إلى الأعلى)",
+                "costDesc": "التكلفة التقديرية (من الأعلى إلى الأقل)"
+            },
+            "columns": {
+                "facility": "المنشأة",
+                "category": "الفئة",
+                "quantity": "الكمية",
+                "location": "المدينة / الدولة",
+                "needsInstallation": "يتطلب تركيباً",
+                "actions": "الإجراءات",
+                "viewDetails": "عرض التفاصيل"
+            },
+            "details": {
+                "title": "تفاصيل طلب التبرع",
+                "back": "العودة للتصفح",
+                "acceptDonation": "قبول التبرع",
+                "acceptPlaceholder": "سيتم تنفيذ قبول التبرع في المرحلة التالية.",
+                "sections": {
+                    "donation": "معلومات التبرع",
+                    "facility": "معلومات المنشأة",
+                    "location": "الموقع"
+                }
+            },
+            "validation": {
+                "countryInvalid": "يجب أن يكون رمز الدولة 3 أحرف إنجليزية كبيرة.",
+                "latitudeInvalid": "يجب أن تكون خط العرض بين -90 و 90.",
+                "longitudeInvalid": "يجب أن يكون خط الطول بين -180 و 180.",
+                "maxCostInvalid": "يجب أن يكون الحد الأقصى للتكلفة صفراً أو أكبر."
+            },
+            "errors": {
+                "requestNotFound": "لم يتم العثور على طلب التبرع.",
+                "invalidCategory": "فئة التبرع المحددة غير صالحة.",
+                "invalidType": "نوع التبرع المحدد غير صالح.",
+                "invalidCurrency": "رمز العملة المحدد غير صالح.",
+                "invalidCountry": "رمز الدولة المحدد غير صالح.",
+                "accessDenied": "ليس لديك صلاحية للوصول إلى هذا القسم.",
+                "sessionExpired": "انتهت صلاحية جلستك. يرجى تسجيل الدخول مرة أخرى."
+            }
         },
         "commitments": {
             "title": "التزاماتي",
