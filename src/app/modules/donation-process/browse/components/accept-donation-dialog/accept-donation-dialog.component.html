@@ -13,14 +13,21 @@
   <p class="mb-3 text-500">{{ 'donations.commitments.acceptDialog.confirmation' | translate }}</p>
 
   <div class="flex flex-column gap-3">
-    <div class="flex align-items-center gap-2">
-      <p-checkbox [(ngModel)]="isAnonymous" [binary]="true" inputId="acceptIsAnonymous"></p-checkbox>
-      <label for="acceptIsAnonymous">{{ 'donations.commitments.acceptDialog.isAnonymous' | translate }}</label>
+    <div class="flex flex-column gap-2">
+      <label class="font-medium">{{ 'donations.commitments.acceptDialog.expectedClosureDate' | translate }}</label>
+      <p-calendar
+        [(ngModel)]="expectedClosureDate"
+        [minDate]="minClosureDate"
+        dateFormat="yy-mm-dd"
+        [showIcon]="true"
+        appendTo="body"
+        styleClass="w-full"
+      ></p-calendar>
     </div>
 
     <div class="flex flex-column gap-2">
       <label class="font-medium">{{ 'donations.commitments.acceptDialog.fulfillmentMode' | translate }}</label>
-      <div class="flex flex-column gap-2">
+      <div class="flex flex-wrap gap-3">
         <div class="flex align-items-center gap-2">
           <p-radioButton
             name="fulfillmentMode"
@@ -46,16 +53,9 @@
       <small class="text-500">{{ 'donations.commitments.acceptDialog.charityCentersPending' | translate }}</small>
     </div>
 
-    <div class="flex flex-column gap-2">
-      <label class="font-medium">{{ 'donations.commitments.acceptDialog.expectedClosureDate' | translate }}</label>
-      <p-calendar
-        [(ngModel)]="expectedClosureDate"
-        [minDate]="minClosureDate"
-        dateFormat="yy-mm-dd"
-        [showIcon]="true"
-        appendTo="body"
-        styleClass="w-full"
-      ></p-calendar>
+    <div class="flex align-items-center gap-2">
+      <p-checkbox [(ngModel)]="isAnonymous" [binary]="true" inputId="acceptIsAnonymous"></p-checkbox>
+      <label for="acceptIsAnonymous">{{ 'donations.commitments.acceptDialog.isAnonymous' | translate }}</label>
     </div>
   </div>
 

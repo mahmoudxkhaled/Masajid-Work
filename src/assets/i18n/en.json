@@ -3701,7 +3701,7 @@
             },
             "columns": {
                 "requestId": "Request ID",
-                "expectedClosure": "Expected closure",
+                "expectedClosure": "Expected fulfillment",
                 "fulfillmentMode": "Fulfillment mode",
                 "anonymous": "Anonymous",
                 "acceptedAt": "Accepted at",
@@ -3726,10 +3726,10 @@
                 "charityCenterPlaceholder": "Select a charity center",
                 "noCharityCenters": "No charity centers are currently available.",
                 "charityCentersPending": "Charity centers list will be provided later.",
-                "expectedClosureDate": "Expected closure date",
+                "expectedClosureDate": "Expected fulfillment date",
                 "validation": {
-                    "expectedClosureRequired": "Expected closure date is required.",
-                    "expectedClosureFuture": "Expected closure date must be today or a future date.",
+                    "expectedClosureRequired": "Expected fulfillment date is required.",
+                    "expectedClosureFuture": "Expected fulfillment date must be today or a future date.",
                     "fulfillmentModeRequired": "Fulfillment mode is required.",
                     "charityRequired": "Please select a charity representative for this fulfillment mode."
                 }

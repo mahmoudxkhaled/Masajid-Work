@@ -3560,7 +3560,7 @@
             },
             "columns": {
                 "requestId": "رقم الطلب",
-                "expectedClosure": "الإغلاق المتوقع",
+                "expectedClosure": "التنفيذ المتوقع",
                 "fulfillmentMode": "طريقة التنفيذ",
                 "anonymous": "مجهول",
                 "acceptedAt": "تاريخ القبول",
@@ -3585,10 +3585,10 @@
                 "charityCenterPlaceholder": "اختر جمعية خيرية",
                 "noCharityCenters": "لا توجد جمعيات خيرية متاحة حالياً.",
                 "charityCentersPending": "سيتم توفير قائمة الجمعيات الخيرية لاحقاً.",
-                "expectedClosureDate": "تاريخ الإغلاق المتوقع",
+                "expectedClosureDate": "تاريخ التنفيذ المتوقع",
                 "validation": {
-                    "expectedClosureRequired": "تاريخ الإغلاق المتوقع مطلوب.",
-                    "expectedClosureFuture": "يجب أن يكون تاريخ الإغلاق المتوقع اليوم أو تاريخاً لاحقاً.",
+                    "expectedClosureRequired": "تاريخ التنفيذ المتوقع مطلوب.",
+                    "expectedClosureFuture": "يجب أن يكون تاريخ التنفيذ المتوقع اليوم أو تاريخاً لاحقاً.",
                     "fulfillmentModeRequired": "طريقة التنفيذ مطلوبة.",
                     "charityRequired": "يرجى اختيار ممثل جمعية خيرية لطريقة التنفيذ هذه."
                 }
