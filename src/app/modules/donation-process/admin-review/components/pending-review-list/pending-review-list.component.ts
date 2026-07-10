@@ -58,7 +58,6 @@ export class PendingReviewListComponent implements OnInit, OnDestroy {
       }),
     );
     this.loadLookups();
-    this.loadRequests();
   }
 
   ngOnDestroy(): void {

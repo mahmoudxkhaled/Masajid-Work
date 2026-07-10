@@ -70,7 +70,6 @@ export class FacilityRequestsListComponent implements OnInit, OnDestroy {
     );
     this.loadStatuses();
     this.loadLookups();
-    this.loadRequests();
   }
 
   ngOnDestroy(): void {

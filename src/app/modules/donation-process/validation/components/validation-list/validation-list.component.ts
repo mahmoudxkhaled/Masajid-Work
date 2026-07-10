@@ -44,7 +44,6 @@ export class ValidationListComponent implements OnInit, OnDestroy {
       }),
     );
     this.loadStatuses();
-    this.loadRequests();
   }
 
   ngOnDestroy(): void {

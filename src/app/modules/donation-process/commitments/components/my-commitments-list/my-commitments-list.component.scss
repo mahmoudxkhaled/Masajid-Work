@@ -1,1 +1,9 @@
+:host ::ng-deep {
+  .p-datatable .p-datatable-tbody > tr.commitments-row-clickable {
+    transition: background-color 0.2s ease;
 
+    &:hover {
+      background-color: var(--surface-hover);
+    }
+  }
+}

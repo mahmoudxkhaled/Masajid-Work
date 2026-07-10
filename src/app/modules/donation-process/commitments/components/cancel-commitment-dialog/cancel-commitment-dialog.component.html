@@ -1,0 +1,19 @@
+<p-dialog [(visible)]="visible" [modal]="true" [style]="{ width: '480px' }" [draggable]="false" [resizable]="false"
+  (onHide)="closeDialog()">
+  <ng-template pTemplate="header">
+    <h3 class="m-0">{{ 'donations.commitments.cancelDialog.title' | translate }}</h3>
+  </ng-template>
+
+  <div class="flex flex-column gap-2">
+    <label class="font-medium">{{ 'donations.commitments.cancelDialog.reason' | translate }}</label>
+    <textarea pInputTextarea rows="4" class="w-full" [(ngModel)]="reason"
+      [placeholder]="'donations.commitments.cancelDialog.reasonPlaceholder' | translate"></textarea>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <p-button [label]="'common.cancel' | translate" icon="pi pi-times" severity="secondary" [outlined]="true"
+      (onClick)="closeDialog()" [disabled]="!!(isLoading$ | async)"></p-button>
+    <p-button [label]="'donations.commitments.actions.cancelCommitment' | translate" icon="pi pi-ban" severity="danger"
+      (onClick)="confirmCancel()" [disabled]="!!(isLoading$ | async)"></p-button>
+  </ng-template>
+</p-dialog>

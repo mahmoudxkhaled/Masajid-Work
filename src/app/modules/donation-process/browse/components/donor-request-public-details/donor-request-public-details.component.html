@@ -7,29 +7,20 @@
       <p class="mb-0 text-500" *ngIf="details">{{ details.title }}</p>
     </div>
     <div class="flex flex-wrap gap-2">
-      <p-button
-        [label]="'donations.browse.details.back' | translate"
-        icon="pi pi-arrow-left"
-        severity="secondary"
-        [outlined]="true"
-        (onClick)="backToList()"
-      ></p-button>
-      <p-button
-        [label]="'donations.browse.details.acceptDonation' | translate"
-        icon="pi pi-check"
-        severity="success"
-        [disabled]="true"
-      ></p-button>
+      <p-button [label]="'donations.browse.details.back' | translate" icon="pi pi-arrow-left" severity="secondary"
+        [outlined]="true" (onClick)="backToList()"></p-button>
+      <p-button *ngIf="isPublished && !activeCommitmentId"
+        [label]="'donations.browse.details.acceptDonation' | translate" icon="pi pi-check" severity="success"
+        (onClick)="openAcceptDialog()"></p-button>
     </div>
   </div>
 
-  <app-erp-info
-    *ngIf="!loading"
-    severity="info"
-    icon="pi pi-info-circle"
-    [description]="'donations.browse.details.acceptPlaceholder' | translate"
-    class="mb-3"
-  ></app-erp-info>
+  <app-erp-info *ngIf="!loading && activeCommitmentId" severity="info" icon="pi pi-info-circle"
+    [description]="'donations.browse.details.alreadyCommitted' | translate" class="mb-3"></app-erp-info>
+
+  <app-erp-info *ngIf="!loading && details && !isPublished && !activeCommitmentId" severity="info"
+    icon="pi pi-info-circle" [description]="'donations.browse.details.notAvailableForAcceptance' | translate"
+    class="mb-3"></app-erp-info>
 
   <ng-container *ngIf="loading; else detailsContent">
     <div class="block-card details-card p-0 mb-3">
@@ -59,11 +50,8 @@
             <span class="details-section-icon"><i class="pi pi-box"></i></span>
             <h3 class="details-section-title">{{ 'donations.browse.details.sections.donation' | translate }}</h3>
           </div>
-          <app-donation-status-badge
-            *ngIf="statusLabel"
-            [label]="statusLabel"
-            [severity]="statusSeverity"
-          ></app-donation-status-badge>
+          <app-donation-status-badge *ngIf="statusLabel" [label]="statusLabel"
+            [severity]="statusSeverity"></app-donation-status-badge>
         </div>
         <div class="grid p-3 pt-2">
           <div class="col-12 md:col-6 lg:col-4">
@@ -94,13 +82,11 @@
             <div class="info-item">
               <span class="info-label">{{ 'donations.facility.requests.form.needsInstallation' | translate }}</span>
               <span class="info-value">
-                <i
-                  class="pi mr-1"
-                  [ngClass]="details.needsInstallation ? 'pi-check-circle text-green-500' : 'pi-times-circle text-500'"
-                ></i>
+                <i class="pi mr-1"
+                  [ngClass]="details.needsInstallation ? 'pi-check-circle text-green-500' : 'pi-times-circle text-500'"></i>
                 {{
-                  (details.needsInstallation ? 'donations.reference.categories.yes' : 'donations.reference.categories.no')
-                    | translate
+                (details.needsInstallation ? 'donations.reference.categories.yes' : 'donations.reference.categories.no')
+                | translate
                 }}
               </span>
             </div>
@@ -120,14 +106,8 @@
             <span class="details-section-icon"><i class="pi pi-map-marker"></i></span>
             <h3 class="details-section-title">{{ 'donations.browse.details.sections.location' | translate }}</h3>
           </div>
-          <p-button
-            *ngIf="hasMapCoordinates"
-            [label]="'donations.shared.locationMap.viewOnMap' | translate"
-            icon="pi pi-map"
-            size="small"
-            [outlined]="true"
-            (onClick)="openLocationMap()"
-          ></p-button>
+          <p-button *ngIf="hasMapCoordinates" [label]="'donations.shared.locationMap.viewOnMap' | translate"
+            icon="pi pi-map" size="small" [outlined]="true" (onClick)="openLocationMap()"></p-button>
         </div>
         <div class="grid p-3 pt-2">
           <div class="col-12 md:col-6 lg:col-4">
@@ -154,8 +134,8 @@
   </ng-template>
 </div>
 
-<app-donation-location-map-dialog
-  [(visible)]="locationMapVisible"
-  [latitude]="details?.latitude || 0"
-  [longitude]="details?.longitude || 0"
-></app-donation-location-map-dialog>
+<app-donation-location-map-dialog [(visible)]="locationMapVisible" [latitude]="details?.latitude || 0"
+  [longitude]="details?.longitude || 0"></app-donation-location-map-dialog>
+
+<app-accept-donation-dialog [(visible)]="acceptDialogVisible"
+  [donationRequestId]="requestId"></app-accept-donation-dialog>

@@ -1275,6 +1275,7 @@
             "donations.facility.requests.form.editTitle": "Edit Donation Request",
             "donations.browse.title": "Browse Donations",
             "donations.commitments.title": "My Commitments",
+            "donations.commitments.details.title": "Commitment Details",
             "donations.adminReview.title": "Admin Review",
             "donations.vendorOffers.title": "Vendor Offers",
             "donations.charityRepresentation.title": "Charity Representation",
@@ -3666,7 +3667,8 @@
                 "title": "Donation Request Details",
                 "back": "Back to browse",
                 "acceptDonation": "Accept Donation",
-                "acceptPlaceholder": "Accept donation will be implemented in the next phase.",
+                "alreadyCommitted": "You already have an active commitment for this donation request.",
+                "notAvailableForAcceptance": "This donation request is no longer available for acceptance.",
                 "sections": {
                     "donation": "Donation Information",
                     "facility": "Facility Information",
@@ -3694,12 +3696,87 @@
             "subtitle": "Track your accepted donation commitments and fulfillment progress.",
             "pagination": "Showing '{first}' to '{last}' of '{totalRecords}'",
             "empty": "No commitments found.",
+            "filters": {
+                "status": "Filter by status"
+            },
             "columns": {
                 "requestId": "Request ID",
-                "expectedClosure": "Expected closure"
+                "expectedClosure": "Expected closure",
+                "fulfillmentMode": "Fulfillment mode",
+                "anonymous": "Anonymous",
+                "acceptedAt": "Accepted at",
+                "actions": "Actions"
+            },
+            "fulfillmentMode": {
+                "selfFulfillment": "Self Fulfillment",
+                "viaCharityRepresentative": "Via Charity Representative"
+            },
+            "actions": {
+                "viewDetails": "View details",
+                "cancelCommitment": "Cancel Commitment"
+            },
+            "acceptDialog": {
+                "title": "Accept Donation",
+                "confirmation": "Confirm your commitment to fulfill this donation request.",
+                "isAnonymous": "Accept anonymously",
+                "fulfillmentMode": "Fulfillment mode",
+                "selfFulfillment": "Self Fulfillment",
+                "viaCharityRepresentative": "Via Charity Representative",
+                "charityCenter": "Charity center",
+                "charityCenterPlaceholder": "Select a charity center",
+                "noCharityCenters": "No charity centers are currently available.",
+                "charityCentersPending": "Charity centers list will be provided later.",
+                "expectedClosureDate": "Expected closure date",
+                "validation": {
+                    "expectedClosureRequired": "Expected closure date is required.",
+                    "expectedClosureFuture": "Expected closure date must be today or a future date.",
+                    "fulfillmentModeRequired": "Fulfillment mode is required.",
+                    "charityRequired": "Please select a charity representative for this fulfillment mode."
+                }
+            },
+            "cancelDialog": {
+                "title": "Cancel Commitment",
+                "reason": "Cancellation reason",
+                "reasonPlaceholder": "Enter the reason for cancelling this commitment",
+                "validation": {
+                    "reasonRequired": "Cancellation reason is required."
+                }
+            },
+            "details": {
+                "title": "Commitment Details",
+                "back": "Back to My Commitments",
+                "commitmentId": "Commitment ID",
+                "donorUserId": "Donor ID",
+                "fulfillmentMode": "Fulfillment mode",
+                "charityEntity": "Charity center",
+                "charityRepUserId": "Charity representative user ID",
+                "isAnonymous": "Anonymous",
+                "acceptedAt": "Accepted at",
+                "cancelledAt": "Cancelled at",
+                "cancelledByUserId": "Cancelled by user ID",
+                "cancelReason": "Cancellation reason",
+                "completedAt": "Completed at",
+                "entityId": "Facility ID",
+                "sections": {
+                    "commitment": "Commitment information",
+                    "request": "Related donation request"
+                }
             },
             "messages": {
-                "notDonor": "You are not registered as a donor."
+                "notDonor": "You are not allowed to manage this commitment.",
+                "accepted": "Donation accepted successfully.",
+                "cancelled": "Donation commitment cancelled successfully."
+            },
+            "errors": {
+                "requestNotFound": "Donation request was not found.",
+                "notPublished": "This donation request is no longer available for acceptance.",
+                "activeCommitmentExists": "This donation request already has an active commitment.",
+                "invalidFulfillmentMode": "Selected fulfillment mode is invalid.",
+                "charityRequired": "Please select a charity representative for this fulfillment mode.",
+                "commitmentNotFound": "Donation commitment was not found.",
+                "invalidStatus": "This action is not allowed for the current commitment status.",
+                "accessDenied": "You do not have permission to access this section.",
+                "sessionExpired": "Your session has expired. Please login again."
             }
         },
         "adminReview": {

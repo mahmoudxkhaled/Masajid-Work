@@ -58,7 +58,7 @@ export class BrowseDonationsListComponent implements OnInit, OnDestroy {
     private translate: TranslationService,
     private messageService: MessageService,
     private router: Router,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.buildSortOptions();
@@ -73,7 +73,6 @@ export class BrowseDonationsListComponent implements OnInit, OnDestroy {
       }),
     );
     this.loadLookups();
-    this.loadRequests();
   }
 
   ngOnDestroy(): void {
@@ -179,7 +178,6 @@ export class BrowseDonationsListComponent implements OnInit, OnDestroy {
       countries: this.lookupService.getCountries(),
     }).subscribe({
       next: (results) => {
-        console.log('browse lookups response', results);
         this.countries = this.lookupService.sortCountriesByLabel(
           results.countries,
           this.localStorageService.isArabicUi(),

@@ -34,11 +34,10 @@ export class CharityRepresentationListComponent implements OnInit, OnDestroy {
     private localStorageService: LocalStorageService,
     private translate: TranslationService,
     private messageService: MessageService,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadStatuses();
-    this.loadCommitments();
   }
 
   ngOnDestroy(): void {
@@ -50,9 +49,13 @@ export class CharityRepresentationListComponent implements OnInit, OnDestroy {
       return Array(this.rows).fill(null).map(() => ({
         id: '',
         donationRequestId: '',
+        entityId: 0,
         statusId: 0,
+        title: '',
+        fulfillmentMode: 0,
+        isAnonymous: false,
         expectedClosureAt: '',
-        createdAt: '',
+        acceptedAt: '',
       }));
     }
     return this.commitments;
@@ -104,6 +107,7 @@ export class CharityRepresentationListComponent implements OnInit, OnDestroy {
       .listRepresentationRequests(charityEntityId, true, lastCommitmentId, this.rows)
       .subscribe({
         next: (response: any) => {
+          console.log('listRepresentationRequests response', response);
           if (!response?.success) {
             this.tableLoadingSpinner = false;
             return;

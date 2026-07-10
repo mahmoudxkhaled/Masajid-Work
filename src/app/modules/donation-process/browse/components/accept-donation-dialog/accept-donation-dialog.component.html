@@ -1,0 +1,79 @@
+<p-dialog
+  [(visible)]="visible"
+  [modal]="true"
+  [style]="{ width: '560px' }"
+  [draggable]="false"
+  [resizable]="false"
+  (onHide)="closeDialog()"
+>
+  <ng-template pTemplate="header">
+    <h3 class="m-0">{{ 'donations.commitments.acceptDialog.title' | translate }}</h3>
+  </ng-template>
+
+  <p class="mb-3 text-500">{{ 'donations.commitments.acceptDialog.confirmation' | translate }}</p>
+
+  <div class="flex flex-column gap-3">
+    <div class="flex align-items-center gap-2">
+      <p-checkbox [(ngModel)]="isAnonymous" [binary]="true" inputId="acceptIsAnonymous"></p-checkbox>
+      <label for="acceptIsAnonymous">{{ 'donations.commitments.acceptDialog.isAnonymous' | translate }}</label>
+    </div>
+
+    <div class="flex flex-column gap-2">
+      <label class="font-medium">{{ 'donations.commitments.acceptDialog.fulfillmentMode' | translate }}</label>
+      <div class="flex flex-column gap-2">
+        <div class="flex align-items-center gap-2">
+          <p-radioButton
+            name="fulfillmentMode"
+            [value]="FulfillmentMode.SelfFulfillment"
+            [(ngModel)]="fulfillmentMode"
+            inputId="fulfillmentSelf"
+          ></p-radioButton>
+          <label for="fulfillmentSelf">{{ 'donations.commitments.acceptDialog.selfFulfillment' | translate }}</label>
+        </div>
+        <div class="flex align-items-center gap-2">
+          <p-radioButton
+            name="fulfillmentMode"
+            [value]="FulfillmentMode.ViaCharityRepresentative"
+            [(ngModel)]="fulfillmentMode"
+            inputId="fulfillmentCharity"
+            [disabled]="true"
+          ></p-radioButton>
+          <label for="fulfillmentCharity" class="text-500">{{
+            'donations.commitments.acceptDialog.viaCharityRepresentative' | translate
+          }}</label>
+        </div>
+      </div>
+      <small class="text-500">{{ 'donations.commitments.acceptDialog.charityCentersPending' | translate }}</small>
+    </div>
+
+    <div class="flex flex-column gap-2">
+      <label class="font-medium">{{ 'donations.commitments.acceptDialog.expectedClosureDate' | translate }}</label>
+      <p-calendar
+        [(ngModel)]="expectedClosureDate"
+        [minDate]="minClosureDate"
+        dateFormat="yy-mm-dd"
+        [showIcon]="true"
+        appendTo="body"
+        styleClass="w-full"
+      ></p-calendar>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <p-button
+      [label]="'common.cancel' | translate"
+      icon="pi pi-times"
+      severity="secondary"
+      [outlined]="true"
+      (onClick)="closeDialog()"
+      [disabled]="!!(isLoading$ | async)"
+    ></p-button>
+    <p-button
+      [label]="'donations.browse.details.acceptDonation' | translate"
+      icon="pi pi-check"
+      severity="success"
+      (onClick)="confirmAccept()"
+      [disabled]="!!(isLoading$ | async) || !canSubmit"
+    ></p-button>
+  </ng-template>
+</p-dialog>

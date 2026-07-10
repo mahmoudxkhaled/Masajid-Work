@@ -30,7 +30,9 @@ export class DonorRequestPublicDetailsComponent implements OnInit, OnDestroy {
   requestId = 0;
   loading = true;
   details: DonationRequestDetails | null = null;
+  activeCommitmentId = 0;
   locationMapVisible = false;
+  acceptDialogVisible = false;
 
   typeLabel = '';
   categoryLabel = '';
@@ -62,7 +64,7 @@ export class DonorRequestPublicDetailsComponent implements OnInit, OnDestroy {
     private languageDirService: LanguageDirService,
     private translate: TranslationService,
     private messageService: MessageService,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.requestId = Number(this.route.snapshot.paramMap.get('id') || 0);
@@ -87,6 +89,11 @@ export class DonorRequestPublicDetailsComponent implements OnInit, OnDestroy {
     return Boolean(this.details?.latitude && this.details?.longitude);
   }
 
+  get isPublished(): boolean {
+    const code = String(this.statusCodeById[this.details?.statusId || 0] || this.details?.statusCode || '').toUpperCase();
+    return code === 'PUBLISHED';
+  }
+
   backToList(): void {
     this.router.navigate(['/donations/browse']);
   }
@@ -100,6 +107,10 @@ export class DonorRequestPublicDetailsComponent implements OnInit, OnDestroy {
 
   openLocationMap(): void {
     this.locationMapVisible = true;
+  }
+
+  openAcceptDialog(): void {
+    this.acceptDialogVisible = true;
   }
 
   // #region Load data
@@ -181,7 +192,9 @@ export class DonorRequestPublicDetailsComponent implements OnInit, OnDestroy {
           return;
         }
 
-        this.rawDetails = this.donationRequestsService.extractDonationRequestDetails(response.message ?? {});
+        const message = response.message ?? {};
+        this.activeCommitmentId = Number(message.Donation_Commitment_ID || 0);
+        this.rawDetails = this.mapPublicDetailsMessage(message);
         this.loading = false;
         this.refreshDisplay();
       },
@@ -190,6 +203,24 @@ export class DonorRequestPublicDetailsComponent implements OnInit, OnDestroy {
       },
     });
     this.subscriptions.push(sub);
+  }
+
+  private mapPublicDetailsMessage(message: Record<string, unknown>): DonationRequestDetailsBackend | null {
+    if (!message) {
+      return null;
+    }
+
+    if (message['Donation_Commitment_ID'] !== undefined) {
+      return {
+        Donation_Request_ID: Number(message['Donation_Request_ID'] || 0),
+        Entity_ID: Number(message['Entity_ID'] || 0),
+        Title: String(message['Request_Title'] || ''),
+        Title_Regional: String(message['Request_Title_Regional'] || ''),
+        Donation_Request_Status_ID: Number(message['Status'] || 0),
+      };
+    }
+
+    return this.donationRequestsService.extractDonationRequestDetails(message);
   }
 
   private refreshDisplay(): void {

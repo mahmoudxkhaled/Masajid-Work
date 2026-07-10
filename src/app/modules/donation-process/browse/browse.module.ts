@@ -5,6 +5,7 @@ import { DonationProcessSharedModule } from '../shared/donation-process-shared.m
 import { BrowseDonationsListComponent } from './components/browse-donations-list/browse-donations-list.component';
 import { DonationBrowseFiltersComponent } from './components/donation-browse-filters/donation-browse-filters.component';
 import { DonorRequestPublicDetailsComponent } from './components/donor-request-public-details/donor-request-public-details.component';
+import { AcceptDonationDialogComponent } from './components/accept-donation-dialog/accept-donation-dialog.component';
 import { BrowseRoutingModule } from './browse-routing.module';
 
 @NgModule({
@@ -12,8 +13,9 @@ import { BrowseRoutingModule } from './browse-routing.module';
     BrowseDonationsListComponent,
     DonationBrowseFiltersComponent,
     DonorRequestPublicDetailsComponent,
+    AcceptDonationDialogComponent,
   ],
   imports: [BrowseRoutingModule, SharedModule, DonationProcessSharedModule],
   providers: [MessageService],
 })
-export class BrowseModule {}
+export class BrowseModule { }

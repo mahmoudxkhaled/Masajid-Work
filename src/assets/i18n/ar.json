@@ -1276,6 +1276,7 @@
             "donations.facility.requests.form.editTitle": "تعديل طلب تبرع",
             "donations.browse.title": "تصفح التبرعات",
             "donations.commitments.title": "التزاماتي",
+            "donations.commitments.details.title": "تفاصيل الالتزام",
             "donations.adminReview.title": "مراجعة الإدارة",
             "donations.vendorOffers.title": "عروض الموردين",
             "donations.charityRepresentation.title": "تمثيل الجمعيات",
@@ -3525,7 +3526,8 @@
                 "title": "تفاصيل طلب التبرع",
                 "back": "العودة للتصفح",
                 "acceptDonation": "قبول التبرع",
-                "acceptPlaceholder": "سيتم تنفيذ قبول التبرع في المرحلة التالية.",
+                "alreadyCommitted": "لديك بالفعل التزام نشط لهذا طلب التبرع.",
+                "notAvailableForAcceptance": "طلب التبرع هذا لم يعد متاحاً للقبول.",
                 "sections": {
                     "donation": "معلومات التبرع",
                     "facility": "معلومات المنشأة",
@@ -3553,12 +3555,87 @@
             "subtitle": "تابع التزامات التبرع المقبولة وتقدم التنفيذ.",
             "pagination": "عرض '{first}' إلى '{last}' من أصل '{totalRecords}'",
             "empty": "لا توجد التزامات.",
+            "filters": {
+                "status": "تصفية حسب الحالة"
+            },
             "columns": {
                 "requestId": "رقم الطلب",
-                "expectedClosure": "الإغلاق المتوقع"
+                "expectedClosure": "الإغلاق المتوقع",
+                "fulfillmentMode": "طريقة التنفيذ",
+                "anonymous": "مجهول",
+                "acceptedAt": "تاريخ القبول",
+                "actions": "الإجراءات"
+            },
+            "fulfillmentMode": {
+                "selfFulfillment": "تنفيذ ذاتي",
+                "viaCharityRepresentative": "عبر ممثل الجمعية الخيرية"
+            },
+            "actions": {
+                "viewDetails": "عرض التفاصيل",
+                "cancelCommitment": "إلغاء الالتزام"
+            },
+            "acceptDialog": {
+                "title": "قبول التبرع",
+                "confirmation": "أكد التزامك بتنفيذ طلب التبرع هذا.",
+                "isAnonymous": "قبول بشكل مجهول",
+                "fulfillmentMode": "طريقة التنفيذ",
+                "selfFulfillment": "تنفيذ ذاتي",
+                "viaCharityRepresentative": "عبر ممثل الجمعية الخيرية",
+                "charityCenter": "الجمعية الخيرية",
+                "charityCenterPlaceholder": "اختر جمعية خيرية",
+                "noCharityCenters": "لا توجد جمعيات خيرية متاحة حالياً.",
+                "charityCentersPending": "سيتم توفير قائمة الجمعيات الخيرية لاحقاً.",
+                "expectedClosureDate": "تاريخ الإغلاق المتوقع",
+                "validation": {
+                    "expectedClosureRequired": "تاريخ الإغلاق المتوقع مطلوب.",
+                    "expectedClosureFuture": "يجب أن يكون تاريخ الإغلاق المتوقع اليوم أو تاريخاً لاحقاً.",
+                    "fulfillmentModeRequired": "طريقة التنفيذ مطلوبة.",
+                    "charityRequired": "يرجى اختيار ممثل جمعية خيرية لطريقة التنفيذ هذه."
+                }
+            },
+            "cancelDialog": {
+                "title": "إلغاء الالتزام",
+                "reason": "سبب الإلغاء",
+                "reasonPlaceholder": "أدخل سبب إلغاء هذا الالتزام",
+                "validation": {
+                    "reasonRequired": "سبب الإلغاء مطلوب."
+                }
+            },
+            "details": {
+                "title": "تفاصيل الالتزام",
+                "back": "العودة إلى التزاماتي",
+                "commitmentId": "رقم الالتزام",
+                "donorUserId": "رقم المتبرع",
+                "fulfillmentMode": "طريقة التنفيذ",
+                "charityEntity": "الجمعية الخيرية",
+                "charityRepUserId": "رقم ممثل الجمعية الخيرية",
+                "isAnonymous": "مجهول",
+                "acceptedAt": "تاريخ القبول",
+                "cancelledAt": "تاريخ الإلغاء",
+                "cancelledByUserId": "أُلغي بواسطة المستخدم",
+                "cancelReason": "سبب الإلغاء",
+                "completedAt": "تاريخ الإكمال",
+                "entityId": "رقم المنشأة",
+                "sections": {
+                    "commitment": "معلومات الالتزام",
+                    "request": "طلب التبرع المرتبط"
+                }
             },
             "messages": {
-                "notDonor": "أنت غير مسجل كمتبرع."
+                "notDonor": "غير مسموح لك بإدارة هذا الالتزام.",
+                "accepted": "تم قبول التبرع بنجاح.",
+                "cancelled": "تم إلغاء التزام التبرع بنجاح."
+            },
+            "errors": {
+                "requestNotFound": "لم يتم العثور على طلب التبرع.",
+                "notPublished": "طلب التبرع هذا لم يعد متاحاً للقبول.",
+                "activeCommitmentExists": "يوجد بالفعل التزام نشط لهذا الطلب.",
+                "invalidFulfillmentMode": "طريقة التنفيذ المحددة غير صالحة.",
+                "charityRequired": "يرجى اختيار ممثل جمعية خيرية لطريقة التنفيذ هذه.",
+                "commitmentNotFound": "لم يتم العثور على التزام التبرع.",
+                "invalidStatus": "هذا الإجراء غير مسموح لحالة الالتزام الحالية.",
+                "accessDenied": "ليس لديك صلاحية للوصول إلى هذا القسم.",
+                "sessionExpired": "انتهت صلاحية جلستك. يرجى تسجيل الدخول مرة أخرى."
             }
         },
         "adminReview": {
