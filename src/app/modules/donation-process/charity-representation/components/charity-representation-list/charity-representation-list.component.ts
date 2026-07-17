@@ -6,12 +6,15 @@ import { LanguageDirService } from 'src/app/core/services/language-dir.service';
 import { LocalStorageService } from 'src/app/core/services/local-storage.service';
 import { TranslationService } from 'src/app/core/services/translation.service';
 import { DonationCommitmentBackend, CharityRepresentationListItem } from '../../../models/donation-commitment.model';
+import {
+  DonationCommitmentStatus,
+  getCommitmentStatusLabelKey,
+  getCommitmentStatusSeverity,
+} from '../../../models/donation-commitment-status.model';
 import { CharityRepresentationService } from '../../services/charity-representation.service';
 
 type CharityRepresentationListContext = 'list';
 type CharityRepresentationListMode = 'representation' | 'assigned';
-
-const ASSIGNED_COMMITMENT_STATUS = 4;
 
 @Component({
   standalone: false,
@@ -26,11 +29,14 @@ export class CharityRepresentationListComponent implements OnInit, OnDestroy {
   mode: CharityRepresentationListMode = 'representation';
   commitments: CharityRepresentationListItem[] = [];
   pendingOnly = true;
+  selectedStatusId: number | null = null;
+  statusOptions: { label: string; value: number | null }[] = [];
   first = 0;
   totalRecords = 0;
   tableLoadingSpinner = false;
 
   private rawCommitments: DonationCommitmentBackend[] = [];
+  private serverTotalCount = 0;
   private skeletonRows: CharityRepresentationListItem[] = this.createSkeletonRows();
   private subscriptions: Subscription[] = [];
 
@@ -48,9 +54,13 @@ export class CharityRepresentationListComponent implements OnInit, OnDestroy {
     this.mode = (this.route.snapshot.data['mode'] as CharityRepresentationListMode) || 'representation';
     if (this.isAssignedMode) {
       this.pendingOnly = false;
+      this.buildStatusOptions();
     }
     this.subscriptions.push(
       this.languageDirService.userLanguageCode$.subscribe(() => {
+        if (this.isAssignedMode) {
+          this.buildStatusOptions();
+        }
         this.refreshCommitments();
       }),
     );
@@ -109,10 +119,23 @@ export class CharityRepresentationListComponent implements OnInit, OnDestroy {
     this.router.navigate(['/donations/charity/representation', row.id]);
   }
 
+  onStatusFilterChange(): void {
+    this.first = 0;
+    this.refreshCommitments();
+  }
+
   getAnonymousLabel(isAnonymous: boolean): string {
     return isAnonymous
       ? this.translate.getInstant('donations.browse.yes')
       : this.translate.getInstant('donations.browse.no');
+  }
+
+  getStatusLabel(statusId: number): string {
+    return this.translate.getInstant(getCommitmentStatusLabelKey(statusId));
+  }
+
+  getStatusSeverity(statusId: number) {
+    return getCommitmentStatusSeverity(statusId);
   }
 
   // #region Load data
@@ -140,7 +163,7 @@ export class CharityRepresentationListComponent implements OnInit, OnDestroy {
           }
 
           const message = response.message ?? {};
-          this.totalRecords = Number(message.Total_Count || 0);
+          this.serverTotalCount = Number(message.Total_Count || 0);
           this.rawCommitments = Array.isArray(message.Commitments) ? message.Commitments : [];
           this.refreshCommitments();
         },
@@ -157,15 +180,12 @@ export class CharityRepresentationListComponent implements OnInit, OnDestroy {
   // #endregion
 
   private refreshCommitments(): void {
-    const rawItems = this.isAssignedMode
-      ? this.rawCommitments.filter((item) => Number(item.Status) === ASSIGNED_COMMITMENT_STATUS)
-      : this.rawCommitments;
-
-    this.commitments = rawItems.map((item) => ({
+    let mapped = this.rawCommitments.map((item) => ({
       id: String(item.Donation_Commitment_ID || ''),
       donationRequestId: String(item.Donation_Request_ID || ''),
       donorUserId: Number(item.Donor_User_ID || 0),
       entityId: Number(item.Entity_ID || 0),
+      statusId: Number(item.Status || 0),
       title: this.localStorageService.pickRequestContentField(
         String(item.Request_Title || ''),
         String(item.Request_Title_Regional || ''),
@@ -174,6 +194,29 @@ export class CharityRepresentationListComponent implements OnInit, OnDestroy {
       expectedClosureAt: String(item.Expected_Closure_At || ''),
       acceptedAt: String(item.Accepted_At || ''),
     }));
+
+    if (this.isAssignedMode && this.selectedStatusId) {
+      mapped = mapped.filter((item) => item.statusId === this.selectedStatusId);
+      this.totalRecords = mapped.length;
+    } else {
+      this.totalRecords = this.serverTotalCount;
+    }
+
+    this.commitments = mapped;
+  }
+
+  private buildStatusOptions(): void {
+    this.statusOptions = [
+      { label: this.translate.getInstant('donations.charityRepresentation.filters.allStatuses'), value: null },
+      {
+        label: this.translate.getInstant('donations.commitments.status.accepted'),
+        value: DonationCommitmentStatus.AcceptedConfirmed,
+      },
+      {
+        label: this.translate.getInstant('donations.commitments.status.cancelledRejected'),
+        value: DonationCommitmentStatus.CancelledRejected,
+      },
+    ];
   }
 
   private createSkeletonRows(): CharityRepresentationListItem[] {
@@ -182,6 +225,7 @@ export class CharityRepresentationListComponent implements OnInit, OnDestroy {
       donationRequestId: '',
       donorUserId: 0,
       entityId: 0,
+      statusId: 0,
       title: '',
       isAnonymous: false,
       expectedClosureAt: '',

@@ -9,6 +9,12 @@ import {
   DonationCommitmentBackend,
   DonationCommitmentListItem,
 } from '../../../models/donation-commitment.model';
+import {
+  CommitmentStatusSeverity,
+  getCommitmentStatusFilterOptions,
+  getCommitmentStatusLabelKey,
+  getCommitmentStatusSeverity,
+} from '../../../models/donation-commitment-status.model';
 import { FulfillmentMode } from '../../../models/fulfillment-mode.model';
 import { DonationCommitmentService } from '../../services/donation-commitment.service';
 
@@ -25,6 +31,8 @@ export class MyCommitmentsListComponent implements OnInit, OnDestroy {
   readonly rowsPerPageOptions = [10, 25, 50, 100];
 
   commitments: DonationCommitmentListItem[] = [];
+  selectedStatusId: number | null = null;
+  statusOptions: { label: string; value: number | null }[] = [];
 
   first = 0;
   totalRecords = 0;
@@ -44,8 +52,10 @@ export class MyCommitmentsListComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    this.buildStatusOptions();
     this.subscriptions.push(
       this.languageDirService.userLanguageCode$.subscribe(() => {
+        this.buildStatusOptions();
         this.refreshCommitments();
       }),
     );
@@ -74,6 +84,11 @@ export class MyCommitmentsListComponent implements OnInit, OnDestroy {
     });
   }
 
+  onStatusFilterChange(): void {
+    this.first = 0;
+    this.loadCommitments();
+  }
+
   viewCommitment(row: DonationCommitmentListItem, event?: Event): void {
     event?.stopPropagation();
     if (this.tableLoadingSpinner || !row.id) {
@@ -98,6 +113,14 @@ export class MyCommitmentsListComponent implements OnInit, OnDestroy {
       : this.translate.getInstant('donations.browse.no');
   }
 
+  getStatusLabel(statusId: number): string {
+    return this.translate.getInstant(getCommitmentStatusLabelKey(statusId));
+  }
+
+  getStatusSeverity(statusId: number): CommitmentStatusSeverity {
+    return getCommitmentStatusSeverity(statusId);
+  }
+
   private loadCommitments(): void {
     const donorUserId = Number(this.localStorageService.getUserDetails()?.User_ID || 0);
     if (!donorUserId) {
@@ -109,9 +132,10 @@ export class MyCommitmentsListComponent implements OnInit, OnDestroy {
     this.tableLoadingSpinner = true;
     const currentPage = Math.floor(this.first / this.rows) + 1;
     const lastCommitmentId = -currentPage;
+    const statusFilter = this.selectedStatusId ? [this.selectedStatusId] : [];
 
     const sub = this.donationCommitmentService
-      .listDonorCommitments(donorUserId, [], lastCommitmentId, this.rows)
+      .listDonorCommitments(donorUserId, statusFilter, lastCommitmentId, this.rows)
       .subscribe({
         next: (response: any) => {
           console.log('loadCommitments', response);
@@ -140,7 +164,7 @@ export class MyCommitmentsListComponent implements OnInit, OnDestroy {
       id: String(item.Donation_Commitment_ID || ''),
       donationRequestId: String(item.Donation_Request_ID || ''),
       entityId: Number(item.Entity_ID || 0),
-      statusId: Number(item.Status ?? item.Status_ID ?? 0),
+      statusId: Number(item.Status || 0),
       title: this.localStorageService.pickRequestContentField(
         String(item.Request_Title || ''),
         String(item.Request_Title_Regional || ''),
@@ -150,6 +174,16 @@ export class MyCommitmentsListComponent implements OnInit, OnDestroy {
       expectedClosureAt: String(item.Expected_Closure_At || ''),
       acceptedAt: String(item.Accepted_At || ''),
     }));
+  }
+
+  private buildStatusOptions(): void {
+    this.statusOptions = [
+      { label: this.translate.getInstant('donations.commitments.filters.allStatuses'), value: null },
+      ...getCommitmentStatusFilterOptions().map((item) => ({
+        label: this.translate.getInstant(item.labelKey),
+        value: item.value,
+      })),
+    ];
   }
 
   private createSkeletonRows(): DonationCommitmentListItem[] {

@@ -1278,8 +1278,14 @@
             "donations.commitments.details.title": "Commitment Details",
             "donations.adminReview.title": "Admin Review",
             "donations.vendorOffers.title": "Vendor Offers",
+            "donations.vendorOffers.requests.title": "Vendor Requests",
+            "donations.vendorOffers.requestDetails.title": "Vendor Request Details",
+            "donations.vendorOffers.myOffers.title": "My Offers",
+            "donations.vendorOffers.offerDetails.title": "Vendor Offer Details",
+            "donations.vendorOffers.form.editTitle": "Edit Vendor Offer",
             "donations.charityRepresentation.title": "Charity Representation",
             "donations.charityRepresentation.details.title": "Representation Details",
+            "donations.charityRepresentation.assigned.title": "Assigned Commitments",
             "donations.validation.title": "Community Validation",
             "donations.reference.title": "Donation Reference",
             "donations.reference.categories.title": "Donation Categories",
@@ -3698,15 +3704,24 @@
             "pagination": "Showing '{first}' to '{last}' of '{totalRecords}'",
             "empty": "No commitments found.",
             "filters": {
-                "status": "Filter by status"
+                "status": "Filter by status",
+                "allStatuses": "All"
             },
             "columns": {
                 "requestId": "Request ID",
+                "status": "Commitment Status",
                 "expectedClosure": "Expected fulfillment",
                 "fulfillmentMode": "Fulfillment mode",
                 "anonymous": "Anonymous",
                 "acceptedAt": "Accepted at",
                 "actions": "Actions"
+            },
+            "status": {
+                "active": "Active Commitment",
+                "accepted": "Accepted",
+                "underReview": "Under Review",
+                "cancelledRejected": "Rejected",
+                "unknown": "Unknown Status"
             },
             "fulfillmentMode": {
                 "selfFulfillment": "Self Fulfillment",
@@ -3761,7 +3776,8 @@
                 "entityId": "Facility ID",
                 "sections": {
                     "commitment": "Commitment information",
-                    "request": "Related donation request"
+                    "request": "Related donation request",
+                    "workflow": "Status History"
                 }
             },
             "messages": {
@@ -3834,7 +3850,106 @@
             "title": "Vendor Offers",
             "subtitle": "Browse donation requests open for vendor offers in your service area.",
             "pagination": "Showing '{first}' to '{last}' of '{totalRecords}'",
-            "empty": "No requests available for vendor offers."
+            "empty": "No requests available for vendor offers.",
+            "requests": {
+                "title": "Vendor Requests",
+                "subtitle": "Browse published donation requests available for vendor offers.",
+                "pagination": "Showing '{first}' to '{last}' of '{totalRecords}'",
+                "empty": "No donation requests available for vendors."
+            },
+            "myOffers": {
+                "title": "My Offers",
+                "subtitle": "View and manage your submitted vendor offers.",
+                "pagination": "Showing '{first}' to '{last}' of '{totalRecords}'",
+                "empty": "You have not submitted any vendor offers yet."
+            },
+            "requestDetails": {
+                "title": "Vendor Request Details",
+                "back": "Back to Vendor Requests",
+                "sections": {
+                    "request": "Donation request",
+                    "location": "Location"
+                }
+            },
+            "offerDetails": {
+                "title": "Vendor Offer Details",
+                "back": "Back to My Offers",
+                "sections": {
+                    "offer": "Vendor offer"
+                }
+            },
+            "filters": {
+                "category": "Category",
+                "country": "Country",
+                "city": "City",
+                "status": "Status",
+                "allCategories": "All categories",
+                "allCountries": "All countries",
+                "allStatuses": "All",
+                "apply": "Apply",
+                "reset": "Reset"
+            },
+            "columns": {
+                "facility": "Facility",
+                "publishedAt": "Published at",
+                "actions": "Actions",
+                "offerId": "Offer ID",
+                "requestTitle": "Request title",
+                "offerAmount": "Offer amount",
+                "validUntil": "Valid until",
+                "updatedAt": "Updated at"
+            },
+            "actions": {
+                "viewDetails": "View Details",
+                "createOffer": "Create Offer",
+                "submitOffer": "Submit Offer",
+                "editOffer": "Edit Offer",
+                "withdrawOffer": "Withdraw Offer",
+                "saveOffer": "Save Offer"
+            },
+            "form": {
+                "offerAmount": "Offer amount",
+                "currencyCode": "Currency code",
+                "currencyPlaceholder": "Select currency",
+                "includesSupply": "Includes supply",
+                "includesInstallation": "Includes installation",
+                "description": "Description",
+                "validUntil": "Valid until",
+                "editTitle": "Edit Vendor Offer",
+                "editSubtitle": "Update your active vendor offer details.",
+                "validation": {
+                    "offerAmountRequired": "Offer amount is required and must be greater than zero.",
+                    "currencyInvalid": "Currency code must be exactly 3 uppercase letters.",
+                    "includesRequired": "Select at least supply or installation.",
+                    "descriptionRequired": "Description is required.",
+                    "validUntilRequired": "Valid until date is required.",
+                    "validUntilFuture": "Valid until must be today or a future date.",
+                    "vendorEntityRequired": "Vendor entity is not available for the current account."
+                }
+            },
+            "createDialog": {
+                "title": "Create Vendor Offer",
+                "confirmation": "Submit your offer for this donation request."
+            },
+            "withdrawDialog": {
+                "title": "Withdraw Vendor Offer",
+                "confirmation": "Are you sure you want to withdraw this vendor offer?"
+            },
+            "messages": {
+                "created": "Vendor offer submitted successfully.",
+                "updated": "Vendor offer updated successfully.",
+                "withdrawn": "Vendor offer withdrawn successfully."
+            },
+            "errors": {
+                "requestNotFound": "Donation request was not found.",
+                "offerNotFound": "Vendor offer was not found.",
+                "notVendor": "You are not allowed to manage this vendor offer.",
+                "invalidOfferAmount": "Offer amount is invalid.",
+                "invalidCurrency": "Currency code is invalid.",
+                "actionNotAccessible": "This action is not available for your entity.",
+                "accessDenied": "You do not have permission to access this section.",
+                "sessionExpired": "Your session has expired. Please login again."
+            }
         },
         "charityRepresentation": {
             "title": "Charity Representation",
@@ -3847,7 +3962,9 @@
                 "empty": "No assigned commitments found."
             },
             "filters": {
-                "pendingOnly": "Pending only"
+                "pendingOnly": "Pending only",
+                "status": "Filter by status",
+                "allStatuses": "All"
             },
             "columns": {
                 "commitmentId": "Commitment ID",
@@ -3874,7 +3991,8 @@
                     "commitment": "Commitment",
                     "request": "Donation request",
                     "facility": "Facility",
-                    "donor": "Donor"
+                    "donor": "Donor",
+                    "workflow": "Status History"
                 }
             },
             "respondDialog": {
@@ -3975,7 +4093,7 @@
             },
             "filters": {
                 "status": "Status",
-                "allStatuses": "All statuses"
+                "allStatuses": "All"
             },
             "locationMap": {
                 "title": "Location on map",

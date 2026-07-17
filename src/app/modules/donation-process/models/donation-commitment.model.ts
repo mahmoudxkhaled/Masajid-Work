@@ -3,7 +3,6 @@ import { FulfillmentModeValue } from './fulfillment-mode.model';
 export interface DonationCommitmentBackend {
   Donation_Commitment_ID?: number;
   Donation_Request_ID?: number;
-  Status_ID?: number;
   Status?: number;
   Donor_User_ID?: number;
   Is_Anonymous?: boolean;
@@ -38,6 +37,7 @@ export interface CharityRepresentationListItem {
   donationRequestId: string;
   donorUserId: number;
   entityId: number;
+  statusId: number;
   title: string;
   isAnonymous: boolean;
   expectedClosureAt: string;

@@ -1,70 +1,123 @@
 <p-toast />
 <div class="block-section card">
   <div class="flex flex-column gap-2 mb-3">
-    <h2 class="block-title mb-0">{{ 'donations.vendorOffers.title' | translate }}</h2>
-    <p class="mb-0 text-500">{{ 'donations.vendorOffers.subtitle' | translate }}</p>
+    <h2 class="block-title mb-0">{{ 'donations.vendorOffers.myOffers.title' | translate }}</h2>
+    <p class="mb-0 text-500">{{ 'donations.vendorOffers.myOffers.subtitle' | translate }}</p>
   </div>
 
   <div class="block-card">
-    <p-table
-      [value]="tableValue"
-      [paginator]="true"
-      [lazy]="true"
-      [first]="first"
-      [rows]="rows"
-      [totalRecords]="totalRecords"
-      [rowsPerPageOptions]="rowsPerPageOptions"
-      [showCurrentPageReport]="true"
-      [currentPageReportTemplate]="'donations.vendorOffers.pagination' | translate"
-      responsiveLayout="scroll"
-      styleClass="p-datatable-sm"
-      (onLazyLoad)="onPageChange($event)"
-    >
+    <p-table [value]="tableValue" [paginator]="true" [lazy]="true" [first]="first" [rows]="rows"
+      [totalRecords]="totalRecords" [rowsPerPageOptions]="rowsPerPageOptions" [showCurrentPageReport]="true"
+      [currentPageReportTemplate]="'donations.vendorOffers.myOffers.pagination' | translate" responsiveLayout="scroll"
+      styleClass="p-datatable-sm" (onLazyLoad)="onPageChange($event)">
+      <ng-template pTemplate="caption">
+        <div class="flex align-items-center justify-content-between gap-3 mb-2 flex-wrap">
+          <div class="flex align-items-center gap-2">
+            <ng-container *ngIf="tableLoadingSpinner && offers.length === 0; else statusFilter">
+              <p-skeleton height="2.5rem" width="10rem" borderRadius="6px"></p-skeleton>
+            </ng-container>
+            <ng-template #statusFilter>
+              <p-dropdown [options]="statusOptions" [(ngModel)]="selectedStatusId" optionLabel="label"
+                optionValue="value" [placeholder]="'donations.vendorOffers.filters.status' | translate"
+                [style]="{ width: '10rem' }" (onChange)="onStatusFilterChange()"></p-dropdown>
+            </ng-template>
+          </div>
+        </div>
+      </ng-template>
+
       <ng-template pTemplate="header">
         <tr>
-          <th style="width: 16rem">{{ 'donations.shared.columns.title' | translate }}</th>
+          <th class="text-center" style="width: 7rem">{{ 'donations.vendorOffers.columns.offerId' | translate }}</th>
+          <th style="width: 14rem">{{ 'donations.vendorOffers.columns.requestTitle' | translate }}</th>
+          <th class="text-center" style="width: 10rem">{{ 'donations.vendorOffers.columns.offerAmount' | translate }}
+          </th>
+          <th class="text-center" style="width: 7rem">{{ 'donations.vendorOffers.form.includesSupply' | translate }}
+          </th>
+          <th class="text-center" style="width: 8rem">{{ 'donations.vendorOffers.form.includesInstallation' | translate
+            }}</th>
           <th class="text-center" style="width: 9rem">{{ 'donations.shared.columns.status' | translate }}</th>
-          <th class="text-center" style="width: 10rem">{{ 'donations.shared.columns.estimatedCost' | translate }}</th>
+          <th class="text-center" style="width: 10rem">{{ 'donations.vendorOffers.columns.validUntil' | translate }}
+          </th>
           <th class="text-center" style="width: 10rem">{{ 'donations.shared.columns.createdAt' | translate }}</th>
+          <th class="text-center" style="width: 8rem">{{ 'donations.vendorOffers.columns.actions' | translate }}</th>
         </tr>
       </ng-template>
 
       <ng-template pTemplate="body" let-row>
-        <tr>
+        <tr class="vendor-offers-row-clickable" [style.cursor]="tableLoadingSpinner ? 'default' : 'pointer'"
+          (click)="!tableLoadingSpinner && viewDetails(row)">
+          <td class="text-center">
+            <ng-container *ngIf="tableLoadingSpinner; else idCell">
+              <p-skeleton height="1.25rem" width="4rem"></p-skeleton>
+            </ng-container>
+            <ng-template #idCell>{{ row.id || '-' }}</ng-template>
+          </td>
           <td>
             <ng-container *ngIf="tableLoadingSpinner; else titleCell">
-              <p-skeleton height="1.25rem" width="12rem"></p-skeleton>
+              <p-skeleton height="1.25rem" width="90%"></p-skeleton>
             </ng-container>
             <ng-template #titleCell>
-              <span class="font-semibold">{{ getTitle(row) }}</span>
+              <span class="text-overflow-ellipsis" [pTooltip]="row.requestTitle" tooltipPosition="top">{{
+                row.requestTitle || '-' }}</span>
             </ng-template>
+          </td>
+          <td class="text-center">
+            <ng-container *ngIf="tableLoadingSpinner; else amountCell">
+              <p-skeleton height="1.25rem" width="7rem"></p-skeleton>
+            </ng-container>
+            <ng-template #amountCell>{{ formatOfferAmount(row) }}</ng-template>
+          </td>
+          <td class="text-center">
+            <ng-container *ngIf="tableLoadingSpinner; else supplyCell">
+              <p-skeleton height="1.25rem" width="3rem"></p-skeleton>
+            </ng-container>
+            <ng-template #supplyCell>{{ getIncludesLabel(row.includesSupply) }}</ng-template>
+          </td>
+          <td class="text-center">
+            <ng-container *ngIf="tableLoadingSpinner; else installCell">
+              <p-skeleton height="1.25rem" width="3rem"></p-skeleton>
+            </ng-container>
+            <ng-template #installCell>{{ getIncludesLabel(row.includesInstallation) }}</ng-template>
           </td>
           <td class="text-center">
             <ng-container *ngIf="tableLoadingSpinner; else statusCell">
               <p-skeleton height="1.5rem" width="4.5rem" borderRadius="16px"></p-skeleton>
             </ng-container>
             <ng-template #statusCell>
-              <app-donation-status-badge [label]="getStatusLabel(row.Donation_Request_Status_ID || 0)"></app-donation-status-badge>
+              <app-donation-status-badge [label]="getStatusLabel(row)"></app-donation-status-badge>
             </ng-template>
           </td>
           <td class="text-center">
-            <ng-container *ngIf="tableLoadingSpinner; else costCell">
+            <ng-container *ngIf="tableLoadingSpinner; else validCell">
               <p-skeleton height="1.25rem" width="7rem"></p-skeleton>
             </ng-container>
-            <ng-template #costCell>{{ formatEstimatedCost(row) }}</ng-template>
+            <ng-template #validCell>
+              <span dir="ltr">{{ row.validUntil ? (row.validUntil | date:'yyyy-MM-dd') : '-' }}</span>
+            </ng-template>
           </td>
           <td class="text-center">
             <ng-container *ngIf="tableLoadingSpinner; else createdCell">
               <p-skeleton height="1.25rem" width="7rem"></p-skeleton>
             </ng-container>
-            <ng-template #createdCell>{{ row.Created_At || '-' }}</ng-template>
+            <ng-template #createdCell>
+              <span dir="ltr">{{ row.createdAt ? (row.createdAt | date:'yyyy-MM-dd hh:mm a') : '-' }}</span>
+            </ng-template>
+          </td>
+          <td class="text-center">
+            <ng-container *ngIf="tableLoadingSpinner; else actionsCell">
+              <p-skeleton height="2rem" width="5rem" borderRadius="6px"></p-skeleton>
+            </ng-container>
+            <ng-template #actionsCell>
+              <p-button [label]="'donations.vendorOffers.actions.viewDetails' | translate" icon="pi pi-eye"
+                severity="secondary" [outlined]="true" size="small" (onClick)="viewDetails(row, $event)"></p-button>
+            </ng-template>
           </td>
         </tr>
       </ng-template>
 
       <ng-template pTemplate="emptymessage">
         <tr>
-          <td colspan="4" class="text-center py-4">{{ 'donations.vendorOffers.empty' | translate }}</td>
+          <td colspan="9" class="text-center py-4">{{ 'donations.vendorOffers.myOffers.empty' | translate }}</td>
         </tr>
       </ng-template>
     </p-table>

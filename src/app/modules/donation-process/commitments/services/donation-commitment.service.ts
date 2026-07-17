@@ -98,7 +98,7 @@ export class DonationCommitmentService {
       id: String(item.Donation_Commitment_ID || ''),
       donationRequestId: String(item.Donation_Request_ID || ''),
       entityId: Number(item.Entity_ID || 0),
-      statusId: Number(item.Status_ID ?? item.Status ?? 0),
+      statusId: Number(item.Status || 0),
       title: this.localStorageService.pickRequestContentField(
         String(item.Request_Title || item.Title || ''),
         String(item.Request_Title_Regional || item.Title_Regional || ''),
@@ -129,10 +129,12 @@ export class DonationCommitmentService {
       return null;
     }
 
+    const statusId = Number(raw.Status || 0);
+
     return {
       id: String(raw.Donation_Commitment_ID || ''),
       donationRequestId: String(raw.Donation_Request_ID || ''),
-      statusId: Number(raw.Status ?? raw.Status_ID ?? 0),
+      statusId,
       statusCode: '',
       donorUserId: Number(raw.Donor_User_ID || 0),
       entityId: Number(raw.Entity_ID || 0),

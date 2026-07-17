@@ -184,7 +184,7 @@ export const MASAJID_WORKSPACE_MODULES: IModulesDetails = {
     Name: 'Create Offer',
     Name_Regional: '\u0625\u0646\u0634\u0627\u0621 \u0639\u0631\u0636',
     Default_Order: 30,
-    URL: '/donations/vendor/offers/create',
+    URL: '/donations/vendor/requests',
   },
   CHR_REQ: {
     ModuleID: 341,

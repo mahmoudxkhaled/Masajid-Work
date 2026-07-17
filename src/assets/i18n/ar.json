@@ -1279,8 +1279,14 @@
             "donations.commitments.details.title": "تفاصيل الالتزام",
             "donations.adminReview.title": "مراجعة الإدارة",
             "donations.vendorOffers.title": "عروض الموردين",
+            "donations.vendorOffers.requests.title": "طلبات المورد",
+            "donations.vendorOffers.requestDetails.title": "تفاصيل طلب المورد",
+            "donations.vendorOffers.myOffers.title": "عروضي",
+            "donations.vendorOffers.offerDetails.title": "تفاصيل عرض المورد",
+            "donations.vendorOffers.form.editTitle": "تعديل عرض المورد",
             "donations.charityRepresentation.title": "تمثيل الجمعيات",
             "donations.charityRepresentation.details.title": "تفاصيل التمثيل",
+            "donations.charityRepresentation.assigned.title": "الالتزامات المعيَّنة",
             "donations.validation.title": "التحقق المجتمعي",
             "donations.reference.title": "مرجع التبرعات",
             "donations.reference.categories.title": "تصنيفات التبرعات",
@@ -3557,15 +3563,24 @@
             "pagination": "عرض '{first}' إلى '{last}' من أصل '{totalRecords}'",
             "empty": "لا توجد التزامات.",
             "filters": {
-                "status": "تصفية حسب الحالة"
+                "status": "تصفية حسب الحالة",
+                "allStatuses": "الكل"
             },
             "columns": {
                 "requestId": "رقم الطلب",
+                "status": "حالة الالتزام",
                 "expectedClosure": "التنفيذ المتوقع",
                 "fulfillmentMode": "طريقة التنفيذ",
                 "anonymous": "مجهول",
                 "acceptedAt": "تاريخ القبول",
                 "actions": "الإجراءات"
+            },
+            "status": {
+                "active": "التزام نشط",
+                "accepted": "مقبول",
+                "underReview": "قيد المراجعة",
+                "cancelledRejected": "مرفوض",
+                "unknown": "حالة غير معروفة"
             },
             "fulfillmentMode": {
                 "selfFulfillment": "تنفيذ ذاتي",
@@ -3620,7 +3635,8 @@
                 "entityId": "رقم المنشأة",
                 "sections": {
                     "commitment": "معلومات الالتزام",
-                    "request": "طلب التبرع المرتبط"
+                    "request": "طلب التبرع المرتبط",
+                    "workflow": "سجل الحالة"
                 }
             },
             "messages": {
@@ -3693,7 +3709,106 @@
             "title": "عروض الموردين",
             "subtitle": "تصفح طلبات التبرع المتاحة لعروض الموردين في منطقتك.",
             "pagination": "عرض '{first}' إلى '{last}' من أصل '{totalRecords}'",
-            "empty": "لا توجد طلبات متاحة لعروض الموردين."
+            "empty": "لا توجد طلبات متاحة لعروض الموردين.",
+            "requests": {
+                "title": "طلبات المورد",
+                "subtitle": "تصفح طلبات التبرع المنشورة المتاحة لعروض الموردين.",
+                "pagination": "عرض '{first}' إلى '{last}' من أصل '{totalRecords}'",
+                "empty": "لا توجد طلبات تبرع متاحة للموردين."
+            },
+            "myOffers": {
+                "title": "عروضي",
+                "subtitle": "اعرض وأدر عروض المورد التي قدمتها.",
+                "pagination": "عرض '{first}' إلى '{last}' من أصل '{totalRecords}'",
+                "empty": "لم تقدّم أي عروض مورد بعد."
+            },
+            "requestDetails": {
+                "title": "تفاصيل طلب المورد",
+                "back": "العودة إلى طلبات المورد",
+                "sections": {
+                    "request": "طلب التبرع",
+                    "location": "الموقع"
+                }
+            },
+            "offerDetails": {
+                "title": "تفاصيل عرض المورد",
+                "back": "العودة إلى عروضي",
+                "sections": {
+                    "offer": "عرض المورد"
+                }
+            },
+            "filters": {
+                "category": "التصنيف",
+                "country": "الدولة",
+                "city": "المدينة",
+                "status": "الحالة",
+                "allCategories": "جميع التصنيفات",
+                "allCountries": "جميع الدول",
+                "allStatuses": "الكل",
+                "apply": "تطبيق",
+                "reset": "إعادة تعيين"
+            },
+            "columns": {
+                "facility": "المنشأة",
+                "publishedAt": "تاريخ النشر",
+                "actions": "الإجراءات",
+                "offerId": "رقم العرض",
+                "requestTitle": "عنوان الطلب",
+                "offerAmount": "قيمة العرض",
+                "validUntil": "صالح حتى",
+                "updatedAt": "تاريخ التحديث"
+            },
+            "actions": {
+                "viewDetails": "عرض التفاصيل",
+                "createOffer": "إنشاء عرض",
+                "submitOffer": "تقديم العرض",
+                "editOffer": "تعديل العرض",
+                "withdrawOffer": "سحب العرض",
+                "saveOffer": "حفظ العرض"
+            },
+            "form": {
+                "offerAmount": "قيمة العرض",
+                "currencyCode": "رمز العملة",
+                "currencyPlaceholder": "اختر العملة",
+                "includesSupply": "يشمل التوريد",
+                "includesInstallation": "يشمل التركيب",
+                "description": "الوصف",
+                "validUntil": "صالح حتى",
+                "editTitle": "تعديل عرض المورد",
+                "editSubtitle": "حدّث تفاصيل عرض المورد النشط.",
+                "validation": {
+                    "offerAmountRequired": "قيمة العرض مطلوبة ويجب أن تكون أكبر من صفر.",
+                    "currencyInvalid": "رمز العملة يجب أن يكون 3 أحرف إنجليزية كبيرة.",
+                    "includesRequired": "اختر التوريد أو التركيب على الأقل.",
+                    "descriptionRequired": "الوصف مطلوب.",
+                    "validUntilRequired": "تاريخ الصلاحية مطلوب.",
+                    "validUntilFuture": "تاريخ الصلاحية يجب أن يكون اليوم أو تاريخاً لاحقاً.",
+                    "vendorEntityRequired": "جهة المورد غير متاحة للحساب الحالي."
+                }
+            },
+            "createDialog": {
+                "title": "إنشاء عرض مورد",
+                "confirmation": "قدّم عرضك لهذا طلب التبرع."
+            },
+            "withdrawDialog": {
+                "title": "سحب عرض المورد",
+                "confirmation": "هل أنت متأكد من سحب عرض المورد هذا؟"
+            },
+            "messages": {
+                "created": "تم تقديم عرض المورد بنجاح.",
+                "updated": "تم تحديث عرض المورد بنجاح.",
+                "withdrawn": "تم سحب عرض المورد بنجاح."
+            },
+            "errors": {
+                "requestNotFound": "لم يتم العثور على طلب التبرع.",
+                "offerNotFound": "لم يتم العثور على عرض المورد.",
+                "notVendor": "غير مسموح لك بإدارة عرض المورد هذا.",
+                "invalidOfferAmount": "قيمة العرض غير صالحة.",
+                "invalidCurrency": "رمز العملة غير صالح.",
+                "actionNotAccessible": "هذا الإجراء غير متاح لجهتك.",
+                "accessDenied": "ليس لديك صلاحية للوصول إلى هذا القسم.",
+                "sessionExpired": "انتهت صلاحية الجلسة. يرجى تسجيل الدخول مرة أخرى."
+            }
         },
         "charityRepresentation": {
             "title": "تمثيل الجمعيات",
@@ -3706,7 +3821,9 @@
                 "empty": "لا توجد التزامات معيّنة."
             },
             "filters": {
-                "pendingOnly": "المعلّقة فقط"
+                "pendingOnly": "المعلّقة فقط",
+                "status": "تصفية حسب الحالة",
+                "allStatuses": "الكل"
             },
             "columns": {
                 "commitmentId": "رقم الالتزام",
@@ -3733,7 +3850,8 @@
                     "commitment": "الالتزام",
                     "request": "طلب التبرع",
                     "facility": "المنشأة",
-                    "donor": "المتبرع"
+                    "donor": "المتبرع",
+                    "workflow": "سجل الحالة"
                 }
             },
             "respondDialog": {
@@ -3834,7 +3952,7 @@
             },
             "filters": {
                 "status": "الحالة",
-                "allStatuses": "كل الحالات"
+                "allStatuses": "الكل"
             },
             "locationMap": {
                 "title": "الموقع على الخريطة",

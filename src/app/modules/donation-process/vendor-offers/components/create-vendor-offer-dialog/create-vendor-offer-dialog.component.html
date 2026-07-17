@@ -1,0 +1,51 @@
+<p-dialog [(visible)]="visible" [modal]="true" [style]="{ width: '560px' }" [draggable]="false" [resizable]="false"
+  (onHide)="closeDialog()">
+  <ng-template pTemplate="header">
+    <h3 class="m-0">{{ 'donations.vendorOffers.createDialog.title' | translate }}</h3>
+  </ng-template>
+
+  <p class="mb-3 text-500">{{ 'donations.vendorOffers.createDialog.confirmation' | translate }}</p>
+
+  <div class="flex flex-column gap-3">
+    <div class="flex flex-column gap-2">
+      <label class="font-medium">{{ 'donations.vendorOffers.form.offerAmount' | translate }}</label>
+      <p-inputNumber [(ngModel)]="offerAmount" [min]="0" mode="decimal" [minFractionDigits]="0" [maxFractionDigits]="2"
+        styleClass="w-full"></p-inputNumber>
+    </div>
+
+    <div class="flex flex-column gap-2">
+      <label class="font-medium">{{ 'donations.vendorOffers.form.currencyCode' | translate }}</label>
+      <p-dropdown [options]="currencyOptions" [(ngModel)]="currencyCode" optionLabel="label" optionValue="value"
+        [placeholder]="'donations.vendorOffers.form.currencyPlaceholder' | translate" styleClass="w-full"></p-dropdown>
+    </div>
+
+    <div class="flex flex-wrap gap-3">
+      <div class="flex align-items-center gap-2">
+        <p-checkbox [(ngModel)]="includesSupply" [binary]="true" inputId="includesSupply"></p-checkbox>
+        <label for="includesSupply">{{ 'donations.vendorOffers.form.includesSupply' | translate }}</label>
+      </div>
+      <div class="flex align-items-center gap-2">
+        <p-checkbox [(ngModel)]="includesInstallation" [binary]="true" inputId="includesInstallation"></p-checkbox>
+        <label for="includesInstallation">{{ 'donations.vendorOffers.form.includesInstallation' | translate }}</label>
+      </div>
+    </div>
+
+    <div class="flex flex-column gap-2">
+      <label class="font-medium">{{ 'donations.vendorOffers.form.description' | translate }}</label>
+      <textarea pInputTextarea rows="4" class="w-full" [(ngModel)]="description"></textarea>
+    </div>
+
+    <div class="flex flex-column gap-2">
+      <label class="font-medium">{{ 'donations.vendorOffers.form.validUntil' | translate }}</label>
+      <p-calendar [(ngModel)]="validUntilDate" [minDate]="minValidUntilDate" dateFormat="yy-mm-dd" [showIcon]="true"
+        appendTo="body" styleClass="w-full"></p-calendar>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <p-button [label]="'common.cancel' | translate" icon="pi pi-times" severity="secondary" [outlined]="true"
+      (onClick)="closeDialog()" [disabled]="!!(isLoading$ | async)"></p-button>
+    <p-button [label]="'donations.vendorOffers.actions.submitOffer' | translate" icon="pi pi-check" severity="success"
+      (onClick)="confirmCreate()" [disabled]="!!(isLoading$ | async)"></p-button>
+  </ng-template>
+</p-dialog>

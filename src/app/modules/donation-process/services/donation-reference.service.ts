@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, finalize } from 'rxjs';
+import { BehaviorSubject, Observable, finalize, tap } from 'rxjs';
 import { ApiService } from 'src/app/core/api/api.service';
 import { LocalStorageService } from 'src/app/core/services/local-storage.service';
 import { DonationCategory, DonationCategoryBackend } from '../models/donation-category.model';
@@ -38,6 +38,7 @@ export class DonationReferenceService {
     this.isLoadingSubject.next(true);
     return this.apiServices.callAPI(100106, this.getAccessToken(), []).pipe(
       finalize(() => this.isLoadingSubject.next(false)),
+      tap((response) => console.log('listDonationRequestStatuses response', response)),
     );
   }
 

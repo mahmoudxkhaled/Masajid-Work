@@ -95,6 +95,7 @@ export interface DonationRequestDetails {
   countryCode: string;
   reviewNote: string;
   createdAt: string;
+  publishedAt: string;
 }
 
 export interface DonationRequestWorkflowItem {

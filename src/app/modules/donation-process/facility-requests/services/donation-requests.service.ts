@@ -108,6 +108,7 @@ export class DonationRequestsService {
       countryCode: String(raw.Country_Code || ''),
       reviewNote: String(raw.Admin_Review_Note || raw.Review_Note || ''),
       createdAt: String(raw.Created_At || ''),
+      publishedAt: String(raw.Published_At || ''),
     };
   }
 

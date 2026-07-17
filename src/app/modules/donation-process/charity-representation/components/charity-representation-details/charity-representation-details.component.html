@@ -54,11 +54,13 @@
   <ng-template #detailsContent>
     <div *ngIf="details">
       <div class="block-card details-card p-0 mb-3">
-        <div class="details-section-header">
+        <div class="details-section-header details-section-header--with-action">
           <div class="flex align-items-center gap-3 flex-1 min-w-0">
             <span class="details-section-icon"><i class="pi pi-check-circle"></i></span>
             <h3 class="details-section-title">{{ 'donations.commitments.details.sections.commitment' | translate }}</h3>
           </div>
+          <app-donation-status-badge *ngIf="statusLabel" [label]="statusLabel"
+            [severity]="statusSeverity"></app-donation-status-badge>
         </div>
         <div class="grid p-3 pt-2">
           <div class="col-12 md:col-6 lg:col-4">
@@ -157,6 +159,18 @@
               </span>
             </div>
           </div>
+        </div>
+      </div>
+
+      <div class="block-card details-card p-0">
+        <div class="details-section-header">
+          <span class="details-section-icon"><i class="pi pi-history"></i></span>
+          <h3 class="details-section-title">{{ 'donations.charityRepresentation.details.sections.workflow' | translate }}
+          </h3>
+        </div>
+        <div class="p-3 pt-2">
+          <app-donation-workflow-timeline [items]="workflowItems"
+            [loading]="workflowLoading"></app-donation-workflow-timeline>
         </div>
       </div>
     </div>

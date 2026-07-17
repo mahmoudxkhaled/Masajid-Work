@@ -10,9 +10,31 @@
       [totalRecords]="totalRecords" [rowsPerPageOptions]="rowsPerPageOptions" [showCurrentPageReport]="true"
       [currentPageReportTemplate]="'donations.commitments.pagination' | translate" responsiveLayout="scroll"
       styleClass="p-datatable-sm" (onLazyLoad)="onPageChange($event)">
+      <ng-template pTemplate="caption">
+        <div class="flex align-items-center justify-content-between gap-3 mb-2 flex-wrap">
+          <div class="flex align-items-center gap-2">
+            <ng-container *ngIf="tableLoadingSpinner && commitments.length === 0; else statusFilterTpl">
+              <p-skeleton height="2.5rem" width="12rem" borderRadius="6px"></p-skeleton>
+            </ng-container>
+            <ng-template #statusFilterTpl>
+              <p-dropdown
+                [options]="statusOptions"
+                [(ngModel)]="selectedStatusId"
+                optionLabel="label"
+                optionValue="value"
+                [placeholder]="'donations.commitments.filters.status' | translate"
+                [style]="{ width: '12rem' }"
+                (onChange)="onStatusFilterChange()"
+              ></p-dropdown>
+            </ng-template>
+          </div>
+        </div>
+      </ng-template>
+
       <ng-template pTemplate="header">
         <tr>
           <th style="width: 14rem">{{ 'donations.shared.columns.title' | translate }}</th>
+          <th class="text-center" style="width: 9rem">{{ 'donations.commitments.columns.status' | translate }}</th>
           <th class="text-center" style="width: 10rem">{{ 'donations.commitments.columns.fulfillmentMode' | translate }}
           </th>
           <th class="text-center" style="width: 12rem">{{ 'donations.commitments.columns.expectedClosure' | translate }}
@@ -33,6 +55,17 @@
             <ng-template #titleCell>
               <span class="font-semibold text-overflow-ellipsis" [pTooltip]="row.title">{{ row.title ||
                 row.donationRequestId || '-' }}</span>
+            </ng-template>
+          </td>
+          <td class="text-center">
+            <ng-container *ngIf="tableLoadingSpinner; else statusCell">
+              <p-skeleton height="1.5rem" width="5rem" borderRadius="16px"></p-skeleton>
+            </ng-container>
+            <ng-template #statusCell>
+              <app-donation-status-badge
+                [label]="getStatusLabel(row.statusId)"
+                [severity]="getStatusSeverity(row.statusId)"
+              ></app-donation-status-badge>
             </ng-template>
           </td>
           <td class="text-center">
@@ -80,7 +113,7 @@
 
       <ng-template pTemplate="emptymessage">
         <tr>
-          <td colspan="6" class="text-center py-4">{{ 'donations.commitments.empty' | translate }}</td>
+          <td colspan="7" class="text-center py-4">{{ 'donations.commitments.empty' | translate }}</td>
         </tr>
       </ng-template>
     </p-table>
