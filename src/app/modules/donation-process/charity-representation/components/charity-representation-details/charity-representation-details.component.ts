@@ -2,16 +2,9 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
-import { LanguageDirService } from 'src/app/core/services/language-dir.service';
-import { LocalStorageService } from 'src/app/core/services/local-storage.service';
 import { TranslationService } from 'src/app/core/services/translation.service';
-import {
-  CharityRepresentationDetails,
-  DonationCommitmentBackend,
-} from '../../../models/donation-commitment.model';
+import { DonationCommitmentBackend, DonationCommitmentDetails } from '../../../models/donation-commitment.model';
 import { FulfillmentMode } from '../../../models/fulfillment-mode.model';
-import { DonationRequestStatusBackend } from '../../../models/donation-request-status.model';
-import { DonationReferenceService } from '../../../services/donation-reference.service';
 import { CharityRepresentationService } from '../../services/charity-representation.service';
 
 type CharityRepresentationDetailsContext = 'load';
@@ -25,38 +18,27 @@ type CharityRepresentationDetailsContext = 'load';
 export class CharityRepresentationDetailsComponent implements OnInit, OnDestroy {
   commitmentId = 0;
   loading = true;
-  details: CharityRepresentationDetails | null = null;
+  details: DonationCommitmentDetails | null = null;
   respondDialogVisible = false;
   respondMode: 'accept' | 'reject' = 'accept';
 
   fulfillmentModeLabel = '';
-  statusLabel = '';
+  charityLabel = '';
+  charityRepLabel = '';
 
   private rawDetails: DonationCommitmentBackend | null = null;
-  private rawStatuses: DonationRequestStatusBackend[] = [];
-  private statusLabelById: Record<number, string> = {};
   private subscriptions: Subscription[] = [];
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private charityRepresentationService: CharityRepresentationService,
-    private donationReferenceService: DonationReferenceService,
-    private localStorageService: LocalStorageService,
-    private languageDirService: LanguageDirService,
     private translate: TranslationService,
     private messageService: MessageService,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.commitmentId = Number(this.route.snapshot.paramMap.get('commitmentId') || 0);
-    this.subscriptions.push(
-      this.languageDirService.userLanguageCode$.subscribe(() => {
-        this.buildStatusMaps();
-        this.refreshDisplay();
-      }),
-    );
-    this.loadStatuses();
     this.loadDetails();
   }
 
@@ -74,10 +56,6 @@ export class CharityRepresentationDetailsComponent implements OnInit, OnDestroy 
       !this.details.cancelledAt &&
       !this.details.completedAt
     );
-  }
-
-  get showNotPending(): boolean {
-    return !this.loading && Boolean(this.details) && !this.canRespond;
   }
 
   backToList(): void {
@@ -109,28 +87,11 @@ export class CharityRepresentationDetailsComponent implements OnInit, OnDestroy 
 
   // #region Load data
 
-  private loadStatuses(): void {
-    const sub = this.donationReferenceService.listDonationRequestStatuses().subscribe({
-      next: (response: any) => {
-        if (!response?.success) {
-          return;
-        }
-        this.rawStatuses = this.donationReferenceService.extractDictionaryItems<DonationRequestStatusBackend>(
-          response.message,
-          'Request_Statuses',
-        );
-        this.buildStatusMaps();
-        this.refreshDisplay();
-      },
-    });
-    this.subscriptions.push(sub);
-  }
-
   private loadDetails(): void {
     this.loading = true;
     const sub = this.charityRepresentationService.getDonationCommitmentDetails(this.commitmentId).subscribe({
       next: (response: any) => {
-        console.log('Donation Commitment Details response', response);
+        console.log('getDonationCommitmentDetails response', response);
         if (!response?.success) {
           this.handleBusinessError('load', response);
           this.loading = false;
@@ -151,47 +112,14 @@ export class CharityRepresentationDetailsComponent implements OnInit, OnDestroy 
   // #endregion
 
   private refreshDisplay(): void {
-    if (!this.rawDetails) {
-      this.details = null;
+    this.details = this.charityRepresentationService.mapCommitmentDetails(this.rawDetails);
+    if (!this.details) {
       return;
     }
 
-    const item = this.rawDetails;
-    this.details = {
-      id: String(item.Donation_Commitment_ID || ''),
-      donationRequestId: String(item.Donation_Request_ID || ''),
-      donorUserId: Number(item.Donor_User_ID || 0),
-      entityId: Number(item.Entity_ID || 0),
-      statusId: Number(item.Status || 0),
-      isAnonymous: Boolean(item.Is_Anonymous),
-      fulfillmentMode: Number(item.Fulfillment_Mode || 0),
-      charityEntityId: Number(item.Charity_Entity_ID || 0),
-      charityRepUserId: item.Charity_Rep_User_ID != null ? Number(item.Charity_Rep_User_ID) : 0,
-      expectedClosureAt: String(item.Expected_Closure_At || ''),
-      acceptedAt: String(item.Accepted_At || ''),
-      cancelledAt: item.Cancelled_At ? String(item.Cancelled_At) : '',
-      cancelledByUserId: item.Cancelled_By_User_ID != null ? Number(item.Cancelled_By_User_ID) : 0,
-      cancelReason: String(item.Cancel_Reason || ''),
-      completedAt: item.Completed_At ? String(item.Completed_At) : '',
-      title: this.localStorageService.pickRequestContentField(
-        String(item.Request_Title || ''),
-        String(item.Request_Title_Regional || ''),
-      ),
-    };
-
     this.fulfillmentModeLabel = this.getFulfillmentModeLabel(this.details.fulfillmentMode);
-    this.statusLabel = this.statusLabelById[this.details.statusId] || '';
-  }
-
-  private buildStatusMaps(): void {
-    const statuses = this.donationReferenceService.mapDonationRequestStatuses(this.rawStatuses);
-    this.statusLabelById = statuses.reduce<Record<number, string>>((acc, item) => {
-      acc[item.id] = item.name;
-      return acc;
-    }, {});
-    if (this.details) {
-      this.statusLabel = this.statusLabelById[this.details.statusId] || '';
-    }
+    this.charityLabel = this.details.charityEntityId ? `#${this.details.charityEntityId}` : '-';
+    this.charityRepLabel = this.details.charityRepUserId ? `#${this.details.charityRepUserId}` : '-';
   }
 
   private getFulfillmentModeLabel(mode: number): string {

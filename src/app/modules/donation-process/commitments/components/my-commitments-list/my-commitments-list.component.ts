@@ -31,6 +31,7 @@ export class MyCommitmentsListComponent implements OnInit, OnDestroy {
   tableLoadingSpinner = false;
 
   private rawCommitments: DonationCommitmentBackend[] = [];
+  private skeletonRows: DonationCommitmentListItem[] = this.createSkeletonRows();
   private subscriptions: Subscription[] = [];
 
   constructor(
@@ -56,25 +57,21 @@ export class MyCommitmentsListComponent implements OnInit, OnDestroy {
 
   get tableValue(): DonationCommitmentListItem[] {
     if (this.tableLoadingSpinner && this.commitments.length === 0) {
-      return Array(this.rows).fill(null).map(() => ({
-        id: '',
-        donationRequestId: '',
-        entityId: 0,
-        statusId: 0,
-        title: '',
-        fulfillmentMode: 0,
-        isAnonymous: false,
-        expectedClosureAt: '',
-        acceptedAt: '',
-      }));
+      return this.skeletonRows;
     }
     return this.commitments;
   }
 
   onPageChange(event: any): void {
-    this.first = event?.first ?? 0;
-    this.rows = event?.rows ?? this.rows;
-    this.loadCommitments();
+    const first = event?.first ?? 0;
+    const rows = event?.rows ?? this.rows;
+
+    setTimeout(() => {
+      this.first = first;
+      this.rows = rows;
+      this.skeletonRows = this.createSkeletonRows();
+      this.loadCommitments();
+    });
   }
 
   viewCommitment(row: DonationCommitmentListItem, event?: Event): void {
@@ -152,6 +149,20 @@ export class MyCommitmentsListComponent implements OnInit, OnDestroy {
       isAnonymous: Boolean(item.Is_Anonymous),
       expectedClosureAt: String(item.Expected_Closure_At || ''),
       acceptedAt: String(item.Accepted_At || ''),
+    }));
+  }
+
+  private createSkeletonRows(): DonationCommitmentListItem[] {
+    return Array(this.rows).fill(null).map(() => ({
+      id: '',
+      donationRequestId: '',
+      entityId: 0,
+      statusId: 0,
+      title: '',
+      fulfillmentMode: 0,
+      isAnonymous: false,
+      expectedClosureAt: '',
+      acceptedAt: '',
     }));
   }
 
