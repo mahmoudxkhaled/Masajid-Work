@@ -1280,6 +1280,7 @@
             "donations.adminReview.title": "مراجعة الإدارة",
             "donations.vendorOffers.title": "عروض الموردين",
             "donations.charityRepresentation.title": "تمثيل الجمعيات",
+            "donations.charityRepresentation.details.title": "تفاصيل التمثيل",
             "donations.validation.title": "التحقق المجتمعي",
             "donations.reference.title": "مرجع التبرعات",
             "donations.reference.categories.title": "تصنيفات التبرعات",
@@ -3585,6 +3586,7 @@
                 "charityCenterPlaceholder": "اختر جمعية خيرية",
                 "noCharityCenters": "لا توجد جمعيات خيرية متاحة حالياً.",
                 "charityCentersPending": "سيتم توفير قائمة الجمعيات الخيرية لاحقاً.",
+                "defaultCharityAssignment": "سيتم تعيين التزامك إلى مركز الجمعية الخيرية الافتراضي id: #12.",
                 "expectedClosureDate": "تاريخ التنفيذ المتوقع",
                 "validation": {
                     "expectedClosureRequired": "تاريخ التنفيذ المتوقع مطلوب.",
@@ -3697,7 +3699,66 @@
             "title": "تمثيل الجمعيات",
             "subtitle": "أدر طلبات التمثيل المخصصة لمركز الجمعية الخاص بك.",
             "pagination": "عرض '{first}' إلى '{last}' من أصل '{totalRecords}'",
-            "empty": "لا توجد طلبات تمثيل."
+            "empty": "لا توجد طلبات تمثيل.",
+            "assigned": {
+                "title": "الالتزامات المعيّنة",
+                "subtitle": "الالتزامات التي وافق مركز الجمعية على تنفيذها.",
+                "empty": "لا توجد التزامات معيّنة."
+            },
+            "filters": {
+                "pendingOnly": "المعلّقة فقط"
+            },
+            "columns": {
+                "commitmentId": "رقم الالتزام",
+                "anonymous": "مجهول",
+                "facility": "المنشأة",
+                "city": "المدينة",
+                "country": "الدولة",
+                "actions": "الإجراءات"
+            },
+            "actions": {
+                "viewDetails": "عرض التفاصيل",
+                "acceptRepresentation": "قبول التمثيل",
+                "rejectRepresentation": "رفض التمثيل"
+            },
+            "details": {
+                "title": "تفاصيل التمثيل",
+                "back": "العودة إلى طلبات التمثيل",
+                "notPendingTitle": "حالة التعيين",
+                "notPending": "لم يعد تعيين التمثيل هذا معلّقاً.",
+                "description": "الوصف",
+                "quantity": "الكمية",
+                "charityRepUserId": "ممثل الجمعية",
+                "sections": {
+                    "commitment": "الالتزام",
+                    "request": "طلب التبرع",
+                    "facility": "المنشأة",
+                    "donor": "المتبرع"
+                }
+            },
+            "respondDialog": {
+                "acceptTitle": "قبول التمثيل",
+                "rejectTitle": "رفض التمثيل",
+                "acceptConfirmation": "أكد أن مركز الجمعية الخاص بك سيمثل المتبرع في هذا الالتزام.",
+                "rejectConfirmation": "أدخل سبب رفض تعيين التمثيل هذا.",
+                "note": "ملاحظة",
+                "notePlaceholderOptional": "ملاحظة اختيارية عند القبول",
+                "notePlaceholderRequired": "أدخل سبب الرفض",
+                "validation": {
+                    "noteRequired": "ملاحظة الرفض مطلوبة."
+                }
+            },
+            "messages": {
+                "accepted": "تم قبول تعيين التمثيل بنجاح.",
+                "rejected": "تم رفض تعيين التمثيل بنجاح."
+            },
+            "errors": {
+                "commitmentNotFound": "لم يتم العثور على التزام التبرع.",
+                "notAssignedRepresentative": "غير مسموح لك بإدارة تعيين التمثيل هذا.",
+                "invalidStatus": "هذا الإجراء غير مسموح لحالة التعيين الحالية.",
+                "accessDenied": "ليس لديك صلاحية للوصول إلى هذا القسم.",
+                "sessionExpired": "انتهت صلاحية جلستك. يرجى تسجيل الدخول مرة أخرى."
+            }
         },
         "validation": {
             "title": "التحقق المجتمعي",

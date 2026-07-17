@@ -1,0 +1,68 @@
+<p-dialog
+  [(visible)]="visible"
+  [modal]="true"
+  [style]="{ width: '480px' }"
+  [draggable]="false"
+  [resizable]="false"
+  (onHide)="closeDialog()"
+>
+  <ng-template pTemplate="header">
+    <h3 class="m-0">
+      {{
+        (isAcceptMode
+          ? 'donations.charityRepresentation.respondDialog.acceptTitle'
+          : 'donations.charityRepresentation.respondDialog.rejectTitle'
+        ) | translate
+      }}
+    </h3>
+  </ng-template>
+
+  <p class="mb-3 text-500" *ngIf="isAcceptMode">
+    {{ 'donations.charityRepresentation.respondDialog.acceptConfirmation' | translate }}
+  </p>
+  <p class="mb-3 text-500" *ngIf="!isAcceptMode">
+    {{ 'donations.charityRepresentation.respondDialog.rejectConfirmation' | translate }}
+  </p>
+
+  <div class="flex flex-column gap-2">
+    <label class="font-medium">
+      {{ 'donations.charityRepresentation.respondDialog.note' | translate }}
+      <span *ngIf="!isAcceptMode" class="text-red-500">*</span>
+    </label>
+    <textarea
+      pInputTextarea
+      rows="4"
+      class="w-full"
+      [(ngModel)]="note"
+      [placeholder]="
+        (isAcceptMode
+          ? 'donations.charityRepresentation.respondDialog.notePlaceholderOptional'
+          : 'donations.charityRepresentation.respondDialog.notePlaceholderRequired'
+        ) | translate
+      "
+    ></textarea>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <p-button
+      [label]="'common.cancel' | translate"
+      icon="pi pi-times"
+      severity="secondary"
+      [outlined]="true"
+      (onClick)="closeDialog()"
+      [disabled]="!!(isLoading$ | async)"
+    ></p-button>
+    <p-button
+      [label]="
+        (isAcceptMode
+          ? 'donations.charityRepresentation.actions.acceptRepresentation'
+          : 'donations.charityRepresentation.actions.rejectRepresentation'
+        ) | translate
+      "
+      [icon]="isAcceptMode ? 'pi pi-check' : 'pi pi-times'"
+      [severity]="isAcceptMode ? 'success' : 'danger'"
+      (onClick)="confirmRespond()"
+      [disabled]="!!(isLoading$ | async)"
+    ></p-button>
+  </ng-template>
+</p-dialog>

@@ -43,14 +43,15 @@
             [value]="FulfillmentMode.ViaCharityRepresentative"
             [(ngModel)]="fulfillmentMode"
             inputId="fulfillmentCharity"
-            [disabled]="true"
           ></p-radioButton>
-          <label for="fulfillmentCharity" class="text-500">{{
+          <label for="fulfillmentCharity">{{
             'donations.commitments.acceptDialog.viaCharityRepresentative' | translate
           }}</label>
         </div>
       </div>
-      <small class="text-500">{{ 'donations.commitments.acceptDialog.charityCentersPending' | translate }}</small>
+      <small *ngIf="fulfillmentMode === FulfillmentMode.ViaCharityRepresentative" class="text-500">{{
+        'donations.commitments.acceptDialog.defaultCharityAssignment' | translate
+      }}</small>
     </div>
 
     <div class="flex align-items-center gap-2">

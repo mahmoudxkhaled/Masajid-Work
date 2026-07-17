@@ -107,7 +107,21 @@ export class DonationCommitmentService {
       isAnonymous: Boolean(item.Is_Anonymous),
       expectedClosureAt: String(item.Expected_Closure_At || ''),
       acceptedAt: String(item.Accepted_At || ''),
+      city: String(item.City || ''),
+      countryCode: String(item.Country_Code || ''),
+      createdAt: String(item.Created_At || item.Accepted_At || ''),
     }));
+  }
+
+  extractCommitmentDetails(message: Record<string, unknown> | DonationCommitmentBackend | null | undefined): DonationCommitmentBackend | null {
+    if (!message) {
+      return null;
+    }
+    const nested = (message as Record<string, unknown>)['Donation_Commitment'];
+    if (nested && typeof nested === 'object') {
+      return nested as DonationCommitmentBackend;
+    }
+    return message as DonationCommitmentBackend;
   }
 
   mapDonationCommitmentDetails(raw: DonationCommitmentBackend | null | undefined): DonationCommitmentDetails | null {
@@ -118,7 +132,7 @@ export class DonationCommitmentService {
     return {
       id: String(raw.Donation_Commitment_ID || ''),
       donationRequestId: String(raw.Donation_Request_ID || ''),
-      statusId: Number(raw.Status_ID ?? raw.Status ?? 0),
+      statusId: Number(raw.Status ?? raw.Status_ID ?? 0),
       statusCode: '',
       donorUserId: Number(raw.Donor_User_ID || 0),
       entityId: Number(raw.Entity_ID || 0),
@@ -136,6 +150,17 @@ export class DonationCommitmentService {
         String(raw.Request_Title || raw.Title || ''),
         String(raw.Request_Title_Regional || raw.Title_Regional || ''),
       ),
+      description: this.localStorageService.pickRequestContentField(
+        String(raw.Description || ''),
+        String(raw.Description_Regional || ''),
+      ),
+      quantity: Number(raw.Quantity || 0),
+      unit: String(raw.Unit || ''),
+      estimatedCost: Number(raw.Estimated_Cost || 0),
+      currencyCode: String(raw.Currency_Code || ''),
+      city: String(raw.City || ''),
+      countryCode: String(raw.Country_Code || ''),
+      createdAt: String(raw.Created_At || raw.Accepted_At || ''),
     };
   }
 

@@ -1,0 +1,199 @@
+<p-toast />
+
+<div class="block-section card">
+  <div class="flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
+    <div class="flex flex-column gap-2 flex-1 min-w-0">
+      <h2 class="block-title mb-0">{{ 'donations.charityRepresentation.details.title' | translate }}</h2>
+      <p class="mb-0 text-500" *ngIf="details">{{ details.title }}</p>
+    </div>
+    <div class="flex flex-wrap gap-2">
+      <p-button
+        [label]="'donations.charityRepresentation.details.back' | translate"
+        icon="pi pi-arrow-left"
+        severity="secondary"
+        [outlined]="true"
+        (onClick)="backToList()"
+      ></p-button>
+      <p-button
+        *ngIf="canRespond && !loading"
+        [label]="'donations.charityRepresentation.actions.acceptRepresentation' | translate"
+        icon="pi pi-check"
+        severity="success"
+        (onClick)="openAcceptDialog()"
+      ></p-button>
+      <p-button
+        *ngIf="canRespond && !loading"
+        [label]="'donations.charityRepresentation.actions.rejectRepresentation' | translate"
+        icon="pi pi-times"
+        severity="danger"
+        [outlined]="true"
+        (onClick)="openRejectDialog()"
+      ></p-button>
+    </div>
+  </div>
+
+  <app-erp-info
+    *ngIf="showNotPending"
+    icon="pi pi-info-circle"
+    severity="info"
+    [title]="'donations.charityRepresentation.details.notPendingTitle' | translate"
+    [description]="'donations.charityRepresentation.details.notPending' | translate"
+    class="mb-3"
+  ></app-erp-info>
+
+  <ng-container *ngIf="loading; else detailsContent">
+    <div class="block-card details-card p-0 mb-3">
+      <div class="details-section-header">
+        <div class="flex align-items-center gap-3 flex-1 min-w-0">
+          <p-skeleton shape="circle" size="2.25rem"></p-skeleton>
+          <p-skeleton height="1.25rem" width="12rem"></p-skeleton>
+        </div>
+      </div>
+      <div class="grid p-3 pt-2">
+        <div class="col-12 md:col-6 lg:col-4" *ngFor="let _ of [1, 2, 3, 4, 5, 6]">
+          <div class="info-item">
+            <p-skeleton height="0.85rem" width="45%" class="mb-2"></p-skeleton>
+            <p-skeleton height="1.25rem" width="70%"></p-skeleton>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-template #detailsContent>
+    <div *ngIf="details">
+      <div class="block-card details-card p-0 mb-3">
+        <div class="details-section-header">
+          <div class="flex align-items-center gap-3 flex-1 min-w-0">
+            <span class="details-section-icon"><i class="pi pi-check-circle"></i></span>
+            <h3 class="details-section-title">{{ 'donations.charityRepresentation.details.sections.commitment' | translate }}</h3>
+          </div>
+        </div>
+        <div class="grid p-3 pt-2">
+          <div class="col-12 md:col-6 lg:col-4">
+            <div class="info-item">
+              <span class="info-label">{{ 'donations.commitments.details.commitmentId' | translate }}</span>
+              <span class="info-value">{{ details.id || '-' }}</span>
+            </div>
+          </div>
+          <div class="col-12 md:col-6 lg:col-4">
+            <div class="info-item">
+              <span class="info-label">{{ 'donations.shared.columns.status' | translate }}</span>
+              <span class="info-value">
+                <app-donation-status-badge [label]="statusLabel"></app-donation-status-badge>
+              </span>
+            </div>
+          </div>
+          <div class="col-12 md:col-6 lg:col-4">
+            <div class="info-item">
+              <span class="info-label">{{ 'donations.commitments.details.fulfillmentMode' | translate }}</span>
+              <span class="info-value">{{ fulfillmentModeLabel }}</span>
+            </div>
+          </div>
+          <div class="col-12 md:col-6 lg:col-4">
+            <div class="info-item">
+              <span class="info-label">{{ 'donations.commitments.columns.expectedClosure' | translate }}</span>
+              <span class="info-value" dir="ltr">
+                {{ details.expectedClosureAt ? (details.expectedClosureAt | date:'yyyy-MM-dd') : '-' }}
+              </span>
+            </div>
+          </div>
+          <div class="col-12 md:col-6 lg:col-4">
+            <div class="info-item">
+              <span class="info-label">{{ 'donations.commitments.details.acceptedAt' | translate }}</span>
+              <span class="info-value" dir="ltr">
+                {{ details.acceptedAt ? (details.acceptedAt | date:'yyyy-MM-dd hh:mm a') : '-' }}
+              </span>
+            </div>
+          </div>
+          <div class="col-12 md:col-6 lg:col-4">
+            <div class="info-item">
+              <span class="info-label">{{ 'donations.commitments.details.isAnonymous' | translate }}</span>
+              <span class="info-value">
+                <i class="pi mr-1"
+                  [ngClass]="details.isAnonymous ? 'pi-check-circle text-green-500' : 'pi-times-circle text-500'"></i>
+                {{ getAnonymousLabel() }}
+              </span>
+            </div>
+          </div>
+          <div class="col-12 md:col-6 lg:col-4" *ngIf="details.charityEntityId">
+            <div class="info-item">
+              <span class="info-label">{{ 'donations.commitments.details.charityEntity' | translate }}</span>
+              <span class="info-value">#{{ details.charityEntityId }}</span>
+            </div>
+          </div>
+          <div class="col-12 md:col-6 lg:col-4" *ngIf="details.charityRepUserId">
+            <div class="info-item">
+              <span class="info-label">{{ 'donations.charityRepresentation.details.charityRepUserId' | translate }}</span>
+              <span class="info-value">#{{ details.charityRepUserId }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="block-card details-card p-0 mb-3">
+        <div class="details-section-header">
+          <div class="flex align-items-center gap-3 flex-1 min-w-0">
+            <span class="details-section-icon"><i class="pi pi-file"></i></span>
+            <h3 class="details-section-title">{{ 'donations.charityRepresentation.details.sections.request' | translate }}</h3>
+          </div>
+        </div>
+        <div class="grid p-3 pt-2">
+          <div class="col-12 md:col-6 lg:col-4">
+            <div class="info-item">
+              <span class="info-label">{{ 'donations.commitments.columns.requestId' | translate }}</span>
+              <span class="info-value">{{ details.donationRequestId || '-' }}</span>
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="info-item">
+              <span class="info-label">{{ 'donations.shared.columns.title' | translate }}</span>
+              <span class="info-value">{{ details.title || '-' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="block-card details-card p-0 mb-3">
+        <div class="details-section-header">
+          <div class="flex align-items-center gap-3 flex-1 min-w-0">
+            <span class="details-section-icon"><i class="pi pi-building"></i></span>
+            <h3 class="details-section-title">{{ 'donations.charityRepresentation.details.sections.facility' | translate }}</h3>
+          </div>
+        </div>
+        <div class="grid p-3 pt-2">
+          <div class="col-12 md:col-6 lg:col-4">
+            <div class="info-item">
+              <span class="info-label">{{ 'donations.charityRepresentation.columns.facility' | translate }}</span>
+              <span class="info-value">{{ details.entityId || '-' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="block-card details-card p-0 mb-3" *ngIf="!details.isAnonymous && details.donorUserId">
+        <div class="details-section-header">
+          <div class="flex align-items-center gap-3 flex-1 min-w-0">
+            <span class="details-section-icon"><i class="pi pi-user"></i></span>
+            <h3 class="details-section-title">{{ 'donations.charityRepresentation.details.sections.donor' | translate }}</h3>
+          </div>
+        </div>
+        <div class="grid p-3 pt-2">
+          <div class="col-12 md:col-6 lg:col-4">
+            <div class="info-item">
+              <span class="info-label">{{ 'donations.commitments.details.donorUserId' | translate }}</span>
+              <span class="info-value">{{ details.donorUserId }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</div>
+
+<app-respond-representation-dialog
+  [(visible)]="respondDialogVisible"
+  [donationCommitmentId]="commitmentId"
+  [mode]="respondMode"
+  (responded)="onResponded()"
+></app-respond-representation-dialog>

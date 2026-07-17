@@ -170,7 +170,7 @@
                 <label for="address">{{ 'entities.contact.editDialog.addressLabel' | translate }} <span class="text-red-500">*</span></label>
                 <textarea id="address" pInputTextarea rows="3" formControlName="address"
                     [placeholder]="'entities.contact.editDialog.addressPlaceholder' | translate" class="w-full"
-                    [class.ng-invalid]="submitted && f['address']?.invalid"></textarea>
+                    [class.ng-invalid]="submitted && f['address'].invalid"></textarea>
                 <small class="p-error" *ngIf="submitted && f['address']?.errors?.['required']">
                     {{ 'entities.contact.editDialog.addressRequired' | translate }}
                 </small>
@@ -190,7 +190,7 @@
                         <label for="city">{{ 'entities.contact.city' | translate }} <span class="text-red-500">*</span></label>
                         <input id="city" type="text" pInputText formControlName="city" class="w-full"
                             [placeholder]="'entities.contact.editDialog.cityPlaceholder' | translate"
-                            [class.ng-invalid]="submitted && f['city']?.invalid" />
+                            [class.ng-invalid]="submitted && f['city'].invalid" />
                         <small class="p-error" *ngIf="submitted && f['city']?.errors?.['required']">
                             {{ 'entities.contact.editDialog.cityRequired' | translate }}
                         </small>
@@ -201,7 +201,7 @@
                         <label for="latitude">{{ 'entities.contact.latitude' | translate }} <span class="text-red-500">*</span></label>
                         <input id="latitude" type="text" pInputText formControlName="latitude" class="w-full"
                             [placeholder]="'entities.contact.editDialog.latitudePlaceholder' | translate"
-                            [class.ng-invalid]="submitted && f['latitude']?.invalid" />
+                            [class.ng-invalid]="submitted && f['latitude'].invalid" />
                         <small class="p-error" *ngIf="submitted && f['latitude']?.errors?.['required']">
                             {{ 'entities.contact.editDialog.latitudeRequired' | translate }}
                         </small>
@@ -212,7 +212,7 @@
                         <label for="longitude">{{ 'entities.contact.longitude' | translate }} <span class="text-red-500">*</span></label>
                         <input id="longitude" type="text" pInputText formControlName="longitude" class="w-full"
                             [placeholder]="'entities.contact.editDialog.longitudePlaceholder' | translate"
-                            [class.ng-invalid]="submitted && f['longitude']?.invalid" />
+                            [class.ng-invalid]="submitted && f['longitude'].invalid" />
                         <small class="p-error" *ngIf="submitted && f['longitude']?.errors?.['required']">
                             {{ 'entities.contact.editDialog.longitudeRequired' | translate }}
                         </small>

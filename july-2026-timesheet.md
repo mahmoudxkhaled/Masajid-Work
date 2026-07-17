@@ -15,6 +15,8 @@ Below: (1) invoice-style summary table, (2) **detailed technical log** with comm
 | 05-Jul | Angular       | ERP     | Project Setup & Configuration   | Optimized application deployment for Nginx compatibility by adjusting production base-href and documenting SPA fallback routing, refactored regional language handling to use centralized helper utilities, and streamlined authentication and preloader synchronization during language transitions. | 5     |
 | 06-Jul | Angular       | ERP     | Entity Module                   | Refactored the entity contact edit dialog layout and form structure to provide consistent validation feedback and a more responsive layout, and simplified the donation requests service and workflow timeline templates to improve application maintainability.                                            | 2     |
 | 07-Jul | Angular       | ERP     | Profile Module                  | Upgraded the location picker with skeleton loading UI for geolocation processes, and refactored workspace modules and role visibility to introduce dedicated Facility and Vendor profile modules with dynamic, role-restricted access and updated menu icons.                                                | 2     |
+| 09-Jul | Angular       | ERP     | Entity Module                   | Built a comprehensive pending review details component with route-guard protection to allow administrators to securely inspect and manage donation requests, integrated interactive location maps within dialogs, and updated list components with loading indicators and skeletons to improve visual feedback. | 5     |
+| 10-Jul | Angular       | ERP     | Security Features               | Implemented a secure donation acceptance and commitment workflow with route protection, interactive dialogs for accepting or cancelling commitments, and a detailed donor commitment view, while refactoring list components to optimize API loading and improve UI responsiveness. | 7     |
 
 ---
 
@@ -70,10 +72,30 @@ Below: (1) invoice-style summary table, (2) **detailed technical log** with comm
 
 ---
 
+### 2026-07-09 — Thursday — **5 hours**
+
+**Commits (newest first):** `dd56f80`, `7616305`, `67c5b32`
+
+- **Pending Review Details Component (`67c5b32`):** Implemented a comprehensive details view for administrators reviewing pending donation requests (`PendingReviewDetailsComponent`). Integrated route protection via `SystemAdminGuard`, interactive location maps in dialogs (`DonationLocationMapDialogComponent`), and loading indicators/skeletons to ensure a clean, responsive admin interface.
+- **Service Localization & Consistency (`7616305`):** Updated the `DonationReferenceService` to utilize the centralized `pickRequestContentField` utility instead of `pickLocalizedField`, ensuring consistent processing of bilingual data fields.
+- **Timesheet Synchronization (`dd56f80`):** Synced timesheet configurations and documentation.
+
+---
+
+### 2026-07-10 — Friday — **7 hours**
+
+**Commits (newest first):** `4bdcb32`, `3ce01f6`, `f3eee1d`
+
+- **Donation Browsing Experience & Filters (`f3eee1d`):** Developed a robust filtering system (`DonationBrowseFiltersComponent`) and public details view (`DonorRequestPublicDetailsComponent`) for donors. Integrated route protection via `DonorGuard`, tooltips, and loading states to significantly improve request discovery and user engagement.
+- **Donation Acceptance & Commitment Flow (`3ce01f6`):** Built a secure, interactive workflow for accepting donations (`AcceptDonationDialogComponent`) and managing donor commitments. Created dialogs for cancelling commitments and a detailed commitment view (`DonorCommitmentDetailsComponent`), while refactoring list components to optimize API calls and UI responsiveness.
+- **Acceptance Form Refinements (`4bdcb32`):** Repositioned expected closure date inputs and modified the fulfillment mode layout in the acceptance dialog to enhance user interaction. Updated translations to use "expected fulfillment" for clearer, more professional copy.
+
+---
+
 ## Summary
 
 | Metric | Value |
 | ------ | ----- |
-| **Total Working Days** | 5 |
-| **Total Hours** | 21 hours |
-| **Total Commits** | 20 |
+| **Total Working Days** | 7 |
+| **Total Hours** | 31 hours |
+| **Total Commits** | 26 |

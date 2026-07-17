@@ -33,6 +33,36 @@ export interface DonationCommitmentBackend {
   Currency_Code?: string;
 }
 
+export interface CharityRepresentationListItem {
+  id: string;
+  donationRequestId: string;
+  donorUserId: number;
+  entityId: number;
+  title: string;
+  isAnonymous: boolean;
+  expectedClosureAt: string;
+  acceptedAt: string;
+}
+
+export interface CharityRepresentationDetails {
+  id: string;
+  donationRequestId: string;
+  donorUserId: number;
+  entityId: number;
+  statusId: number;
+  isAnonymous: boolean;
+  fulfillmentMode: number;
+  charityEntityId: number;
+  charityRepUserId: number;
+  expectedClosureAt: string;
+  acceptedAt: string;
+  cancelledAt: string;
+  cancelledByUserId: number;
+  cancelReason: string;
+  completedAt: string;
+  title: string;
+}
+
 export interface DonationCommitmentListItem {
   id: string;
   donationRequestId: string;
@@ -43,6 +73,9 @@ export interface DonationCommitmentListItem {
   isAnonymous: boolean;
   expectedClosureAt: string;
   acceptedAt: string;
+  city?: string;
+  countryCode?: string;
+  createdAt?: string;
 }
 
 export interface DonationCommitmentDetails {
@@ -63,6 +96,20 @@ export interface DonationCommitmentDetails {
   cancelReason: string;
   completedAt: string;
   title: string;
+  description: string;
+  quantity: number;
+  unit: string;
+  estimatedCost: number;
+  currencyCode: string;
+  city: string;
+  countryCode: string;
+  createdAt: string;
+}
+
+export interface RespondDonorRepresentationRequest {
+  donationCommitmentId: number;
+  accept: boolean;
+  note: string;
 }
 
 export interface AcceptDonationRequest {

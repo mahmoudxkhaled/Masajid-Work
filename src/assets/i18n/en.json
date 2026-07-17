@@ -1279,6 +1279,7 @@
             "donations.adminReview.title": "Admin Review",
             "donations.vendorOffers.title": "Vendor Offers",
             "donations.charityRepresentation.title": "Charity Representation",
+            "donations.charityRepresentation.details.title": "Representation Details",
             "donations.validation.title": "Community Validation",
             "donations.reference.title": "Donation Reference",
             "donations.reference.categories.title": "Donation Categories",
@@ -3726,6 +3727,7 @@
                 "charityCenterPlaceholder": "Select a charity center",
                 "noCharityCenters": "No charity centers are currently available.",
                 "charityCentersPending": "Charity centers list will be provided later.",
+                "defaultCharityAssignment": "Your commitment will be assigned to the default charity center id: #12.",
                 "expectedClosureDate": "Expected fulfillment date",
                 "validation": {
                     "expectedClosureRequired": "Expected fulfillment date is required.",
@@ -3838,7 +3840,66 @@
             "title": "Charity Representation",
             "subtitle": "Manage representation requests assigned to your charity center.",
             "pagination": "Showing '{first}' to '{last}' of '{totalRecords}'",
-            "empty": "No representation requests found."
+            "empty": "No representation requests found.",
+            "assigned": {
+                "title": "Assigned Commitments",
+                "subtitle": "Commitments your charity center has accepted to fulfill.",
+                "empty": "No assigned commitments found."
+            },
+            "filters": {
+                "pendingOnly": "Pending only"
+            },
+            "columns": {
+                "commitmentId": "Commitment ID",
+                "anonymous": "Anonymous",
+                "facility": "Facility",
+                "city": "City",
+                "country": "Country",
+                "actions": "Actions"
+            },
+            "actions": {
+                "viewDetails": "View Details",
+                "acceptRepresentation": "Accept Representation",
+                "rejectRepresentation": "Reject Representation"
+            },
+            "details": {
+                "title": "Representation Details",
+                "back": "Back to Representation Requests",
+                "notPendingTitle": "Assignment status",
+                "notPending": "This representation assignment is no longer pending.",
+                "description": "Description",
+                "quantity": "Quantity",
+                "charityRepUserId": "Charity representative",
+                "sections": {
+                    "commitment": "Commitment",
+                    "request": "Donation request",
+                    "facility": "Facility",
+                    "donor": "Donor"
+                }
+            },
+            "respondDialog": {
+                "acceptTitle": "Accept Representation",
+                "rejectTitle": "Reject Representation",
+                "acceptConfirmation": "Confirm that your charity center will represent the donor for this commitment.",
+                "rejectConfirmation": "Provide a reason for rejecting this representation assignment.",
+                "note": "Note",
+                "notePlaceholderOptional": "Optional note for acceptance",
+                "notePlaceholderRequired": "Enter rejection reason",
+                "validation": {
+                    "noteRequired": "Rejection note is required."
+                }
+            },
+            "messages": {
+                "accepted": "Representation assignment accepted successfully.",
+                "rejected": "Representation assignment rejected successfully."
+            },
+            "errors": {
+                "commitmentNotFound": "Donation commitment was not found.",
+                "notAssignedRepresentative": "You are not allowed to manage this representation assignment.",
+                "invalidStatus": "This action is not allowed for the current assignment status.",
+                "accessDenied": "You do not have permission to access this section.",
+                "sessionExpired": "Your session has expired. Please login again."
+            }
         },
         "validation": {
             "title": "Community Validation",

@@ -2,53 +2,98 @@
 
 <div class="block-section card">
   <div class="flex flex-column gap-2 mb-3">
-    <h2 class="block-title mb-0">{{ 'donations.charityRepresentation.title' | translate }}</h2>
-    <p class="mb-0 text-500">{{ 'donations.charityRepresentation.subtitle' | translate }}</p>
+    <h2 class="block-title mb-0">{{ titleKey | translate }}</h2>
+    <p class="mb-0 text-500">{{ subtitleKey | translate }}</p>
   </div>
 
   <div class="block-card">
-    <p-table [value]="tableValue" [paginator]="true" [lazy]="true" [first]="first" [rows]="rows"
-      [totalRecords]="totalRecords" [rowsPerPageOptions]="rowsPerPageOptions" [showCurrentPageReport]="true"
-      [currentPageReportTemplate]="'donations.charityRepresentation.pagination' | translate" responsiveLayout="scroll"
-      styleClass="p-datatable-sm" (onLazyLoad)="onPageChange($event)">
+    <p-table
+      [value]="tableValue"
+      [paginator]="true"
+      [lazy]="true"
+      [first]="first"
+      [rows]="rows"
+      [totalRecords]="totalRecords"
+      [rowsPerPageOptions]="rowsPerPageOptions"
+      [showCurrentPageReport]="true"
+      [currentPageReportTemplate]="'donations.charityRepresentation.pagination' | translate"
+      responsiveLayout="scroll"
+      styleClass="p-datatable-sm"
+      (onLazyLoad)="onPageChange($event)"
+    >
       <ng-template pTemplate="header">
         <tr>
-          <th style="width: 8rem">{{ 'donations.commitments.columns.requestId' | translate }}</th>
-          <th class="text-center" style="width: 9rem">{{ 'donations.shared.columns.status' | translate }}</th>
-          <th class="text-center" style="width: 12rem">{{ 'donations.commitments.columns.expectedClosure' | translate }}
-          </th>
+          <th style="width: 12rem">{{ 'donations.shared.columns.title' | translate }}</th>
+          <th class="text-center" style="width: 7rem">{{ 'donations.charityRepresentation.columns.commitmentId' | translate }}</th>
+          <th class="text-center" style="width: 7rem">{{ 'donations.charityRepresentation.columns.anonymous' | translate }}</th>
+          <th class="text-center" style="width: 10rem">{{ 'donations.commitments.columns.expectedClosure' | translate }}</th>
+          <th class="text-center" style="width: 7rem">{{ 'donations.charityRepresentation.columns.facility' | translate }}</th>
           <th class="text-center" style="width: 10rem">{{ 'donations.commitments.columns.acceptedAt' | translate }}</th>
+          <th class="text-center" style="width: 8rem">{{ 'donations.charityRepresentation.columns.actions' | translate }}</th>
         </tr>
       </ng-template>
 
       <ng-template pTemplate="body" let-row>
-        <tr>
+        <tr
+          class="charity-representation-row-clickable"
+          [style.cursor]="tableLoadingSpinner ? 'default' : 'pointer'"
+          (click)="!tableLoadingSpinner && viewDetails(row)"
+        >
           <td>
-            <ng-container *ngIf="tableLoadingSpinner; else requestCell">
-              <p-skeleton height="1.25rem" width="5rem"></p-skeleton>
+            <ng-container *ngIf="tableLoadingSpinner; else titleCell">
+              <p-skeleton height="1.25rem" width="90%"></p-skeleton>
             </ng-container>
-            <ng-template #requestCell>{{ row.donationRequestId || '-' }}</ng-template>
-          </td>
-          <td class="text-center">
-            <ng-container *ngIf="tableLoadingSpinner; else statusCell">
-              <p-skeleton height="1.5rem" width="4.5rem" borderRadius="16px"></p-skeleton>
-            </ng-container>
-            <ng-template #statusCell>
-              <app-donation-status-badge [label]="getStatusLabel(row.statusId)"></app-donation-status-badge>
+            <ng-template #titleCell>
+              <span class="text-overflow-ellipsis" [pTooltip]="row.title" tooltipPosition="top">{{ row.title || '-' }}</span>
             </ng-template>
           </td>
           <td class="text-center">
-            <ng-container *ngIf="tableLoadingSpinner; else closureCell">
-              <p-skeleton height="1.25rem" width="8rem"></p-skeleton>
+            <ng-container *ngIf="tableLoadingSpinner; else idCell">
+              <p-skeleton height="1.25rem" width="4rem"></p-skeleton>
             </ng-container>
-            <ng-template #closureCell>{{ row.expectedClosureAt || '-' }}</ng-template>
+            <ng-template #idCell>{{ row.id || '-' }}</ng-template>
           </td>
           <td class="text-center">
-            <ng-container *ngIf="tableLoadingSpinner; else createdCell">
+            <ng-container *ngIf="tableLoadingSpinner; else anonymousCell">
+              <p-skeleton height="1.25rem" width="3rem"></p-skeleton>
+            </ng-container>
+            <ng-template #anonymousCell>{{ getAnonymousLabel(row.isAnonymous) }}</ng-template>
+          </td>
+          <td class="text-center">
+            <ng-container *ngIf="tableLoadingSpinner; else closureCell">
               <p-skeleton height="1.25rem" width="7rem"></p-skeleton>
             </ng-container>
-            <ng-template #createdCell>
+            <ng-template #closureCell>
+              <span dir="ltr">{{ row.expectedClosureAt ? (row.expectedClosureAt | date:'yyyy-MM-dd') : '-' }}</span>
+            </ng-template>
+          </td>
+          <td class="text-center">
+            <ng-container *ngIf="tableLoadingSpinner; else facilityCell">
+              <p-skeleton height="1.25rem" width="4rem"></p-skeleton>
+            </ng-container>
+            <ng-template #facilityCell>{{ row.entityId || '-' }}</ng-template>
+          </td>
+          <td class="text-center">
+            <ng-container *ngIf="tableLoadingSpinner; else acceptedCell">
+              <p-skeleton height="1.25rem" width="7rem"></p-skeleton>
+            </ng-container>
+            <ng-template #acceptedCell>
               <span dir="ltr">{{ row.acceptedAt ? (row.acceptedAt | date:'yyyy-MM-dd hh:mm a') : '-' }}</span>
+            </ng-template>
+          </td>
+          <td class="text-center">
+            <ng-container *ngIf="tableLoadingSpinner; else actionsCell">
+              <p-skeleton height="2rem" width="5rem" borderRadius="6px"></p-skeleton>
+            </ng-container>
+            <ng-template #actionsCell>
+              <p-button
+                [label]="'donations.charityRepresentation.actions.viewDetails' | translate"
+                icon="pi pi-eye"
+                severity="secondary"
+                [outlined]="true"
+                size="small"
+                (onClick)="viewDetails(row, $event)"
+              ></p-button>
             </ng-template>
           </td>
         </tr>
@@ -56,7 +101,7 @@
 
       <ng-template pTemplate="emptymessage">
         <tr>
-          <td colspan="4" class="text-center py-4">{{ 'donations.charityRepresentation.empty' | translate }}</td>
+          <td colspan="7" class="text-center py-4">{{ emptyKey | translate }}</td>
         </tr>
       </ng-template>
     </p-table>

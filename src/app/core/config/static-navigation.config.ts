@@ -17,6 +17,7 @@ export const MODULE_ROLE_VISIBILITY: Partial<Record<string, Roles[]>> = {
     PRF: [Roles.Developer, Roles.SystemAdministrator, Roles.EntityAdministrator, Roles.SystemUser, Roles.Guest],
     FAC_PROFILE: [Roles.Developer, Roles.SystemAdministrator, Roles.EntityAdministrator, Roles.SystemUser, Roles.Guest],
     VND_PROFILE: [Roles.Developer, Roles.SystemAdministrator, Roles.EntityAdministrator, Roles.SystemUser, Roles.Guest],
+    CHR_PROFILE: [Roles.Developer, Roles.SystemAdministrator, Roles.EntityAdministrator, Roles.SystemUser, Roles.Guest],
     SET: [Roles.Developer, Roles.SystemAdministrator, Roles.EntityAdministrator, Roles.SystemUser, Roles.Guest],
     LGOT: [Roles.Developer, Roles.SystemAdministrator, Roles.EntityAdministrator, Roles.SystemUser, Roles.Guest],
     NOTM: [Roles.Developer, Roles.SystemAdministrator, Roles.EntityAdministrator],
@@ -86,6 +87,14 @@ export const STATIC_MODULES_DETAILS: IModulesDetails = {
         Name: 'Vendor Profile',
         Name_Regional: '\u0645\u0644\u0641 \u0627\u0644\u0645\u0648\u0631\u062f',
         Default_Order: 22,
+        URL: '/entity-administration/entities',
+    },
+    CHR_PROFILE: {
+        ModuleID: 344,
+        FunctionID: 1,
+        Name: 'Charity Center Profile',
+        Name_Regional: '\u0645\u0644\u0641 \u0627\u0644\u0645\u0631\u0643\u0632 \u0627\u0644\u062e\u064a\u0631\u064a',
+        Default_Order: 23,
         URL: '/entity-administration/entities',
     },
     SET: {

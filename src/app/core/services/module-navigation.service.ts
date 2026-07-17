@@ -128,6 +128,10 @@ export class ModuleNavigationService {
             return userType === MasajidUserType.Vendor;
         }
 
+        if (moduleCode === 'CHR_PROFILE') {
+            return userType === MasajidUserType.CharityCenterRepresentative;
+        }
+
         const roleId = this.permissionService.getCurrentRoleId();
         if (!roleId) {
             return false;

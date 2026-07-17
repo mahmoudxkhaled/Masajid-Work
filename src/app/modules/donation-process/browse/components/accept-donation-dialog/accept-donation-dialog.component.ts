@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { AcceptDonationRequest } from '../../../models/donation-commitment.model';
 import {
   FulfillmentMode,
+  FulfillmentModeValue,
   isValidFulfillmentMode,
   requiresCharityEntity,
 } from '../../../models/fulfillment-mode.model';
@@ -26,11 +27,12 @@ export class AcceptDonationDialogComponent implements OnChanges {
   @Output() accepted = new EventEmitter<number>();
 
   isAnonymous = false;
-  fulfillmentMode = FulfillmentMode.SelfFulfillment;
+  fulfillmentMode: FulfillmentModeValue = FulfillmentMode.SelfFulfillment;
   expectedClosureDate: Date | null = null;
   minClosureDate = new Date();
 
   readonly FulfillmentMode = FulfillmentMode;
+  readonly defaultCharityEntityId = 12;
   isLoading$ = this.donationCommitmentService.isLoadingSubject.asObservable();
 
   constructor(
@@ -65,13 +67,12 @@ export class AcceptDonationDialogComponent implements OnChanges {
       donationRequestId: this.donationRequestId,
       isAnonymous: this.isAnonymous,
       fulfillmentMode: this.fulfillmentMode,
-      charityEntityId: 0,
+      charityEntityId: this.getCharityEntityId(),
       expectedClosureAt: this.formatExpectedClosureAt(this.expectedClosureDate!),
     };
 
     this.donationCommitmentService.acceptDonation(dto).subscribe({
       next: (response: any) => {
-        console.log('acceptDonation response', response);
         if (!response?.success) {
           this.handleBusinessError('accept', response);
           return;
@@ -120,12 +121,14 @@ export class AcceptDonationDialogComponent implements OnChanges {
       return false;
     }
 
-    if (requiresCharityEntity(this.fulfillmentMode)) {
-      this.showValidationError('donations.commitments.acceptDialog.charityCentersPending');
-      return false;
-    }
-
     return true;
+  }
+
+  private getCharityEntityId(): number {
+    if (requiresCharityEntity(this.fulfillmentMode)) {
+      return this.defaultCharityEntityId;
+    }
+    return 0;
   }
 
   private formatExpectedClosureAt(date: Date): string {

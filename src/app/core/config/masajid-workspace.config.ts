@@ -210,22 +210,6 @@ export const MASAJID_WORKSPACE_MODULES: IModulesDetails = {
     Default_Order: 30,
     URL: '/donations/charity/fulfillment-support',
   },
-  CHR_PROFILE: {
-    ModuleID: 344,
-    FunctionID: 15,
-    Name: 'Charity Center Profile',
-    Name_Regional: '\u0645\u0644\u0641 \u0627\u0644\u0645\u0631\u0643\u0632 \u0627\u0644\u062e\u064a\u0631\u064a',
-    Default_Order: 40,
-    URL: '/entity-administration/entities',
-  },
-  CHR_NOT: {
-    ModuleID: 345,
-    FunctionID: 15,
-    Name: 'Notifications',
-    Name_Regional: '\u0627\u0644\u0625\u0634\u0639\u0627\u0631\u0627\u062a',
-    Default_Order: 50,
-    URL: '/summary/notifications',
-  },
 };
 
 export const MASAJID_WORKSPACE_MODULE_ROLE_VISIBILITY: Partial<Record<string, Roles[]>> = {
@@ -249,6 +233,4 @@ export const MASAJID_WORKSPACE_MODULE_ROLE_VISIBILITY: Partial<Record<string, Ro
   CHR_REQ: DEFAULT_MODULE_VISIBLE_ROLES,
   CHR_CMT: DEFAULT_MODULE_VISIBLE_ROLES,
   CHR_SUPPORT: DEFAULT_MODULE_VISIBLE_ROLES,
-  CHR_PROFILE: DEFAULT_MODULE_VISIBLE_ROLES,
-  CHR_NOT: [Roles.Developer, Roles.SystemAdministrator, Roles.EntityAdministrator, Roles.SystemUser, Roles.Guest],
 };
