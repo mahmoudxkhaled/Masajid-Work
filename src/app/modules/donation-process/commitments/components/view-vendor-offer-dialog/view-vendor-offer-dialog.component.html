@@ -1,0 +1,101 @@
+<p-dialog
+  [(visible)]="visible"
+  [modal]="true"
+  [style]="{ width: '560px' }"
+  styleClass="vendor-offer-dialog"
+  [draggable]="false"
+  [resizable]="false"
+  (onHide)="closeDialog()"
+>
+  <ng-template pTemplate="header">
+    <div class="dialog-header">
+      <span class="dialog-header-icon">
+        <i class="pi pi-shopping-bag"></i>
+      </span>
+      <div class="flex flex-column gap-1 min-w-0">
+        <h3 class="dialog-title m-0">{{ 'donations.commitments.vendorOffers.viewDialog.title' | translate }}</h3>
+        <span class="dialog-subtitle" *ngIf="offer">{{ getVendorLabel() }}</span>
+      </div>
+    </div>
+  </ng-template>
+
+  <div class="dialog-body" *ngIf="offer">
+    <div class="offer-amount-card">
+      <span class="info-label">{{ 'donations.commitments.vendorOffers.columns.amount' | translate }}</span>
+      <span class="offer-amount-value" dir="ltr">{{ formatOfferAmount() }}</span>
+    </div>
+
+    <div class="grid">
+      <div class="col-12 md:col-6">
+        <div class="info-item">
+          <span class="info-label">{{ 'donations.commitments.vendorOffers.columns.vendor' | translate }}</span>
+          <span class="info-value">{{ getVendorLabel() }}</span>
+        </div>
+      </div>
+      <div class="col-12 md:col-6">
+        <div class="info-item">
+          <span class="info-label">{{ 'donations.commitments.vendorOffers.columns.status' | translate }}</span>
+          <span class="info-value">
+            <app-donation-status-badge [label]="getStatusLabel()"></app-donation-status-badge>
+          </span>
+        </div>
+      </div>
+      <div class="col-12 md:col-6">
+        <div class="info-item">
+          <span class="info-label">{{ 'donations.commitments.vendorOffers.columns.includesSupply' | translate }}</span>
+          <span class="info-value">
+            <i
+              class="pi mr-1"
+              [ngClass]="offer.includesSupply ? 'pi-check-circle text-green-500' : 'pi-times-circle text-500'"
+            ></i>
+            {{ getYesNo(offer.includesSupply) }}
+          </span>
+        </div>
+      </div>
+      <div class="col-12 md:col-6">
+        <div class="info-item">
+          <span class="info-label">{{ 'donations.commitments.vendorOffers.columns.includesInstallation' | translate }}</span>
+          <span class="info-value">
+            <i
+              class="pi mr-1"
+              [ngClass]="offer.includesInstallation ? 'pi-check-circle text-green-500' : 'pi-times-circle text-500'"
+            ></i>
+            {{ getYesNo(offer.includesInstallation) }}
+          </span>
+        </div>
+      </div>
+      <div class="col-12 md:col-6">
+        <div class="info-item">
+          <span class="info-label">{{ 'donations.commitments.vendorOffers.columns.validUntil' | translate }}</span>
+          <span class="info-value" dir="ltr">
+            {{ offer.validUntil ? (offer.validUntil | date:'yyyy-MM-dd') : '-' }}
+          </span>
+        </div>
+      </div>
+      <div class="col-12 md:col-6">
+        <div class="info-item">
+          <span class="info-label">{{ 'donations.commitments.vendorOffers.columns.createdAt' | translate }}</span>
+          <span class="info-value" dir="ltr">
+            {{ offer.createdAt ? (offer.createdAt | date:'yyyy-MM-dd hh:mm a') : '-' }}
+          </span>
+        </div>
+      </div>
+      <div class="col-12" *ngIf="offer.description">
+        <div class="info-item">
+          <span class="info-label">{{ 'donations.commitments.vendorOffers.columns.description' | translate }}</span>
+          <span class="info-value line-height-3 font-normal">{{ offer.description }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <p-button
+      [label]="'donations.commitments.vendorOffers.actions.close' | translate"
+      icon="pi pi-times"
+      severity="secondary"
+      [outlined]="true"
+      (onClick)="closeDialog()"
+    ></p-button>
+  </ng-template>
+</p-dialog>

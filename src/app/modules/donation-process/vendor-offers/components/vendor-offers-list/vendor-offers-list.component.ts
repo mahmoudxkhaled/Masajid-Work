@@ -183,11 +183,13 @@ export class VendorOffersListComponent implements OnInit, OnDestroy {
     return Array(this.rows).fill(null).map(() => ({
       id: '',
       donationRequestId: '',
+      vendorEntityId: 0,
       requestTitle: '',
       offerAmount: 0,
       currencyCode: '',
       includesSupply: false,
       includesInstallation: false,
+      description: '',
       statusId: 0,
       statusCode: '',
       validUntil: '',

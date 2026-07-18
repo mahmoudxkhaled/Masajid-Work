@@ -144,6 +144,92 @@
         </div>
       </div>
 
+      <div class="block-card details-card p-0 mb-3">
+        <div class="details-section-header">
+          <span class="details-section-icon"><i class="pi pi-shopping-bag"></i></span>
+          <h3 class="details-section-title">{{ 'donations.commitments.vendorOffers.title' | translate }}</h3>
+        </div>
+        <div class="p-3 pt-2">
+          <p *ngIf="offersMissingRequestId" class="mb-0 text-500">
+            {{ 'donations.commitments.vendorOffers.missingRequestId' | translate }}
+          </p>
+
+          <ng-container *ngIf="!offersMissingRequestId">
+            <ng-container *ngIf="offersLoading; else offersLoaded">
+              <div class="flex flex-column gap-2">
+                <p-skeleton height="2.5rem" width="100%" borderRadius="6px"></p-skeleton>
+                <p-skeleton height="2.5rem" width="100%" borderRadius="6px"></p-skeleton>
+                <p-skeleton height="2.5rem" width="100%" borderRadius="6px"></p-skeleton>
+              </div>
+            </ng-container>
+
+            <ng-template #offersLoaded>
+              <p *ngIf="vendorOffers.length === 0" class="mb-0 text-500">
+                {{ 'donations.commitments.vendorOffers.empty' | translate }}
+              </p>
+
+              <p-table *ngIf="vendorOffers.length > 0" [value]="vendorOffers" responsiveLayout="scroll"
+                styleClass="p-datatable-sm">
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th style="width: 7rem">{{ 'donations.commitments.vendorOffers.columns.vendor' | translate }}</th>
+                    <th style="width: 8rem">{{ 'donations.commitments.vendorOffers.columns.amount' | translate }}</th>
+                    <th class="text-center" style="width: 6rem">
+                      {{ 'donations.commitments.vendorOffers.columns.includesSupply' | translate }}
+                    </th>
+                    <th class="text-center" style="width: 6rem">
+                      {{ 'donations.commitments.vendorOffers.columns.includesInstallation' | translate }}
+                    </th>
+                    <th style="width: 12rem">
+                      {{ 'donations.commitments.vendorOffers.columns.description' | translate }}
+                    </th>
+                    <th style="width: 8rem">{{ 'donations.commitments.vendorOffers.columns.validUntil' | translate }}
+                    </th>
+                    <th class="text-center" style="width: 7rem">
+                      {{ 'donations.commitments.vendorOffers.columns.status' | translate }}
+                    </th>
+                    <th style="width: 9rem">{{ 'donations.commitments.vendorOffers.columns.createdAt' | translate }}
+                    </th>
+                    <th class="text-center" style="width: 12rem">
+                      {{ 'donations.commitments.columns.actions' | translate }}
+                    </th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-row>
+                  <tr>
+                    <td>{{ getVendorLabel(row) }}</td>
+                    <td dir="ltr">{{ formatOfferAmount(row) }}</td>
+                    <td class="text-center">{{ getYesNo(row.includesSupply) }}</td>
+                    <td class="text-center">{{ getYesNo(row.includesInstallation) }}</td>
+                    <td>
+                      <div class="offer-description-cell" [pTooltip]="row.description || ''"
+                        tooltipPosition="top">
+                        {{ row.description || '-' }}
+                      </div>
+                    </td>
+                    <td dir="ltr">{{ row.validUntil ? (row.validUntil | date:'yyyy-MM-dd') : '-' }}</td>
+                    <td class="text-center">
+                      <app-donation-status-badge [label]="getOfferStatusLabel(row)"></app-donation-status-badge>
+                    </td>
+                    <td dir="ltr">{{ row.createdAt ? (row.createdAt | date:'yyyy-MM-dd') : '-' }}</td>
+                    <td class="text-center">
+                      <div class="flex align-items-center justify-content-center gap-2 flex-wrap">
+                        <p-button [label]="'donations.commitments.vendorOffers.actions.viewDetails' | translate"
+                          icon="pi pi-eye" [outlined]="true" severity="secondary" size="small"
+                          (onClick)="openViewOfferDialog(row)"></p-button>
+                        <p-button *ngIf="canSelectOffer(row)"
+                          [label]="'donations.commitments.vendorOffers.actions.selectOffer' | translate"
+                          icon="pi pi-check" size="small" (onClick)="openSelectOfferDialog(row)"></p-button>
+                      </div>
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </ng-template>
+          </ng-container>
+        </div>
+      </div>
+
       <div class="block-card details-card p-0">
         <div class="details-section-header">
           <span class="details-section-icon"><i class="pi pi-history"></i></span>
@@ -161,3 +247,9 @@
 
 <app-cancel-commitment-dialog [(visible)]="cancelDialogVisible" [donationCommitmentId]="commitmentId"
   (cancelled)="onCommitmentCancelled()"></app-cancel-commitment-dialog>
+
+<app-view-vendor-offer-dialog [(visible)]="viewOfferDialogVisible"
+  [offer]="selectedOffer"></app-view-vendor-offer-dialog>
+
+<app-select-vendor-offer-dialog [(visible)]="selectOfferDialogVisible" [offer]="selectedOffer"
+  (selected)="onVendorOfferSelected()"></app-select-vendor-offer-dialog>

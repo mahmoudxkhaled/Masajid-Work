@@ -2,6 +2,7 @@ export interface VendorOfferBackend {
   Donation_Vendor_Offer_ID?: number;
   Donation_Request_ID?: number;
   Vendor_Entity_ID?: number;
+  Vendor_User_ID?: number;
   Offer_Amount?: number;
   Currency_Code?: string;
   Includes_Supply?: boolean;
@@ -10,22 +11,24 @@ export interface VendorOfferBackend {
   Description_Regional?: string;
   Valid_Until?: string;
   Status?: number;
-  Vendor_Offer_Status_ID?: number;
-  Status_Code?: string;
   Created_At?: string;
   Updated_At?: string;
   Request_Title?: string;
   Request_Title_Regional?: string;
+  Vendor_Offer_Status_ID?: number;
+  Status_Code?: string;
 }
 
 export interface VendorOfferListItem {
   id: string;
   donationRequestId: string;
+  vendorEntityId: number;
   requestTitle: string;
   offerAmount: number;
   currencyCode: string;
   includesSupply: boolean;
   includesInstallation: boolean;
+  description: string;
   statusId: number;
   statusCode: string;
   validUntil: string;

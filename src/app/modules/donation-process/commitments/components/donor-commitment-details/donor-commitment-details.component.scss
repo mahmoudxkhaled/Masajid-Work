@@ -67,3 +67,11 @@
   color: var(--text-color);
   word-break: break-word;
 }
+
+.offer-description-cell {
+  max-width: 12rem;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

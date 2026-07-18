@@ -3780,6 +3780,45 @@
                     "workflow": "Status History"
                 }
             },
+            "vendorOffers": {
+                "title": "Vendor Offers",
+                "empty": "No vendor offers are available yet.",
+                "missingRequestId": "Vendor offers cannot be loaded because the related donation request ID was not returned.",
+                "columns": {
+                    "vendor": "Vendor",
+                    "amount": "Offer amount",
+                    "includesSupply": "Supply",
+                    "includesInstallation": "Installation",
+                    "description": "Description",
+                    "validUntil": "Valid until",
+                    "status": "Status",
+                    "createdAt": "Created at"
+                },
+                "actions": {
+                    "viewDetails": "View Details",
+                    "selectOffer": "Select Offer",
+                    "close": "Close"
+                },
+                "viewDialog": {
+                    "title": "Vendor Offer Details"
+                },
+                "selectDialog": {
+                    "title": "Select Vendor Offer",
+                    "confirmation": "Are you sure you want to select this vendor offer?"
+                },
+                "messages": {
+                    "selected": "Vendor offer selected successfully."
+                },
+                "errors": {
+                    "requestNotFound": "Donation request was not found.",
+                    "notAccessible": "Vendor offers are not accessible for this request.",
+                    "offerNotFound": "Vendor offer was not found.",
+                    "notDonor": "You are not allowed to select an offer for this donation request.",
+                    "invalidStatus": "This action is not allowed for the current offer or request status.",
+                    "accessDenied": "You do not have permission to perform this action.",
+                    "sessionExpired": "Your session has expired. Please login again."
+                }
+            },
             "messages": {
                 "notDonor": "You are not allowed to manage this commitment.",
                 "accepted": "Donation accepted successfully.",

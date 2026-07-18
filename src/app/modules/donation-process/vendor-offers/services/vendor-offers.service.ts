@@ -102,10 +102,24 @@ export class VendorOffersService {
     );
   }
 
+  listVendorOffersForRequest(donationRequestId: number): Observable<any> {
+    this.isLoadingSubject.next(true);
+    return this.apiServices
+      .callAPI(100705, this.getAccessToken(), [donationRequestId.toString()])
+      .pipe(finalize(() => this.isLoadingSubject.next(false)));
+  }
+
   getVendorOfferDetails(donationVendorOfferId: number): Observable<any> {
     this.isLoadingSubject.next(true);
     return this.apiServices
       .callAPI(100706, this.getAccessToken(), [donationVendorOfferId.toString()])
+      .pipe(finalize(() => this.isLoadingSubject.next(false)));
+  }
+
+  selectVendorOffer(donationVendorOfferId: number): Observable<any> {
+    this.isLoadingSubject.next(true);
+    return this.apiServices
+      .callAPI(100707, this.getAccessToken(), [donationVendorOfferId.toString()])
       .pipe(finalize(() => this.isLoadingSubject.next(false)));
   }
 
@@ -124,6 +138,7 @@ export class VendorOffersService {
     return {
       id: String(raw.Donation_Vendor_Offer_ID || ''),
       donationRequestId: String(raw.Donation_Request_ID || ''),
+      vendorEntityId: Number(raw.Vendor_Entity_ID || 0),
       requestTitle: this.localStorageService.pickRequestContentField(
         String(raw.Request_Title || ''),
         String(raw.Request_Title_Regional || ''),
@@ -132,7 +147,11 @@ export class VendorOffersService {
       currencyCode: String(raw.Currency_Code || ''),
       includesSupply: Boolean(raw.Includes_Supply),
       includesInstallation: Boolean(raw.Includes_Installation),
-      statusId: Number(raw.Vendor_Offer_Status_ID ?? raw.Status ?? 0),
+      description: this.localStorageService.pickRequestContentField(
+        String(raw.Description || ''),
+        String(raw.Description_Regional || ''),
+      ),
+      statusId: Number(raw.Status || 0),
       statusCode: String(raw.Status_Code || ''),
       validUntil: String(raw.Valid_Until || ''),
       createdAt: String(raw.Created_At || ''),
@@ -161,7 +180,7 @@ export class VendorOffersService {
         String(raw.Description_Regional || ''),
       ),
       validUntil: String(raw.Valid_Until || ''),
-      statusId: Number(raw.Vendor_Offer_Status_ID ?? raw.Status ?? 0),
+      statusId: Number(raw.Status || 0),
       statusCode: String(raw.Status_Code || '').toUpperCase(),
       createdAt: String(raw.Created_At || ''),
       updatedAt: String(raw.Updated_At || ''),

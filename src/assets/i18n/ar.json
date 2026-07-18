@@ -3639,6 +3639,45 @@
                     "workflow": "سجل الحالة"
                 }
             },
+            "vendorOffers": {
+                "title": "عروض الموردين",
+                "empty": "لا توجد عروض موردين متاحة حالياً.",
+                "missingRequestId": "تعذر تحميل عروض الموردين لأن رقم طلب التبرع المرتبط لم يُرجع.",
+                "columns": {
+                    "vendor": "المورد",
+                    "amount": "قيمة العرض",
+                    "includesSupply": "التوريد",
+                    "includesInstallation": "التركيب",
+                    "description": "الوصف",
+                    "validUntil": "صالح حتى",
+                    "status": "الحالة",
+                    "createdAt": "تاريخ الإنشاء"
+                },
+                "actions": {
+                    "viewDetails": "عرض التفاصيل",
+                    "selectOffer": "اختيار العرض",
+                    "close": "إغلاق"
+                },
+                "viewDialog": {
+                    "title": "تفاصيل عرض المورد"
+                },
+                "selectDialog": {
+                    "title": "اختيار عرض المورد",
+                    "confirmation": "هل أنت متأكد من اختيار عرض المورد هذا؟"
+                },
+                "messages": {
+                    "selected": "تم اختيار عرض المورد بنجاح."
+                },
+                "errors": {
+                    "requestNotFound": "لم يتم العثور على طلب التبرع.",
+                    "notAccessible": "عروض الموردين غير متاحة لهذا الطلب.",
+                    "offerNotFound": "لم يتم العثور على عرض المورد.",
+                    "notDonor": "غير مسموح لك باختيار عرض لهذا طلب التبرع.",
+                    "invalidStatus": "هذا الإجراء غير مسموح لحالة العرض أو الطلب الحالية.",
+                    "accessDenied": "ليس لديك صلاحية لتنفيذ هذا الإجراء.",
+                    "sessionExpired": "انتهت صلاحية جلستك. يرجى تسجيل الدخول مرة أخرى."
+                }
+            },
             "messages": {
                 "notDonor": "غير مسموح لك بإدارة هذا الالتزام.",
                 "accepted": "تم قبول التبرع بنجاح.",

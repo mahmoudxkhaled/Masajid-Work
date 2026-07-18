@@ -13,10 +13,12 @@ import {
 } from '../../../models/donation-commitment-status.model';
 import { DonationRequestWorkflowItem } from '../../../models/donation-request.model';
 import { FulfillmentMode } from '../../../models/fulfillment-mode.model';
+import { VendorOfferBackend, VendorOfferListItem } from '../../../models/vendor-offer.model';
 import { DonationRequestsService } from '../../../facility-requests/services/donation-requests.service';
+import { VendorOffersService } from '../../../vendor-offers/services/vendor-offers.service';
 import { DonationCommitmentService } from '../../services/donation-commitment.service';
 
-type DonorCommitmentDetailsContext = 'load';
+type DonorCommitmentDetailsContext = 'load' | 'listOffers';
 
 @Component({
   standalone: false,
@@ -28,9 +30,15 @@ export class DonorCommitmentDetailsComponent implements OnInit, OnDestroy {
   commitmentId = 0;
   loading = true;
   workflowLoading = false;
+  offersLoading = false;
+  offersMissingRequestId = false;
   details: DonationCommitmentDetails | null = null;
   workflowItems: DonationRequestWorkflowItem[] = [];
+  vendorOffers: VendorOfferListItem[] = [];
   cancelDialogVisible = false;
+  viewOfferDialogVisible = false;
+  selectOfferDialogVisible = false;
+  selectedOffer: VendorOfferListItem | null = null;
 
   fulfillmentModeLabel = '';
   charityLabel = '';
@@ -40,6 +48,8 @@ export class DonorCommitmentDetailsComponent implements OnInit, OnDestroy {
 
   private rawDetails: DonationCommitmentBackend | null = null;
   private rawWorkflow: Record<string, unknown>[] = [];
+  private rawVendorOffers: VendorOfferBackend[] = [];
+  private hasSelectedOffer = false;
   private subscriptions: Subscription[] = [];
 
   constructor(
@@ -47,10 +57,11 @@ export class DonorCommitmentDetailsComponent implements OnInit, OnDestroy {
     private router: Router,
     private donationCommitmentService: DonationCommitmentService,
     private donationRequestsService: DonationRequestsService,
+    private vendorOffersService: VendorOffersService,
     private languageDirService: LanguageDirService,
     private translate: TranslationService,
     private messageService: MessageService,
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.commitmentId = Number(this.route.snapshot.paramMap.get('id') || 0);
@@ -85,6 +96,60 @@ export class DonorCommitmentDetailsComponent implements OnInit, OnDestroy {
     this.loadDetails();
   }
 
+  openViewOfferDialog(row: VendorOfferListItem): void {
+    this.selectedOffer = row;
+    this.viewOfferDialogVisible = true;
+  }
+
+  openSelectOfferDialog(row: VendorOfferListItem): void {
+    this.selectedOffer = row;
+    this.selectOfferDialogVisible = true;
+  }
+
+  onVendorOfferSelected(): void {
+    this.loadDetails();
+  }
+
+  canSelectOffer(row: VendorOfferListItem): boolean {
+    if (this.hasSelectedOffer) {
+      return false;
+    }
+    const code = String(row.statusCode || '').toUpperCase();
+    if (code === 'WITHDRAWN' || code === 'SELECTED' || code === 'EXPIRED') {
+      return false;
+    }
+    return true;
+  }
+
+  formatOfferAmount(row: VendorOfferListItem): string {
+    const amount = row.offerAmount;
+    const currency = row.currencyCode || '';
+    if (!amount && !currency) {
+      return '-';
+    }
+    return currency ? `${amount} ${currency}` : String(amount);
+  }
+
+  getYesNo(value: boolean): string {
+    return value
+      ? this.translate.getInstant('donations.browse.yes')
+      : this.translate.getInstant('donations.browse.no');
+  }
+
+  getOfferStatusLabel(row: VendorOfferListItem): string {
+    if (row.statusCode) {
+      return row.statusCode;
+    }
+    return row.statusId ? String(row.statusId) : '-';
+  }
+
+  getVendorLabel(row: VendorOfferListItem): string {
+    if (!row.vendorEntityId) {
+      return '-';
+    }
+    return `#${row.vendorEntityId}`;
+  }
+
   getAnonymousLabel(): string {
     if (!this.details) {
       return '-';
@@ -111,6 +176,7 @@ export class DonorCommitmentDetailsComponent implements OnInit, OnDestroy {
         this.loading = false;
         this.refreshDisplay();
         this.loadWorkflow();
+        this.loadVendorOffersAfterDetails();
       },
       error: () => {
         this.loading = false;
@@ -151,11 +217,65 @@ export class DonorCommitmentDetailsComponent implements OnInit, OnDestroy {
     this.subscriptions.push(sub);
   }
 
+  private loadVendorOffersAfterDetails(): void {
+    const donationRequestId = Number(this.details?.donationRequestId || 0);
+    if (!donationRequestId) {
+      // TODO: backend should include Donation_Request_ID in 100502 commitment details
+      this.offersMissingRequestId = true;
+      this.rawVendorOffers = [];
+      this.vendorOffers = [];
+      this.hasSelectedOffer = false;
+      this.offersLoading = false;
+      return;
+    }
+
+    this.offersMissingRequestId = false;
+    this.loadVendorOffers(donationRequestId);
+  }
+
+  private loadVendorOffers(donationRequestId: number): void {
+    this.offersLoading = true;
+    const sub = this.vendorOffersService.listVendorOffersForRequest(donationRequestId).subscribe({
+      next: (response: any) => {
+        console.log('listVendorOffersForRequest response', response);
+        if (!response?.success) {
+          this.handleBusinessError('listOffers', response);
+          this.rawVendorOffers = [];
+          this.vendorOffers = [];
+          this.hasSelectedOffer = false;
+          this.offersLoading = false;
+          return;
+        }
+
+        const rawOffers = Array.isArray(response.message) ? (response.message as VendorOfferBackend[]) : [];
+        this.rawVendorOffers = rawOffers;
+        this.vendorOffers = rawOffers.map((item) => this.vendorOffersService.mapVendorOfferListItem(item));
+        this.hasSelectedOffer = this.vendorOffers.some((offer) => {
+          const code = String(offer.statusCode || '').toUpperCase();
+          return code === 'SELECTED';
+        });
+        this.offersLoading = false;
+      },
+      error: () => {
+        this.rawVendorOffers = [];
+        this.vendorOffers = [];
+        this.hasSelectedOffer = false;
+        this.offersLoading = false;
+      },
+    });
+    this.subscriptions.push(sub);
+  }
+
   // #endregion
 
   private refreshDisplay(): void {
     this.details = this.donationCommitmentService.mapDonationCommitmentDetails(this.rawDetails);
     this.workflowItems = this.donationRequestsService.mapDonationRequestWorkflow(this.rawWorkflow);
+    this.vendorOffers = this.rawVendorOffers.map((item) => this.vendorOffersService.mapVendorOfferListItem(item));
+    this.hasSelectedOffer = this.vendorOffers.some((offer) => {
+      const code = String(offer.statusCode || '').toUpperCase();
+      return code === 'SELECTED';
+    });
     if (!this.details) {
       return;
     }
@@ -185,6 +305,9 @@ export class DonorCommitmentDetailsComponent implements OnInit, OnDestroy {
       case 'load':
         detail = this.getLoadErrorMessage(code);
         break;
+      case 'listOffers':
+        detail = this.getListOffersErrorMessage(code);
+        break;
     }
 
     if (detail) {
@@ -208,6 +331,23 @@ export class DonorCommitmentDetailsComponent implements OnInit, OnDestroy {
       case 'DAP11041':
       case 'DAP11042':
         return this.translate.getInstant('donations.commitments.errors.sessionExpired');
+      default:
+        return null;
+    }
+  }
+
+  private getListOffersErrorMessage(code: string): string | null {
+    switch (code) {
+      case 'DAP13000':
+        return this.translate.getInstant('donations.commitments.vendorOffers.errors.requestNotFound');
+      case 'DAP13033':
+        return this.translate.getInstant('donations.commitments.vendorOffers.errors.notAccessible');
+      case 'DAP11055':
+        return this.translate.getInstant('donations.commitments.vendorOffers.errors.accessDenied');
+      case 'DAP11040':
+      case 'DAP11041':
+      case 'DAP11042':
+        return this.translate.getInstant('donations.commitments.vendorOffers.errors.sessionExpired');
       default:
         return null;
     }
