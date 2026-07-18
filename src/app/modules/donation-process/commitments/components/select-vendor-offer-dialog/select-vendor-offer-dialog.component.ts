@@ -67,7 +67,7 @@ export class SelectVendorOfferDialogComponent {
       });
       return;
     }
-    console.log('offerId', offerId);
+    console.log('offerId to select', offerId);
 
     this.vendorOffersService.selectVendorOffer(offerId).subscribe({
       next: (response: any) => {
