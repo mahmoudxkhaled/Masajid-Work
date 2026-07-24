@@ -91,6 +91,14 @@
               </span>
             </div>
           </div>
+          <div class="col-12 md:col-6 lg:col-4">
+            <div class="info-item">
+              <span class="info-label">{{ 'donations.browse.columns.publishedAt' | translate }}</span>
+              <span class="info-value" dir="ltr">
+                {{ details.publishedAt ? (details.publishedAt | date:'yyyy-MM-dd hh:mm a') : '-' }}
+              </span>
+            </div>
+          </div>
           <div class="col-12">
             <div class="info-item">
               <span class="info-label">{{ 'donations.facility.requests.form.description' | translate }}</span>

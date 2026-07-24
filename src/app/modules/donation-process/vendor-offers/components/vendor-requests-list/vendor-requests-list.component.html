@@ -6,20 +6,11 @@
   </div>
 
   <div class="block-card">
-    <p-table
-      [value]="tableValue"
-      [paginator]="true"
-      [lazy]="true"
-      [first]="first"
-      [rows]="rows"
-      [totalRecords]="totalRecords"
-      [rowsPerPageOptions]="rowsPerPageOptions"
-      [showCurrentPageReport]="true"
-      [currentPageReportTemplate]="'donations.vendorOffers.requests.pagination' | translate"
-      responsiveLayout="scroll"
-      styleClass="p-datatable-sm"
-      (onLazyLoad)="onPageChange($event)"
-    >
+    <p-table [value]="tableValue" [paginator]="true" [lazy]="true" [first]="first" [rows]="rows"
+      [totalRecords]="totalRecords" [rowsPerPageOptions]="rowsPerPageOptions" [showCurrentPageReport]="true"
+      [currentPageReportTemplate]="'donations.vendorOffers.requests.pagination' | translate" responsiveLayout="scroll"
+      styleClass="p-datatable-sm" (onLazyLoad)="onPageChange($event)">
+
       <ng-template pTemplate="caption">
         <div class="flex align-items-center justify-content-between gap-3 mb-2 flex-wrap">
           <div class="flex align-items-center gap-2 flex-wrap flex-1">
@@ -27,63 +18,34 @@
               <p-skeleton height="2.5rem" width="12rem" borderRadius="6px"></p-skeleton>
             </ng-container>
             <ng-template #categoryFilter>
-              <p-dropdown
-                [options]="categoryOptions"
-                [(ngModel)]="selectedCategoryId"
-                optionLabel="label"
-                optionValue="value"
-                [placeholder]="'donations.vendorOffers.filters.category' | translate"
-                [style]="{ width: '12rem' }"
-                (onChange)="onFiltersApply()"
-              ></p-dropdown>
+              <p-dropdown [options]="categoryOptions" [(ngModel)]="selectedCategoryId" optionLabel="label"
+                optionValue="value" [placeholder]="'donations.vendorOffers.filters.category' | translate"
+                [style]="{ width: '12rem' }" (onChange)="onFiltersApply()"></p-dropdown>
             </ng-template>
 
             <ng-container *ngIf="initialLoading && tableLoadingSpinner; else countryFilter">
               <p-skeleton height="2.5rem" width="10rem" borderRadius="6px"></p-skeleton>
             </ng-container>
             <ng-template #countryFilter>
-              <p-dropdown
-                [options]="countryOptions"
-                [(ngModel)]="selectedCountryCode"
-                optionLabel="label"
-                optionValue="value"
-                [placeholder]="'donations.vendorOffers.filters.country' | translate"
-                [style]="{ width: '10rem' }"
-                (onChange)="onFiltersApply()"
-              ></p-dropdown>
+              <p-dropdown [options]="countryOptions" [(ngModel)]="selectedCountryCode" optionLabel="label"
+                optionValue="value" [placeholder]="'donations.vendorOffers.filters.country' | translate"
+                [style]="{ width: '10rem' }" (onChange)="onFiltersApply()"></p-dropdown>
             </ng-template>
 
             <ng-container *ngIf="initialLoading && tableLoadingSpinner; else cityFilterTpl">
               <p-skeleton height="2.5rem" width="10rem" borderRadius="6px"></p-skeleton>
             </ng-container>
             <ng-template #cityFilterTpl>
-              <input
-                pInputText
-                class="w-full"
-                [style.max-width]="'10rem'"
-                [(ngModel)]="cityFilter"
-                [placeholder]="'donations.vendorOffers.filters.city' | translate"
-                (keyup.enter)="onFiltersApply()"
-              />
+              <input pInputText class="w-full" [style.max-width]="'10rem'" [(ngModel)]="cityFilter"
+                [placeholder]="'donations.vendorOffers.filters.city' | translate" (keyup.enter)="onFiltersApply()" />
             </ng-template>
           </div>
           <div class="flex align-items-center gap-2">
-            <p-button
-              [label]="'donations.vendorOffers.filters.apply' | translate"
-              icon="pi pi-search"
-              size="small"
-              (onClick)="onFiltersApply()"
-              [disabled]="tableLoadingSpinner"
-            ></p-button>
-            <p-button
-              [label]="'donations.vendorOffers.filters.reset' | translate"
-              icon="pi pi-refresh"
-              size="small"
-              severity="secondary"
-              [outlined]="true"
-              (onClick)="onFiltersReset()"
-              [disabled]="tableLoadingSpinner"
-            ></p-button>
+            <p-button [label]="'donations.vendorOffers.filters.apply' | translate" icon="pi pi-search" size="small"
+              (onClick)="onFiltersApply()" [disabled]="tableLoadingSpinner"></p-button>
+            <p-button [label]="'donations.vendorOffers.filters.reset' | translate" icon="pi pi-refresh" size="small"
+              severity="secondary" [outlined]="true" (onClick)="onFiltersReset()"
+              [disabled]="tableLoadingSpinner"></p-button>
           </div>
         </div>
       </ng-template>
@@ -95,24 +57,24 @@
           <th class="text-center" style="width: 8rem">{{ 'donations.browse.columns.quantity' | translate }}</th>
           <th class="text-center" style="width: 10rem">{{ 'donations.shared.columns.estimatedCost' | translate }}</th>
           <th style="width: 11rem">{{ 'donations.browse.columns.location' | translate }}</th>
-          <th class="text-center" style="width: 9rem">{{ 'donations.browse.columns.needsInstallation' | translate }}</th>
-          <th class="text-center" style="width: 10rem">{{ 'donations.vendorOffers.columns.publishedAt' | translate }}</th>
+          <th class="text-center" style="width: 9rem">{{ 'donations.browse.columns.needsInstallation' | translate }}
+          </th>
+          <th class="text-center" style="width: 10rem">{{ 'donations.vendorOffers.columns.publishedAt' | translate }}
+          </th>
           <th class="text-center" style="width: 8rem">{{ 'donations.vendorOffers.columns.actions' | translate }}</th>
         </tr>
       </ng-template>
 
       <ng-template pTemplate="body" let-row>
-        <tr
-          class="vendor-requests-row-clickable"
-          [style.cursor]="tableLoadingSpinner ? 'default' : 'pointer'"
-          (click)="!tableLoadingSpinner && viewDetails(row)"
-        >
+        <tr class="vendor-requests-row-clickable" [style.cursor]="tableLoadingSpinner ? 'default' : 'pointer'"
+          (click)="!tableLoadingSpinner && viewDetails(row)">
           <td>
             <ng-container *ngIf="tableLoadingSpinner; else titleCell">
               <p-skeleton height="1.25rem" width="90%"></p-skeleton>
             </ng-container>
             <ng-template #titleCell>
-              <span class="text-overflow-ellipsis" [pTooltip]="getTitle(row)" tooltipPosition="top">{{ getTitle(row) || '-' }}</span>
+              <span class="text-overflow-ellipsis" [pTooltip]="getTitle(row)" tooltipPosition="top">{{ getTitle(row) ||
+                '-' }}</span>
             </ng-template>
           </td>
           <td>
@@ -158,14 +120,8 @@
               <p-skeleton height="2rem" width="5rem" borderRadius="6px"></p-skeleton>
             </ng-container>
             <ng-template #actionsCell>
-              <p-button
-                [label]="'donations.vendorOffers.actions.viewDetails' | translate"
-                icon="pi pi-eye"
-                severity="secondary"
-                [outlined]="true"
-                size="small"
-                (onClick)="viewDetails(row, $event)"
-              ></p-button>
+              <p-button [label]="'donations.vendorOffers.actions.viewDetails' | translate" icon="pi pi-eye"
+                severity="secondary" [outlined]="true" size="small" (onClick)="viewDetails(row, $event)"></p-button>
             </ng-template>
           </td>
         </tr>

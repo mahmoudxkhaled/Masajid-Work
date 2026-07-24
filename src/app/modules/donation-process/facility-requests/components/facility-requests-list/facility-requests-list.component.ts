@@ -172,6 +172,8 @@ export class FacilityRequestsListComponent implements OnInit, OnDestroy {
       message: this.translate.getInstant('donations.facility.requests.confirm.submitMessage'),
       header: this.translate.getInstant('donations.facility.requests.confirm.submitTitle'),
       icon: 'pi pi-exclamation-triangle',
+      acceptLabel: this.translate.getInstant('common.yes'),
+      rejectLabel: this.translate.getInstant('common.no'),
       accept: () => this.submitRequest(Number(row.Donation_Request_ID)),
     });
   }
@@ -183,6 +185,8 @@ export class FacilityRequestsListComponent implements OnInit, OnDestroy {
       header: this.translate.getInstant('donations.facility.requests.confirm.deleteTitle'),
       icon: 'pi pi-exclamation-triangle',
       acceptButtonStyleClass: 'p-button-danger',
+      acceptLabel: this.translate.getInstant('common.yes'),
+      rejectLabel: this.translate.getInstant('common.no'),
       accept: () => this.deleteRequest(Number(row.Donation_Request_ID)),
     });
   }

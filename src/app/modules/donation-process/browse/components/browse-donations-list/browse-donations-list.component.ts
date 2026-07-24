@@ -154,15 +154,6 @@ export class BrowseDonationsListComponent implements OnInit, OnDestroy {
     return this.countryLabelByCode[code] || code;
   }
 
-  getNeedsInstallationLabel(row: DonationRequestBackend): string {
-    if (row.Needs_Installation === undefined || row.Needs_Installation === null) {
-      return '-';
-    }
-    return row.Needs_Installation
-      ? this.translate.getInstant('donations.browse.yes')
-      : this.translate.getInstant('donations.browse.no');
-  }
-
   formatEstimatedCost(row: DonationRequestBackend): string {
     if (!row.Estimated_Cost) {
       return '-';

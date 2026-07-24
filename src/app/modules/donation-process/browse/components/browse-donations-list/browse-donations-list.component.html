@@ -42,7 +42,7 @@
           <th class="text-center" style="width: 8rem">{{ 'donations.browse.columns.quantity' | translate }}</th>
           <th class="text-center" style="width: 10rem">{{ 'donations.shared.columns.estimatedCost' | translate }}</th>
           <th style="width: 11rem">{{ 'donations.browse.columns.location' | translate }}</th>
-          <th class="text-center" style="width: 9rem">{{ 'donations.browse.columns.needsInstallation' | translate }}</th>
+          <th class="text-center" style="width: 10rem">{{ 'donations.browse.columns.publishedAt' | translate }}</th>
           <th class="text-center" style="width: 8rem">{{ 'donations.browse.columns.actions' | translate }}</th>
         </tr>
       </ng-template>
@@ -94,11 +94,11 @@
             </ng-template>
           </td>
           <td class="text-center">
-            <ng-container *ngIf="tableLoadingSpinner; else needsInstallationCell">
-              <p-skeleton height="1.25rem" width="4rem"></p-skeleton>
+            <ng-container *ngIf="tableLoadingSpinner; else publishedAtCell">
+              <p-skeleton height="1.25rem" width="7rem"></p-skeleton>
             </ng-container>
-            <ng-template #needsInstallationCell>
-              <span>{{ getNeedsInstallationLabel(row) }}</span>
+            <ng-template #publishedAtCell>
+              <span dir="ltr">{{ row.Published_At ? (row.Published_At | date:'yyyy-MM-dd hh:mm a') : '-' }}</span>
             </ng-template>
           </td>
           <td class="text-center">

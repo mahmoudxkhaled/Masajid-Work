@@ -295,6 +295,13 @@ $gutter: 1rem; //for primeflex grid system
   margin-left: 0.5rem !important;
 }
 
+html[dir='rtl'] .p-datepicker .p-datepicker-prev .p-icon,
+html[dir='rtl'] .p-datepicker .p-datepicker-next .p-icon,
+html[dir='rtl'] .p-datepicker .p-datepicker-prev .pi,
+html[dir='rtl'] .p-datepicker .p-datepicker-next .pi {
+  transform: scaleX(-1);
+}
+
 
  
 

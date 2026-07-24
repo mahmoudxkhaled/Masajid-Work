@@ -22,6 +22,8 @@
         "loading": "جاري التحميل...",
         "cancel": "إلغاء",
         "confirm": "تأكيد",
+        "yes": "نعم",
+        "no": "لا",
         "select": "اختيار",
         "save": "حفظ",
         "actions": "الإجراءات"
@@ -1275,9 +1277,11 @@
             "donations.facility.requests.form.createTitle": "إنشاء طلب تبرع",
             "donations.facility.requests.form.editTitle": "تعديل طلب تبرع",
             "donations.browse.title": "تصفح التبرعات",
+            "donations.browse.details.title": "تفاصيل طلب التبرع",
             "donations.commitments.title": "التزاماتي",
             "donations.commitments.details.title": "تفاصيل الالتزام",
             "donations.adminReview.title": "مراجعة الإدارة",
+            "donations.adminReview.details.title": "مراجعة طلب التبرع",
             "donations.vendorOffers.title": "عروض الموردين",
             "donations.vendorOffers.requests.title": "طلبات المورد",
             "donations.vendorOffers.requestDetails.title": "تفاصيل طلب المورد",
@@ -3525,6 +3529,7 @@
                 "category": "الفئة",
                 "quantity": "الكمية",
                 "location": "المدينة / الدولة",
+                "publishedAt": "تاريخ النشر",
                 "needsInstallation": "يتطلب تركيباً",
                 "actions": "الإجراءات",
                 "viewDetails": "عرض التفاصيل"

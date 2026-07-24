@@ -74,7 +74,7 @@ export class DonationReferenceService {
       donationCategoryId.toString(),
       code,
       name,
-      this.localStorageService.isRegionalApiInput().toString(),
+      true.toString(),
       isService.toString(),
       defaultOrder.toString(),
     ];

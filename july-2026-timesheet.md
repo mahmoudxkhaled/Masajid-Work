@@ -17,6 +17,8 @@ Below: (1) invoice-style summary table, (2) **detailed technical log** with comm
 | 07-Jul | Angular       | ERP     | Profile Module                  | Upgraded the location picker with skeleton loading UI for geolocation processes, and refactored workspace modules and role visibility to introduce dedicated Facility and Vendor profile modules with dynamic, role-restricted access and updated menu icons.                                                | 2     |
 | 09-Jul | Angular       | ERP     | Entity Module                   | Built a comprehensive pending review details component with route-guard protection to allow administrators to securely inspect and manage donation requests, integrated interactive location maps within dialogs, and updated list components with loading indicators and skeletons to improve visual feedback. | 5     |
 | 10-Jul | Angular       | ERP     | Security Features               | Implemented a secure donation acceptance and commitment workflow with route protection, interactive dialogs for accepting or cancelling commitments, and a detailed donor commitment view, while refactoring list components to optimize API loading and improve UI responsiveness. | 7     |
+| 17-Jul | Angular       | ERP     | Security Features               | Implemented secure Charity Representation and Vendor Offer workflows with dedicated route protection guards, advanced status filtering, and skeleton loading states, and refactored core details views to integrate interactive workflow timelines and status badges for improved clarity and user experience. | 7     |
+| 18-Jul | Angular       | ERP     | UI/Layout                       | Integrated vendor offer selection functionality into the donor commitment details panel, allowing donors to visually inspect, compare, and select competitive vendor offers for their commitments through secure interactive dialogs to streamline the donation fulfillment process. | 7     |
 
 ---
 
@@ -92,10 +94,29 @@ Below: (1) invoice-style summary table, (2) **detailed technical log** with comm
 
 ---
 
+### 2026-07-17 — Friday — **7 hours**
+
+**Commits (newest first):** `f964de9`, `bc04d63`, `c4e3745`
+
+- **Charity Representation Module (`c4e3745`):** Implemented secure Charity Representation workflows and detailed views. Added `CharityCenterRepresentativeGuard` for route protection, enhanced `CharityRepresentationListComponent` with advanced filtering and loading states, and integrated `CharityRepresentationDetailsComponent` for detailed commitment views. Created `RespondRepresentationDialogComponent` to allow representatives to respond to representation requests, and added full bilingual translation support.
+- **Charity Details Refactoring & Skeletons (`bc04d63`):** Refactored `CharityRepresentationDetailsComponent` to optimize data handling, consolidate data mapping, and streamline the component lifecycle. Added skeleton loading rows in `MyCommitmentsListComponent` to ensure a smooth, shift-free user experience during data loading.
+- **Vendor Offers & Requests Module (`f964de9`):** Developed a comprehensive Vendor Offers & Requests module. Added `VendorGuard` for route protection, created form dialogs for creating and withdrawing vendor offers (`CreateVendorOfferDialogComponent`, `WithdrawVendorOfferDialogComponent`), and built detailed views for vendor requests and offers (`VendorRequestDetailsComponent`, `VendorOfferDetailsComponent`). Integrated interactive workflow timelines and status badges into details views, and added advanced status filtering options.
+
+---
+
+### 2026-07-18 — Saturday — **7 hours**
+
+**Commits (newest first):** `1c63d68`, `3c9df89`
+
+- **Donor Commitment Vendor Offers Integration (`3c9df89`):** Integrated vendor offer selection functionality into the donor commitment details panel (`DonorCommitmentDetailsComponent`). Created `SelectVendorOfferDialogComponent` to allow donors to visually inspect, compare, and select competitive vendor offers for their commitments, and built `ViewVendorOfferDialogComponent` to view offer details. Updated `VendorOffersService` to handle retrieving and selecting vendor offers.
+- **Select Vendor Offer Logging (`1c63d68`):** Refined logging in `SelectVendorOfferDialogComponent` to provide clear, actionable logs on selected offer IDs for supportability.
+
+---
+
 ## Summary
 
 | Metric | Value |
 | ------ | ----- |
-| **Total Working Days** | 7 |
-| **Total Hours** | 31 hours |
-| **Total Commits** | 26 |
+| **Total Working Days** | 9 |
+| **Total Hours** | 45 hours |
+| **Total Commits** | 31 |

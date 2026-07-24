@@ -22,6 +22,8 @@
         "loading": "Loading...",
         "cancel": "Cancel",
         "confirm": "Confirm",
+        "yes": "Yes",
+        "no": "No",
         "select": "Select",
         "save": "Save",
         "actions": "Actions"
@@ -1274,9 +1276,11 @@
             "donations.facility.requests.form.createTitle": "Create Donation Request",
             "donations.facility.requests.form.editTitle": "Edit Donation Request",
             "donations.browse.title": "Browse Donations",
+            "donations.browse.details.title": "Donation Request Details",
             "donations.commitments.title": "My Commitments",
             "donations.commitments.details.title": "Commitment Details",
             "donations.adminReview.title": "Admin Review",
+            "donations.adminReview.details.title": "Review Donation Request",
             "donations.vendorOffers.title": "Vendor Offers",
             "donations.vendorOffers.requests.title": "Vendor Requests",
             "donations.vendorOffers.requestDetails.title": "Vendor Request Details",
@@ -3666,6 +3670,7 @@
                 "category": "Category",
                 "quantity": "Quantity",
                 "location": "City / Country",
+                "publishedAt": "Published at",
                 "needsInstallation": "Needs installation",
                 "actions": "Actions",
                 "viewDetails": "View details"
