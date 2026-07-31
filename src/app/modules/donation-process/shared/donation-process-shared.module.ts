@@ -7,6 +7,8 @@ import { DonationCategoryPickerComponent } from './donation-category-picker/dona
 import { DonationLocationMapDialogComponent } from './donation-location-map-dialog/donation-location-map-dialog.component';
 import { DonationStatusBadgeComponent } from './donation-status-badge/donation-status-badge.component';
 import { DonationWorkflowTimelineComponent } from './donation-workflow-timeline/donation-workflow-timeline.component';
+import { DonationAttachmentListComponent } from './donation-attachment-list/donation-attachment-list.component';
+import { DonationAttachmentUploaderComponent } from './donation-attachment-uploader/donation-attachment-uploader.component';
 
 @NgModule({
   declarations: [
@@ -14,6 +16,8 @@ import { DonationWorkflowTimelineComponent } from './donation-workflow-timeline/
     DonationCategoryPickerComponent,
     DonationWorkflowTimelineComponent,
     DonationLocationMapDialogComponent,
+    DonationAttachmentListComponent,
+    DonationAttachmentUploaderComponent,
   ],
   imports: [CommonModule, FormsModule, SharedModule, LocationPickerModule],
   exports: [
@@ -21,6 +25,8 @@ import { DonationWorkflowTimelineComponent } from './donation-workflow-timeline/
     DonationCategoryPickerComponent,
     DonationWorkflowTimelineComponent,
     DonationLocationMapDialogComponent,
+    DonationAttachmentListComponent,
+    DonationAttachmentUploaderComponent,
     LocationPickerModule,
   ],
 })

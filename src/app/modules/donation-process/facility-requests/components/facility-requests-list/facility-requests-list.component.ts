@@ -9,7 +9,10 @@ import { PublicLookupService } from 'src/app/core/services/public-lookup.service
 import { TranslationService } from 'src/app/core/services/translation.service';
 import { DonationRequestBackend } from '../../../models/donation-request.model';
 import { DonationCategoryBackend } from '../../../models/donation-category.model';
-import { DonationRequestStatusBackend } from '../../../models/donation-request-status.model';
+import {
+  DonationRequestStatusBackend,
+  isDonationRequestDraft,
+} from '../../../models/donation-request-status.model';
 import { DonationTypeBackend } from '../../../models/donation-type.model';
 import { DonationReferenceService } from '../../../services/donation-reference.service';
 import { DonationRequestsService } from '../../services/donation-requests.service';
@@ -199,6 +202,10 @@ export class FacilityRequestsListComponent implements OnInit, OnDestroy {
   }
 
   isDraft(row: DonationRequestBackend): boolean {
+    const statusId = Number(row.Donation_Request_Status_ID || 0);
+    if (statusId > 0) {
+      return isDonationRequestDraft(statusId);
+    }
     return String(row.Status_Code || '').toUpperCase() === 'DRAFT';
   }
 

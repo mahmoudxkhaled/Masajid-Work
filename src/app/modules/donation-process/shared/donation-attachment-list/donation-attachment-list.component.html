@@ -1,0 +1,77 @@
+<div class="donation-attachment-list">
+  <ng-container *ngIf="loading; else listContent">
+    <div class="flex flex-column gap-2">
+      <p-skeleton height="2.5rem" width="100%" borderRadius="6px"></p-skeleton>
+      <p-skeleton height="2.5rem" width="100%" borderRadius="6px"></p-skeleton>
+    </div>
+  </ng-container>
+
+  <ng-template #listContent>
+    <p *ngIf="attachments.length === 0" class="mb-0 text-500">
+      {{ 'donations.attachments.empty' | translate }}
+    </p>
+
+    <div *ngIf="attachments.length > 0" class="flex flex-column gap-2">
+      <div
+        *ngFor="let item of attachments"
+        class="attachment-row flex align-items-center justify-content-between gap-3"
+      >
+        <div class="flex align-items-center gap-2 min-w-0 flex-1">
+          <i class="text-500" [ngClass]="getKindIcon(item)"></i>
+          <div class="min-w-0">
+            <div class="font-semibold text-overflow-ellipsis" [pTooltip]="getDisplayName(item)">
+              {{ getDisplayName(item) }}
+            </div>
+            <div class="text-500 text-sm">
+              <span>{{ getKindLabel(item) }}</span>
+              <span *ngIf="item.fileName && item.caption"> · {{ item.fileName }}</span>
+              <span *ngIf="item.createdAt"> · <span dir="ltr">{{ item.createdAt | date:'yyyy-MM-dd' }}</span></span>
+            </div>
+          </div>
+        </div>
+        <p-button
+          *ngIf="allowRemove && !readonly"
+          icon="pi pi-trash"
+          severity="danger"
+          [text]="true"
+          [rounded]="true"
+          [pTooltip]="'donations.attachments.actions.remove' | translate"
+          (onClick)="openRemoveDialog(item)"
+        ></p-button>
+      </div>
+    </div>
+  </ng-template>
+</div>
+
+<p-dialog
+  [(visible)]="removeDialogVisible"
+  [modal]="true"
+  [style]="{ width: '420px' }"
+  [draggable]="false"
+  [resizable]="false"
+  (onHide)="closeRemoveDialog()"
+>
+  <ng-template pTemplate="header">
+    <h3 class="m-0">{{ 'donations.attachments.removeDialog.title' | translate }}</h3>
+  </ng-template>
+
+  <p class="mb-0 text-500">{{ 'donations.attachments.removeDialog.confirmation' | translate }}</p>
+
+  <ng-template pTemplate="footer">
+    <p-button
+      [label]="'common.cancel' | translate"
+      icon="pi pi-times"
+      severity="secondary"
+      [outlined]="true"
+      (onClick)="closeRemoveDialog()"
+      [disabled]="!!(isLoading$ | async)"
+    ></p-button>
+    <p-button
+      [label]="'donations.attachments.actions.remove' | translate"
+      icon="pi pi-trash"
+      severity="danger"
+      (onClick)="confirmRemove()"
+      [disabled]="!!(isLoading$ | async)"
+    ></p-button>
+  </ng-template>
+</p-dialog>

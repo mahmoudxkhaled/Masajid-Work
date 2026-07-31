@@ -1,0 +1,30 @@
+<div class="donation-attachment-uploader" *ngIf="!readonly">
+  <div class="flex flex-column gap-2" *ngIf="allowCaptions">
+    <label class="font-medium">{{ 'donations.attachments.fields.caption' | translate }}</label>
+    <input
+      pInputText
+      class="w-full"
+      [(ngModel)]="caption"
+      [disabled]="!canUpload"
+      [placeholder]="'donations.attachments.fields.captionPlaceholder' | translate"
+    />
+  </div>
+
+  <div class="flex align-items-center gap-2 flex-wrap">
+    <label class="p-button p-button-outlined p-button-secondary" [class.p-disabled]="!canUpload">
+      <i class="pi pi-upload mr-2"></i>
+      {{ 'donations.attachments.actions.selectFiles' | translate }}
+      <input
+        type="file"
+        class="hidden-file-input"
+        [disabled]="!canUpload"
+        [multiple]="maxFiles > 1"
+        accept=".pdf,.png,.jpg,.jpeg,.webp"
+        (change)="onFilesSelected($event)"
+      />
+    </label>
+    <span class="text-500 text-sm" *ngIf="uploading">
+      {{ 'donations.attachments.uploading' | translate }} {{ uploadPercent }}%
+    </span>
+  </div>
+</div>

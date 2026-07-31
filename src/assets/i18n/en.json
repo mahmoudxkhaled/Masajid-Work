@@ -3722,10 +3722,10 @@
                 "actions": "Actions"
             },
             "status": {
-                "active": "Active Commitment",
+                "pending": "Pending",
                 "accepted": "Accepted",
-                "underReview": "Under Review",
-                "cancelledRejected": "Rejected",
+                "completed": "Completed",
+                "cancelled": "Cancelled",
                 "unknown": "Unknown Status"
             },
             "fulfillmentMode": {
@@ -4062,6 +4062,61 @@
                 "accessDenied": "You do not have permission to access this section.",
                 "sessionExpired": "Your session has expired. Please login again."
             }
+        },
+        "attachments": {
+            "title": "Attachments",
+            "empty": "No attachments found.",
+            "uploading": "Uploading",
+            "fields": {
+                "caption": "Caption",
+                "captionPlaceholder": "Optional caption"
+            },
+            "kinds": {
+                "photoImage": "Photo / Image",
+                "pdfDocument": "PDF Document",
+                "video": "Video",
+                "other": "Other"
+            },
+            "actions": {
+                "selectFiles": "Select files",
+                "remove": "Remove"
+            },
+            "removeDialog": {
+                "title": "Remove Attachment",
+                "confirmation": "Are you sure you want to remove this attachment?"
+            },
+            "messages": {
+                "added": "Attachment added successfully.",
+                "removed": "Attachment removed successfully.",
+                "uploadLinkedFailed": "File uploaded successfully, but could not be linked as a donation attachment."
+            },
+            "errors": {
+                "locationNotConfigured": "Upload location is not configured yet.",
+                "invalidOwner": "This file cannot be attached to the selected donation record.",
+                "invalidAttachment": "Donation attachment was not found.",
+                "ownerNotEditable": "Attachments cannot be changed in the current status.",
+                "invalidFileType": "This file type is not allowed.",
+                "invalidFileSize": "File size is invalid or too large.",
+                "uploadFailed": "File upload failed. Please try again.",
+                "accessDenied": "You do not have permission to manage attachments.",
+                "sessionExpired": "Your session has expired. Please login again."
+            }
+        },
+        "requestStatus": {
+            "draft": "Draft",
+            "pendingReview": "Pending Review",
+            "rejected": "Rejected",
+            "published": "Published",
+            "accepted": "Accepted",
+            "inFulfillment": "In Fulfillment",
+            "brokenDown": "Broken Down",
+            "fulfillmentSubmitted": "Fulfillment Submitted",
+            "facilityConfirmed": "Facility Confirmed",
+            "openForValidation": "Open for Validation",
+            "validated": "Validated",
+            "closed": "Closed",
+            "cancelled": "Cancelled",
+            "unknown": "Unknown Status"
         },
         "validation": {
             "title": "Community Validation",

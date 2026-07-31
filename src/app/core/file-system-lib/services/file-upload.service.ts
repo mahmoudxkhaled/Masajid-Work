@@ -15,6 +15,15 @@ import {
 /** Request code for Upload_Request (Files Basic). */
 const UPLOAD_REQUEST_CODE = 1101;
 
+export interface UploadedStorageFileResult {
+  fileId: number;
+  fileName: string;
+  fileType: string;
+  fileSize: number;
+  folderId: number;
+  fileSystemId: number;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -35,8 +44,42 @@ export class FileUploadService {
       fileSystemId,
       folderId,
       onProgress,
+      false,
       false
     );
+  }
+
+  async uploadFileWithResult(
+    file: File,
+    accessToken: string,
+    fileSystemId: number,
+    folderId: bigint,
+    onProgress?: (percent: number) => void
+  ): Promise<UploadedStorageFileResult> {
+    const fileId = await this.uploadFileInternal(
+      file,
+      accessToken,
+      fileSystemId,
+      folderId,
+      onProgress,
+      false,
+      true
+    );
+
+    if (!fileId || fileId <= 0) {
+      throw {
+        message: 'Uploaded file ID was not returned. Please upload again.',
+      };
+    }
+
+    return {
+      fileId,
+      fileName: file.name,
+      fileType: file.type || '',
+      fileSize: file.size,
+      folderId: Number(folderId),
+      fileSystemId,
+    };
   }
 
   private async uploadFileInternal(
@@ -45,8 +88,9 @@ export class FileUploadService {
     fileSystemId: number,
     folderId: bigint,
     onProgress: ((percent: number) => void) | undefined,
-    hasRetriedForToken: boolean
-  ): Promise<void> {
+    hasRetriedForToken: boolean,
+    requireFileId: boolean
+  ): Promise<number> {
     const chunkSize = (1024 * 1024) / 4;
     const totalBytes = file.size;
     const totalChunks = Math.ceil(totalBytes / chunkSize);
@@ -117,11 +161,17 @@ export class FileUploadService {
         onProgress(100);
       }
 
-      return;
+      if (requireFileId) {
+        throw {
+          message: 'Uploaded file ID was not returned. Please upload again.',
+        };
+      }
+
+      return 0;
     }
 
     try {
-      await this.uploadFileChunks(
+      return await this.uploadFileChunks(
         file,
         uploadToken,
         chunkSize,
@@ -131,22 +181,22 @@ export class FileUploadService {
         lastModified,
         startChunk,
         alreadyUploadedBytes,
-        onProgress
+        onProgress,
+        requireFileId
       );
     } catch (error: any) {
       if (!hasRetriedForToken && this.isTokenInvalidError(error)) {
         clearUploadSession(fileName, fileSize, lastModified, fileSystemId, folderId);
 
-        await this.uploadFileInternal(
+        return await this.uploadFileInternal(
           file,
           accessToken,
           fileSystemId,
           folderId,
           onProgress,
-          true
+          true,
+          requireFileId
         );
-
-        return;
       }
 
       throw error;
@@ -179,7 +229,6 @@ export class FileUploadService {
     console.log('Upload_Request response:', response);
 
     if (!response?.success || !response?.message) {
-      // Throw a response-like object so UI can map ERP error codes (e.g. DAP12227) using getFileSystemErrorDetail.
       throw {
         errorCode: response?.message,
         message: response?.message || 'Upload request failed.',
@@ -199,14 +248,17 @@ export class FileUploadService {
     lastModified: number,
     startChunk: number,
     alreadyUploadedBytes: number,
-    onProgress?: (percent: number) => void
-  ): Promise<void> {
+    onProgress: ((percent: number) => void) | undefined,
+    requireFileId: boolean
+  ): Promise<number> {
     let offset = alreadyUploadedBytes;
     let currentChunk = startChunk;
+    let uploadedFileId = 0;
 
     while (offset < totalBytes) {
       const nextOffset = Math.min(offset + chunkSize, totalBytes);
       const chunk = file.slice(offset, nextOffset);
+      const isLastChunk = nextOffset === totalBytes;
 
       const formData = new FormData();
       formData.append('current_chunk', currentChunk.toString());
@@ -230,7 +282,7 @@ export class FileUploadService {
             )
           );
 
-          if (currentChunk === startChunk || nextOffset === totalBytes) {
+          if (currentChunk === startChunk || isLastChunk) {
             console.log('Upload_File_Chunk response:', {
               fileName: file.name,
               currentChunk,
@@ -238,6 +290,10 @@ export class FileUploadService {
               nextOffset,
               response: chunkResponse,
             });
+          }
+
+          if (isLastChunk) {
+            uploadedFileId = this.parseUploadedFileId(chunkResponse);
           }
 
           uploaded = true;
@@ -275,6 +331,69 @@ export class FileUploadService {
       fileSystemId,
       folderId
     );
+
+    if (requireFileId && (!uploadedFileId || uploadedFileId <= 0)) {
+      throw {
+        message: 'Uploaded file ID was not returned. Please upload again.',
+      };
+    }
+
+    return uploadedFileId;
+  }
+
+  private parseUploadedFileId(response: unknown): number {
+    if (response === null || response === undefined) {
+      return 0;
+    }
+
+    if (typeof response === 'number') {
+      return Number.isFinite(response) ? response : 0;
+    }
+
+    if (typeof response === 'string') {
+      const parsed = Number(response);
+      return Number.isFinite(parsed) ? parsed : 0;
+    }
+
+    if (typeof response !== 'object') {
+      return 0;
+    }
+
+    const record = response as Record<string, unknown>;
+    const direct =
+      record['Uploaded_File_ID'] ??
+      record['uploaded_File_ID'] ??
+      record['File_ID'] ??
+      record['file_ID'];
+
+    if (direct !== undefined && direct !== null && direct !== '') {
+      const parsed = Number(direct);
+      if (Number.isFinite(parsed)) {
+        return parsed;
+      }
+    }
+
+    const message = record['message'];
+    if (typeof message === 'number') {
+      return Number.isFinite(message) ? message : 0;
+    }
+    if (typeof message === 'string') {
+      const parsed = Number(message);
+      return Number.isFinite(parsed) ? parsed : 0;
+    }
+    if (message && typeof message === 'object') {
+      const nested = message as Record<string, unknown>;
+      const nestedId =
+        nested['Uploaded_File_ID'] ?? nested['uploaded_File_ID'] ?? nested['File_ID'];
+      if (nestedId !== undefined && nestedId !== null && nestedId !== '') {
+        const parsed = Number(nestedId);
+        if (Number.isFinite(parsed)) {
+          return parsed;
+        }
+      }
+    }
+
+    return 0;
   }
 
   private isTokenInvalidError(error: any): boolean {
@@ -327,4 +446,3 @@ export class FileUploadService {
     return null;
   }
 }
-

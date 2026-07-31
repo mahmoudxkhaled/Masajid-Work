@@ -1,8 +1,8 @@
 export const DonationCommitmentStatus = {
-  InitialActive: 1,
-  AcceptedConfirmed: 2,
-  UnknownReserved: 3,
-  CancelledRejected: 4,
+  Pending: 1,
+  Accepted: 2,
+  Completed: 3,
+  Cancelled: 4,
 } as const;
 
 export type DonationCommitmentStatusValue =
@@ -12,15 +12,14 @@ export type CommitmentStatusSeverity = 'success' | 'info' | 'warning' | 'danger'
 
 export function getCommitmentStatusLabelKey(status: number): string {
   switch (status) {
-    case DonationCommitmentStatus.InitialActive:
-      return 'donations.commitments.status.active';
-    case DonationCommitmentStatus.AcceptedConfirmed:
+    case DonationCommitmentStatus.Pending:
+      return 'donations.commitments.status.pending';
+    case DonationCommitmentStatus.Accepted:
       return 'donations.commitments.status.accepted';
-    case DonationCommitmentStatus.UnknownReserved:
-      // TODO: backend has not clearly assigned status 3 yet — display safely until confirmed
-      return 'donations.commitments.status.underReview';
-    case DonationCommitmentStatus.CancelledRejected:
-      return 'donations.commitments.status.cancelledRejected';
+    case DonationCommitmentStatus.Completed:
+      return 'donations.commitments.status.completed';
+    case DonationCommitmentStatus.Cancelled:
+      return 'donations.commitments.status.cancelled';
     default:
       return 'donations.commitments.status.unknown';
   }
@@ -28,58 +27,50 @@ export function getCommitmentStatusLabelKey(status: number): string {
 
 export function getCommitmentStatusSeverity(status: number): CommitmentStatusSeverity {
   switch (status) {
-    case DonationCommitmentStatus.InitialActive:
+    case DonationCommitmentStatus.Pending:
       return 'info';
-    case DonationCommitmentStatus.AcceptedConfirmed:
+    case DonationCommitmentStatus.Accepted:
       return 'success';
-    case DonationCommitmentStatus.UnknownReserved:
-      // TODO: backend has not clearly assigned status 3 yet
-      return 'warning';
-    case DonationCommitmentStatus.CancelledRejected:
+    case DonationCommitmentStatus.Completed:
+      return 'success';
+    case DonationCommitmentStatus.Cancelled:
       return 'danger';
     default:
       return 'secondary';
   }
 }
 
-export function isCommitmentPendingOrActive(status: number): boolean {
-  return status === DonationCommitmentStatus.InitialActive;
+export function isCommitmentPending(status: number): boolean {
+  return status === DonationCommitmentStatus.Pending;
 }
 
 export function isCommitmentAccepted(status: number): boolean {
-  return status === DonationCommitmentStatus.AcceptedConfirmed;
+  return status === DonationCommitmentStatus.Accepted;
 }
 
-export function isCommitmentFinal(status: number): boolean {
-  return status === DonationCommitmentStatus.CancelledRejected;
+export function isCommitmentCompleted(status: number): boolean {
+  return status === DonationCommitmentStatus.Completed;
 }
 
-export function isCommitmentCancelledOrRejected(status: number): boolean {
-  return status === DonationCommitmentStatus.CancelledRejected;
+export function isCommitmentCancelled(status: number): boolean {
+  return status === DonationCommitmentStatus.Cancelled;
 }
 
 export function canCancelCommitment(status: number): boolean {
   return (
-    status === DonationCommitmentStatus.InitialActive ||
-    status === DonationCommitmentStatus.AcceptedConfirmed
+    status === DonationCommitmentStatus.Pending || status === DonationCommitmentStatus.Accepted
   );
 }
 
 export function canRespondToRepresentation(status: number): boolean {
-  return status === DonationCommitmentStatus.InitialActive;
+  return status === DonationCommitmentStatus.Pending;
 }
 
 export function getCommitmentStatusFilterOptions(): { value: number; labelKey: string }[] {
   return [
-    { value: DonationCommitmentStatus.InitialActive, labelKey: 'donations.commitments.status.active' },
-    { value: DonationCommitmentStatus.AcceptedConfirmed, labelKey: 'donations.commitments.status.accepted' },
-    {
-      value: DonationCommitmentStatus.UnknownReserved,
-      labelKey: 'donations.commitments.status.underReview',
-    },
-    {
-      value: DonationCommitmentStatus.CancelledRejected,
-      labelKey: 'donations.commitments.status.cancelledRejected',
-    },
+    { value: DonationCommitmentStatus.Pending, labelKey: 'donations.commitments.status.pending' },
+    { value: DonationCommitmentStatus.Accepted, labelKey: 'donations.commitments.status.accepted' },
+    { value: DonationCommitmentStatus.Completed, labelKey: 'donations.commitments.status.completed' },
+    { value: DonationCommitmentStatus.Cancelled, labelKey: 'donations.commitments.status.cancelled' },
   ];
 }

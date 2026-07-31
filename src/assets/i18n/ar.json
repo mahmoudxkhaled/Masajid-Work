@@ -3581,10 +3581,10 @@
                 "actions": "الإجراءات"
             },
             "status": {
-                "active": "التزام نشط",
+                "pending": "قيد الانتظار",
                 "accepted": "مقبول",
-                "underReview": "قيد المراجعة",
-                "cancelledRejected": "مرفوض",
+                "completed": "مكتمل",
+                "cancelled": "ملغى",
                 "unknown": "حالة غير معروفة"
             },
             "fulfillmentMode": {
@@ -3921,6 +3921,61 @@
                 "accessDenied": "ليس لديك صلاحية للوصول إلى هذا القسم.",
                 "sessionExpired": "انتهت صلاحية جلستك. يرجى تسجيل الدخول مرة أخرى."
             }
+        },
+        "attachments": {
+            "title": "المرفقات",
+            "empty": "لا توجد مرفقات.",
+            "uploading": "جاري الرفع",
+            "fields": {
+                "caption": "التعليق",
+                "captionPlaceholder": "تعليق اختياري"
+            },
+            "kinds": {
+                "photoImage": "صورة",
+                "pdfDocument": "مستند PDF",
+                "video": "فيديو",
+                "other": "أخرى"
+            },
+            "actions": {
+                "selectFiles": "اختيار ملفات",
+                "remove": "إزالة"
+            },
+            "removeDialog": {
+                "title": "إزالة المرفق",
+                "confirmation": "هل أنت متأكد من إزالة هذا المرفق؟"
+            },
+            "messages": {
+                "added": "تمت إضافة المرفق بنجاح.",
+                "removed": "تمت إزالة المرفق بنجاح.",
+                "uploadLinkedFailed": "تم رفع الملف بنجاح، لكن تعذر ربطه كمرفق تبرع."
+            },
+            "errors": {
+                "locationNotConfigured": "موقع الرفع غير مُعد بعد.",
+                "invalidOwner": "لا يمكن إرفاق هذا الملف بسجل التبرع المحدد.",
+                "invalidAttachment": "لم يتم العثور على مرفق التبرع.",
+                "ownerNotEditable": "لا يمكن تعديل المرفقات في الحالة الحالية.",
+                "invalidFileType": "نوع الملف هذا غير مسموح.",
+                "invalidFileSize": "حجم الملف غير صالح أو كبير جداً.",
+                "uploadFailed": "فشل رفع الملف. يرجى المحاولة مرة أخرى.",
+                "accessDenied": "ليس لديك صلاحية لإدارة المرفقات.",
+                "sessionExpired": "انتهت صلاحية جلستك. يرجى تسجيل الدخول مرة أخرى."
+            }
+        },
+        "requestStatus": {
+            "draft": "مسودة",
+            "pendingReview": "بانتظار المراجعة",
+            "rejected": "مرفوض",
+            "published": "منشور",
+            "accepted": "مقبول",
+            "inFulfillment": "قيد التنفيذ",
+            "brokenDown": "مقسّم",
+            "fulfillmentSubmitted": "تم تقديم التنفيذ",
+            "facilityConfirmed": "أكدت المنشأة",
+            "openForValidation": "مفتوح للتحقق",
+            "validated": "تم التحقق",
+            "closed": "مغلق",
+            "cancelled": "ملغى",
+            "unknown": "حالة غير معروفة"
         },
         "validation": {
             "title": "التحقق المجتمعي",

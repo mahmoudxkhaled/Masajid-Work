@@ -10,7 +10,11 @@ import {
   DonationRequestDetailsBackend,
   DonationRequestWorkflowItem,
 } from '../../../models/donation-request.model';
-import { DonationRequestStatusBackend } from '../../../models/donation-request-status.model';
+import {
+  DonationRequestStatusBackend,
+  isDonationRequestClosingStatus,
+  isDonationRequestDraft,
+} from '../../../models/donation-request-status.model';
 import { DonationCategoryBackend } from '../../../models/donation-category.model';
 import { DonationTypeBackend } from '../../../models/donation-type.model';
 import { DonationReferenceService } from '../../../services/donation-reference.service';
@@ -80,7 +84,14 @@ export class FacilityRequestDetailsComponent implements OnInit, OnDestroy {
   }
 
   get isDraft(): boolean {
+    if (this.details?.statusId) {
+      return isDonationRequestDraft(this.details.statusId);
+    }
     return String(this.details?.statusCode || '').toUpperCase() === 'DRAFT';
+  }
+
+  get isClosingStatus(): boolean {
+    return isDonationRequestClosingStatus(Number(this.details?.statusId || 0));
   }
 
   backToList(): void {

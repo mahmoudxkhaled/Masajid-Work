@@ -210,11 +210,11 @@ export class CharityRepresentationListComponent implements OnInit, OnDestroy {
       { label: this.translate.getInstant('donations.charityRepresentation.filters.allStatuses'), value: null },
       {
         label: this.translate.getInstant('donations.commitments.status.accepted'),
-        value: DonationCommitmentStatus.AcceptedConfirmed,
+        value: DonationCommitmentStatus.Accepted,
       },
       {
-        label: this.translate.getInstant('donations.commitments.status.cancelledRejected'),
-        value: DonationCommitmentStatus.CancelledRejected,
+        label: this.translate.getInstant('donations.commitments.status.cancelled'),
+        value: DonationCommitmentStatus.Cancelled,
       },
     ];
   }

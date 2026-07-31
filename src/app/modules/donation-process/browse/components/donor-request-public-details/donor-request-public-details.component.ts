@@ -11,7 +11,7 @@ import {
   DonationRequestDetails,
   DonationRequestDetailsBackend,
 } from '../../../models/donation-request.model';
-import { DonationRequestStatusBackend } from '../../../models/donation-request-status.model';
+import { DonationRequestStatusBackend, isDonationRequestPublished } from '../../../models/donation-request-status.model';
 import { DonationCategoryBackend } from '../../../models/donation-category.model';
 import { DonationTypeBackend } from '../../../models/donation-type.model';
 import { DonationReferenceService } from '../../../services/donation-reference.service';
@@ -90,7 +90,11 @@ export class DonorRequestPublicDetailsComponent implements OnInit, OnDestroy {
   }
 
   get isPublished(): boolean {
-    const code = String(this.statusCodeById[this.details?.statusId || 0] || this.details?.statusCode || '').toUpperCase();
+    const statusId = Number(this.details?.statusId || 0);
+    if (statusId > 0) {
+      return isDonationRequestPublished(statusId);
+    }
+    const code = String(this.statusCodeById[statusId] || this.details?.statusCode || '').toUpperCase();
     return code === 'PUBLISHED';
   }
 
