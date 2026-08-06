@@ -13,6 +13,7 @@ export interface UploadProgressState {
   visible: boolean;
   percent: number;
   files: UploadProgressItem[];
+  blockInteraction?: boolean;
 }
 
 export interface DownloadProgressState {
@@ -53,6 +54,7 @@ export class TransferProgressService {
       visible: false,
       percent: 0,
       files: [],
+      blockInteraction: false,
     });
   }
 

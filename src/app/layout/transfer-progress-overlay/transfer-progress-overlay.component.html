@@ -1,5 +1,7 @@
 <!-- Global upload progress (fixed at bottom-left) -->
 <ng-container *ngIf="uploadProgressState$ | async as uploadState">
+  <div *ngIf="uploadState.visible && uploadState.blockInteraction" class="transfer-block-mask" aria-hidden="true"></div>
+
   <div *ngIf="uploadState.visible" class="upload-progress-container">
     <div class="upload-progress-card card">
       <div class="flex flex-column gap-3 w-full">
@@ -12,9 +14,9 @@
           </div>
         </div>
 
-        <div class="selected-files-list border-1 surface-border border-round p-2" style="max-height: 150px; overflow-y: auto;">
-          <div
-            *ngFor="let file of uploadState.files"
+        <div class="selected-files-list border-1 surface-border border-round p-2"
+          style="max-height: 150px; overflow-y: auto;">
+          <div *ngFor="let file of uploadState.files"
             class="flex align-items-center justify-content-between mb-2 pb-1 border-bottom-1 surface-border">
             <div class="flex align-items-center gap-2 flex-1">
               <i *ngIf="file.status === 'pending'" class="pi pi-file text-primary"></i>
@@ -47,13 +49,8 @@
         <div class="flex flex-column gap-2 flex-1">
           <div class="flex align-items-center justify-content-between">
             <span class="font-semibold">{{ downloadState.fileName }}</span>
-            <button
-              pButton
-              type="button"
-              icon="pi pi-times"
-              class="p-button-rounded p-button-text p-button-sm"
-              (click)="hideDownloadProgress()"
-              [pTooltip]="'fileSystem.folderManagement.hide' | translate">
+            <button pButton type="button" icon="pi pi-times" class="p-button-rounded p-button-text p-button-sm"
+              (click)="hideDownloadProgress()" [pTooltip]="'fileSystem.folderManagement.hide' | translate">
             </button>
           </div>
           <p-progressBar [value]="downloadState.percent" [showValue]="true"></p-progressBar>

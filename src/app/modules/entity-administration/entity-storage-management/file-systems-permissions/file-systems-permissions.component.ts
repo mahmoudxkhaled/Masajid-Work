@@ -254,7 +254,6 @@ export class FileSystemsPermissionsComponent implements OnInit {
     const accessType = this.addAccessType;
     const accessRight = this.addAccessRight;
     const requiresRelatedTargets = this.requiresRelatedTargets();
-    const relatedIds = requiresRelatedTargets ? [...this.selectedRelatedTargetIds] : [];
 
     if (accessType == null) {
       this.messageService.add({
@@ -272,6 +271,13 @@ export class FileSystemsPermissionsComponent implements OnInit {
       });
       return;
     }
+
+    const relatedIds = accessType === 5
+      ? [0]
+      : requiresRelatedTargets
+        ? [...this.selectedRelatedTargetIds]
+        : [];
+
     if (requiresRelatedTargets && relatedIds.length === 0) {
       this.relatedTargetsTouched = true;
       this.messageService.add({
@@ -285,6 +291,7 @@ export class FileSystemsPermissionsComponent implements OnInit {
     this.loadingPermissions = true;
     this.fileSystemPermissionsService.setFileSystemAccessPermission(this.selectedFileSystemId, accessType, relatedIds, accessRight).subscribe({
       next: (response: any) => {
+        console.log('setFileSystemAccessPermission response', response);
         this.loadingPermissions = false;
         if (!response?.success) {
           this.handleBusinessError('addPermission', response);

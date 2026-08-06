@@ -278,6 +278,7 @@ export class FolderManagementComponent implements OnInit, OnChanges, OnDestroy {
     this.treeLoading = true;
     this.folderService.getFolderStructure(this.fileSystemId, false).subscribe({
       next: (response: any) => {
+        console.log('loadFolderStructure response', response);
         this.treeLoading = false;
         if (!response?.success) {
           this.handleBusinessError('getStructure', response);
@@ -2136,6 +2137,8 @@ export class FolderManagementComponent implements OnInit, OnChanges, OnDestroy {
         return this.translate.getInstant('fileSystem.admin.errorInsufficientStorage');
       case 'DAP12227':
         return this.translate.getInstant('fileSystem.admin.errorFileExistsInFolder');
+      case 'DAP12228':
+        return this.translate.getInstant('fileSystem.admin.errorInvalidChunkSize');
       case 'DAP12230':
         return this.translate.getInstant('fileSystem.admin.errorInvalidUploadToken');
       case 'DAP12231':

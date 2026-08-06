@@ -9,6 +9,9 @@
     <div class="flex flex-wrap gap-2">
       <p-button [label]="'donations.commitments.details.back' | translate" icon="pi pi-arrow-left" severity="secondary"
         [outlined]="true" (onClick)="backToList()"></p-button>
+      <p-button *ngIf="canSubmitProof && !loading"
+        [label]="'donations.commitments.actions.submitFulfillmentProof' | translate" icon="pi pi-upload"
+        (onClick)="openSubmitProofDialog()"></p-button>
       <p-button *ngIf="canCancel && !loading" [label]="'donations.commitments.actions.cancelCommitment' | translate"
         icon="pi pi-ban" severity="danger" [outlined]="true" (onClick)="openCancelDialog()"></p-button>
     </div>
@@ -230,6 +233,78 @@
         </div>
       </div>
 
+      <div class="block-card details-card p-0 mb-3">
+        <div class="details-section-header">
+          <span class="details-section-icon"><i class="pi pi-verified"></i></span>
+          <h3 class="details-section-title">{{ 'donations.commitments.fulfillment.title' | translate }}</h3>
+        </div>
+        <div class="p-3 pt-2">
+          <p *ngIf="fulfillmentsMissingRequestId" class="mb-0 text-500">
+            {{ 'donations.commitments.fulfillment.missingRequestId' | translate }}
+          </p>
+
+          <ng-container *ngIf="!fulfillmentsMissingRequestId">
+            <ng-container *ngIf="fulfillmentsLoading; else fulfillmentsLoaded">
+              <div class="flex flex-column gap-2">
+                <p-skeleton height="2.5rem" width="100%" borderRadius="6px"></p-skeleton>
+                <p-skeleton height="2.5rem" width="100%" borderRadius="6px"></p-skeleton>
+                <p-skeleton height="2.5rem" width="100%" borderRadius="6px"></p-skeleton>
+              </div>
+            </ng-container>
+
+            <ng-template #fulfillmentsLoaded>
+              <p *ngIf="fulfillments.length === 0" class="mb-0 text-500">
+                {{ 'donations.commitments.fulfillment.empty' | translate }}
+              </p>
+
+              <p-table *ngIf="fulfillments.length > 0" [value]="fulfillments" responsiveLayout="scroll"
+                styleClass="p-datatable-sm">
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th style="width: 7rem">{{ 'donations.commitments.fulfillment.columns.id' | translate }}</th>
+                    <th style="width: 9rem">{{ 'donations.commitments.fulfillment.columns.fulfilledBy' | translate }}
+                    </th>
+                    <th style="width: 14rem">{{ 'donations.commitments.fulfillment.columns.note' | translate }}</th>
+                    <th style="width: 8rem">{{ 'donations.commitments.fulfillment.columns.vendorOfferId' | translate }}
+                    </th>
+                    <th style="width: 9rem">{{ 'donations.commitments.fulfillment.columns.createdAt' | translate }}
+                    </th>
+                    <th class="text-center" style="width: 7rem">
+                      {{ 'donations.commitments.fulfillment.columns.status' | translate }}
+                    </th>
+                    <th class="text-center" style="width: 9rem">
+                      {{ 'donations.commitments.columns.actions' | translate }}
+                    </th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-row>
+                  <tr>
+                    <td>{{ row.id || '-' }}</td>
+                    <td>{{ getFulfilledByLabel(row.fulfilledBy) }}</td>
+                    <td>
+                      <div class="offer-description-cell" [pTooltip]="row.fulfillmentNote || ''"
+                        tooltipPosition="top">
+                        {{ getNoteSummary(row.fulfillmentNote) }}
+                      </div>
+                    </td>
+                    <td>{{ row.donationVendorOfferId || '-' }}</td>
+                    <td dir="ltr">{{ row.createdAt ? (row.createdAt | date:'yyyy-MM-dd') : '-' }}</td>
+                    <td class="text-center">
+                      <app-donation-status-badge [label]="getFulfillmentStatusLabel(row)"></app-donation-status-badge>
+                    </td>
+                    <td class="text-center">
+                      <p-button [label]="'donations.commitments.fulfillment.actions.viewDetails' | translate"
+                        icon="pi pi-eye" [outlined]="true" severity="secondary" size="small"
+                        (onClick)="openFulfillmentDetailsDialog(row)"></p-button>
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </ng-template>
+          </ng-container>
+        </div>
+      </div>
+
       <div class="block-card details-card p-0">
         <div class="details-section-header">
           <span class="details-section-icon"><i class="pi pi-history"></i></span>
@@ -253,3 +328,11 @@
 
 <app-select-vendor-offer-dialog [(visible)]="selectOfferDialogVisible" [offer]="selectedOffer"
   (selected)="onVendorOfferSelected()"></app-select-vendor-offer-dialog>
+
+<app-submit-fulfillment-proof-dialog [(visible)]="submitProofDialogVisible"
+  [donationCommitmentId]="commitmentId" [selectedVendorOfferId]="selectedVendorOfferId"
+  [defaultFulfilledBy]="defaultFulfilledBy"
+  (submitted)="onFulfillmentSubmitted()"></app-submit-fulfillment-proof-dialog>
+
+<app-fulfillment-details-dialog [(visible)]="fulfillmentDetailsDialogVisible"
+  [donationFulfillmentId]="selectedFulfillmentId"></app-fulfillment-details-dialog>

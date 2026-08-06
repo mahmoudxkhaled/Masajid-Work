@@ -7,6 +7,8 @@ import { DonorCommitmentDetailsComponent } from './components/donor-commitment-d
 import { CancelCommitmentDialogComponent } from './components/cancel-commitment-dialog/cancel-commitment-dialog.component';
 import { ViewVendorOfferDialogComponent } from './components/view-vendor-offer-dialog/view-vendor-offer-dialog.component';
 import { SelectVendorOfferDialogComponent } from './components/select-vendor-offer-dialog/select-vendor-offer-dialog.component';
+import { SubmitFulfillmentProofDialogComponent } from './components/submit-fulfillment-proof-dialog/submit-fulfillment-proof-dialog.component';
+import { FulfillmentDetailsDialogComponent } from './components/fulfillment-details-dialog/fulfillment-details-dialog.component';
 import { CommitmentsRoutingModule } from './commitments-routing.module';
 
 @NgModule({
@@ -16,6 +18,8 @@ import { CommitmentsRoutingModule } from './commitments-routing.module';
     CancelCommitmentDialogComponent,
     ViewVendorOfferDialogComponent,
     SelectVendorOfferDialogComponent,
+    SubmitFulfillmentProofDialogComponent,
+    FulfillmentDetailsDialogComponent,
   ],
   imports: [CommitmentsRoutingModule, SharedModule, DonationProcessSharedModule],
   providers: [MessageService],

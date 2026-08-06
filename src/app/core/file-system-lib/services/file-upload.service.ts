@@ -15,6 +15,9 @@ import {
 /** Request code for Upload_Request (Files Basic). */
 const UPLOAD_REQUEST_CODE = 1101;
 
+/** Backend requires chunk size > 0 and < 250 KB. */
+const UPLOAD_CHUNK_SIZE_BYTES = 240 * 1024;
+
 export interface UploadedStorageFileResult {
   fileId: number;
   fileName: string;
@@ -91,7 +94,7 @@ export class FileUploadService {
     hasRetriedForToken: boolean,
     requireFileId: boolean
   ): Promise<number> {
-    const chunkSize = (1024 * 1024) / 4;
+    const chunkSize = UPLOAD_CHUNK_SIZE_BYTES;
     const totalBytes = file.size;
     const totalChunks = Math.ceil(totalBytes / chunkSize);
 
@@ -173,6 +176,7 @@ export class FileUploadService {
     try {
       return await this.uploadFileChunks(
         file,
+        accessToken,
         uploadToken,
         chunkSize,
         totalBytes,
@@ -222,6 +226,7 @@ export class FileUploadService {
       folderId.toString(),
     ];
 
+    console.log('Upload_Request parameters:', parameters);
     const response = (await firstValueFrom(
       this.apiService.callAPI(UPLOAD_REQUEST_CODE, accessToken, parameters)
     )) as unknown as { success: boolean; message: string };
@@ -240,6 +245,7 @@ export class FileUploadService {
 
   private async uploadFileChunks(
     file: File,
+    accessToken: string,
     uploadToken: string,
     chunkSize: number,
     totalBytes: number,
@@ -275,12 +281,15 @@ export class FileUploadService {
         attempt++;
 
         try {
-          const chunkResponse = await firstValueFrom(
+          const httpResponse = await firstValueFrom(
             this.http.post(
               `${this.apiService.getBaseUrl()}/Upload?token=${uploadToken}`,
-              formData
+              formData,
+              { responseType: 'text', observe: 'response' }
             )
           );
+
+          const chunkResponse = this.parseChunkResponseBody(httpResponse.body);
 
           if (currentChunk === startChunk || isLastChunk) {
             console.log('Upload_File_Chunk response:', {
@@ -288,12 +297,17 @@ export class FileUploadService {
               currentChunk,
               offset,
               nextOffset,
+              status: httpResponse.status,
+              rawBody: httpResponse.body,
               response: chunkResponse,
             });
           }
 
           if (isLastChunk) {
             uploadedFileId = this.parseUploadedFileId(chunkResponse);
+            if ((!uploadedFileId || uploadedFileId <= 0) && httpResponse.body) {
+              uploadedFileId = this.parseUploadedFileId(httpResponse.body);
+            }
           }
 
           uploaded = true;
@@ -333,6 +347,19 @@ export class FileUploadService {
     );
 
     if (requireFileId && (!uploadedFileId || uploadedFileId <= 0)) {
+      uploadedFileId = await this.resolveUploadedFileIdFromFolder(
+        accessToken,
+        fileSystemId,
+        folderId,
+        file.name
+      );
+      console.log('Upload file ID resolved from folder contents:', {
+        fileName: file.name,
+        fileId: uploadedFileId,
+      });
+    }
+
+    if (requireFileId && (!uploadedFileId || uploadedFileId <= 0)) {
       throw {
         message: 'Uploaded file ID was not returned. Please upload again.',
       };
@@ -341,18 +368,57 @@ export class FileUploadService {
     return uploadedFileId;
   }
 
+  private parseChunkResponseBody(raw: string | null): unknown {
+    if (raw == null) {
+      return null;
+    }
+
+    const trimmed = String(raw).trim();
+    if (!trimmed) {
+      return null;
+    }
+
+    try {
+      return JSON.parse(trimmed);
+    } catch {
+      return trimmed;
+    }
+  }
+
   private parseUploadedFileId(response: unknown): number {
     if (response === null || response === undefined) {
       return 0;
     }
 
     if (typeof response === 'number') {
-      return Number.isFinite(response) ? response : 0;
+      return Number.isFinite(response) && response > 0 ? response : 0;
+    }
+
+    if (typeof response === 'bigint') {
+      const parsed = Number(response);
+      return Number.isFinite(parsed) && parsed > 0 ? parsed : 0;
     }
 
     if (typeof response === 'string') {
-      const parsed = Number(response);
-      return Number.isFinite(parsed) ? parsed : 0;
+      const trimmed = response.trim();
+      if (!trimmed) {
+        return 0;
+      }
+
+      if (
+        (trimmed.startsWith('{') && trimmed.endsWith('}')) ||
+        (trimmed.startsWith('[') && trimmed.endsWith(']')) ||
+        (trimmed.startsWith('"') && trimmed.endsWith('"'))
+      ) {
+        try {
+          return this.parseUploadedFileId(JSON.parse(trimmed));
+        } catch {
+          // fall through to numeric parse
+        }
+      }
+
+      const parsed = Number(trimmed);
+      return Number.isFinite(parsed) && parsed > 0 ? parsed : 0;
     }
 
     if (typeof response !== 'object') {
@@ -360,37 +426,89 @@ export class FileUploadService {
     }
 
     const record = response as Record<string, unknown>;
-    const direct =
-      record['Uploaded_File_ID'] ??
-      record['uploaded_File_ID'] ??
-      record['File_ID'] ??
-      record['file_ID'];
+    const candidates = [
+      record['Uploaded_File_ID'],
+      record['uploaded_File_ID'],
+      record['uploaded_file_id'],
+      record['File_ID'],
+      record['file_ID'],
+      record['file_id'],
+      record['fileId'],
+      record['Body'],
+      record['body'],
+      record['data'],
+      record['result'],
+      record['Result'],
+    ];
 
-    if (direct !== undefined && direct !== null && direct !== '') {
-      const parsed = Number(direct);
-      if (Number.isFinite(parsed)) {
+    for (const candidate of candidates) {
+      const parsed = this.parseUploadedFileId(candidate);
+      if (parsed > 0) {
         return parsed;
       }
     }
 
     const message = record['message'];
-    if (typeof message === 'number') {
-      return Number.isFinite(message) ? message : 0;
+    if (message !== undefined && message !== null && message !== '') {
+      const parsed = this.parseUploadedFileId(message);
+      if (parsed > 0) {
+        return parsed;
+      }
     }
-    if (typeof message === 'string') {
-      const parsed = Number(message);
-      return Number.isFinite(parsed) ? parsed : 0;
+
+    if (record['success'] === true && message !== undefined && message !== null) {
+      const parsed = this.parseUploadedFileId(message);
+      if (parsed > 0) {
+        return parsed;
+      }
     }
-    if (message && typeof message === 'object') {
-      const nested = message as Record<string, unknown>;
-      const nestedId =
-        nested['Uploaded_File_ID'] ?? nested['uploaded_File_ID'] ?? nested['File_ID'];
-      if (nestedId !== undefined && nestedId !== null && nestedId !== '') {
-        const parsed = Number(nestedId);
-        if (Number.isFinite(parsed)) {
-          return parsed;
+
+    return 0;
+  }
+
+  private async resolveUploadedFileIdFromFolder(
+    accessToken: string,
+    fileSystemId: number,
+    folderId: bigint,
+    fileName: string
+  ): Promise<number> {
+    try {
+      const response: any = await firstValueFrom(
+        this.apiService.callAPI(1136, accessToken, [
+          folderId.toString(),
+          fileSystemId.toString(),
+        ])
+      );
+
+      console.log('Get_Folder_Contents response (upload ID fallback)', response);
+
+      if (!response?.success) {
+        return 0;
+      }
+
+      const raw = response.message;
+      const filesList = raw?.files ?? raw?.Files ?? [];
+      const targetName = String(fileName || '').trim().toLowerCase();
+
+      for (const file of filesList) {
+        const name = String(
+          file?.file_name ?? file?.file_Name ?? file?.File_Name ?? file?.name ?? ''
+        )
+          .trim()
+          .toLowerCase();
+        if (!name || name !== targetName) {
+          continue;
+        }
+
+        const fileId = Number(
+          file?.file_id ?? file?.file_ID ?? file?.File_ID ?? file?.id ?? 0
+        );
+        if (Number.isFinite(fileId) && fileId > 0) {
+          return fileId;
         }
       }
+    } catch (error) {
+      console.error('Failed to resolve uploaded file ID from folder contents', error);
     }
 
     return 0;

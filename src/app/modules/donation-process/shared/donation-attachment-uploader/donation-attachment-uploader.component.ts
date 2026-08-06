@@ -5,6 +5,10 @@ import { FileUploadService } from 'src/app/core/file-system-lib/services/file-up
 import { LocalStorageService } from 'src/app/core/services/local-storage.service';
 import { TranslationService } from 'src/app/core/services/translation.service';
 import {
+  DonationStorageFolderKey,
+  getDonationStorageLocation,
+} from '../../config/donation-storage.config';
+import {
   isDonationAttachmentKindReady,
   isDonationAttachmentOwnerTypeReady,
 } from '../../models/donation-attachment.constants';
@@ -27,8 +31,7 @@ export class DonationAttachmentUploaderComponent {
   @Input() ownerType: number | null = null;
   @Input() ownerId = 0;
   @Input() attachmentKind: number | null = null;
-  @Input() fileSystemId = 0;
-  @Input() folderId = 0;
+  @Input() storageFolder: DonationStorageFolderKey = 'otherDonationAttachments';
   @Input() disabled = false;
   @Input() readonly = false;
   @Input() maxFiles = 5;
@@ -53,7 +56,7 @@ export class DonationAttachmentUploaderComponent {
     private localStorageService: LocalStorageService,
     private translate: TranslationService,
     private messageService: MessageService,
-  ) {}
+  ) { }
 
   get canUpload(): boolean {
     return !this.disabled && !this.readonly && !this.uploading;
@@ -68,7 +71,8 @@ export class DonationAttachmentUploaderComponent {
       return;
     }
 
-    if (!this.fileSystemId) {
+    const storageLocation = getDonationStorageLocation(this.storageFolder);
+    if (!storageLocation) {
       this.messageService.add({
         severity: 'warn',
         summary: this.translate.getInstant('common.warning'),
@@ -117,11 +121,12 @@ export class DonationAttachmentUploaderComponent {
         continue;
       }
 
-      await this.uploadAndLink(file);
+      await this.uploadAndLink(file, storageLocation.fileSystemId, storageLocation.folderId);
     }
   }
 
-  private async uploadAndLink(file: File): Promise<void> {
+  private async uploadAndLink(file: File, fileSystemId: number, folderId: number): Promise<void> {
+    console.log('uploadAndLink', { file, fileSystemId, folderId });
     this.uploading = true;
     this.uploadPercent = 0;
 
@@ -133,8 +138,8 @@ export class DonationAttachmentUploaderComponent {
       uploaded = await this.fileUploadService.uploadFileWithResult(
         file,
         accessToken,
-        this.fileSystemId,
-        BigInt(this.folderId),
+        fileSystemId,
+        BigInt(folderId),
         (percent) => {
           this.uploadPercent = Math.round(percent);
         },

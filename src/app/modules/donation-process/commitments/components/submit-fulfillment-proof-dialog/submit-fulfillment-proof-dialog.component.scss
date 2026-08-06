@@ -1,0 +1,141 @@
+:host {
+  display: contents;
+}
+
+.hidden-file-input {
+  display: none;
+}
+
+.submit-proof-dialog__columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  align-items: stretch;
+  min-height: 18rem;
+}
+
+.submit-proof-dialog__left,
+.submit-proof-dialog__right {
+  min-width: 0;
+}
+
+.submit-proof-dialog__note {
+  resize: vertical;
+  min-height: 10rem;
+}
+
+.proof-upload-area {
+  flex: 1;
+  display: flex;
+  border: 1px dashed var(--surface-border);
+  border-radius: 10px;
+  background: var(--surface-ground);
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+  min-height: 10rem;
+}
+
+.proof-upload-area:not(.proof-upload-area--disabled):hover,
+.proof-upload-area--dragover:not(.proof-upload-area--disabled) {
+  border-color: var(--primary-color);
+  background: var(--surface-hover);
+}
+
+.proof-upload-area--dragover:not(.proof-upload-area--disabled) {
+  border-style: solid;
+  box-shadow: inset 0 0 0 1px var(--primary-color);
+}
+
+.proof-upload-area--disabled {
+  opacity: 0.65;
+}
+
+.proof-upload-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  width: 100%;
+  padding: 1.25rem 1rem;
+  cursor: pointer;
+  text-align: center;
+}
+
+.proof-upload-button.p-disabled {
+  pointer-events: none;
+  cursor: default;
+}
+
+.proof-upload-button__icon {
+  font-size: 1.75rem;
+  color: var(--primary-color);
+}
+
+.proof-upload-button__label {
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.proof-upload-button__hint {
+  font-size: 0.8rem;
+  color: var(--text-color-secondary);
+}
+
+.proof-files-list {
+  margin-top: 0.25rem;
+  max-height: 12rem;
+  overflow-y: auto;
+}
+
+.proof-file-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.75rem 0.85rem;
+  border: 1px solid var(--surface-border);
+  border-radius: 8px;
+  background: var(--surface-card);
+}
+
+.proof-file-item__main {
+  flex: 1;
+}
+
+.proof-file-item__icon {
+  font-size: 1.15rem;
+  color: var(--primary-color);
+  flex-shrink: 0;
+}
+
+.proof-file-item__name {
+  display: block;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.proof-file-item__meta {
+  font-size: 0.8rem;
+  color: var(--text-color-secondary);
+}
+
+:host ::ng-deep .proof-upload-progress__bar {
+  height: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .submit-proof-dialog__columns {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+
+  .submit-proof-dialog__note {
+    min-height: 6rem;
+  }
+
+  .proof-upload-area {
+    min-height: 8rem;
+  }
+}

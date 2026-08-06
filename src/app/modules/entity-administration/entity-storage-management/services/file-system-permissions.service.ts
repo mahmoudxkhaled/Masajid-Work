@@ -67,6 +67,7 @@ export class FileSystemPermissionsService {
       JSON.stringify(relatedIds ?? []),
       accessRight.toString(),
     ];
+    console.log('setFileSystemAccessPermission params', params);
     return this.apiService
       .callAPI(1171, this.getAccessToken(), params)
       .pipe(finalize(() => this.isLoadingSubject.next(false)));

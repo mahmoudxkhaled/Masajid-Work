@@ -743,6 +743,7 @@
             "errorNChunksMismatch": "عدد الأجزاء لا يتطابق مع حجم الجزء.",
             "errorInsufficientStorage": "سعة التخزين غير كافية.",
             "errorFileExistsInFolder": "يوجد بالفعل ملف بهذا الاسم في المجلد.",
+            "errorInvalidChunkSize": "حجم الجزء غير صالح؛ يجب أن يكون أكبر من 0 وأقل من 250 كيلوبايت.",
             "errorInvalidUploadToken": "رمز الرفع غير صالح أو منتهي الصلاحية.",
             "errorInvalidChunkId": "معرف الجزء غير صالح.",
             "errorInvalidOffset": "الإزاحة غير صالحة.",
@@ -3593,7 +3594,54 @@
             },
             "actions": {
                 "viewDetails": "عرض التفاصيل",
-                "cancelCommitment": "إلغاء الالتزام"
+                "cancelCommitment": "إلغاء الالتزام",
+                "submitFulfillmentProof": "تقديم إثبات التنفيذ"
+            },
+            "fulfilledBy": {
+                "donor": "المتبرع",
+                "charityCenter": "الجمعية الخيرية",
+                "vendor": "المورد",
+                "unknown": "غير معروف"
+            },
+            "submitProofDialog": {
+                "title": "تقديم إثبات التنفيذ",
+                "confirmation": "أكد تقديم إثبات تنفيذ لهذا الالتزام.",
+                "fulfilledBy": "نُفّذ بواسطة",
+                "fulfillmentNote": "ملاحظة التنفيذ",
+                "fulfillmentNotePlaceholder": "أدخل ملاحظة اختيارية عن التنفيذ",
+                "proofFiles": "ملفات الإثبات",
+                "selectFiles": "اختيار ملفات الإثبات",
+                "dropFiles": "أو اسحب الملفات وأفلِتها هنا",
+                "allowedTypes": "الأنواع المسموحة: {types}",
+                "maxFileSize": "الحد الأقصى لحجم الملف: {size} ميجابايت",
+                "removeFile": "إزالة الملف",
+                "uploading": "جاري الرفع… {percent}%",
+                "validation": {
+                    "fulfilledByRequired": "حقل «نُفّذ بواسطة» مطلوب.",
+                    "proofRequired": "يلزم إرفاق ملف إثبات واحد على الأقل.",
+                    "vendorOfferRequired": "يلزم وجود عرض مورد محدد عند اختيار التنفيذ بواسطة المورد."
+                }
+            },
+            "fulfillment": {
+                "title": "سجلات التنفيذ",
+                "empty": "لم يتم تقديم أي سجلات تنفيذ بعد.",
+                "missingRequestId": "تعذر تحميل سجلات التنفيذ لأن رقم طلب التبرع المرتبط لم يُرجع.",
+                "columns": {
+                    "id": "رقم التنفيذ",
+                    "fulfilledBy": "نُفّذ بواسطة",
+                    "note": "الملاحظة",
+                    "vendorOfferId": "رقم عرض المورد",
+                    "createdAt": "تاريخ التقديم",
+                    "status": "الحالة"
+                },
+                "actions": {
+                    "viewDetails": "عرض التفاصيل",
+                    "close": "إغلاق"
+                },
+                "detailsDialog": {
+                    "title": "تفاصيل التنفيذ",
+                    "proofFiles": "ملفات الإثبات"
+                }
             },
             "acceptDialog": {
                 "title": "قبول التبرع",
@@ -3686,7 +3734,9 @@
             "messages": {
                 "notDonor": "غير مسموح لك بإدارة هذا الالتزام.",
                 "accepted": "تم قبول التبرع بنجاح.",
-                "cancelled": "تم إلغاء التزام التبرع بنجاح."
+                "cancelled": "تم إلغاء التزام التبرع بنجاح.",
+                "fulfillmentSubmitted": "تم تقديم إثبات التنفيذ بنجاح.",
+                "fulfillmentSubmitAfterUploadFailed": "تم رفع الملفات، لكن تعذر تقديم إثبات التنفيذ."
             },
             "errors": {
                 "requestNotFound": "لم يتم العثور على طلب التبرع.",
@@ -3696,7 +3746,12 @@
                 "charityRequired": "يرجى اختيار ممثل جمعية خيرية لطريقة التنفيذ هذه.",
                 "commitmentNotFound": "لم يتم العثور على التزام التبرع.",
                 "invalidStatus": "هذا الإجراء غير مسموح لحالة الالتزام الحالية.",
+                "invalidFulfillmentStatus": "هذا الإجراء غير مسموح لحالة التنفيذ الحالية.",
+                "submitProofNotDonor": "غير مسموح لك بتقديم إثبات التنفيذ لهذا الالتزام.",
+                "proofRequired": "يلزم إرفاق ملف إثبات واحد على الأقل.",
+                "fulfillmentNotFound": "لم يتم العثور على سجل التنفيذ.",
                 "accessDenied": "ليس لديك صلاحية للوصول إلى هذا القسم.",
+                "accessDeniedAction": "ليس لديك صلاحية لتنفيذ هذا الإجراء.",
                 "sessionExpired": "انتهت صلاحية جلستك. يرجى تسجيل الدخول مرة أخرى."
             }
         },
@@ -3950,7 +4005,7 @@
                 "uploadLinkedFailed": "تم رفع الملف بنجاح، لكن تعذر ربطه كمرفق تبرع."
             },
             "errors": {
-                "locationNotConfigured": "موقع الرفع غير مُعد بعد.",
+                "locationNotConfigured": "موقع رفع ملفات التبرعات غير مُعد بعد.",
                 "invalidOwner": "لا يمكن إرفاق هذا الملف بسجل التبرع المحدد.",
                 "invalidAttachment": "لم يتم العثور على مرفق التبرع.",
                 "ownerNotEditable": "لا يمكن تعديل المرفقات في الحالة الحالية.",

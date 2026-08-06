@@ -1,0 +1,76 @@
+<p-dialog [(visible)]="visible" [modal]="true" [style]="{ width: '640px' }" [draggable]="false" [resizable]="false"
+  (onHide)="closeDialog()">
+  <ng-template pTemplate="header">
+    <h3 class="m-0">{{ 'donations.commitments.fulfillment.detailsDialog.title' | translate }}</h3>
+  </ng-template>
+
+  <ng-container *ngIf="loading; else detailsContent">
+    <div class="grid">
+      <div class="col-12 md:col-6" *ngFor="let _ of [1, 2, 3, 4, 5, 6]">
+        <div class="flex flex-column gap-2 mb-3">
+          <p-skeleton height="0.85rem" width="40%"></p-skeleton>
+          <p-skeleton height="1.25rem" width="70%"></p-skeleton>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-template #detailsContent>
+    <div *ngIf="details" class="grid">
+      <div class="col-12 md:col-6">
+        <div class="info-item">
+          <span class="info-label">{{ 'donations.commitments.fulfillment.columns.id' | translate }}</span>
+          <span class="info-value">{{ details.id || '-' }}</span>
+        </div>
+      </div>
+      <div class="col-12 md:col-6">
+        <div class="info-item">
+          <span class="info-label">{{ 'donations.commitments.fulfillment.columns.fulfilledBy' | translate }}</span>
+          <span class="info-value">{{ fulfilledByLabel }}</span>
+        </div>
+      </div>
+      <div class="col-12 md:col-6">
+        <div class="info-item">
+          <span class="info-label">{{ 'donations.commitments.fulfillment.columns.vendorOfferId' | translate }}</span>
+          <span class="info-value">{{ details.donationVendorOfferId || '-' }}</span>
+        </div>
+      </div>
+      <div class="col-12 md:col-6">
+        <div class="info-item">
+          <span class="info-label">{{ 'donations.commitments.fulfillment.columns.status' | translate }}</span>
+          <span class="info-value">{{ statusLabel }}</span>
+        </div>
+      </div>
+      <div class="col-12 md:col-6">
+        <div class="info-item">
+          <span class="info-label">{{ 'donations.commitments.fulfillment.columns.createdAt' | translate }}</span>
+          <span class="info-value" dir="ltr">
+            {{ details.createdAt ? (details.createdAt | date:'yyyy-MM-dd hh:mm a') : '-' }}
+          </span>
+        </div>
+      </div>
+      <div class="col-12">
+        <div class="info-item">
+          <span class="info-label">{{ 'donations.commitments.fulfillment.columns.note' | translate }}</span>
+          <span class="info-value line-height-3">{{ details.fulfillmentNote || '-' }}</span>
+        </div>
+      </div>
+      <div class="col-12" *ngIf="details.proofFiles.length">
+        <div class="info-item">
+          <span class="info-label">{{ 'donations.commitments.fulfillment.detailsDialog.proofFiles' | translate }}</span>
+          <ul class="m-0 pl-3">
+            <li *ngFor="let file of details.proofFiles">
+              <span *ngIf="file.fileName; else fileIdOnly">{{ file.fileName }}</span>
+              <ng-template #fileIdOnly>#{{ file.fileId }}</ng-template>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <p-button [label]="'donations.commitments.fulfillment.actions.close' | translate" icon="pi pi-times"
+      severity="secondary" [outlined]="true" (onClick)="closeDialog()"></p-button>
+  </ng-template>
+</p-dialog>

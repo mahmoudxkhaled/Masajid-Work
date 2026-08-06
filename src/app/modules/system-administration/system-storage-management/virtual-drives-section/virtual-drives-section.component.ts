@@ -53,7 +53,7 @@ export class VirtualDrivesSectionComponent implements OnInit {
     confirmStatusToActive = false;
 
     newDriveName = '';
-    newDriveLicenseId = 3;
+    newDriveLicenseId = 6;
     newDriveCapacity = 100;
     renameDriveName = '';
     updateCapacityValue = 100;
@@ -264,7 +264,7 @@ export class VirtualDrivesSectionComponent implements OnInit {
 
     showCreateDriveDialog(): void {
         this.newDriveName = '';
-        this.newDriveLicenseId = 3;
+        this.newDriveLicenseId = 6;
         this.newDriveCapacity = 100;
         this.createDriveDialogVisible = true;
     }

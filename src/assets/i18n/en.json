@@ -742,6 +742,7 @@
             "errorNChunksMismatch": "Chunk count does not match chunk size.",
             "errorInsufficientStorage": "Insufficient storage capacity.",
             "errorFileExistsInFolder": "A file with this name already exists in the folder.",
+            "errorInvalidChunkSize": "Invalid chunk size; should be greater than 0 and less than 250 KB.",
             "errorInvalidUploadToken": "Invalid or expired upload token.",
             "errorInvalidChunkId": "Invalid chunk ID.",
             "errorInvalidOffset": "Invalid offset.",
@@ -3734,7 +3735,54 @@
             },
             "actions": {
                 "viewDetails": "View details",
-                "cancelCommitment": "Cancel Commitment"
+                "cancelCommitment": "Cancel Commitment",
+                "submitFulfillmentProof": "Submit Fulfillment Proof"
+            },
+            "fulfilledBy": {
+                "donor": "Donor",
+                "charityCenter": "Charity Center",
+                "vendor": "Vendor",
+                "unknown": "Unknown"
+            },
+            "submitProofDialog": {
+                "title": "Submit Fulfillment Proof",
+                "confirmation": "Confirm submission of fulfillment proof for this commitment.",
+                "fulfilledBy": "Fulfilled by",
+                "fulfillmentNote": "Fulfillment note",
+                "fulfillmentNotePlaceholder": "Enter an optional fulfillment note",
+                "proofFiles": "Proof files",
+                "selectFiles": "Select proof files",
+                "dropFiles": "or drag and drop files here",
+                "allowedTypes": "Allowed types: {types}",
+                "maxFileSize": "Max size per file: {size} MB",
+                "removeFile": "Remove file",
+                "uploading": "Uploading… {percent}%",
+                "validation": {
+                    "fulfilledByRequired": "Fulfilled by is required.",
+                    "proofRequired": "At least one proof file is required.",
+                    "vendorOfferRequired": "A selected vendor offer is required when fulfillment is marked as Vendor."
+                }
+            },
+            "fulfillment": {
+                "title": "Fulfillment Records",
+                "empty": "No fulfillment records have been submitted yet.",
+                "missingRequestId": "Fulfillment records cannot be loaded because the related donation request ID was not returned.",
+                "columns": {
+                    "id": "Fulfillment ID",
+                    "fulfilledBy": "Fulfilled by",
+                    "note": "Note",
+                    "vendorOfferId": "Vendor offer ID",
+                    "createdAt": "Submitted at",
+                    "status": "Status"
+                },
+                "actions": {
+                    "viewDetails": "View Details",
+                    "close": "Close"
+                },
+                "detailsDialog": {
+                    "title": "Fulfillment Details",
+                    "proofFiles": "Proof files"
+                }
             },
             "acceptDialog": {
                 "title": "Accept Donation",
@@ -3827,7 +3875,9 @@
             "messages": {
                 "notDonor": "You are not allowed to manage this commitment.",
                 "accepted": "Donation accepted successfully.",
-                "cancelled": "Donation commitment cancelled successfully."
+                "cancelled": "Donation commitment cancelled successfully.",
+                "fulfillmentSubmitted": "Fulfillment proof submitted successfully.",
+                "fulfillmentSubmitAfterUploadFailed": "Files were uploaded, but fulfillment proof could not be submitted."
             },
             "errors": {
                 "requestNotFound": "Donation request was not found.",
@@ -3837,7 +3887,12 @@
                 "charityRequired": "Please select a charity representative for this fulfillment mode.",
                 "commitmentNotFound": "Donation commitment was not found.",
                 "invalidStatus": "This action is not allowed for the current commitment status.",
+                "invalidFulfillmentStatus": "This action is not allowed for the current fulfillment status.",
+                "submitProofNotDonor": "You are not allowed to submit fulfillment proof for this commitment.",
+                "proofRequired": "At least one proof attachment is required.",
+                "fulfillmentNotFound": "Fulfillment record was not found.",
                 "accessDenied": "You do not have permission to access this section.",
+                "accessDeniedAction": "You do not have permission to perform this action.",
                 "sessionExpired": "Your session has expired. Please login again."
             }
         },
@@ -4091,7 +4146,7 @@
                 "uploadLinkedFailed": "File uploaded successfully, but could not be linked as a donation attachment."
             },
             "errors": {
-                "locationNotConfigured": "Upload location is not configured yet.",
+                "locationNotConfigured": "Donation upload location is not configured yet.",
                 "invalidOwner": "This file cannot be attached to the selected donation record.",
                 "invalidAttachment": "Donation attachment was not found.",
                 "ownerNotEditable": "Attachments cannot be changed in the current status.",

@@ -1,0 +1,19 @@
+:host {
+  display: contents;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 0.75rem;
+}
+
+.info-label {
+  font-size: 0.85rem;
+  color: var(--text-color-secondary);
+}
+
+.info-value {
+  font-weight: 500;
+}

@@ -1,0 +1,81 @@
+<p-dialog [(visible)]="visible" [modal]="true" [style]="{ width: '880px', maxWidth: '95vw' }" [draggable]="false"
+  [resizable]="false" [closable]="!busy" [closeOnEscape]="!busy" (onHide)="closeDialog()"
+  styleClass="submit-proof-dialog">
+  <ng-template pTemplate="header">
+    <h3 class="m-0">{{ 'donations.commitments.submitProofDialog.title' | translate }}</h3>
+  </ng-template>
+
+  <div class="submit-proof-dialog__body flex flex-column gap-3">
+    <p class="mb-0 text-500">{{ 'donations.commitments.submitProofDialog.confirmation' | translate }}</p>
+
+    <div class="submit-proof-dialog__columns">
+      <div class="submit-proof-dialog__left flex flex-column gap-3">
+        <div class="flex flex-column gap-2">
+          <label class="font-medium">{{ 'donations.commitments.submitProofDialog.fulfilledBy' | translate }}</label>
+          <p-dropdown [options]="fulfilledByOptions" optionLabel="label" optionValue="value" [(ngModel)]="fulfilledBy"
+            [style]="{ width: '100%' }" [disabled]="busy || !!(isLoading$ | async)"></p-dropdown>
+        </div>
+
+        <div class="flex flex-column gap-2 flex-1">
+          <label class="font-medium">{{ 'donations.commitments.submitProofDialog.fulfillmentNote' | translate }}</label>
+          <textarea pInputTextarea rows="8" class="w-full submit-proof-dialog__note" [(ngModel)]="fulfillmentNote"
+            [placeholder]="'donations.commitments.submitProofDialog.fulfillmentNotePlaceholder' | translate"
+            [disabled]="busy || !!(isLoading$ | async)"></textarea>
+        </div>
+      </div>
+
+      <div class="submit-proof-dialog__right flex flex-column gap-2">
+        <label class="font-medium">{{ 'donations.commitments.submitProofDialog.proofFiles' | translate }}</label>
+
+        <div class="proof-upload-area" [class.proof-upload-area--disabled]="!canSelectFiles || !!(isLoading$ | async)"
+          [class.proof-upload-area--dragover]="isDragOver" (dragover)="onDragOver($event)"
+          (dragleave)="onDragLeave($event)" (drop)="onFileDrop($event)">
+          <label class="proof-upload-button" [class.p-disabled]="!canSelectFiles || !!(isLoading$ | async)">
+            <i class="pi pi-cloud-upload proof-upload-button__icon"></i>
+            <span class="proof-upload-button__label">
+              {{ 'donations.commitments.submitProofDialog.selectFiles' | translate }}
+            </span>
+            <span class="proof-upload-button__hint">
+              {{ 'donations.commitments.submitProofDialog.dropFiles' | translate }}
+            </span>
+            <span class="proof-upload-button__hint">
+              {{ 'donations.commitments.submitProofDialog.allowedTypes' | translate:{ types: allowedExtensionsLabel } }}
+            </span>
+            <span class="proof-upload-button__hint">
+              {{ 'donations.commitments.submitProofDialog.maxFileSize' | translate:{ size: maxFileSizeLabel } }}
+            </span>
+            <input type="file" class="hidden-file-input" multiple [accept]="fileAcceptAttribute"
+              [disabled]="!canSelectFiles || !!(isLoading$ | async)" (change)="onFilesSelected($event)" />
+          </label>
+        </div>
+
+        <p *ngIf="!storageConfigured" class="mb-0 text-orange-500 text-sm">
+          {{ 'donations.attachments.errors.locationNotConfigured' | translate }}
+        </p>
+
+        <div *ngIf="selectedFiles.length" class="proof-files-list flex flex-column gap-2">
+          <div *ngFor="let file of selectedFiles; let i = index" class="proof-file-item">
+            <div class="proof-file-item__main min-w-0 flex align-items-center gap-2">
+              <i [class]="getFileIcon(file)" class="proof-file-item__icon"></i>
+              <div class="min-w-0 flex flex-column">
+                <span class="proof-file-item__name" [pTooltip]="file.name" tooltipPosition="top">{{ file.name }}</span>
+                <span class="proof-file-item__meta">{{ formatFileSize(file.size) }}</span>
+              </div>
+            </div>
+            <p-button icon="pi pi-times" [rounded]="true" [text]="true" severity="danger" size="small"
+              [pTooltip]="'donations.commitments.submitProofDialog.removeFile' | translate" tooltipPosition="top"
+              (onClick)="removeFile(i)" [disabled]="busy || !!(isLoading$ | async)"></p-button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <p-button [label]="'common.cancel' | translate" icon="pi pi-times" severity="secondary" [outlined]="true"
+      (onClick)="closeDialog()" [disabled]="busy || !!(isLoading$ | async)"></p-button>
+    <p-button [label]="'donations.commitments.actions.submitFulfillmentProof' | translate" icon="pi pi-check"
+      (onClick)="confirmSubmit()" [disabled]="busy || !!(isLoading$ | async) || !storageConfigured"></p-button>
+  </ng-template>
+</p-dialog>
