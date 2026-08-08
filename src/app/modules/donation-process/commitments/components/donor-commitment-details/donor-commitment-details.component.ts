@@ -17,6 +17,7 @@ import {
   DonationFulfillmentListItem,
   resolveDefaultFulfilledBy,
 } from '../../../models/donation-fulfillment.model';
+import { getFulfillmentStatusLabelKey } from '../../../models/donation-fulfillment-status.model';
 import { DonationRequestWorkflowItem } from '../../../models/donation-request.model';
 import { getFulfilledByLabelKey } from '../../../models/fulfilled-by.model';
 import { FulfillmentMode } from '../../../models/fulfillment-mode.model';
@@ -226,10 +227,7 @@ export class DonorCommitmentDetailsComponent implements OnInit, OnDestroy {
   }
 
   getFulfillmentStatusLabel(row: DonationFulfillmentListItem): string {
-    if (row.statusCode) {
-      return row.statusCode;
-    }
-    return row.statusId ? String(row.statusId) : '-';
+    return this.translate.getInstant(getFulfillmentStatusLabelKey(row.statusId));
   }
 
   getNoteSummary(note: string): string {

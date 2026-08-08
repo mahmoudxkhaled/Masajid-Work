@@ -6,7 +6,6 @@ import {
   DonationFulfillmentBackend,
   DonationFulfillmentDetails,
   DonationFulfillmentListItem,
-  DonationFulfillmentProofFile,
   SubmitFulfillmentProofRequest,
 } from '../models/donation-fulfillment.model';
 
@@ -53,13 +52,31 @@ export class DonationFulfillmentService {
       .pipe(finalize(() => this.isLoadingSubject.next(false)));
   }
 
+  confirmFulfillment(donationFulfillmentId: number, responseNote: string): Observable<any> {
+    this.isLoadingSubject.next(true);
+    const params = [donationFulfillmentId.toString(), String(responseNote || '').trim()];
+    console.log('confirmFulfillment params', params);
+    return this.apiServices.callAPI(100803, this.getAccessToken(), params).pipe(
+      finalize(() => this.isLoadingSubject.next(false)),
+    );
+  }
+
+  rejectFulfillment(donationFulfillmentId: number, responseNote: string): Observable<any> {
+    this.isLoadingSubject.next(true);
+    const params = [donationFulfillmentId.toString(), String(responseNote || '').trim()];
+    console.log('rejectFulfillment params', params);
+    return this.apiServices.callAPI(100804, this.getAccessToken(), params).pipe(
+      finalize(() => this.isLoadingSubject.next(false)),
+    );
+  }
+
   extractFulfillmentId(message: unknown): number {
     if (typeof message === 'number' || typeof message === 'string') {
       return Number(message);
     }
     if (message && typeof message === 'object') {
       const record = message as Record<string, unknown>;
-      return Number(record['Donation_Fulfillment_ID'] ?? record['donation_Fulfillment_ID'] ?? 0);
+      return Number(record['Donation_Fulfillment_ID'] ?? 0);
     }
     return 0;
   }
@@ -73,7 +90,7 @@ export class DonationFulfillmentService {
     }
     if (typeof message === 'object') {
       const record = message as Record<string, unknown>;
-      const nested = record['Fulfillments'] ?? record['fulfillments'];
+      const nested = record['Fulfillments'];
       if (Array.isArray(nested)) {
         return nested as DonationFulfillmentBackend[];
       }
@@ -85,21 +102,10 @@ export class DonationFulfillmentService {
   }
 
   extractFulfillmentDetails(message: unknown): DonationFulfillmentBackend | null {
-    if (!message) {
+    if (!message || typeof message !== 'object') {
       return null;
     }
-    if (typeof message !== 'object') {
-      return null;
-    }
-    const record = message as Record<string, unknown>;
-    const nested = record['Fulfillment'] ?? record['fulfillment'];
-    if (nested && typeof nested === 'object' && !Array.isArray(nested)) {
-      return nested as DonationFulfillmentBackend;
-    }
-    if (record['Donation_Fulfillment_ID'] !== undefined || record['Fulfilled_By'] !== undefined) {
-      return record as DonationFulfillmentBackend;
-    }
-    return null;
+    return message as DonationFulfillmentBackend;
   }
 
   mapFulfillmentListItem(raw: DonationFulfillmentBackend): DonationFulfillmentListItem {
@@ -112,8 +118,7 @@ export class DonationFulfillmentService {
       ),
       donationVendorOfferId: Number(raw.Donation_Vendor_Offer_ID || 0),
       statusId: Number(raw.Status || 0),
-      statusCode: String(raw.Status_Code || ''),
-      createdAt: String(raw.Created_At || raw.Submitted_At || ''),
+      createdAt: String(raw.Submitted_At || ''),
     };
   }
 
@@ -126,6 +131,7 @@ export class DonationFulfillmentService {
       id: String(raw.Donation_Fulfillment_ID || ''),
       donationCommitmentId: String(raw.Donation_Commitment_ID || ''),
       donationRequestId: String(raw.Donation_Request_ID || ''),
+      donorUserId: Number(raw.Donor_User_ID || 0),
       fulfilledBy: Number(raw.Fulfilled_By || 0),
       fulfillmentNote: this.localStorageService.pickRequestContentField(
         String(raw.Fulfillment_Note || ''),
@@ -133,47 +139,15 @@ export class DonationFulfillmentService {
       ),
       donationVendorOfferId: Number(raw.Donation_Vendor_Offer_ID || 0),
       statusId: Number(raw.Status || 0),
-      statusCode: String(raw.Status_Code || ''),
-      createdAt: String(raw.Created_At || raw.Submitted_At || ''),
-      fileSystemId: Number(raw.File_System_ID || 0),
-      folderId: Number(raw.Folder_ID || 0),
-      attachmentFileIds: this.extractAttachmentFileIds(raw),
-      proofFiles: this.extractProofFiles(raw),
+      createdAt: String(raw.Submitted_At || ''),
+      facilityResponseUserId: Number(raw.Facility_Response_User_ID || 0),
+      facilityResponseNote: String(raw.Facility_Response_Note || ''),
+      facilityResponseAt: String(raw.Facility_Response_At || ''),
+      validationOpensAt: String(raw.Validation_Opens_At || ''),
+      rejectionConfirmedAt: String(raw.Rejection_Confirmed_At || ''),
+      rejectionConfirmedByUserId: Number(raw.Rejection_Confirmed_By_User_ID || 0),
+      rejectionValid: raw.Rejection_Valid == null ? null : Boolean(raw.Rejection_Valid),
     };
-  }
-
-  private extractAttachmentFileIds(raw: DonationFulfillmentBackend): number[] {
-    const value = raw.Attachment_File_IDs;
-    if (Array.isArray(value)) {
-      return value.map((id) => Number(id)).filter((id) => id > 0);
-    }
-    if (value && typeof value === 'object') {
-      return Object.values(value)
-        .map((id) => Number(id))
-        .filter((id) => id > 0);
-    }
-    return [];
-  }
-
-  private extractProofFiles(raw: DonationFulfillmentBackend): DonationFulfillmentProofFile[] {
-    const source = raw.Attachments ?? raw.Files;
-    if (!source) {
-      return this.extractAttachmentFileIds(raw).map((fileId) => ({
-        fileId,
-        fileName: '',
-        fileType: '',
-      }));
-    }
-
-    const items = Array.isArray(source) ? source : Object.values(source);
-    return items.map((item) => {
-      const record = item as Record<string, unknown>;
-      return {
-        fileId: Number(record['File_ID'] ?? record['file_ID'] ?? 0),
-        fileName: String(record['File_Name'] ?? record['file_Name'] ?? ''),
-        fileType: String(record['File_Type'] ?? record['file_Type'] ?? ''),
-      };
-    }).filter((item) => item.fileId > 0);
   }
 
   private formatIntegerList(numbers: number[]): string {

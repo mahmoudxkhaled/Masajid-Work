@@ -24,7 +24,6 @@
             </div>
             <div class="text-500 text-sm">
               <span>{{ getKindLabel(item) }}</span>
-              <span *ngIf="item.fileName && item.caption"> · {{ item.fileName }}</span>
               <span *ngIf="item.createdAt"> · <span dir="ltr">{{ item.createdAt | date:'yyyy-MM-dd' }}</span></span>
             </div>
           </div>

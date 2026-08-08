@@ -1276,6 +1276,12 @@
             "donations.facility.requests.details.title": "Donation Request Details",
             "donations.facility.requests.form.createTitle": "Create Donation Request",
             "donations.facility.requests.form.editTitle": "Edit Donation Request",
+            "donations.facility.fulfillments.title": "Pending Fulfillment Confirmation",
+            "donations.facility.fulfillments.requestTitle": "Request Fulfillments",
+            "donations.facility.fulfillments.reviewTitle": "Fulfillment Review",
+            "facilityFulfillments": "Pending Fulfillment Confirmation",
+            "facilityFulfillmentsRequest": "Request Fulfillments",
+            "facilityFulfillmentsReview": "Fulfillment Review",
             "donations.browse.title": "Browse Donations",
             "donations.browse.details.title": "Donation Request Details",
             "donations.commitments.title": "My Commitments",
@@ -3560,7 +3566,8 @@
                     "view": "View",
                     "edit": "Edit",
                     "submit": "Submit for review",
-                    "delete": "Delete"
+                    "delete": "Delete",
+                    "viewFulfillments": "View Fulfillments"
                 },
                 "confirm": {
                     "submitTitle": "Submit for review",
@@ -3640,6 +3647,84 @@
                         "meta": "Request Information",
                         "workflow": "Status History"
                     }
+                }
+            },
+            "fulfillments": {
+                "title": "Pending Fulfillment Confirmation",
+                "subtitle": "Review submitted fulfillment proofs for your facility donation requests.",
+                "requestTitle": "Request Fulfillments",
+                "requestSubtitle": "Submitted fulfillment records for this donation request.",
+                "reviewTitle": "Fulfillment Review",
+                "reviewSubtitle": "Review proof details and confirm or reject fulfillment.",
+                "searchPlaceholder": "Search requests...",
+                "pagination": "Showing '{first}' to '{last}' of '{totalRecords}'",
+                "empty": "No fulfillment confirmations are pending.",
+                "fulfillmentsEmpty": "No fulfillments found for this request.",
+                "requestSummaryUnavailable": "Request summary is unavailable.",
+                "detailsUnavailable": "Fulfillment details are unavailable.",
+                "proofEmpty": "No proof files were found for this fulfillment.",
+                "columns": {
+                    "title": "Title",
+                    "category": "Category",
+                    "quantity": "Quantity / unit",
+                    "estimatedCost": "Estimated cost",
+                    "location": "City / country",
+                    "status": "Status",
+                    "actions": "Actions",
+                    "requestId": "Request ID",
+                    "fulfillmentId": "Fulfillment ID",
+                    "fulfilledBy": "Fulfilled by",
+                    "note": "Fulfillment note",
+                    "vendorOfferId": "Vendor offer ID",
+                    "submittedAt": "Submitted",
+                    "fulfillmentStatus": "Fulfillment status",
+                    "requestStatus": "Request status",
+                    "facilityResponseNote": "Facility response note"
+                },
+                "sections": {
+                    "requestSummary": "Request summary",
+                    "fulfillments": "Fulfillment records",
+                    "fulfillmentDetails": "Fulfillment details",
+                    "proofFiles": "Proof files"
+                },
+                "actions": {
+                    "viewFulfillment": "View Fulfillment",
+                    "viewDetails": "View Details",
+                    "backToList": "Back to pending confirmations",
+                    "backToRequest": "Back to request fulfillments",
+                    "backToDonationRequest": "Back to request details",
+                    "confirm": "Confirm Fulfillment",
+                    "reject": "Reject Fulfillment",
+                    "download": "Download"
+                },
+                "confirmDialog": {
+                    "title": "Confirm Fulfillment",
+                    "message": "Confirm this fulfillment proof? The request will move to the next workflow status.",
+                    "responseNote": "Response note (optional)",
+                    "responseNotePlaceholder": "Add an optional note for this confirmation"
+                },
+                "rejectDialog": {
+                    "title": "Reject Fulfillment",
+                    "message": "Reject this fulfillment proof? The request will return to In Fulfillment.",
+                    "responseNote": "Response note",
+                    "responseNotePlaceholder": "Explain why this fulfillment is rejected",
+                    "validation": {
+                        "noteRequired": "A response note is required to reject fulfillment."
+                    }
+                },
+                "messages": {
+                    "confirmed": "Fulfillment confirmed successfully.",
+                    "rejected": "Fulfillment rejected successfully.",
+                    "downloaded": "File downloaded successfully."
+                },
+                "errors": {
+                    "fulfillmentNotFound": "Fulfillment record was not found.",
+                    "notOwnerFacility": "You are not allowed to review fulfillment for this request.",
+                    "invalidStatus": "This action is not allowed for the current fulfillment status.",
+                    "requestNotFound": "Donation request was not found.",
+                    "accessDenied": "You do not have permission to perform this action.",
+                    "sessionExpired": "Your session has expired. Please login again.",
+                    "downloadFailed": "Unable to download the selected file."
                 }
             }
         },
@@ -3769,11 +3854,25 @@
                 "missingRequestId": "Fulfillment records cannot be loaded because the related donation request ID was not returned.",
                 "columns": {
                     "id": "Fulfillment ID",
+                    "commitmentId": "Commitment ID",
+                    "requestId": "Request ID",
+                    "donorUserId": "Donor ID",
                     "fulfilledBy": "Fulfilled by",
                     "note": "Note",
                     "vendorOfferId": "Vendor offer ID",
                     "createdAt": "Submitted at",
-                    "status": "Status"
+                    "status": "Status",
+                    "validationOpensAt": "Validation opens at",
+                    "facilityResponseUserId": "Facility response user ID",
+                    "facilityResponseNote": "Facility response",
+                    "facilityResponseAt": "Facility responded at",
+                    "rejectionConfirmedAt": "Rejection confirmed at",
+                    "rejectionConfirmedByUserId": "Rejection confirmed by user ID",
+                    "rejectionValid": "Rejection valid"
+                },
+                "values": {
+                    "yes": "Yes",
+                    "no": "No"
                 },
                 "actions": {
                     "viewDetails": "View Details",
@@ -4172,6 +4271,12 @@
             "closed": "Closed",
             "cancelled": "Cancelled",
             "unknown": "Unknown Status"
+        },
+        "fulfillmentStatus": {
+            "submitted": "Submitted",
+            "confirmed": "Confirmed",
+            "rejected": "Rejected",
+            "unknown": "Unknown"
         },
         "validation": {
             "title": "Community Validation",

@@ -1,0 +1,182 @@
+<p-toast />
+
+<div class="block-section card">
+  <div class="flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
+    <div class="flex flex-column gap-2 flex-1 min-w-0">
+      <h2 class="block-title mb-0">{{ 'donations.facility.fulfillments.requestTitle' | translate }}</h2>
+      <ng-container *ngIf="loading; else pageSubtitle">
+        <p-skeleton height="1rem" width="16rem"></p-skeleton>
+      </ng-container>
+      <ng-template #pageSubtitle>
+        <p class="mb-0 text-500 text-overflow-ellipsis" [pTooltip]="requestDetails?.title || ''">
+          {{ requestDetails?.title || ('donations.facility.fulfillments.requestSubtitle' | translate) }}
+        </p>
+      </ng-template>
+    </div>
+    <div class="flex-shrink-0">
+      <p-button [label]="backLabelKey | translate" icon="pi pi-arrow-left" severity="secondary" [outlined]="true"
+        (onClick)="goBack()"></p-button>
+    </div>
+  </div>
+
+  <div class="block-card details-card p-0 mb-3">
+    <ng-container *ngIf="loading; else requestSummaryHeader">
+      <div class="details-section-header details-section-header--with-action">
+        <div class="flex align-items-center gap-3 flex-1 min-w-0">
+          <p-skeleton shape="circle" size="2.25rem"></p-skeleton>
+          <p-skeleton height="1.25rem" width="12rem"></p-skeleton>
+        </div>
+        <p-skeleton height="1.5rem" width="5rem" borderRadius="16px"></p-skeleton>
+      </div>
+      <div class="grid p-3 pt-2">
+        <div class="col-12 md:col-6 lg:col-4" *ngFor="let _ of [1, 2, 3, 4, 5, 6]">
+          <div class="info-item">
+            <p-skeleton height="0.85rem" width="45%" class="mb-2"></p-skeleton>
+            <p-skeleton height="1.25rem" width="70%"></p-skeleton>
+          </div>
+        </div>
+        <div class="col-12">
+          <div class="info-item">
+            <p-skeleton height="0.85rem" width="30%" class="mb-2"></p-skeleton>
+            <p-skeleton height="3rem" width="100%"></p-skeleton>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-template #requestSummaryHeader>
+      <div class="details-section-header details-section-header--with-action">
+        <div class="flex align-items-center gap-3 flex-1 min-w-0">
+          <span class="details-section-icon"><i class="pi pi-file"></i></span>
+          <h3 class="details-section-title">{{ 'donations.facility.fulfillments.sections.requestSummary' | translate }}
+          </h3>
+        </div>
+        <app-donation-status-badge *ngIf="requestDetails" [label]="requestStatusLabel"
+          [severity]="requestStatusSeverity"></app-donation-status-badge>
+      </div>
+
+      <div class="p-3 pt-2" *ngIf="requestDetails; else summaryUnavailable">
+        <div class="grid">
+          <div class="col-12 md:col-6 lg:col-4">
+            <div class="info-item">
+              <span class="info-label">{{ 'donations.facility.fulfillments.columns.requestId' | translate }}</span>
+              <span class="info-value">{{ requestDetails.id || requestId }}</span>
+            </div>
+          </div>
+          <div class="col-12 md:col-6 lg:col-4">
+            <div class="info-item">
+              <span class="info-label">{{ 'donations.facility.fulfillments.columns.title' | translate }}</span>
+              <span class="info-value">{{ requestDetails.title || '-' }}</span>
+            </div>
+          </div>
+          <div class="col-12 md:col-6 lg:col-4">
+            <div class="info-item">
+              <span class="info-label">{{ 'donations.facility.fulfillments.columns.quantity' | translate }}</span>
+              <span class="info-value">{{ formatQuantity() }}</span>
+            </div>
+          </div>
+          <div class="col-12 md:col-6 lg:col-4">
+            <div class="info-item">
+              <span class="info-label">{{ 'donations.facility.fulfillments.columns.estimatedCost' | translate }}</span>
+              <span class="info-value">{{ formatCost() }}</span>
+            </div>
+          </div>
+          <div class="col-12 md:col-6 lg:col-4">
+            <div class="info-item">
+              <span class="info-label">{{ 'donations.facility.fulfillments.columns.location' | translate }}</span>
+              <span class="info-value">{{ getLocationLabel() }}</span>
+            </div>
+          </div>
+          <div class="col-12 md:col-6 lg:col-4">
+            <div class="info-item">
+              <span class="info-label">{{ 'donations.facility.requests.columns.createdAt' | translate }}</span>
+              <span class="info-value" dir="ltr">
+                {{ requestDetails.createdAt ? (requestDetails.createdAt | date:'yyyy-MM-dd hh:mm a') : '-' }}
+              </span>
+            </div>
+          </div>
+          <div class="col-12" *ngIf="requestDetails.address">
+            <div class="info-item">
+              <span class="info-label">{{ 'donations.facility.requests.form.address' | translate }}</span>
+              <span class="info-value">{{ requestDetails.address }}</span>
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="info-item">
+              <span class="info-label">{{ 'donations.facility.requests.form.description' | translate }}</span>
+              <span class="info-value line-height-3">{{ requestDetails.description || '-' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <ng-template #summaryUnavailable>
+        <div class="p-3 pt-2">
+          <p class="mb-0 text-500">{{ 'donations.facility.fulfillments.requestSummaryUnavailable' | translate }}</p>
+        </div>
+      </ng-template>
+    </ng-template>
+  </div>
+
+  <div class="block-card details-card p-0">
+    <div class="details-section-header">
+      <span class="details-section-icon"><i class="pi pi-verified"></i></span>
+      <h3 class="details-section-title">{{ 'donations.facility.fulfillments.sections.fulfillments' | translate }}</h3>
+    </div>
+    <div class="p-3 pt-2">
+      <ng-container *ngIf="fulfillmentsLoading; else fulfillmentsLoaded">
+        <div class="flex flex-column gap-2">
+          <p-skeleton height="2.5rem" width="100%" borderRadius="6px"></p-skeleton>
+          <p-skeleton height="2.5rem" width="100%" borderRadius="6px"></p-skeleton>
+          <p-skeleton height="2.5rem" width="100%" borderRadius="6px"></p-skeleton>
+        </div>
+      </ng-container>
+
+      <ng-template #fulfillmentsLoaded>
+        <p *ngIf="fulfillments.length === 0" class="mb-0 text-500">
+          {{ 'donations.facility.fulfillments.fulfillmentsEmpty' | translate }}
+        </p>
+
+        <p-table *ngIf="fulfillments.length > 0" [value]="fulfillments" responsiveLayout="scroll"
+          styleClass="p-datatable-sm">
+          <ng-template pTemplate="header">
+            <tr>
+              <th style="width: 7rem">{{ 'donations.facility.fulfillments.columns.fulfillmentId' | translate }}</th>
+              <th style="width: 9rem">{{ 'donations.facility.fulfillments.columns.fulfilledBy' | translate }}</th>
+              <th style="width: 14rem">{{ 'donations.facility.fulfillments.columns.note' | translate }}</th>
+              <th style="width: 8rem">{{ 'donations.facility.fulfillments.columns.vendorOfferId' | translate }}</th>
+              <th style="width: 9rem">{{ 'donations.facility.fulfillments.columns.submittedAt' | translate }}</th>
+              <th class="text-center" style="width: 7rem">
+                {{ 'donations.facility.fulfillments.columns.fulfillmentStatus' | translate }}
+              </th>
+              <th class="text-center" style="width: 9rem">
+                {{ 'donations.facility.fulfillments.columns.actions' | translate }}
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-row>
+            <tr>
+              <td>{{ row.id || '-' }}</td>
+              <td>{{ getFulfilledByLabel(row.fulfilledBy) }}</td>
+              <td>
+                <div class="note-cell text-overflow-ellipsis" [pTooltip]="row.fulfillmentNote || ''"
+                  tooltipPosition="top">
+                  {{ getNoteSummary(row.fulfillmentNote) }}
+                </div>
+              </td>
+              <td>{{ row.donationVendorOfferId || '-' }}</td>
+              <td dir="ltr">{{ row.createdAt ? (row.createdAt | date:'yyyy-MM-dd') : '-' }}</td>
+              <td class="text-center">
+                <app-donation-status-badge [label]="getFulfillmentStatusLabel(row)"></app-donation-status-badge>
+              </td>
+              <td class="text-center">
+                <p-button [label]="'donations.facility.fulfillments.actions.viewDetails' | translate" icon="pi pi-eye"
+                  [outlined]="true" severity="secondary" size="small" (onClick)="viewDetails(row)"></p-button>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </ng-template>
+    </div>
+  </div>
+</div>

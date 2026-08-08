@@ -1099,7 +1099,7 @@ export class FolderManagementComponent implements OnInit, OnChanges, OnDestroy {
     this.syncDownloadProgressOverlay();
 
     try {
-      const blob = await this.fileDownloadService.downloadFile(
+      const { blob, fileName } = await this.fileDownloadService.downloadFile(
         accessToken,
         BigInt(file.id),
         BigInt(this.currentFolderId),
@@ -1116,10 +1116,11 @@ export class FolderManagementComponent implements OnInit, OnChanges, OnDestroy {
         }
       );
 
+      const downloadName = String(file.name || fileName || '').trim() || `file_${file.id}`;
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = file.name;
+      link.download = downloadName;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);

@@ -132,7 +132,7 @@ export class DonationAttachmentListComponent implements OnChanges, OnDestroy {
   }
 
   getDisplayName(item: DonationAttachment): string {
-    return item.caption || item.fileName || `#${item.donationAttachmentId}`;
+    return item.caption || `#${item.fileId || item.donationAttachmentId}`;
   }
 
   getKindIcon(item: DonationAttachment): string {

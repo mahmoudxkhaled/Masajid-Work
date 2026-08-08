@@ -16,6 +16,10 @@
         severity="success" (onClick)="confirmSubmit()"></p-button>
       <p-button *ngIf="isDraft" [label]="'donations.facility.requests.actions.delete' | translate" icon="pi pi-trash"
         severity="danger" [outlined]="true" (onClick)="confirmDelete()"></p-button>
+      <p-button *ngIf="!loading && isFulfillmentSubmitted"
+        [label]="'donations.facility.requests.actions.viewFulfillments' | translate" icon="pi pi-verified"
+        severity="success" [pTooltip]="'donations.facility.fulfillments.requestSubtitle' | translate"
+        tooltipPosition="top" (onClick)="goToRequestFulfillments()"></p-button>
     </div>
   </div>
 

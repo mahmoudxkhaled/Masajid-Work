@@ -9,8 +9,6 @@ export interface UploadedStorageFile {
 
 export interface DonationAttachmentBackend {
   Donation_Attachment_ID?: number;
-  Owner_Type?: number;
-  Owner_ID?: number;
   Attachment_Kind?: number;
   File_ID?: number;
   Folder_ID?: number;
@@ -18,26 +16,18 @@ export interface DonationAttachmentBackend {
   Caption?: string;
   Caption_Regional?: string;
   Sort_Order?: number;
-  File_Name?: string;
-  File_Type?: string;
   Created_At?: string;
-  Is_Active?: boolean;
 }
 
 export interface DonationAttachment {
   donationAttachmentId: number;
-  ownerType: number;
-  ownerId: number;
   attachmentKind: number;
   fileId: number;
   folderId: number;
   fileSystemId: number;
   caption: string;
   sortOrder: number;
-  fileName?: string;
-  fileType?: string;
-  createdAt?: string;
-  isActive?: boolean;
+  createdAt: string;
 }
 
 export interface AddDonationAttachmentRequest {

@@ -1,0 +1,128 @@
+<p-toast />
+
+<div class="block-section card">
+  <div class="flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
+    <div class="flex flex-column gap-2 flex-1 min-w-0">
+      <h2 class="block-title mb-0">{{ 'donations.facility.fulfillments.title' | translate }}</h2>
+      <p class="mb-0 text-500">{{ 'donations.facility.fulfillments.subtitle' | translate }}</p>
+    </div>
+  </div>
+
+  <div class="block-card">
+    <p-table #fulfillmentsTable [value]="tableValue" [paginator]="true" [lazy]="true" [first]="first" [rows]="rows"
+      [totalRecords]="totalRecords" [rowsPerPageOptions]="rowsPerPageOptions" [showCurrentPageReport]="true"
+      [currentPageReportTemplate]="'donations.facility.fulfillments.pagination' | translate" responsiveLayout="scroll"
+      styleClass="p-datatable-sm" (onLazyLoad)="onPageChange($event)">
+      <ng-template pTemplate="caption">
+        <div class="flex align-items-center justify-content-between gap-3 mb-2 flex-wrap">
+          <span class="p-input-icon-left flex-1 min-w-200px max-w-md">
+            <ng-container *ngIf="initialLoading && requests.length === 0; else searchInput">
+              <p-skeleton height="2.5rem" width="100%" borderRadius="6px"></p-skeleton>
+            </ng-container>
+            <ng-template #searchInput>
+              <i class="pi pi-search"></i>
+              <input pInputText type="text" class="w-full" [(ngModel)]="textFilter"
+                [placeholder]="'donations.facility.fulfillments.searchPlaceholder' | translate"
+                (ngModelChange)="onSearchInput($event)" />
+            </ng-template>
+          </span>
+        </div>
+      </ng-template>
+
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="width: 14rem">{{ 'donations.facility.fulfillments.columns.title' | translate }}</th>
+          <th style="width: 11rem">{{ 'donations.facility.fulfillments.columns.category' | translate }}</th>
+          <th class="text-center" style="width: 9rem">{{ 'donations.facility.fulfillments.columns.quantity' | translate
+            }}
+          </th>
+          <th class="text-center" style="width: 10rem">{{ 'donations.facility.fulfillments.columns.estimatedCost' |
+            translate }}</th>
+          <th style="width: 11rem">{{ 'donations.facility.fulfillments.columns.location' | translate }}</th>
+          <th class="text-center" style="width: 10rem">{{ 'donations.facility.fulfillments.columns.status' | translate
+            }}
+          </th>
+          <th class="text-center" style="width: 12rem">{{ 'donations.facility.fulfillments.columns.actions' | translate
+            }}
+          </th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-row>
+        <tr class="facility-fulfillments-row-clickable" [style.cursor]="tableLoadingSpinner ? 'default' : 'pointer'"
+          (click)="!tableLoadingSpinner && viewFulfillment(row)">
+          <td style="width: 14rem">
+            <ng-container *ngIf="tableLoadingSpinner; else titleCell">
+              <p-skeleton height="1.25rem" width="12rem"></p-skeleton>
+            </ng-container>
+            <ng-template #titleCell>
+              <span class="font-semibold text-overflow-ellipsis" [pTooltip]="getTitle(row)">{{ getTitle(row) }}</span>
+            </ng-template>
+          </td>
+          <td style="width: 11rem">
+            <ng-container *ngIf="tableLoadingSpinner; else categoryCell">
+              <p-skeleton height="1.25rem" width="9rem"></p-skeleton>
+            </ng-container>
+            <ng-template #categoryCell>
+              <span class="text-overflow-ellipsis" [pTooltip]="getCategoryLabel(row)">{{ getCategoryLabel(row) }}</span>
+            </ng-template>
+          </td>
+          <td class="text-center" style="width: 9rem">
+            <ng-container *ngIf="tableLoadingSpinner; else quantityCell">
+              <p-skeleton height="1.25rem" width="6rem"></p-skeleton>
+            </ng-container>
+            <ng-template #quantityCell>
+              <span>{{ formatQuantity(row) }}</span>
+            </ng-template>
+          </td>
+          <td class="text-center" style="width: 10rem">
+            <ng-container *ngIf="tableLoadingSpinner; else costCell">
+              <p-skeleton height="1.25rem" width="7rem"></p-skeleton>
+            </ng-container>
+            <ng-template #costCell>
+              <span>{{ formatEstimatedCost(row) }}</span>
+            </ng-template>
+          </td>
+          <td style="width: 11rem">
+            <ng-container *ngIf="tableLoadingSpinner; else locationCell">
+              <p-skeleton height="1.25rem" width="8rem"></p-skeleton>
+            </ng-container>
+            <ng-template #locationCell>
+              <span class="text-overflow-ellipsis" [pTooltip]="getLocationLabel(row)">{{ getLocationLabel(row) }}</span>
+            </ng-template>
+          </td>
+          <td class="text-center" style="width: 10rem">
+            <ng-container *ngIf="tableLoadingSpinner; else statusCell">
+              <div class="flex justify-content-center">
+                <p-skeleton height="1.5rem" width="4.5rem" borderRadius="16px"></p-skeleton>
+              </div>
+            </ng-container>
+            <ng-template #statusCell>
+              <app-donation-status-badge [label]="getStatusLabel(row.Donation_Request_Status_ID || 0)"
+                [severity]="getStatusSeverity(row.Donation_Request_Status_ID || 0)"></app-donation-status-badge>
+            </ng-template>
+          </td>
+          <td class="text-center" style="width: 12rem">
+            <ng-container *ngIf="tableLoadingSpinner; else actionsCell">
+              <div class="flex justify-content-center">
+                <p-skeleton height="2rem" width="6rem" borderRadius="6px"></p-skeleton>
+              </div>
+            </ng-container>
+            <ng-template #actionsCell>
+              <p-button [label]="'donations.facility.fulfillments.actions.viewFulfillment' | translate" icon="pi pi-eye"
+                [outlined]="true" severity="secondary" size="small" (onClick)="viewFulfillment(row, $event)"></p-button>
+            </ng-template>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="7" class="text-center p-4 text-500">
+            {{ 'donations.facility.fulfillments.empty' | translate }}
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>

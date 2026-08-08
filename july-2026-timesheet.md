@@ -19,6 +19,8 @@ Below: (1) invoice-style summary table, (2) **detailed technical log** with comm
 | 10-Jul | Angular       | ERP     | Security Features               | Implemented a secure donation acceptance and commitment workflow with route protection, interactive dialogs for accepting or cancelling commitments, and a detailed donor commitment view, while refactoring list components to optimize API loading and improve UI responsiveness. | 7     |
 | 17-Jul | Angular       | ERP     | Security Features               | Implemented secure Charity Representation and Vendor Offer workflows with dedicated route protection guards, advanced status filtering, and skeleton loading states, and refactored core details views to integrate interactive workflow timelines and status badges for improved clarity and user experience. | 7     |
 | 18-Jul | Angular       | ERP     | UI/Layout                       | Integrated vendor offer selection functionality into the donor commitment details panel, allowing donors to visually inspect, compare, and select competitive vendor offers for their commitments through secure interactive dialogs to streamline the donation fulfillment process. | 7     |
+| 24-Jul | Angular       | ERP     | Form Validation & UX            | Polished several donation process views and components to improve usability and data visualization, refined layout structures for vendor requests to ensure perfect mobile responsiveness, and updated localization keys across forms for a smoother bilingual experience. | 7     |
+| 31-Jul | Angular       | ERP     | Data Management                 | Designed and developed a secure file upload and donation attachment management subsystem, including dedicated chunked uploader components and visual attachment list grids to allow facility representatives and donors to securely submit and manage verification proofs. | 7     |
 
 ---
 
@@ -113,10 +115,27 @@ Below: (1) invoice-style summary table, (2) **detailed technical log** with comm
 
 ---
 
+### 2026-07-24 — Friday — **7 hours**
+
+**Commits (newest first):** `77274c6`
+
+- **Donation Component Visual Refinements (`77274c6`):** Refined and polished several donation process lists and details views to enhance visual presentation and layout responsiveness. Redesigned layout structures for vendor requests to ensure full compatibility with mobile devices, and synchronized localization keys across various input forms to ensure a polished, cohesive bilingual experience.
+
+---
+
+### 2026-07-31 — Friday — **7 hours**
+
+**Commits (newest first):** `cd0194a`
+
+- **Secure Donation Attachment Subsystem (`cd0194a`):** Designed and built a secure files and donation attachment management module (`donation-attachment.service.ts`). Developed custom chunked attachment uploaders (`DonationAttachmentUploaderComponent`) and visual attachment list grids (`DonationAttachmentListComponent`) to empower facility administrators, charity representatives, and donors to securely upload and inspect proof-of-fulfillment assets and community validation materials.
+- **Status Mapping Synchronization (`cd0194a`):** Synchronized state indicators and updated models for donation request and commitment statuses to perfectly align client-side tracking with backend API definitions.
+
+---
+
 ## Summary
 
 | Metric | Value |
 | ------ | ----- |
-| **Total Working Days** | 9 |
-| **Total Hours** | 45 hours |
-| **Total Commits** | 31 |
+| **Total Working Days** | 11 |
+| **Total Hours** | 59 hours |
+| **Total Commits** | 33 |

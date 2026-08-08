@@ -2,14 +2,8 @@
 <div class="block-section card">
   <div class="flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
     <h2 class="block-title mb-0">{{ pageTitleKey | translate }}</h2>
-    <p-button
-      [label]="'donations.facility.requests.form.cancel' | translate"
-      icon="pi pi-arrow-left"
-      severity="secondary"
-      [text]="true"
-      (onClick)="cancel()"
-      [disabled]="saving"
-    ></p-button>
+    <p-button [label]="'donations.facility.requests.form.cancel' | translate" icon="pi pi-arrow-left"
+      severity="secondary" [text]="true" (onClick)="cancel()" [disabled]="saving"></p-button>
   </div>
 
   <ng-container *ngIf="loading; else formContent">
@@ -27,38 +21,26 @@
 
   <ng-template #formContent>
     <form [formGroup]="form" class="block-card p-3" (ngSubmit)="saveDraft()">
-      <app-erp-info
-        class="mb-3"
-        icon="pi pi-info-circle"
-        severity="info"
+      <app-erp-info class="mb-3" icon="pi pi-info-circle" severity="info"
         [title]="'donations.facility.requests.form.attachmentsTodoTitle' | translate"
-        [description]="'donations.facility.requests.form.attachmentsTodo' | translate"
-      ></app-erp-info>
+        [description]="'will add attachments here'"></app-erp-info>
 
       <div class="grid">
         <div class="col-12 md:col-6">
-          <label class="font-medium block mb-2">{{ 'donations.facility.requests.form.donationType' | translate }}</label>
-          <p-dropdown
-            [options]="typeOptions"
-            [(ngModel)]="selectedDonationTypeId"
-            [ngModelOptions]="{ standalone: true }"
-            optionLabel="label"
-            optionValue="value"
+          <label class="font-medium block mb-2">{{ 'donations.facility.requests.form.donationType' | translate
+            }}</label>
+          <p-dropdown [options]="typeOptions" [(ngModel)]="selectedDonationTypeId"
+            [ngModelOptions]="{ standalone: true }" optionLabel="label" optionValue="value"
             [placeholder]="'donations.facility.requests.form.donationTypePlaceholder' | translate"
-            [style]="{ width: '100%' }"
-            (onChange)="onDonationTypeChange($event.value)"
-          ></p-dropdown>
+            [style]="{ width: '100%' }" (onChange)="onDonationTypeChange($event.value)"></p-dropdown>
         </div>
 
         <div class="col-12 md:col-6">
-          <label class="font-medium block mb-2">{{ 'donations.facility.requests.form.donationCategory' | translate }}</label>
-          <app-donation-category-picker
-            [donationTypeId]="selectedDonationTypeId || 0"
-            [selectedCategoryId]="selectedCategoryId"
-            [activeOnly]="!isEditMode"
-            [disabled]="!selectedDonationTypeId"
-            (selectedCategoryIdChange)="onCategoryChange($event)"
-          ></app-donation-category-picker>
+          <label class="font-medium block mb-2">{{ 'donations.facility.requests.form.donationCategory' | translate
+            }}</label>
+          <app-donation-category-picker [donationTypeId]="selectedDonationTypeId || 0"
+            [selectedCategoryId]="selectedCategoryId" [activeOnly]="!isEditMode" [disabled]="!selectedDonationTypeId"
+            (selectedCategoryIdChange)="onCategoryChange($event)"></app-donation-category-picker>
           <small class="p-error block mt-1" *ngIf="showCategoryError()">
             {{ 'donations.facility.requests.form.validation.categoryRequired' | translate }}
           </small>
@@ -82,13 +64,8 @@
 
         <div class="col-12">
           <label class="font-medium block mb-2">{{ 'donations.facility.requests.form.description' | translate }}</label>
-          <textarea
-            pInputTextarea
-            class="w-full"
-            rows="4"
-            formControlName="description"
-            [class.ng-invalid]="showError('description')"
-          ></textarea>
+          <textarea pInputTextarea class="w-full" rows="4" formControlName="description"
+            [class.ng-invalid]="showError('description')"></textarea>
           <small class="p-error block mt-1" *ngIf="showError('description')">
             {{ 'donations.facility.requests.form.validation.descriptionRequired' | translate }}
           </small>
@@ -103,8 +80,10 @@
         </div>
 
         <div class="col-12 md:col-4">
-          <label class="font-medium block mb-2">{{ 'donations.facility.requests.form.estimatedCost' | translate }}</label>
-          <p-inputNumber class="w-full" formControlName="estimatedCost" [min]="0" mode="decimal" [minFractionDigits]="0" [maxFractionDigits]="2"></p-inputNumber>
+          <label class="font-medium block mb-2">{{ 'donations.facility.requests.form.estimatedCost' | translate
+            }}</label>
+          <p-inputNumber class="w-full" formControlName="estimatedCost" [min]="0" mode="decimal" [minFractionDigits]="0"
+            [maxFractionDigits]="2"></p-inputNumber>
           <small class="p-error block mt-1" *ngIf="showError('estimatedCost')">
             {{ 'donations.facility.requests.form.validation.estimatedCostInvalid' | translate }}
           </small>
@@ -112,16 +91,10 @@
 
         <div class="col-12 md:col-4">
           <label class="font-medium block mb-2">{{ 'donations.facility.requests.form.currency' | translate }}</label>
-          <p-dropdown
-            [options]="currencyOptions"
-            [ngModel]="form.get('currencyCode')?.value"
-            [ngModelOptions]="{ standalone: true }"
-            optionLabel="label"
-            optionValue="value"
+          <p-dropdown [options]="currencyOptions" [ngModel]="form.get('currencyCode')?.value"
+            [ngModelOptions]="{ standalone: true }" optionLabel="label" optionValue="value"
             [placeholder]="'donations.facility.requests.form.currencyPlaceholder' | translate"
-            [style]="{ width: '100%' }"
-            (onChange)="onCurrencyChange($event.value)"
-          ></p-dropdown>
+            [style]="{ width: '100%' }" (onChange)="onCurrencyChange($event.value)"></p-dropdown>
           <small class="p-error block mt-1" *ngIf="showError('currencyCode')">
             {{ 'donations.facility.requests.form.validation.currencyInvalid' | translate }}
           </small>
@@ -129,17 +102,10 @@
 
         <div class="col-12 md:col-6">
           <label class="font-medium block mb-2">{{ 'donations.facility.requests.form.country' | translate }}</label>
-          <p-dropdown
-            [options]="countryOptions"
-            [ngModel]="form.get('countryCode')?.value"
-            [ngModelOptions]="{ standalone: true }"
-            optionLabel="label"
-            optionValue="value"
-            [filter]="true"
+          <p-dropdown [options]="countryOptions" [ngModel]="form.get('countryCode')?.value"
+            [ngModelOptions]="{ standalone: true }" optionLabel="label" optionValue="value" [filter]="true"
             [placeholder]="'donations.facility.requests.form.countryPlaceholder' | translate"
-            [style]="{ width: '100%' }"
-            (onChange)="onCountryChange($event.value)"
-          ></p-dropdown>
+            [style]="{ width: '100%' }" (onChange)="onCountryChange($event.value)"></p-dropdown>
           <small class="p-error block mt-1" *ngIf="showError('countryCode')">
             {{ 'donations.facility.requests.form.validation.countryInvalid' | translate }}
           </small>
@@ -162,47 +128,27 @@
         </div>
 
         <div class="col-12">
-          <app-register-location-picker
-            [latitudeControl]="$any(form.get('latitude'))"
+          <app-register-location-picker [latitudeControl]="$any(form.get('latitude'))"
             [longitudeControl]="$any(form.get('longitude'))"
-            [countryCodeControl]="$any(form.get('countryCode'))"
-          ></app-register-location-picker>
+            [countryCodeControl]="$any(form.get('countryCode'))"></app-register-location-picker>
         </div>
 
         <div class="col-12 md:col-6">
           <div class="flex align-items-center gap-2">
             <p-checkbox formControlName="needsInstallation" [binary]="true" inputId="needsInstallation"></p-checkbox>
-            <label for="needsInstallation" class="mb-0">{{ 'donations.facility.requests.form.needsInstallation' | translate }}</label>
+            <label for="needsInstallation" class="mb-0">{{ 'donations.facility.requests.form.needsInstallation' |
+              translate }}</label>
           </div>
         </div>
       </div>
 
       <div class="flex flex-wrap gap-2 mt-4">
-        <p-button
-          type="submit"
-          [label]="'donations.facility.requests.form.saveDraft' | translate"
-          icon="pi pi-save"
-          [loading]="saving"
-          [disabled]="saving"
-        ></p-button>
-        <p-button
-          type="button"
-          [label]="'donations.facility.requests.form.saveAndSubmit' | translate"
-          icon="pi pi-send"
-          severity="success"
-          [loading]="saving"
-          [disabled]="saving"
-          (onClick)="saveAndSubmit()"
-        ></p-button>
-        <p-button
-          type="button"
-          [label]="'donations.facility.requests.form.cancel' | translate"
-          icon="pi pi-times"
-          severity="secondary"
-          [outlined]="true"
-          [disabled]="saving"
-          (onClick)="cancel()"
-        ></p-button>
+        <p-button type="submit" [label]="'donations.facility.requests.form.saveDraft' | translate" icon="pi pi-save"
+          [loading]="saving" [disabled]="saving"></p-button>
+        <p-button type="button" [label]="'donations.facility.requests.form.saveAndSubmit' | translate" icon="pi pi-send"
+          severity="success" [loading]="saving" [disabled]="saving" (onClick)="saveAndSubmit()"></p-button>
+        <p-button type="button" [label]="'donations.facility.requests.form.cancel' | translate" icon="pi pi-times"
+          severity="secondary" [outlined]="true" [disabled]="saving" (onClick)="cancel()"></p-button>
       </div>
     </form>
   </ng-template>

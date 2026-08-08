@@ -2,28 +2,31 @@ import {
   isCommitmentCancelled,
   isCommitmentCompleted,
 } from './donation-commitment-status.model';
-import { isDonationRequestClosingStatus } from './donation-request-status.model';
+import {
+  DonationRequestStatusId,
+  isDonationRequestClosingStatus,
+} from './donation-request-status.model';
 import { FulfilledBy, FulfilledByValue } from './fulfilled-by.model';
 import { FulfillmentMode } from './fulfillment-mode.model';
 
 export interface DonationFulfillmentBackend {
   Donation_Fulfillment_ID?: number;
   Donation_Commitment_ID?: number;
-  Donation_Request_ID?: number;
+  Donation_Vendor_Offer_ID?: number | null;
   Fulfilled_By?: number;
-  Donation_Vendor_Offer_ID?: number;
   Fulfillment_Note?: string;
   Fulfillment_Note_Regional?: string;
-  Status?: number;
-  Status_Code?: string;
-  Created_At?: string;
   Submitted_At?: string;
-  Updated_At?: string;
-  Attachment_File_IDs?: number[] | Record<string, number>;
-  Attachments?: Record<string, unknown>[] | Record<string, Record<string, unknown>>;
-  Files?: Record<string, unknown>[] | Record<string, Record<string, unknown>>;
-  File_System_ID?: number;
-  Folder_ID?: number;
+  Facility_Response_User_ID?: number | null;
+  Facility_Response_At?: string | null;
+  Facility_Response_Note?: string;
+  Validation_Opens_At?: string | null;
+  Status?: number;
+  Rejection_Confirmed_At?: string | null;
+  Rejection_Confirmed_By_User_ID?: number | null;
+  Rejection_Valid?: boolean | null;
+  Donation_Request_ID?: number;
+  Donor_User_ID?: number;
 }
 
 export interface DonationFulfillmentListItem {
@@ -32,7 +35,6 @@ export interface DonationFulfillmentListItem {
   fulfillmentNote: string;
   donationVendorOfferId: number;
   statusId: number;
-  statusCode: string;
   createdAt: string;
 }
 
@@ -40,16 +42,19 @@ export interface DonationFulfillmentDetails {
   id: string;
   donationCommitmentId: string;
   donationRequestId: string;
+  donorUserId: number;
   fulfilledBy: number;
   fulfillmentNote: string;
   donationVendorOfferId: number;
   statusId: number;
-  statusCode: string;
   createdAt: string;
-  fileSystemId: number;
-  folderId: number;
-  attachmentFileIds: number[];
-  proofFiles: DonationFulfillmentProofFile[];
+  facilityResponseUserId: number;
+  facilityResponseNote: string;
+  facilityResponseAt: string;
+  validationOpensAt: string;
+  rejectionConfirmedAt: string;
+  rejectionConfirmedByUserId: number;
+  rejectionValid: boolean | null;
 }
 
 export interface DonationFulfillmentProofFile {
@@ -82,6 +87,18 @@ export function canSubmitFulfillmentProof(
   }
 
   return true;
+}
+
+export function canFacilityReviewFulfillment(requestStatusId: number | null | undefined): boolean {
+  if (requestStatusId == null || requestStatusId <= 0) {
+    return true;
+  }
+
+  if (isDonationRequestClosingStatus(requestStatusId)) {
+    return false;
+  }
+
+  return requestStatusId === DonationRequestStatusId.FulfillmentSubmitted;
 }
 
 export function resolveDefaultFulfilledBy(

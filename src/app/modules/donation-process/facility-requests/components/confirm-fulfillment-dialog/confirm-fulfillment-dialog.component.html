@@ -1,0 +1,21 @@
+<p-dialog [(visible)]="visible" [modal]="true" [style]="{ width: '480px' }" [draggable]="false" [resizable]="false"
+  (onHide)="closeDialog()">
+  <ng-template pTemplate="header">
+    <h3 class="m-0">{{ 'donations.facility.fulfillments.confirmDialog.title' | translate }}</h3>
+  </ng-template>
+
+  <div class="flex flex-column gap-2">
+    <p class="mb-0 text-500">{{ 'donations.facility.fulfillments.confirmDialog.message' | translate }}</p>
+    <label class="font-medium">{{ 'donations.facility.fulfillments.confirmDialog.responseNote' | translate }}</label>
+    <textarea pInputTextarea rows="4" class="w-full" [(ngModel)]="responseNote"
+      [placeholder]="'donations.facility.fulfillments.confirmDialog.responseNotePlaceholder' | translate"
+      [disabled]="!!(isLoading$ | async)"></textarea>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <p-button [label]="'common.cancel' | translate" icon="pi pi-times" severity="secondary" [outlined]="true"
+      (onClick)="closeDialog()" [disabled]="!!(isLoading$ | async)"></p-button>
+    <p-button [label]="'donations.facility.fulfillments.actions.confirm' | translate" icon="pi pi-check"
+      (onClick)="confirm()" [disabled]="!!(isLoading$ | async)"></p-button>
+  </ng-template>
+</p-dialog>

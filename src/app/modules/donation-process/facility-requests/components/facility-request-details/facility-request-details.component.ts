@@ -12,6 +12,7 @@ import {
 } from '../../../models/donation-request.model';
 import {
   DonationRequestStatusBackend,
+  DonationRequestStatusId,
   isDonationRequestClosingStatus,
   isDonationRequestDraft,
 } from '../../../models/donation-request-status.model';
@@ -94,12 +95,29 @@ export class FacilityRequestDetailsComponent implements OnInit, OnDestroy {
     return isDonationRequestClosingStatus(Number(this.details?.statusId || 0));
   }
 
+  get isFulfillmentSubmitted(): boolean {
+    const statusId = Number(this.details?.statusId || 0);
+    if (statusId === DonationRequestStatusId.FulfillmentSubmitted) {
+      return true;
+    }
+    return String(this.details?.statusCode || '').toUpperCase() === 'FULFILLMENT_SUBMITTED';
+  }
+
   backToList(): void {
     this.router.navigate(['/donations/facility/requests']);
   }
 
   goToEdit(): void {
     this.router.navigate(['/donations/facility/requests', this.requestId, 'edit']);
+  }
+
+  goToRequestFulfillments(): void {
+    if (!this.requestId) {
+      return;
+    }
+    this.router.navigate(['/donations/facility/fulfillments', this.requestId], {
+      state: { returnTo: `/donations/facility/requests/${this.requestId}` },
+    });
   }
 
   confirmSubmit(): void {

@@ -70,27 +70,19 @@ export class DonationAttachmentService {
       .pipe(finalize(() => this.isLoadingSubject.next(false)));
   }
 
-  extractAttachments(message: Record<string, unknown> | undefined): DonationAttachmentBackend[] {
+  extractAttachments(message: unknown): DonationAttachmentBackend[] {
     if (!message) {
       return [];
     }
-
-    const attachments = message['Attachments'];
-    if (Array.isArray(attachments)) {
-      return attachments as DonationAttachmentBackend[];
+    if (Array.isArray(message)) {
+      return message as DonationAttachmentBackend[];
     }
-    if (attachments && typeof attachments === 'object') {
-      return Object.values(attachments as Record<string, DonationAttachmentBackend>);
-    }
-
     return [];
   }
 
   mapDonationAttachment(raw: DonationAttachmentBackend): DonationAttachment {
     return {
       donationAttachmentId: Number(raw.Donation_Attachment_ID || 0),
-      ownerType: Number(raw.Owner_Type || 0),
-      ownerId: Number(raw.Owner_ID || 0),
       attachmentKind: Number(raw.Attachment_Kind || 0),
       fileId: Number(raw.File_ID || 0),
       folderId: Number(raw.Folder_ID || 0),
@@ -100,10 +92,7 @@ export class DonationAttachmentService {
         String(raw.Caption_Regional || ''),
       ),
       sortOrder: Number(raw.Sort_Order || 0),
-      fileName: String(raw.File_Name || ''),
-      fileType: String(raw.File_Type || ''),
       createdAt: String(raw.Created_At || ''),
-      isActive: raw.Is_Active === undefined ? true : Boolean(raw.Is_Active),
     };
   }
 

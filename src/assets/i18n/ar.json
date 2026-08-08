@@ -1277,6 +1277,12 @@
             "donations.facility.requests.details.title": "تفاصيل طلب التبرع",
             "donations.facility.requests.form.createTitle": "إنشاء طلب تبرع",
             "donations.facility.requests.form.editTitle": "تعديل طلب تبرع",
+            "donations.facility.fulfillments.title": "تأكيدات التنفيذ المعلقة",
+            "donations.facility.fulfillments.requestTitle": "سجلات التنفيذ للطلب",
+            "donations.facility.fulfillments.reviewTitle": "مراجعة التنفيذ",
+            "facilityFulfillments": "تأكيدات التنفيذ المعلقة",
+            "facilityFulfillmentsRequest": "سجلات التنفيذ للطلب",
+            "facilityFulfillmentsReview": "مراجعة التنفيذ",
             "donations.browse.title": "تصفح التبرعات",
             "donations.browse.details.title": "تفاصيل طلب التبرع",
             "donations.commitments.title": "التزاماتي",
@@ -3419,7 +3425,8 @@
                     "view": "عرض",
                     "edit": "تعديل",
                     "submit": "إرسال للمراجعة",
-                    "delete": "حذف"
+                    "delete": "حذف",
+                    "viewFulfillments": "عرض سجلات التنفيذ"
                 },
                 "confirm": {
                     "submitTitle": "إرسال للمراجعة",
@@ -3499,6 +3506,84 @@
                         "meta": "معلومات الطلب",
                         "workflow": "سجل الحالة"
                     }
+                }
+            },
+            "fulfillments": {
+                "title": "تأكيدات التنفيذ المعلقة",
+                "subtitle": "راجع إثباتات التنفيذ المقدمة لطلبات التبرع الخاصة بمنشأتك.",
+                "requestTitle": "سجلات التنفيذ للطلب",
+                "requestSubtitle": "سجلات التنفيذ المقدمة لهذا الطلب.",
+                "reviewTitle": "مراجعة التنفيذ",
+                "reviewSubtitle": "راجع تفاصيل الإثبات ثم أكد التنفيذ أو ارفضه.",
+                "searchPlaceholder": "ابحث في الطلبات...",
+                "pagination": "عرض '{first}' إلى '{last}' من أصل '{totalRecords}'",
+                "empty": "لا توجد تأكيدات تنفيذ معلقة.",
+                "fulfillmentsEmpty": "لا توجد سجلات تنفيذ لهذا الطلب.",
+                "requestSummaryUnavailable": "ملخص الطلب غير متاح.",
+                "detailsUnavailable": "تفاصيل التنفيذ غير متاحة.",
+                "proofEmpty": "لم يتم العثور على ملفات إثبات لهذا التنفيذ.",
+                "columns": {
+                    "title": "العنوان",
+                    "category": "الفئة",
+                    "quantity": "الكمية / الوحدة",
+                    "estimatedCost": "التكلفة التقديرية",
+                    "location": "المدينة / الدولة",
+                    "status": "الحالة",
+                    "actions": "الإجراءات",
+                    "requestId": "معرّف الطلب",
+                    "fulfillmentId": "معرّف التنفيذ",
+                    "fulfilledBy": "نُفّذ بواسطة",
+                    "note": "ملاحظة التنفيذ",
+                    "vendorOfferId": "معرّف عرض المورد",
+                    "submittedAt": "تاريخ الإرسال",
+                    "fulfillmentStatus": "حالة التنفيذ",
+                    "requestStatus": "حالة الطلب",
+                    "facilityResponseNote": "ملاحظة رد المنشأة"
+                },
+                "sections": {
+                    "requestSummary": "ملخص الطلب",
+                    "fulfillments": "سجلات التنفيذ",
+                    "fulfillmentDetails": "تفاصيل التنفيذ",
+                    "proofFiles": "ملفات الإثبات"
+                },
+                "actions": {
+                    "viewFulfillment": "عرض التنفيذ",
+                    "viewDetails": "عرض التفاصيل",
+                    "backToList": "العودة إلى التأكيدات المعلقة",
+                    "backToRequest": "العودة إلى سجلات التنفيذ",
+                    "backToDonationRequest": "العودة إلى تفاصيل الطلب",
+                    "confirm": "تأكيد التنفيذ",
+                    "reject": "رفض التنفيذ",
+                    "download": "تنزيل"
+                },
+                "confirmDialog": {
+                    "title": "تأكيد التنفيذ",
+                    "message": "هل تريد تأكيد إثبات التنفيذ؟ سينتقل الطلب إلى الحالة التالية في سير العمل.",
+                    "responseNote": "ملاحظة الرد (اختياري)",
+                    "responseNotePlaceholder": "أضف ملاحظة اختيارية لهذا التأكيد"
+                },
+                "rejectDialog": {
+                    "title": "رفض التنفيذ",
+                    "message": "هل تريد رفض إثبات التنفيذ؟ سيعود الطلب إلى حالة قيد التنفيذ.",
+                    "responseNote": "ملاحظة الرد",
+                    "responseNotePlaceholder": "اشرح سبب رفض هذا التنفيذ",
+                    "validation": {
+                        "noteRequired": "ملاحظة الرد مطلوبة لرفض التنفيذ."
+                    }
+                },
+                "messages": {
+                    "confirmed": "تم تأكيد التنفيذ بنجاح.",
+                    "rejected": "تم رفض التنفيذ بنجاح.",
+                    "downloaded": "تم تنزيل الملف بنجاح."
+                },
+                "errors": {
+                    "fulfillmentNotFound": "لم يتم العثور على سجل التنفيذ.",
+                    "notOwnerFacility": "غير مسموح لك بمراجعة التنفيذ لهذا الطلب.",
+                    "invalidStatus": "هذا الإجراء غير مسموح به لحالة التنفيذ الحالية.",
+                    "requestNotFound": "لم يتم العثور على طلب التبرع.",
+                    "accessDenied": "ليس لديك صلاحية لتنفيذ هذا الإجراء.",
+                    "sessionExpired": "انتهت صلاحية جلستك. يرجى تسجيل الدخول مرة أخرى.",
+                    "downloadFailed": "تعذر تنزيل الملف المحدد."
                 }
             }
         },
@@ -3628,11 +3713,25 @@
                 "missingRequestId": "تعذر تحميل سجلات التنفيذ لأن رقم طلب التبرع المرتبط لم يُرجع.",
                 "columns": {
                     "id": "رقم التنفيذ",
+                    "commitmentId": "رقم الالتزام",
+                    "requestId": "رقم الطلب",
+                    "donorUserId": "رقم المتبرع",
                     "fulfilledBy": "نُفّذ بواسطة",
                     "note": "الملاحظة",
                     "vendorOfferId": "رقم عرض المورد",
                     "createdAt": "تاريخ التقديم",
-                    "status": "الحالة"
+                    "status": "الحالة",
+                    "validationOpensAt": "يفتح التحقق في",
+                    "facilityResponseUserId": "معرّف مستخدم رد المنشأة",
+                    "facilityResponseNote": "رد المنشأة",
+                    "facilityResponseAt": "تاريخ رد المنشأة",
+                    "rejectionConfirmedAt": "تاريخ تأكيد الرفض",
+                    "rejectionConfirmedByUserId": "معرّف مستخدم تأكيد الرفض",
+                    "rejectionValid": "صلاحية الرفض"
+                },
+                "values": {
+                    "yes": "نعم",
+                    "no": "لا"
                 },
                 "actions": {
                     "viewDetails": "عرض التفاصيل",
@@ -4031,6 +4130,12 @@
             "closed": "مغلق",
             "cancelled": "ملغى",
             "unknown": "حالة غير معروفة"
+        },
+        "fulfillmentStatus": {
+            "submitted": "مُقدَّم",
+            "confirmed": "مؤكد",
+            "rejected": "مرفوض",
+            "unknown": "غير معروف"
         },
         "validation": {
             "title": "التحقق المجتمعي",

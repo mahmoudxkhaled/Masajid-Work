@@ -7,6 +7,11 @@ import { ApiService } from '../../api/api.service';
 /** Request code for Download_Request (Files Basic). */
 const DOWNLOAD_REQUEST_CODE = 1111;
 
+export interface FileDownloadResult {
+  blob: Blob;
+  fileName: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -20,7 +25,7 @@ export class FileDownloadService {
     folderId: bigint,
     fileSystemId: number,
     onProgress?: (percent: number) => void
-  ): Promise<Blob> {
+  ): Promise<FileDownloadResult> {
     const downloadInfo = await this.requestDownloadToken(
       accessToken,
       fileId,
@@ -34,7 +39,10 @@ export class FileDownloadService {
       onProgress
     );
 
-    return new Blob(chunks, { type: 'application/octet-stream' });
+    return {
+      blob: new Blob(chunks, { type: 'application/octet-stream' }),
+      fileName: downloadInfo.fileName,
+    };
   }
 
   private async requestDownloadToken(
@@ -58,12 +66,12 @@ export class FileDownloadService {
     )) as unknown as {
       success: boolean;
       message:
-      | string
-      | {
-        download_Token: string;
-        file_Name: string;
-        chunks_Count: number;
-      };
+        | string
+        | {
+            download_Token: string;
+            file_Name: string;
+            chunks_Count: number;
+          };
     };
 
     console.log('Download_Request response:', response);
@@ -79,7 +87,7 @@ export class FileDownloadService {
     }
 
     if (typeof response.message === 'string') {
-      // Unexpected payload shape – propagate as error for generic handling.
+      // Unexpected payload shape - propagate as error for generic handling.
       throw {
         message: response.message,
       };
@@ -113,7 +121,7 @@ export class FileDownloadService {
 
       const arrayBuffer = await firstValueFrom(
         this.http.post(
-          `${this.apiService.getBaseUrl()}/Download?Download_Token=${encodeURIComponent(downloadToken)}`,
+          this.apiService.getBaseUrl() + '/Download?Download_Token=' + encodeURIComponent(downloadToken),
           formData,
           { responseType: 'arraybuffer' as 'json' }
         )
@@ -138,4 +146,3 @@ export class FileDownloadService {
     return allChunks;
   }
 }
-
