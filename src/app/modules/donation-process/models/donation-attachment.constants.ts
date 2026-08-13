@@ -42,3 +42,35 @@ export function getDonationAttachmentKindLabelKey(kind: number): string {
       return 'donations.attachments.kinds.other';
   }
 }
+
+export function resolveFulfillmentProofAttachmentOwner(donationCommitmentId: number): {
+  ownerType: number;
+  ownerId: number;
+} {
+  // TODO: If backend later attaches proofs to DonationFulfillment after create, change only here.
+  return {
+    ownerType: DonationAttachmentOwnerType.DonationCommitment,
+    ownerId: donationCommitmentId,
+  };
+}
+
+export function resolveDonationAttachmentKindFromFileName(fileName: string): number {
+  const name = String(fileName || '').toLowerCase();
+  const extension = name.includes('.') ? name.split('.').pop() || '' : '';
+
+  switch (extension) {
+    case 'pdf':
+      return DonationAttachmentKind.PdfDocument;
+    case 'png':
+    case 'jpg':
+    case 'jpeg':
+    case 'webp':
+      return DonationAttachmentKind.PhotoImage;
+    case 'mp4':
+    case 'mov':
+    case 'webm':
+      return DonationAttachmentKind.Video;
+    default:
+      return DonationAttachmentKind.Other;
+  }
+}

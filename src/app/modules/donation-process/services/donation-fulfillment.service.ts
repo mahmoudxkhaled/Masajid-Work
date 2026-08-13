@@ -28,7 +28,7 @@ export class DonationFulfillmentService {
       dto.donationVendorOfferId.toString(),
       String(dto.fulfillmentNote || '').trim(),
       dto.isRegional.toString(),
-      this.formatIntegerList(dto.attachmentFileIds),
+      this.formatIntegerList(dto.proofAttachmentIds),
       dto.fileSystemId.toString(),
       dto.folderId.toString(),
     ];

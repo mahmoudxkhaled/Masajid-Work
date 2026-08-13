@@ -42,7 +42,6 @@ export class DonationAttachmentUploaderComponent {
 
   @Output() attachmentAdded = new EventEmitter<void>();
 
-  caption = '';
   uploading = false;
   uploadPercent = 0;
 
@@ -145,7 +144,7 @@ export class DonationAttachmentUploaderComponent {
         },
       );
 
-      const caption = String(this.caption || '').trim() || file.name;
+      const caption = String(file.name || '').trim() || `attachment_${currentSortOrder}`;
 
       const response: any = await firstValueFrom(
         this.donationAttachmentService.addDonationAttachment({
@@ -188,7 +187,6 @@ export class DonationAttachmentUploaderComponent {
         summary: this.translate.getInstant('common.success'),
         detail: this.translate.getInstant('donations.attachments.messages.added'),
       });
-      this.caption = '';
       this.attachmentAdded.emit();
     } catch (error: any) {
       if (uploaded) {

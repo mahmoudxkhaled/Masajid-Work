@@ -3976,7 +3976,7 @@
                 "accepted": "Donation accepted successfully.",
                 "cancelled": "Donation commitment cancelled successfully.",
                 "fulfillmentSubmitted": "Fulfillment proof submitted successfully.",
-                "fulfillmentSubmitAfterUploadFailed": "Files were uploaded, but fulfillment proof could not be submitted."
+                "fulfillmentSubmitAfterUploadFailed": "Proof attachments were uploaded and linked, but fulfillment proof could not be submitted."
             },
             "errors": {
                 "requestNotFound": "Donation request was not found.",

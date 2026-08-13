@@ -50,6 +50,7 @@ export class DonationAttachmentService {
       dto.isRegional.toString(),
       dto.sortOrder.toString(),
     ];
+    console.log('addDonationAttachment params', params);
 
     return this.apiServices.callAPI(111000, this.getAccessToken(), params).pipe(
       finalize(() => this.isLoadingSubject.next(false)),
@@ -98,6 +99,17 @@ export class DonationAttachmentService {
 
   mapDonationAttachments(rawItems: DonationAttachmentBackend[]): DonationAttachment[] {
     return rawItems.map((item) => this.mapDonationAttachment(item));
+  }
+
+  extractDonationAttachmentId(message: unknown): number {
+    if (typeof message === 'number' || typeof message === 'string') {
+      return Number(message);
+    }
+    if (message && typeof message === 'object') {
+      const record = message as Record<string, unknown>;
+      return Number(record['Donation_Attachment_ID'] ?? 0);
+    }
+    return 0;
   }
 
   private getAccessToken(): string {

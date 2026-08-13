@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges } from '@angular/core';
 import { MessageService } from 'primeng/api';
+import { firstValueFrom } from 'rxjs';
 import { FileUploadService } from 'src/app/core/file-system-lib/services/file-upload.service';
 import {
   TransferFileStatus,
@@ -12,6 +13,10 @@ import {
   isDonationStorageLocationReady,
 } from '../../../config/donation-storage.config';
 import {
+  resolveDonationAttachmentKindFromFileName,
+  resolveFulfillmentProofAttachmentOwner,
+} from '../../../models/donation-attachment.constants';
+import {
   DONATION_ATTACHMENT_ALLOWED_EXTENSIONS,
   DONATION_ATTACHMENT_MAX_FILE_SIZE_BYTES,
 } from '../../../models/donation-attachment.model';
@@ -20,9 +25,10 @@ import {
   getFulfilledByOptions,
   isValidFulfilledBy,
 } from '../../../models/fulfilled-by.model';
+import { DonationAttachmentService } from '../../../services/donation-attachment.service';
 import { DonationFulfillmentService } from '../../../services/donation-fulfillment.service';
 
-type SubmitFulfillmentProofDialogContext = 'submit' | 'upload';
+type SubmitFulfillmentProofDialogContext = 'submit' | 'upload' | 'link';
 
 @Component({
   standalone: false,
@@ -56,6 +62,7 @@ export class SubmitFulfillmentProofDialogComponent implements OnChanges, OnDestr
 
   constructor(
     private donationFulfillmentService: DonationFulfillmentService,
+    private donationAttachmentService: DonationAttachmentService,
     private fileUploadService: FileUploadService,
     private transferProgressService: TransferProgressService,
     private localStorageService: LocalStorageService,
@@ -294,20 +301,22 @@ export class SubmitFulfillmentProofDialogComponent implements OnChanges, OnDestr
     this.uploadPercent = 0;
     this.syncUploadProgressOverlay();
 
-    const uploadedFileIds: number[] = [];
+    const proofAttachmentIds: number[] = [];
     let uploadFileSystemId = storageLocation.fileSystemId;
     let uploadFolderId = storageLocation.folderId;
     const totalFiles = this.uploadFiles.length;
+    const owner = resolveFulfillmentProofAttachmentOwner(this.donationCommitmentId);
 
-    try {
-      const accessToken = this.localStorageService.getAccessToken();
+    const accessToken = this.localStorageService.getAccessToken();
 
-      for (let i = 0; i < this.uploadFiles.length; i++) {
-        const file = this.uploadFiles[i];
-        this.currentUploadingFileName = file.name;
-        this.fileUploadStatus.set(file.name, 'uploading');
-        this.syncUploadProgressOverlay();
+    for (let i = 0; i < this.uploadFiles.length; i++) {
+      const file = this.uploadFiles[i];
+      let linkingFile = false;
+      this.currentUploadingFileName = file.name;
+      this.fileUploadStatus.set(file.name, 'uploading');
+      this.syncUploadProgressOverlay();
 
+      try {
         const uploaded = await this.fileUploadService.uploadFileWithResult(
           file,
           accessToken,
@@ -325,31 +334,105 @@ export class SubmitFulfillmentProofDialogComponent implements OnChanges, OnDestr
           },
         );
 
-        uploadedFileIds.push(uploaded.fileId);
         uploadFileSystemId = uploaded.fileSystemId;
         uploadFolderId = uploaded.folderId;
+        linkingFile = true;
+
+        const caption =
+          String(this.selectedFiles[i]?.name || file.name || uploaded.fileName || '').trim() ||
+          `proof_${i + 1}`;
+
+        const linkResponse: any = await firstValueFrom(
+          this.donationAttachmentService.addDonationAttachment({
+            ownerType: owner.ownerType,
+            ownerId: owner.ownerId,
+            attachmentKind: resolveDonationAttachmentKindFromFileName(caption),
+            fileId: uploaded.fileId,
+            folderId: uploaded.folderId,
+            fileSystemId: uploaded.fileSystemId,
+            caption,
+            isRegional: this.localStorageService.isRegionalApiInput(),
+            sortOrder: i + 1,
+          }),
+        );
+
+        console.log('addDonationAttachment response', linkResponse);
+
+        if (!linkResponse?.success) {
+          console.log('Donation attachment link failed after upload', {
+            File_ID: uploaded.fileId,
+            Folder_ID: uploaded.folderId,
+            File_System_ID: uploaded.fileSystemId,
+            Owner_Type: owner.ownerType,
+            Owner_ID: owner.ownerId,
+            response: linkResponse,
+          });
+          this.fileUploadStatus.set(file.name, 'error');
+          this.currentUploadingFileName = null;
+          this.syncUploadProgressOverlay();
+          this.messageService.add({
+            severity: 'warn',
+            summary: this.translate.getInstant('common.warning'),
+            detail: this.translate.getInstant('donations.attachments.messages.uploadLinkedFailed'),
+          });
+          this.handleBusinessError('link', linkResponse);
+          this.uploading = false;
+          this.syncUploadProgressOverlay();
+          return;
+        }
+
+        const donationAttachmentId =
+          this.donationAttachmentService.extractDonationAttachmentId(linkResponse.message);
+        if (!donationAttachmentId) {
+          console.log('Donation attachment link returned invalid id', {
+            File_ID: uploaded.fileId,
+            response: linkResponse,
+          });
+          this.fileUploadStatus.set(file.name, 'error');
+          this.currentUploadingFileName = null;
+          this.syncUploadProgressOverlay();
+          this.messageService.add({
+            severity: 'warn',
+            summary: this.translate.getInstant('common.warning'),
+            detail: this.translate.getInstant('donations.attachments.messages.uploadLinkedFailed'),
+          });
+          this.uploading = false;
+          this.syncUploadProgressOverlay();
+          return;
+        }
+
+        proofAttachmentIds.push(donationAttachmentId);
         this.fileUploadStatus.set(file.name, 'completed');
         this.currentUploadingFileName = null;
         this.syncUploadProgressOverlay();
-      }
-    } catch (err: unknown) {
-      console.error('Fulfillment proof upload failed', err);
-      if (this.currentUploadingFileName) {
-        this.fileUploadStatus.set(this.currentUploadingFileName, 'error');
-        this.currentUploadingFileName = null;
+      } catch (err: unknown) {
+        console.error('Fulfillment proof upload/link failed', err);
+        if (this.currentUploadingFileName) {
+          this.fileUploadStatus.set(this.currentUploadingFileName, 'error');
+          this.currentUploadingFileName = null;
+          this.syncUploadProgressOverlay();
+        }
+        const response = this.normalizeUploadError(err);
+        if (linkingFile) {
+          this.messageService.add({
+            severity: 'warn',
+            summary: this.translate.getInstant('common.warning'),
+            detail: this.translate.getInstant('donations.attachments.messages.uploadLinkedFailed'),
+          });
+          this.handleBusinessError('link', response);
+        } else {
+          this.handleBusinessError('upload', response);
+        }
+        this.uploading = false;
         this.syncUploadProgressOverlay();
+        return;
       }
-      const response = this.normalizeUploadError(err);
-      this.handleBusinessError('upload', response);
-      this.uploading = false;
-      this.syncUploadProgressOverlay();
-      return;
     }
 
     this.uploading = false;
     this.transferProgressService.resetUploadProgress();
 
-    if (!uploadedFileIds.length) {
+    if (!proofAttachmentIds.length) {
       this.messageService.add({
         severity: 'warn',
         summary: this.translate.getInstant('common.warning'),
@@ -366,7 +449,7 @@ export class SubmitFulfillmentProofDialogComponent implements OnChanges, OnDestr
       donationVendorOfferId: this.selectedVendorOfferId > 0 ? this.selectedVendorOfferId : 0,
       fulfillmentNote: String(this.fulfillmentNote || '').trim(),
       isRegional: this.localStorageService.isRegionalApiInput(),
-      attachmentFileIds: uploadedFileIds,
+      proofAttachmentIds,
       fileSystemId: uploadFileSystemId,
       folderId: uploadFolderId,
     };
@@ -377,11 +460,11 @@ export class SubmitFulfillmentProofDialogComponent implements OnChanges, OnDestr
       next: (response: any) => {
         console.log('submitFulfillmentProof response', response);
         if (!response?.success) {
-          console.log('Fulfillment proof submit failed after upload', {
+          console.log('Fulfillment proof submit failed after upload/link', {
             Donation_Commitment_ID: payload.donationCommitmentId,
+            Donation_Attachment_IDs: payload.proofAttachmentIds,
             Fulfilled_By: payload.fulfilledBy,
             Donation_Vendor_Offer_ID: payload.donationVendorOfferId,
-            File_IDs: payload.attachmentFileIds,
             File_System_ID: payload.fileSystemId,
             Folder_ID: payload.folderId,
             response,
@@ -471,6 +554,9 @@ export class SubmitFulfillmentProofDialogComponent implements OnChanges, OnDestr
       case 'upload':
         detail = this.getStorageApiErrorMessage(code) ?? this.getNonCodeErrorDetail(response);
         break;
+      case 'link':
+        detail = this.getLinkErrorMessage(code);
+        break;
       case 'submit':
         detail = this.getSubmitErrorMessage(code);
         break;
@@ -500,6 +586,23 @@ export class SubmitFulfillmentProofDialogComponent implements OnChanges, OnDestr
       return null;
     };
     return read(response) ?? read(response?.error);
+  }
+
+  private getLinkErrorMessage(code: string): string | null {
+    switch (code) {
+      case 'DAP13008':
+        return this.translate.getInstant('donations.attachments.errors.invalidOwner');
+      case 'DAP13010':
+        return this.translate.getInstant('donations.attachments.errors.ownerNotEditable');
+      case 'DAP11055':
+        return this.translate.getInstant('donations.attachments.errors.accessDenied');
+      case 'DAP11040':
+      case 'DAP11041':
+      case 'DAP11042':
+        return this.translate.getInstant('donations.attachments.errors.sessionExpired');
+      default:
+        return null;
+    }
   }
 
   private getSubmitErrorMessage(code: string): string | null {

@@ -12,6 +12,8 @@
       <p-button *ngIf="canSubmitProof && !loading"
         [label]="'donations.commitments.actions.submitFulfillmentProof' | translate" icon="pi pi-upload"
         (onClick)="openSubmitProofDialog()"></p-button>
+
+
       <p-button *ngIf="canCancel && !loading" [label]="'donations.commitments.actions.cancelCommitment' | translate"
         icon="pi pi-ban" severity="danger" [outlined]="true" (onClick)="openCancelDialog()"></p-button>
     </div>
@@ -205,8 +207,7 @@
                     <td class="text-center">{{ getYesNo(row.includesSupply) }}</td>
                     <td class="text-center">{{ getYesNo(row.includesInstallation) }}</td>
                     <td>
-                      <div class="offer-description-cell" [pTooltip]="row.description || ''"
-                        tooltipPosition="top">
+                      <div class="offer-description-cell" [pTooltip]="row.description || ''" tooltipPosition="top">
                         {{ row.description || '-' }}
                       </div>
                     </td>
@@ -282,8 +283,7 @@
                     <td>{{ row.id || '-' }}</td>
                     <td>{{ getFulfilledByLabel(row.fulfilledBy) }}</td>
                     <td>
-                      <div class="offer-description-cell" [pTooltip]="row.fulfillmentNote || ''"
-                        tooltipPosition="top">
+                      <div class="offer-description-cell" [pTooltip]="row.fulfillmentNote || ''" tooltipPosition="top">
                         {{ getNoteSummary(row.fulfillmentNote) }}
                       </div>
                     </td>
@@ -329,9 +329,8 @@
 <app-select-vendor-offer-dialog [(visible)]="selectOfferDialogVisible" [offer]="selectedOffer"
   (selected)="onVendorOfferSelected()"></app-select-vendor-offer-dialog>
 
-<app-submit-fulfillment-proof-dialog [(visible)]="submitProofDialogVisible"
-  [donationCommitmentId]="commitmentId" [selectedVendorOfferId]="selectedVendorOfferId"
-  [defaultFulfilledBy]="defaultFulfilledBy"
+<app-submit-fulfillment-proof-dialog [(visible)]="submitProofDialogVisible" [donationCommitmentId]="commitmentId"
+  [selectedVendorOfferId]="selectedVendorOfferId" [defaultFulfilledBy]="defaultFulfilledBy"
   (submitted)="onFulfillmentSubmitted()"></app-submit-fulfillment-proof-dialog>
 
 <app-fulfillment-details-dialog [(visible)]="fulfillmentDetailsDialogVisible"

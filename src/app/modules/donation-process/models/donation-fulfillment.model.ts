@@ -69,7 +69,7 @@ export interface SubmitFulfillmentProofRequest {
   donationVendorOfferId: number;
   fulfillmentNote: string;
   isRegional: boolean;
-  attachmentFileIds: number[];
+  proofAttachmentIds: number[];
   fileSystemId: number;
   folderId: number;
 }

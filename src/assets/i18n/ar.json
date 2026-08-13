@@ -3835,7 +3835,7 @@
                 "accepted": "تم قبول التبرع بنجاح.",
                 "cancelled": "تم إلغاء التزام التبرع بنجاح.",
                 "fulfillmentSubmitted": "تم تقديم إثبات التنفيذ بنجاح.",
-                "fulfillmentSubmitAfterUploadFailed": "تم رفع الملفات، لكن تعذر تقديم إثبات التنفيذ."
+                "fulfillmentSubmitAfterUploadFailed": "تم رفع ملفات الإثبات وربطها، لكن تعذر تقديم إثبات التنفيذ."
             },
             "errors": {
                 "requestNotFound": "لم يتم العثور على طلب التبرع.",
