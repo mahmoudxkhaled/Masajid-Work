@@ -400,7 +400,7 @@ export class DonorCommitmentDetailsComponent implements OnInit, OnDestroy {
           return;
         }
 
-        this.rawFulfillments = this.donationFulfillmentService.extractFulfillments(response.message);
+        this.rawFulfillments = Array.isArray(response.message) ? response.message : [];
         this.fulfillments = this.rawFulfillments.map((item) =>
           this.donationFulfillmentService.mapFulfillmentListItem(item),
         );

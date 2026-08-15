@@ -1,0 +1,121 @@
+<p-toast />
+
+<div class="block-section card">
+  <div class="flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
+    <div class="flex flex-column gap-2">
+      <h2 class="block-title mb-0">{{ 'donations.validation.detailsTitle' | translate }}</h2>
+      <p class="mb-0 text-500">{{ 'donations.validation.detailsSubtitle' | translate }}</p>
+    </div>
+    <p-button [label]="'donations.validation.actions.backToValidations' | translate" icon="pi pi-arrow-left"
+      severity="secondary" [outlined]="true" (onClick)="goBack()"></p-button>
+  </div>
+
+  <div class="block-card details-card p-0 mb-3">
+    <div class="details-section-header details-section-header--with-action">
+      <div class="flex align-items-center gap-3 flex-1 min-w-0">
+        <span class="details-section-icon"><i class="pi pi-check-square"></i></span>
+        <h3 class="details-section-title">{{ 'donations.validation.sections.validationDetails' | translate }}</h3>
+      </div>
+      <app-donation-status-badge *ngIf="details" [label]="decisionLabel"
+        [severity]="decisionSeverity"></app-donation-status-badge>
+    </div>
+
+    <ng-container *ngIf="loading; else detailsLoaded">
+      <div class="grid p-3 pt-2">
+        <div class="col-12 md:col-6" *ngFor="let _ of [1, 2, 3, 4, 5, 6]">
+          <div class="info-item">
+            <p-skeleton height="0.85rem" width="40%" class="mb-2"></p-skeleton>
+            <p-skeleton height="1.25rem" width="70%"></p-skeleton>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-template #detailsLoaded>
+      <div class="p-3 pt-2" *ngIf="details; else detailsUnavailable">
+        <div class="grid">
+          <div class="col-12 md:col-6">
+            <div class="info-item">
+              <span class="info-label">{{ 'donations.validation.columns.validationId' | translate }}</span>
+              <span class="info-value">{{ details.id || '-' }}</span>
+            </div>
+          </div>
+          <div class="col-12 md:col-6">
+            <div class="info-item">
+              <span class="info-label">{{ 'donations.validation.columns.requestId' | translate }}</span>
+              <span class="info-value">{{ details.donationRequestId || requestId }}</span>
+            </div>
+          </div>
+          <div class="col-12 md:col-6">
+            <div class="info-item">
+              <span class="info-label">{{ 'donations.validation.columns.fulfillmentId' | translate }}</span>
+              <span class="info-value">{{ details.donationFulfillmentId || '-' }}</span>
+            </div>
+          </div>
+          <div class="col-12 md:col-6">
+            <div class="info-item">
+              <span class="info-label">{{ 'donations.validation.columns.validator' | translate }}</span>
+              <span class="info-value">{{ details.validatorName || details.validatorUserId || '-' }}</span>
+            </div>
+          </div>
+          <div class="col-12 md:col-6">
+            <div class="info-item">
+              <span class="info-label">{{ 'donations.validation.columns.decision' | translate }}</span>
+              <app-donation-status-badge [label]="decisionLabel"
+                [severity]="decisionSeverity"></app-donation-status-badge>
+            </div>
+          </div>
+          <div class="col-12 md:col-6">
+            <div class="info-item">
+              <span class="info-label">{{ 'donations.validation.columns.submittedAt' | translate }}</span>
+              <span class="info-value" dir="ltr">
+                {{ details.submittedAt ? (details.submittedAt | date:'yyyy-MM-dd hh:mm a') : '-' }}
+              </span>
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="info-item">
+              <span class="info-label">{{ 'donations.validation.columns.notes' | translate }}</span>
+              <span class="info-value line-height-3 font-normal">{{ details.notes || '-' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <ng-template #detailsUnavailable>
+        <p class="p-3 mb-0 text-500">{{ 'donations.validation.detailsUnavailable' | translate }}</p>
+      </ng-template>
+    </ng-template>
+  </div>
+
+  <div class="block-card details-card p-0 mb-3">
+    <div class="details-section-header">
+      <span class="details-section-icon"><i class="pi pi-paperclip"></i></span>
+      <h3 class="details-section-title">{{ 'donations.validation.sections.attachments' | translate }}</h3>
+    </div>
+    <div class="p-3 pt-2">
+      <ng-container *ngIf="loading || attachmentsLoading; else attachmentsContent">
+        <div class="flex flex-column gap-2">
+          <p-skeleton height="2.5rem" width="100%" *ngFor="let _ of [1, 2]"></p-skeleton>
+        </div>
+      </ng-container>
+      <ng-template #attachmentsContent>
+        <p *ngIf="attachments.length === 0" class="mb-0 text-500">
+          {{ 'donations.validation.proofEmpty' | translate }}
+        </p>
+        <ul *ngIf="attachments.length > 0" class="proof-list m-0 pl-0 list-none">
+          <li *ngFor="let item of attachments" class="proof-item flex align-items-center justify-content-between gap-2">
+            <div class="min-w-0 flex align-items-center gap-2 flex-1">
+              <span class="proof-file-icon"><i class="pi pi-file"></i></span>
+              <span class="text-overflow-ellipsis" [pTooltip]="item.fileName || ('#' + item.fileId)">
+                {{ item.fileName || ('#' + item.fileId) }}
+              </span>
+            </div>
+            <p-button *ngIf="canDownload(item)" icon="pi pi-download" [rounded]="true" [text]="true" size="small"
+              [pTooltip]="'donations.validation.actions.download' | translate"
+              [disabled]="downloadingFileId === item.fileId" (onClick)="downloadAttachment(item)"></p-button>
+          </li>
+        </ul>
+      </ng-template>
+    </div>
+  </div>
+</div>

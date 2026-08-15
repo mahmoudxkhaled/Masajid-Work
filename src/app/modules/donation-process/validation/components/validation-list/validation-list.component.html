@@ -22,49 +22,73 @@
     >
       <ng-template pTemplate="header">
         <tr>
-          <th style="width: 16rem">{{ 'donations.shared.columns.title' | translate }}</th>
-          <th class="text-center" style="width: 9rem">{{ 'donations.shared.columns.status' | translate }}</th>
-          <th class="text-center" style="width: 10rem">{{ 'donations.shared.columns.estimatedCost' | translate }}</th>
-          <th class="text-center" style="width: 10rem">{{ 'donations.shared.columns.createdAt' | translate }}</th>
+          <th style="width: 14rem">{{ 'donations.validation.columns.title' | translate }}</th>
+          <th class="text-center" style="width: 10rem">{{ 'donations.validation.columns.quantity' | translate }}</th>
+          <th style="width: 11rem">{{ 'donations.validation.columns.location' | translate }}</th>
+          <th class="text-center" style="width: 10rem">{{ 'donations.validation.columns.publishedAt' | translate }}</th>
+          <th class="text-center" style="width: 10rem">{{ 'donations.validation.columns.actions' | translate }}</th>
         </tr>
       </ng-template>
 
       <ng-template pTemplate="body" let-row>
-        <tr>
-          <td>
+        <tr
+          class="validation-list-row-clickable"
+          [style.cursor]="tableLoadingSpinner ? 'default' : 'pointer'"
+          (click)="!tableLoadingSpinner && openRequest(row)"
+        >
+          <td style="width: 14rem">
             <ng-container *ngIf="tableLoadingSpinner; else titleCell">
               <p-skeleton height="1.25rem" width="12rem"></p-skeleton>
             </ng-container>
             <ng-template #titleCell>
-              <span class="font-semibold">{{ getTitle(row) }}</span>
+              <span class="font-semibold text-overflow-ellipsis" [pTooltip]="getTitle(row)">{{ getTitle(row) }}</span>
             </ng-template>
           </td>
-          <td class="text-center">
-            <ng-container *ngIf="tableLoadingSpinner; else statusCell">
-              <p-skeleton height="1.5rem" width="4.5rem" borderRadius="16px"></p-skeleton>
+          <td class="text-center" style="width: 10rem">
+            <ng-container *ngIf="tableLoadingSpinner; else quantityCell">
+              <p-skeleton height="1.25rem" width="7rem"></p-skeleton>
             </ng-container>
-            <ng-template #statusCell>
-              <app-donation-status-badge [label]="getStatusLabel(row.Donation_Request_Status_ID || 0)" severity="info"></app-donation-status-badge>
+            <ng-template #quantityCell>{{ formatQuantity(row) }}</ng-template>
+          </td>
+          <td style="width: 11rem">
+            <ng-container *ngIf="tableLoadingSpinner; else locationCell">
+              <p-skeleton height="1.25rem" width="8rem"></p-skeleton>
+            </ng-container>
+            <ng-template #locationCell>
+              <span class="text-overflow-ellipsis" [pTooltip]="getLocationLabel(row)">{{ getLocationLabel(row) }}</span>
             </ng-template>
           </td>
-          <td class="text-center">
-            <ng-container *ngIf="tableLoadingSpinner; else costCell">
+          <td class="text-center" style="width: 10rem">
+            <ng-container *ngIf="tableLoadingSpinner; else publishedCell">
               <p-skeleton height="1.25rem" width="7rem"></p-skeleton>
             </ng-container>
-            <ng-template #costCell>{{ formatEstimatedCost(row) }}</ng-template>
+            <ng-template #publishedCell>
+              <span dir="ltr">{{ row.Published_At ? (row.Published_At | date:'yyyy-MM-dd hh:mm a') : '-' }}</span>
+            </ng-template>
           </td>
-          <td class="text-center">
-            <ng-container *ngIf="tableLoadingSpinner; else createdCell">
-              <p-skeleton height="1.25rem" width="7rem"></p-skeleton>
+          <td class="text-center" style="width: 10rem">
+            <ng-container *ngIf="tableLoadingSpinner; else actionsCell">
+              <div class="flex justify-content-center">
+                <p-skeleton height="2rem" width="6rem" borderRadius="6px"></p-skeleton>
+              </div>
             </ng-container>
-            <ng-template #createdCell>{{ row.Created_At || '-' }}</ng-template>
+            <ng-template #actionsCell>
+              <p-button
+                [label]="'donations.validation.actions.validate' | translate"
+                icon="pi pi-check-square"
+                [outlined]="true"
+                severity="secondary"
+                size="small"
+                (onClick)="openRequest(row, $event)"
+              ></p-button>
+            </ng-template>
           </td>
         </tr>
       </ng-template>
 
       <ng-template pTemplate="emptymessage">
         <tr>
-          <td colspan="4" class="text-center py-4">{{ 'donations.validation.empty' | translate }}</td>
+          <td colspan="5" class="text-center py-4">{{ 'donations.validation.empty' | translate }}</td>
         </tr>
       </ng-template>
     </p-table>

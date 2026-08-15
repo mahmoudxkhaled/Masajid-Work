@@ -1,0 +1,67 @@
+---
+description: Enterprise-grade Conventional Commits — detailed body required whenever generating a Git commit message
+alwaysApply: true
+---
+
+# Git commit messages
+
+When generating Git commit messages, always write detailed and professional commit messages.
+
+Assume the commit will be reviewed months later by another developer who has no context about the change. The message must explain the business reason, technical implementation, affected components, migration requirements, risks, testing performed, and expected impact. **Never** generate short or one-line commit messages unless the owner **explicitly** requests a one-line message.
+
+This rule is the source of truth for commit **message content**. It overrides any “concise / 1–2 sentence” commit guidance.
+
+---
+
+## Requirements
+
+- Follow Conventional Commits: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, `style`, `perf`, `ci`, `build`.
+- First line: clear, concise title (`<type>(<scope>): short summary`).
+- Body must explain:
+  - What was changed
+  - Why the change was made (business reason)
+  - Which files, modules, or components were affected
+  - Important implementation details
+  - Migration requirements (if any)
+  - Risks
+  - Potential impact on existing functionality
+- Include testing and validation steps when applicable.
+- Use bullet points for readability.
+- Prefer comprehensive messages that help future developers understand context.
+
+---
+
+## Output format (mandatory)
+
+```
+<type>(<scope>): short summary
+
+What changed:
+- ...
+
+Why:
+- ...
+
+Affected areas:
+- ...
+
+Implementation details:
+- ...
+
+Testing:
+- ...
+
+Impact:
+- ...
+```
+
+Include **Migration** and **Risks** in **Implementation details** or as extra sections when they apply (schema/API/i18n/route changes, breaking behaviour, rollout notes).
+
+---
+
+## Scope
+
+- Infer `<scope>` from the change (e.g. `validation`, `donation-process`, `i18n`, `auth`).
+- Title: imperative, ~72 characters or less.
+- Body: complete sentences or bullets; no placeholders like “misc updates”.
+- Do not invent testing that was not performed; state what was or should be verified.

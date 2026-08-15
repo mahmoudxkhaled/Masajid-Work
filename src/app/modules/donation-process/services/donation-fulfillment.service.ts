@@ -81,26 +81,6 @@ export class DonationFulfillmentService {
     return 0;
   }
 
-  extractFulfillments(message: unknown): DonationFulfillmentBackend[] {
-    if (!message) {
-      return [];
-    }
-    if (Array.isArray(message)) {
-      return message as DonationFulfillmentBackend[];
-    }
-    if (typeof message === 'object') {
-      const record = message as Record<string, unknown>;
-      const nested = record['Fulfillments'];
-      if (Array.isArray(nested)) {
-        return nested as DonationFulfillmentBackend[];
-      }
-      if (nested && typeof nested === 'object') {
-        return Object.values(nested as Record<string, DonationFulfillmentBackend>);
-      }
-    }
-    return [];
-  }
-
   extractFulfillmentDetails(message: unknown): DonationFulfillmentBackend | null {
     if (!message || typeof message !== 'object') {
       return null;

@@ -25,52 +25,63 @@ When working on **donation requests, categories, commitments, vendor offers, ful
 
 The API is documented in **`Docs/donation-process-api.md`**. Read the endpoint’s **Output** section and use that shape directly in components and services.
 
+### Confirmed shapes are fixed (mandatory)
+
+Once a live **`console.log`** or owner-pasted payload confirms **`response.message`**, treat that shape as **fixed**. It will **not** change “just in case.”
+
+- Bind the **exact** keys from that confirmed payload (or the doc when they match) — e.g. `response.message.Fulfillments`, `response.message.Donation_Requests`, or `response.message` when the message **is** the array/object.
+- Do **not** keep or add **`extract*`** helpers that try **array vs nested key vs dictionary** fallbacks for the same endpoint.
+- Do **not** invent alternate containers (`Validations` **or** array **or** `Object.values`) after the owner has shown the real shape.
+- If a later live response differs, **ask** or re-align with **`align-backend-response`** — do **not** pile on defensive extractors.
+
 ### Do
 
-- After **`response?.success`**, read **`response.message`** with the **exact field names** from the doc (PascalCase).
-- **`List<Dictionary>`** outputs (e.g. **`Donation_Requests`**, **`History`**) — assign the array directly:
+- After **`response?.success`**, read **`response.message`** with the **exact field names** from the doc (PascalCase) — or from the confirmed live payload when that is the source of truth.
+- **`List<Dictionary>`** outputs (e.g. **`Donation_Requests`**, **`History`**, **`Fulfillments`**) — assign the array directly:
 
 ```ts
-this.requests = response.message?.Donation_Requests ?? [];
-this.workflowItems = response.message?.History ?? [];
+this.requests = response.message.Donation_Requests;
+this.workflowItems = response.message.History;
+this.rawFulfillments = response.message; // 100802 live: message is the array
+```
+
+- When live payload shows **`message` itself is the array** (e.g. some validation lists), assign it directly:
+
+```ts
+this.rawValidations = response.message;
 ```
 
 - **`Dictionary<int, object>`** outputs (e.g. **`Request_Statuses`**, **`Donation_Types`**, **`Donation_Categories`**) — use **`Object.values`** on the documented key:
 
 ```ts
-this.statuses = Object.values(response.message?.Request_Statuses ?? {});
-this.types = Object.values(response.message?.Donation_Types ?? {}) as DonationTypeBackend[];
+this.statuses = Object.values(response.message.Request_Statuses);
+this.types = Object.values(response.message.Donation_Types) as DonationTypeBackend[];
 ```
 
-- **`Dictionary<string, object?>`** single-record outputs (e.g. **`Donation_Request`** on **`Get_Donation_Request_Details`**) — read the nested object directly:
-
-```ts
-const details = response.message?.Donation_Request;
-```
-
+- **`Dictionary<string, object?>`** single-record outputs — when the live payload is a **flat** details object on **`message`**, use **`response.message`** directly; when the doc nests under a key (e.g. **`Donation_Request`**), use that key only if the confirmed payload has it.
 - Type list/detail rows with the backend interfaces in **`donation-process/models/`** (e.g. **`DonationRequestBackend`**, **`DonationRequestDetailsBackend`**) and bind templates to those **PascalCase** fields (`Title`, `Status_Code`, `Donation_Request_Status_ID`, `Created_At`, …).
 - For Arabic/English display only, use a **small component helper** (e.g. **`getTitle(row)`**) or **`regional-data-remapping`** — pick **`Title_Regional` / `Title`** (or **`Name_Regional` / `Name`**) on language change. That is not a substitute for inventing alternate API keys.
 
 ### Do not
 
-- Do **not** add **`extractDonationRequests`**, **`extractDictionaryItems`**, or similar helpers that try **array OR `Object.values` OR nested-key fallbacks** “just in case”.
+- Do **not** add **`extractDonationRequests`**, **`extractFulfillments`**, **`extractValidations`**, **`extractDictionaryItems`**, or similar helpers that try **array OR `Object.values` OR nested-key fallbacks** “just in case”.
 - Do **not** map the same list into a parallel camelCase view model (**`DonationRequestListItem`**) unless the task explicitly requires it — prefer documented backend fields in templates.
-- Do **not** guess alternate property names (`Status_ID`, `donation_Request_ID`, `Donation_Request_Statuses` vs `Request_Statuses`, mixed casing, etc.) when the doc names one field.
-- Do **not** reload or reshape API data to work around undocumented backend behaviour — if the live response differs from the doc, fix against the doc or ask; do not pile on defensive code.
+- Do **not** guess alternate property names (`Status_ID`, `donation_Request_ID`, `Donation_Request_Statuses` vs `Request_Statuses`, mixed casing, etc.) when the doc or confirmed payload names one field.
+- Do **not** reload or reshape API data to work around undocumented backend behaviour — if the live response differs from the doc, fix against the confirmed live shape or ask; do not pile on defensive code.
 
 ### Examples (from the spec)
 
 | Code | Documented output | Use |
 |------|-------------------|-----|
-| `100205` | `Total_Count`, `Donation_Requests` (list) | `response.message?.Donation_Requests` |
-| `100204` | `Donation_Request` (dictionary) | `response.message?.Donation_Request` |
-| `100206` | `History` (list) | `response.message?.History` |
-| `100106` | `Request_Statuses` (dictionary) | `Object.values(response.message?.Request_Statuses ?? {})` |
-| `100100` | `Donation_Types` (dictionary) | `Object.values(response.message?.Donation_Types ?? {})` |
-| `100101` | `Donation_Categories` (dictionary) | `Object.values(response.message?.Donation_Categories ?? {})` |
+| `100205` | `Total_Count`, `Donation_Requests` (list) | `response.message.Donation_Requests` |
+| `100204` | flat details on `message` (or nested if confirmed) | `response.message` / confirmed key only |
+| `100206` | `History` (list) | `response.message.History` |
+| `100802` | list on `message` (live: direct array) | `response.message` when array |
+| `100106` | `Request_Statuses` (dictionary) | `Object.values(response.message.Request_Statuses)` |
+| `100100` | `Donation_Types` (dictionary) | `Object.values(response.message.Donation_Types)` |
+| `100101` | `Donation_Categories` (dictionary) | `Object.values(response.message.Donation_Categories)` |
 
-Keep services thin: **`callAPI`**, loading flags, and param building only. Parsing belongs in the component (or one minimal mapper for details/workflow display + i18n), following the documented field names exactly.
-
+Keep services thin: **`callAPI`**, loading flags, and param building only. Bind **`response.message.*`** in the component (or one minimal display/i18n mapper), following the confirmed field names exactly.
 ---
 
 ## Owner debug logs (list / details)

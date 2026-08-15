@@ -54,6 +54,18 @@ export function resolveFulfillmentProofAttachmentOwner(donationCommitmentId: num
   };
 }
 
+export function resolveValidationAttachmentOwner(donationRequestId: number): {
+  ownerType: number;
+  ownerId: number;
+} {
+  // Temporary owner strategy for validation attachments until backend confirms whether
+  // validation attachments should be linked before or after Submit_Donation_Validation.
+  return {
+    ownerType: DonationAttachmentOwnerType.DonationRequest,
+    ownerId: donationRequestId,
+  };
+}
+
 export function resolveDonationAttachmentKindFromFileName(fileName: string): number {
   const name = String(fileName || '').toLowerCase();
   const extension = name.includes('.') ? name.split('.').pop() || '' : '';

@@ -1,13 +1,13 @@
-﻿import { Component, OnDestroy, OnInit } from '@angular/core';
+﻿import { Component, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
-import { LanguageDirService } from 'src/app/core/services/language-dir.service';
 import { LocalStorageService } from 'src/app/core/services/local-storage.service';
 import { TranslationService } from 'src/app/core/services/translation.service';
 import { DonationRequestBackend } from '../../../models/donation-request.model';
-import { DonationRequestStatusBackend } from '../../../models/donation-request-status.model';
-import { DonationReferenceService } from '../../../services/donation-reference.service';
 import { DonationValidationService } from '../../services/donation-validation.service';
+
+type ValidationListContext = 'list';
 
 @Component({
   standalone: false,
@@ -15,7 +15,7 @@ import { DonationValidationService } from '../../services/donation-validation.se
   templateUrl: './validation-list.component.html',
   styleUrl: './validation-list.component.scss',
 })
-export class ValidationListComponent implements OnInit, OnDestroy {
+export class ValidationListComponent implements OnDestroy {
   rows = 10;
   readonly rowsPerPageOptions = [10, 25, 50, 100];
 
@@ -24,27 +24,15 @@ export class ValidationListComponent implements OnInit, OnDestroy {
   totalRecords = 0;
   tableLoadingSpinner = false;
 
-  private statuses: DonationRequestStatusBackend[] = [];
-  private statusLabelById: Record<number, string> = {};
   private subscriptions: Subscription[] = [];
 
   constructor(
+    private router: Router,
     private donationValidationService: DonationValidationService,
-    private donationReferenceService: DonationReferenceService,
     private localStorageService: LocalStorageService,
-    private languageDirService: LanguageDirService,
     private translate: TranslationService,
     private messageService: MessageService,
-  ) { }
-
-  ngOnInit(): void {
-    this.subscriptions.push(
-      this.languageDirService.userLanguageCode$.subscribe(() => {
-        this.buildStatusMaps();
-      }),
-    );
-    this.loadStatuses();
-  }
+  ) {}
 
   ngOnDestroy(): void {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
@@ -63,6 +51,14 @@ export class ValidationListComponent implements OnInit, OnDestroy {
     this.loadRequests();
   }
 
+  openRequest(row: DonationRequestBackend, event?: Event): void {
+    event?.stopPropagation();
+    if (this.tableLoadingSpinner || !row.Donation_Request_ID) {
+      return;
+    }
+    this.router.navigate(['/donations/validation', row.Donation_Request_ID]);
+  }
+
   getTitle(row: DonationRequestBackend): string {
     return this.localStorageService.pickRequestContentField(
       String(row.Title || ''),
@@ -70,28 +66,25 @@ export class ValidationListComponent implements OnInit, OnDestroy {
     );
   }
 
-  getStatusLabel(statusId: number): string {
-    return this.statusLabelById[statusId] || '';
+  getLocationLabel(row: DonationRequestBackend): string {
+    const city = String(row.City || '').trim();
+    const country = String(row.Country_Code || '').trim();
+    if (city && country) {
+      return `${city} / ${country}`;
+    }
+    return city || country || '-';
   }
 
-  formatEstimatedCost(row: DonationRequestBackend): string {
-    if (!row.Estimated_Cost) {
+  formatQuantity(row: DonationRequestBackend): string {
+    const quantity = row.Quantity;
+    const unit = String(row.Unit || '').trim();
+    if (quantity == null && !unit) {
       return '-';
     }
-    return `${row.Estimated_Cost} ${row.Currency_Code || ''}`.trim();
-  }
-
-  private loadStatuses(): void {
-    const sub = this.donationReferenceService.listDonationRequestStatuses().subscribe({
-      next: (response: any) => {
-        if (!response?.success) {
-          return;
-        }
-        this.statuses = Object.values(response.message?.Request_Statuses ?? {});
-        this.buildStatusMaps();
-      },
-    });
-    this.subscriptions.push(sub);
+    if (quantity == null) {
+      return unit || '-';
+    }
+    return unit ? `${quantity} ${unit}` : String(quantity);
   }
 
   private loadRequests(): void {
@@ -103,13 +96,13 @@ export class ValidationListComponent implements OnInit, OnDestroy {
       .listDonationsOpenForValidation([], lastRequestId, this.rows)
       .subscribe({
         next: (response: any) => {
-          console.log('validation list response', response);
+          console.log('listDonationsOpenForValidation response', response);
           if (!response?.success) {
-            this.tableLoadingSpinner = false;
+            this.handleBusinessError('list', response);
             return;
           }
-          this.totalRecords = Number(response.message?.Total_Count || 0);
-          this.requests = response.message?.Donation_Requests ?? [];
+          this.totalRecords = Number(response.message.Total_Count);
+          this.requests = response.message.Donation_Requests;
         },
         error: () => {
           this.tableLoadingSpinner = false;
@@ -121,17 +114,36 @@ export class ValidationListComponent implements OnInit, OnDestroy {
     this.subscriptions.push(sub);
   }
 
-  private buildStatusMaps(): void {
-    this.statusLabelById = {};
-    for (const item of this.statuses) {
-      const id = Number(item.Donation_Request_Status_ID || 0);
-      if (!id) {
-        continue;
-      }
-      this.statusLabelById[id] = this.localStorageService.pickLocalizedField(
-        String(item.Name || ''),
-        String(item.Name_Regional || ''),
-      );
+  private handleBusinessError(context: ValidationListContext, response: any): void {
+    const code = String(response?.message || '');
+    let detail: string | null = null;
+
+    switch (context) {
+      case 'list':
+        detail = this.getListErrorMessage(code);
+        this.tableLoadingSpinner = false;
+        break;
+    }
+
+    if (detail) {
+      this.messageService.add({
+        severity: 'error',
+        summary: this.translate.getInstant('common.error'),
+        detail,
+      });
+    }
+  }
+
+  private getListErrorMessage(code: string): string | null {
+    switch (code) {
+      case 'DAP11055':
+        return this.translate.getInstant('donations.validation.errors.accessDenied');
+      case 'DAP11040':
+      case 'DAP11041':
+      case 'DAP11042':
+        return this.translate.getInstant('donations.validation.errors.sessionExpired');
+      default:
+        return null;
     }
   }
 }

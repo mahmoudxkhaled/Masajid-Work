@@ -1,0 +1,94 @@
+<p-toast />
+
+<div class="block-section card">
+  <div class="flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
+    <div class="flex flex-column gap-2">
+      <h2 class="block-title mb-0">{{ 'donations.validation.validationsTitle' | translate }}</h2>
+      <p class="mb-0 text-500">{{ 'donations.validation.validationsSubtitle' | translate }}</p>
+    </div>
+    <p-button [label]="'donations.validation.actions.backToRequest' | translate" icon="pi pi-arrow-left"
+      severity="secondary" [outlined]="true" (onClick)="goBack()"></p-button>
+  </div>
+
+  <div class="block-card">
+    <p-table [value]="tableValue" [paginator]="true" [rows]="rows" [rowsPerPageOptions]="[10, 25, 50, 100]"
+      [showCurrentPageReport]="true" [currentPageReportTemplate]="'donations.validation.pagination' | translate"
+      responsiveLayout="scroll" styleClass="p-datatable-sm">
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="width: 7rem">{{ 'donations.validation.columns.validationId' | translate }}</th>
+          <th class="text-center" style="width: 8rem">{{ 'donations.validation.columns.fulfillmentId' | translate }}</th>
+          <th class="text-center" style="width: 8rem">{{ 'donations.validation.columns.validator' | translate }}</th>
+          <th style="width: 8rem">{{ 'donations.validation.columns.decision' | translate }}</th>
+          <th style="width: 14rem">{{ 'donations.validation.columns.notes' | translate }}</th>
+          <th style="width: 9rem">{{ 'donations.validation.columns.validatedAt' | translate }}</th>
+          <th class="text-center" style="width: 9rem">{{ 'donations.validation.columns.actions' | translate }}</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-row>
+        <tr class="validation-row-clickable" [style.cursor]="loading ? 'default' : 'pointer'"
+          (click)="!loading && viewDetails(row)">
+          <td>
+            <ng-container *ngIf="loading; else idCell">
+              <p-skeleton height="1.25rem" width="3rem"></p-skeleton>
+            </ng-container>
+            <ng-template #idCell>{{ row.id || '-' }}</ng-template>
+          </td>
+          <td class="text-center">
+            <ng-container *ngIf="loading; else fulfillmentCell">
+              <p-skeleton height="1.25rem" width="3rem"></p-skeleton>
+            </ng-container>
+            <ng-template #fulfillmentCell>{{ row.donationFulfillmentId || '-' }}</ng-template>
+          </td>
+          <td class="text-center">
+            <ng-container *ngIf="loading; else validatorCell">
+              <p-skeleton height="1.25rem" width="4rem"></p-skeleton>
+            </ng-container>
+            <ng-template #validatorCell>{{ row.validatorUserId || '-' }}</ng-template>
+          </td>
+          <td>
+            <ng-container *ngIf="loading; else decisionCell">
+              <p-skeleton height="1.5rem" width="4.5rem" borderRadius="16px"></p-skeleton>
+            </ng-container>
+            <ng-template #decisionCell>
+              <app-donation-status-badge
+                [label]="getDecisionLabel(row.validationResult)"
+                [severity]="getDecisionSeverity(row.validationResult)"
+              ></app-donation-status-badge>
+            </ng-template>
+          </td>
+          <td>
+            <ng-container *ngIf="loading; else notesCell">
+              <p-skeleton height="1.25rem" width="10rem"></p-skeleton>
+            </ng-container>
+            <ng-template #notesCell>
+              <span class="text-overflow-ellipsis" [pTooltip]="row.notes || ''">{{ row.notes || '-' }}</span>
+            </ng-template>
+          </td>
+          <td>
+            <ng-container *ngIf="loading; else dateCell">
+              <p-skeleton height="1.25rem" width="7rem"></p-skeleton>
+            </ng-container>
+            <ng-template #dateCell>
+              <span dir="ltr">{{ row.validatedAt ? (row.validatedAt | date:'yyyy-MM-dd hh:mm a') : '-' }}</span>
+            </ng-template>
+          </td>
+          <td class="text-center">
+            <ng-container *ngIf="loading; else actionCell">
+              <p-skeleton height="2rem" width="5rem"></p-skeleton>
+            </ng-container>
+            <ng-template #actionCell>
+              <p-button [label]="'donations.validation.actions.viewDetails' | translate" icon="pi pi-eye" size="small"
+                [text]="true" (onClick)="$event.stopPropagation(); viewDetails(row)"></p-button>
+            </ng-template>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="7" class="text-center py-4">{{ 'donations.validation.validationsEmpty' | translate }}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>

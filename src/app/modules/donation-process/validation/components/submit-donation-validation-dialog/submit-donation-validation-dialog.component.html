@@ -1,0 +1,138 @@
+<p-dialog
+  [(visible)]="visible"
+  [modal]="true"
+  [style]="{ width: '720px', maxWidth: '95vw' }"
+  [draggable]="false"
+  [resizable]="false"
+  [closable]="!busy"
+  [closeOnEscape]="!busy"
+  (onHide)="closeDialog()"
+>
+  <ng-template pTemplate="header">
+    <h3 class="m-0">{{ 'donations.validation.submitDialog.title' | translate }}</h3>
+  </ng-template>
+
+  <div class="flex flex-column gap-3">
+    <p class="mb-0 text-500">{{ 'donations.validation.submitDialog.confirmation' | translate }}</p>
+
+    <div class="flex flex-column gap-2">
+      <label class="font-medium">{{ 'donations.validation.submitDialog.decision' | translate }}</label>
+      <div class="flex flex-column gap-3">
+        <div class="flex align-items-start gap-2">
+          <p-radioButton
+            name="validationResult"
+            [value]="DonationValidationResult.Confirm"
+            [(ngModel)]="validationResult"
+            inputId="validationResultConfirm"
+            [disabled]="busy || !!(isLoading$ | async)"
+          ></p-radioButton>
+          <label for="validationResultConfirm" class="cursor-pointer line-height-3">
+            {{ 'donations.validation.submitDialog.confirmOption' | translate }}
+          </label>
+        </div>
+        <div class="flex align-items-start gap-2">
+          <p-radioButton
+            name="validationResult"
+            [value]="DonationValidationResult.Dispute"
+            [(ngModel)]="validationResult"
+            inputId="validationResultDispute"
+            [disabled]="busy || !!(isLoading$ | async)"
+          ></p-radioButton>
+          <label for="validationResultDispute" class="cursor-pointer line-height-3">
+            {{ 'donations.validation.submitDialog.disputeOption' | translate }}
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-column gap-2">
+      <label class="font-medium">
+        {{ 'donations.validation.submitDialog.notes' | translate }}
+        <span *ngIf="validationResult === DonationValidationResult.Dispute" class="text-red-500">*</span>
+      </label>
+      <textarea
+        pInputTextarea
+        rows="5"
+        class="w-full"
+        [(ngModel)]="notes"
+        [placeholder]="
+          (validationResult === DonationValidationResult.Dispute
+            ? 'donations.validation.submitDialog.notesPlaceholderDispute'
+            : 'donations.validation.submitDialog.notesPlaceholder'
+          ) | translate
+        "
+        [disabled]="busy || !!(isLoading$ | async)"
+      ></textarea>
+    </div>
+
+    <div class="flex flex-column gap-2">
+      <label class="font-medium">{{ 'donations.validation.submitDialog.attachments' | translate }}</label>
+      <div
+        class="proof-upload-area"
+        [class.proof-upload-area--disabled]="!canSelectFiles || !!(isLoading$ | async)"
+        [class.proof-upload-area--dragover]="isDragOver"
+        (dragover)="onDragOver($event)"
+        (dragleave)="onDragLeave($event)"
+        (drop)="onFileDrop($event)"
+      >
+        <label class="proof-upload-button" [class.p-disabled]="!canSelectFiles || !!(isLoading$ | async)">
+          <i class="pi pi-cloud-upload"></i>
+          <span>{{ 'donations.validation.submitDialog.selectFiles' | translate }}</span>
+          <span class="text-500 text-sm">{{ 'donations.validation.submitDialog.dropFiles' | translate }}</span>
+          <span class="text-500 text-sm">
+            {{ 'donations.validation.submitDialog.allowedTypes' | translate: { types: allowedExtensionsLabel } }}
+          </span>
+          <span class="text-500 text-sm">
+            {{ 'donations.validation.submitDialog.maxFileSize' | translate: { size: maxFileSizeLabel } }}
+          </span>
+          <input
+            type="file"
+            class="hidden-file-input"
+            multiple
+            [accept]="fileAcceptAttribute"
+            [disabled]="!canSelectFiles || !!(isLoading$ | async)"
+            (change)="onFilesSelected($event)"
+          />
+        </label>
+      </div>
+
+      <div *ngIf="selectedFiles.length" class="flex flex-column gap-2">
+        <div *ngFor="let file of selectedFiles; let i = index" class="proof-file-item">
+          <div class="flex align-items-center gap-2 min-w-0">
+            <i [class]="getFileIcon(file)"></i>
+            <div class="min-w-0 flex flex-column">
+              <span class="text-overflow-ellipsis">{{ file.name }}</span>
+              <span class="text-500 text-sm">{{ formatFileSize(file.size) }}</span>
+            </div>
+          </div>
+          <p-button
+            icon="pi pi-times"
+            [rounded]="true"
+            [text]="true"
+            severity="danger"
+            size="small"
+            (onClick)="removeFile(i)"
+            [disabled]="busy || !!(isLoading$ | async)"
+          ></p-button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <p-button
+      [label]="'common.cancel' | translate"
+      icon="pi pi-times"
+      severity="secondary"
+      [outlined]="true"
+      (onClick)="closeDialog()"
+      [disabled]="busy || !!(isLoading$ | async)"
+    ></p-button>
+    <p-button
+      [label]="'donations.validation.actions.submitValidation' | translate"
+      icon="pi pi-check"
+      (onClick)="confirmSubmit()"
+      [disabled]="busy || !!(isLoading$ | async)"
+    ></p-button>
+  </ng-template>
+</p-dialog>
