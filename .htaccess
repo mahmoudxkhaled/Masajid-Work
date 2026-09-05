@@ -1,0 +1,27 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # Allow requests for existing files and directories to pass through untouched
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+
+    # Optionally exempt API routes from the Angular rewrite (adjust the prefix as needed)
+    RewriteCond %{REQUEST_URI} ^/(api|rest)/ [NC]
+    RewriteRule ^ - [L]
+
+    # Fallback all other requests to the Angular index.html for client-side routing
+    RewriteRule ^ index.html [L]
+</IfModule>
+
+<IfModule mod_headers.c>
+    # Ensure correct MIME types for JSON (helpful when serving static API stubs)
+    AddType application/json .json
+
+    # Encourage long-term caching for static assets with content hashes
+    <FilesMatch "\.(js|css|png|jpg|jpeg|gif|svg|webp|woff|woff2|ttf|otf|eot)$">
+        Header set Cache-Control "public, max-age=31536000, immutable"
+    </FilesMatch>
+</IfModule>
+

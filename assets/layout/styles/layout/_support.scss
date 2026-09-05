@@ -1,0 +1,52 @@
+.ltr-layout {
+    .layout-support-button.p-button {
+        z-index: 999;
+        position: fixed;
+        top: 90%;
+        right: 0;
+        width: auto;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        padding: 0.5rem;
+
+        .p-button-icon {
+            font-size: 2rem;
+        }
+    }
+}
+
+.ltr-layout,
+.rtl-layout {
+    .layout-support-button.p-button {
+        z-index: 999;
+        position: fixed;
+        width: auto;
+        padding: 0.5rem;
+
+        .p-button-icon {
+            font-size: 2rem;
+        }
+    }
+}
+
+// LTR specific styles
+.ltr-layout {
+    .layout-support-button.p-button {
+        top: 90%;
+        right: 0;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+}
+
+// RTL specific styles
+.rtl-layout {
+    .layout-support-button.p-button {
+        top: 90%;
+        right: auto;
+        left: 0; // Position the button on the left for RTL
+
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+    }
+}
