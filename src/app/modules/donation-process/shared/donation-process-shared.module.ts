@@ -9,6 +9,7 @@ import { DonationStatusBadgeComponent } from './donation-status-badge/donation-s
 import { DonationWorkflowTimelineComponent } from './donation-workflow-timeline/donation-workflow-timeline.component';
 import { DonationAttachmentListComponent } from './donation-attachment-list/donation-attachment-list.component';
 import { DonationAttachmentUploaderComponent } from './donation-attachment-uploader/donation-attachment-uploader.component';
+import { DonationAttachmentPendingPickerComponent } from './donation-attachment-pending-picker/donation-attachment-pending-picker.component';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { DonationAttachmentUploaderComponent } from './donation-attachment-uploa
     DonationLocationMapDialogComponent,
     DonationAttachmentListComponent,
     DonationAttachmentUploaderComponent,
+    DonationAttachmentPendingPickerComponent,
   ],
   imports: [CommonModule, FormsModule, SharedModule, LocationPickerModule],
   exports: [
@@ -27,6 +29,7 @@ import { DonationAttachmentUploaderComponent } from './donation-attachment-uploa
     DonationLocationMapDialogComponent,
     DonationAttachmentListComponent,
     DonationAttachmentUploaderComponent,
+    DonationAttachmentPendingPickerComponent,
     LocationPickerModule,
   ],
 })

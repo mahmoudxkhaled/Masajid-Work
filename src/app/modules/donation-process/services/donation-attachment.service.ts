@@ -31,7 +31,7 @@ export class DonationAttachmentService {
       }));
     }
 
-    if (!dto.fileId || !dto.fileSystemId) {
+    if (!dto.fileId || !dto.folderId || !dto.fileSystemId) {
       return throwError(() => ({
         code: 'UPLOAD_LOCATION_NOT_CONFIGURED',
         message: 'UPLOAD_LOCATION_NOT_CONFIGURED',
@@ -59,8 +59,10 @@ export class DonationAttachmentService {
 
   listDonationAttachments(ownerType: number, ownerId: number): Observable<any> {
     this.isLoadingSubject.next(true);
+    const params = [ownerType.toString(), ownerId.toString()];
+    console.log('listDonationAttachments params', params);
     return this.apiServices
-      .callAPI(111001, this.getAccessToken(), [ownerType.toString(), ownerId.toString()])
+      .callAPI(111001, this.getAccessToken(), params)
       .pipe(finalize(() => this.isLoadingSubject.next(false)));
   }
 

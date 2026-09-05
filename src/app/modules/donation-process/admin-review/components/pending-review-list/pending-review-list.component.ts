@@ -51,6 +51,19 @@ export class PendingReviewListComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    const toastDetailKey = history.state?.['toastDetailKey'];
+    if (toastDetailKey) {
+      const { toastDetailKey: _removed, ...restState } = history.state || {};
+      history.replaceState(restState, '');
+      setTimeout(() => {
+        this.messageService.add({
+          severity: 'success',
+          summary: this.translate.getInstant('common.success'),
+          detail: this.translate.getInstant(String(toastDetailKey)),
+        });
+      });
+    }
+
     this.subscriptions.push(
       this.languageDirService.userLanguageCode$.subscribe(() => {
         this.buildCategoryMaps();

@@ -36,7 +36,8 @@
         <div class="info-item">
           <span class="info-label">{{ 'donations.commitments.vendorOffers.columns.status' | translate }}</span>
           <span class="info-value">
-            <app-donation-status-badge [label]="getStatusLabel()"></app-donation-status-badge>
+            <app-donation-status-badge [label]="getStatusLabel()"
+              [severity]="getStatusSeverity()"></app-donation-status-badge>
           </span>
         </div>
       </div>

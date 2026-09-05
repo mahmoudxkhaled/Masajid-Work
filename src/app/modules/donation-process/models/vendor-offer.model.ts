@@ -63,6 +63,77 @@ export interface CreateVendorOfferRequest {
   validUntil: string;
 }
 
+export const VendorOfferStatus = {
+  Active: 1,
+  Selected: 2,
+  Expired: 3,
+  Withdrawn: 4,
+} as const;
+
+export function getVendorOfferStatusLabelKey(statusId: number, statusCode?: string): string {
+  switch (Number(statusId) || 0) {
+    case VendorOfferStatus.Active:
+      return 'donations.vendorOffers.status.active';
+    case VendorOfferStatus.Selected:
+      return 'donations.vendorOffers.status.selected';
+    case VendorOfferStatus.Expired:
+      return 'donations.vendorOffers.status.expired';
+    case VendorOfferStatus.Withdrawn:
+      return 'donations.vendorOffers.status.withdrawn';
+  }
+
+  switch (String(statusCode || '').toUpperCase()) {
+    case 'ACTIVE':
+      return 'donations.vendorOffers.status.active';
+    case 'SELECTED':
+      return 'donations.vendorOffers.status.selected';
+    case 'EXPIRED':
+      return 'donations.vendorOffers.status.expired';
+    case 'WITHDRAWN':
+      return 'donations.vendorOffers.status.withdrawn';
+    default:
+      return 'donations.vendorOffers.status.unknown';
+  }
+}
+
+export type VendorOfferStatusSeverity = 'success' | 'info' | 'warning' | 'danger' | 'secondary' | 'contrast';
+
+export function getVendorOfferStatusSeverity(statusId: number, statusCode?: string): VendorOfferStatusSeverity {
+  const id = Number(statusId) || 0;
+  const code = String(statusCode || '').toUpperCase();
+
+  if (id === VendorOfferStatus.Active || code === 'ACTIVE') {
+    return 'info';
+  }
+  if (id === VendorOfferStatus.Selected || code === 'SELECTED') {
+    return 'success';
+  }
+  if (id === VendorOfferStatus.Expired || code === 'EXPIRED') {
+    return 'warning';
+  }
+  if (id === VendorOfferStatus.Withdrawn || code === 'WITHDRAWN') {
+    return 'danger';
+  }
+  return 'secondary';
+}
+
+export function isActiveVendorOfferStatus(statusId: number, statusCode?: string): boolean {
+  const id = Number(statusId) || 0;
+  if (
+    id === VendorOfferStatus.Withdrawn ||
+    id === VendorOfferStatus.Selected ||
+    id === VendorOfferStatus.Expired
+  ) {
+    return false;
+  }
+  if (id === VendorOfferStatus.Active) {
+    return true;
+  }
+
+  const code = String(statusCode || '').toUpperCase();
+  return code !== 'WITHDRAWN' && code !== 'SELECTED' && code !== 'EXPIRED';
+}
+
 export interface UpdateVendorOfferRequest {
   donationVendorOfferId: number;
   offerAmount: number;

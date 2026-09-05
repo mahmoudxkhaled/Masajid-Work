@@ -16,7 +16,7 @@
     <div class="flex flex-column gap-2">
       <label class="font-medium">{{ 'donations.vendorOffers.form.currencyCode' | translate }}</label>
       <p-dropdown [options]="currencyOptions" [(ngModel)]="currencyCode" optionLabel="label" optionValue="value"
-        [placeholder]="'donations.vendorOffers.form.currencyPlaceholder' | translate" styleClass="w-full"></p-dropdown>
+        [filter]="true" [placeholder]="currencyPlaceholder" styleClass="w-full"></p-dropdown>
     </div>
 
     <div class="flex flex-wrap gap-3">

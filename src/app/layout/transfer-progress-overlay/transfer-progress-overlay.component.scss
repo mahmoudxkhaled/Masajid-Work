@@ -33,22 +33,45 @@
   pointer-events: none;
 
   .upload-progress-card {
-    max-width: 480px;
+    width: min(420px, calc(100vw - 2rem));
     margin-right: auto;
     margin-left: 0;
     pointer-events: all;
-    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-    animation: slideUpRight 0.3s ease-out;
+    border-radius: 12px;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.14);
+    animation: slideUpLeft 0.28s ease-out;
+  }
+}
+
+:host-context([dir='rtl']) .upload-progress-container {
+  left: auto;
+  right: 0;
+
+  .upload-progress-card {
+    margin-left: auto;
+    margin-right: 0;
+    animation: slideUpRight 0.28s ease-out;
+  }
+}
+
+@keyframes slideUpLeft {
+  from {
+    transform: translateY(1rem) translateX(-0.75rem);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) translateX(0);
+    opacity: 1;
   }
 }
 
 @keyframes slideUpRight {
   from {
-    transform: translateX(100%);
+    transform: translateY(1rem) translateX(0.75rem);
     opacity: 0;
   }
   to {
-    transform: translateX(0);
+    transform: translateY(0) translateX(0);
     opacity: 1;
   }
 }

@@ -1,0 +1,273 @@
+<p-toast />
+
+<div class="block-section card">
+  <div class="flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
+    <div class="flex flex-column gap-2 flex-1 min-w-0">
+      <h2 class="block-title mb-0">{{ 'donations.adminClose.details.title' | translate }}</h2>
+      <ng-container *ngIf="loading; else pageSubtitle">
+        <p-skeleton height="1rem" width="16rem"></p-skeleton>
+      </ng-container>
+      <ng-template #pageSubtitle>
+        <p class="mb-0 text-500">{{ details?.title || ('donations.adminClose.details.subtitle' | translate) }}</p>
+      </ng-template>
+    </div>
+    <div class="flex flex-wrap gap-2 flex-shrink-0">
+      <p-button [label]="'donations.adminClose.actions.backToList' | translate" icon="pi pi-arrow-left"
+        severity="secondary" [outlined]="true" (onClick)="backToList()"></p-button>
+      <p-button *ngIf="canClose" [label]="'donations.adminClose.actions.closeRequest' | translate" icon="pi pi-lock"
+        severity="danger" (onClick)="openCloseDialog()"></p-button>
+    </div>
+  </div>
+
+  <app-erp-info *ngIf="showStatusUnverified" severity="warning" icon="pi pi-exclamation-triangle"
+    [description]="'donations.adminClose.messages.statusUnverified' | translate" class="mb-3"></app-erp-info>
+
+  <app-erp-info *ngIf="showCloseHiddenForClosingStatus" severity="info" icon="pi pi-info-circle"
+    [description]="'donations.adminClose.messages.alreadyClosedOrTerminal' | translate" class="mb-3"></app-erp-info>
+
+  <div class="block-card details-card p-0 mb-3">
+    <div class="details-section-header details-section-header--with-action">
+      <div class="flex align-items-center gap-3 flex-1 min-w-0">
+        <span class="details-section-icon"><i class="pi pi-info-circle"></i></span>
+        <h3 class="details-section-title">{{ 'donations.adminClose.sections.requestSummary' | translate }}</h3>
+      </div>
+      <app-donation-status-badge *ngIf="details" [label]="statusLabel"
+        [severity]="statusSeverity"></app-donation-status-badge>
+    </div>
+
+    <ng-container *ngIf="loading; else requestLoaded">
+      <div class="grid p-3 pt-2">
+        <div class="col-12 md:col-6 lg:col-4" *ngFor="let _ of [1, 2, 3, 4, 5, 6, 7, 8]">
+          <div class="info-item">
+            <p-skeleton height="0.85rem" width="45%" class="mb-2"></p-skeleton>
+            <p-skeleton height="1.25rem" width="70%"></p-skeleton>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-template #requestLoaded>
+      <div class="p-3 pt-2" *ngIf="details; else requestUnavailable">
+        <div class="grid">
+          <div class="col-12 md:col-6 lg:col-4">
+            <div class="info-item">
+              <span class="info-label">{{ 'donations.adminClose.columns.requestId' | translate }}</span>
+              <span class="info-value">{{ details.id || requestId }}</span>
+            </div>
+          </div>
+          <div class="col-12 md:col-6 lg:col-4">
+            <div class="info-item">
+              <span class="info-label">{{ 'donations.shared.columns.title' | translate }}</span>
+              <span class="info-value">{{ details.title || '-' }}</span>
+            </div>
+          </div>
+          <div class="col-12 md:col-6 lg:col-4">
+            <div class="info-item">
+              <span class="info-label">{{ 'donations.adminClose.columns.facility' | translate }}</span>
+              <span class="info-value">{{ details.entityId || '-' }}</span>
+            </div>
+          </div>
+          <div class="col-12 md:col-6 lg:col-4">
+            <div class="info-item">
+              <span class="info-label">{{ 'donations.facility.requests.form.donationType' | translate }}</span>
+              <span class="info-value">{{ typeLabel || '-' }}</span>
+            </div>
+          </div>
+          <div class="col-12 md:col-6 lg:col-4">
+            <div class="info-item">
+              <span class="info-label">{{ 'donations.facility.requests.form.donationCategory' | translate }}</span>
+              <span class="info-value">{{ categoryLabel || '-' }}</span>
+            </div>
+          </div>
+          <div class="col-12 md:col-6 lg:col-4">
+            <div class="info-item">
+              <span class="info-label">{{ 'donations.adminClose.columns.quantity' | translate }}</span>
+              <span class="info-value">{{ formatQuantity() }}</span>
+            </div>
+          </div>
+          <div class="col-12 md:col-6 lg:col-4">
+            <div class="info-item">
+              <span class="info-label">{{ 'donations.shared.columns.estimatedCost' | translate }}</span>
+              <span class="info-value">{{ formatCost() }}</span>
+            </div>
+          </div>
+          <div class="col-12 md:col-6 lg:col-4">
+            <div class="info-item">
+              <span class="info-label">{{ 'donations.adminClose.columns.location' | translate }}</span>
+              <span class="info-value">{{ formatLocation() }}</span>
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="info-item">
+              <span class="info-label">{{ 'donations.facility.requests.form.description' | translate }}</span>
+              <span class="info-value line-height-3 font-normal">{{ details.description || '-' }}</span>
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="info-item">
+              <span class="info-label">{{ 'donations.adminClose.sections.requestAttachments' | translate }}</span>
+              <app-donation-attachment-list [ownerType]="requestAttachmentOwnerType" [ownerId]="requestId"
+                [readonly]="true"></app-donation-attachment-list>
+            </div>
+          </div>
+        </div>
+      </div>
+      <ng-template #requestUnavailable>
+        <p class="p-3 mb-0 text-500">{{ 'donations.adminClose.errors.requestNotFound' | translate }}</p>
+      </ng-template>
+    </ng-template>
+  </div>
+
+  <div class="block-card details-card p-0 mb-3">
+    <div class="details-section-header">
+      <span class="details-section-icon"><i class="pi pi-check-square"></i></span>
+      <h3 class="details-section-title">{{ 'donations.adminClose.sections.fulfillments' | translate }}</h3>
+    </div>
+    <div class="p-3 pt-2">
+      <ng-container *ngIf="fulfillmentsLoading; else fulfillmentsContent">
+        <div class="summary-card mb-2" *ngFor="let _ of [1, 2]">
+          <div class="grid">
+            <div class="col-12 md:col-6 lg:col-4" *ngFor="let __ of [1, 2, 3, 4, 5, 6]">
+              <div class="info-item">
+                <p-skeleton height="0.85rem" width="45%" class="mb-2"></p-skeleton>
+                <p-skeleton height="1.25rem" width="70%"></p-skeleton>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+      <ng-template #fulfillmentsContent>
+        <p *ngIf="fulfillments.length === 0" class="mb-0 text-500">
+          {{ 'donations.adminClose.fulfillmentsEmpty' | translate }}
+        </p>
+        <div *ngFor="let item of fulfillments" class="summary-card mb-2">
+          <div class="flex align-items-center justify-content-between gap-2 mb-2 flex-wrap">
+            <span class="font-semibold">
+              {{ 'donations.adminClose.columns.fulfillmentId' | translate }}
+              #{{ item.Donation_Fulfillment_ID || '-' }}
+            </span>
+            <app-donation-status-badge [label]="getFulfillmentStatusLabel(item.Status)"
+              [severity]="getFulfillmentStatusSeverity(item.Status)"></app-donation-status-badge>
+          </div>
+          <div class="grid">
+            <div class="col-12 md:col-6 lg:col-4">
+              <div class="info-item">
+                <span class="info-label">{{ 'donations.adminClose.columns.commitmentId' | translate }}</span>
+                <span class="info-value">{{ item.Donation_Commitment_ID || '-' }}</span>
+              </div>
+            </div>
+            <div class="col-12 md:col-6 lg:col-4">
+              <div class="info-item">
+                <span class="info-label">{{ 'donations.adminClose.columns.fulfilledBy' | translate }}</span>
+                <span class="info-value">{{ getFulfilledByLabel(item.Fulfilled_By) }}</span>
+              </div>
+            </div>
+            <div class="col-12 md:col-6 lg:col-4">
+              <div class="info-item">
+                <span class="info-label">{{ 'donations.adminClose.columns.vendorOfferId' | translate }}</span>
+                <span class="info-value">{{ formatVendorOfferId(item.Donation_Vendor_Offer_ID) }}</span>
+              </div>
+            </div>
+            <div class="col-12 md:col-6 lg:col-4">
+              <div class="info-item">
+                <span class="info-label">{{ 'donations.adminClose.columns.submittedAt' | translate }}</span>
+                <span class="info-value" dir="ltr">
+                  {{ item.Submitted_At ? (item.Submitted_At | date:'yyyy-MM-dd hh:mm a') : '-' }}
+                </span>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="info-item">
+                <span class="info-label">{{ 'donations.adminClose.columns.fulfillmentNote' | translate }}</span>
+                <span class="info-value line-height-3 font-normal">{{ getFulfillmentNote(item) || '-' }}</span>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="info-item">
+                <span class="info-label">{{ 'donations.adminClose.sections.fulfillmentAttachments' | translate }}</span>
+                <app-donation-attachment-list [ownerType]="fulfillmentAttachmentOwnerType"
+                  [ownerId]="getFulfillmentAttachmentOwnerId(item)" [readonly]="true"></app-donation-attachment-list>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+
+  <div class="block-card details-card p-0 mb-3">
+    <div class="details-section-header">
+      <span class="details-section-icon"><i class="pi pi-users"></i></span>
+      <h3 class="details-section-title">{{ 'donations.adminClose.sections.validations' | translate }}</h3>
+    </div>
+    <div class="p-3 pt-2">
+      <ng-container *ngIf="validationsLoading; else validationsContent">
+        <div class="summary-card mb-2" *ngFor="let _ of [1, 2]">
+          <div class="grid">
+            <div class="col-12 md:col-6 lg:col-4" *ngFor="let __ of [1, 2, 3, 4, 5, 6]">
+              <div class="info-item">
+                <p-skeleton height="0.85rem" width="45%" class="mb-2"></p-skeleton>
+                <p-skeleton height="1.25rem" width="70%"></p-skeleton>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+      <ng-template #validationsContent>
+        <p *ngIf="validations.length === 0" class="mb-0 text-500">
+          {{ 'donations.adminClose.validationsEmpty' | translate }}
+        </p>
+        <div *ngFor="let item of validations" class="summary-card mb-2">
+          <div class="flex align-items-center justify-content-between gap-2 mb-2 flex-wrap">
+            <span class="font-semibold">
+              {{ 'donations.adminClose.columns.validationId' | translate }}
+              #{{ item.id || '-' }}
+            </span>
+            <app-donation-status-badge [label]="getDecisionLabel(item.validationResult)"
+              [severity]="getDecisionSeverity(item.validationResult)"></app-donation-status-badge>
+          </div>
+          <div class="grid">
+            <div class="col-12 md:col-6 lg:col-4">
+              <div class="info-item">
+                <span class="info-label">{{ 'donations.adminClose.columns.fulfillmentId' | translate }}</span>
+                <span class="info-value">{{ item.donationFulfillmentId || '-' }}</span>
+              </div>
+            </div>
+            <div class="col-12 md:col-6 lg:col-4">
+              <div class="info-item">
+                <span class="info-label">{{ 'donations.adminClose.columns.validator' | translate }}</span>
+                <span class="info-value">{{ item.validatorUserId || '-' }}</span>
+              </div>
+            </div>
+            <div class="col-12 md:col-6 lg:col-4">
+              <div class="info-item">
+                <span class="info-label">{{ 'donations.adminClose.columns.validatedAt' | translate }}</span>
+                <span class="info-value" dir="ltr">
+                  {{ item.validatedAt ? (item.validatedAt | date:'yyyy-MM-dd hh:mm a') : '-' }}
+                </span>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="info-item">
+                <span class="info-label">{{ 'donations.adminClose.columns.notes' | translate }}</span>
+                <span class="info-value line-height-3 font-normal">
+                  {{ item.notes || ('donations.adminClose.noNotes' | translate) }}
+                </span>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="info-item">
+                <span class="info-label">{{ 'donations.adminClose.sections.validationAttachments' | translate }}</span>
+                <app-donation-attachment-list [ownerType]="validationAttachmentOwnerType"
+                  [ownerId]="getValidationAttachmentOwnerId(item)" [readonly]="true"></app-donation-attachment-list>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>
+
+<app-close-donation-request-dialog [(visible)]="closeDialogVisible" [donationRequestId]="requestId"
+  (closed)="onRequestClosed()"></app-close-donation-request-dialog>

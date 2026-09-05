@@ -9,7 +9,7 @@
             <p class="text-gray-600 m-0">{{ 'profile.description' | translate }}</p>
         </div>
         <p-button [label]="'profile.edit.backToOverview' | translate" icon="pi pi-arrow-left"
-            (onClick)="navigateBack()"></p-button>
+            severity="secondary" [outlined]="true" (onClick)="navigateBack()"></p-button>
     </div>
 
     <!-- Profile Form -->

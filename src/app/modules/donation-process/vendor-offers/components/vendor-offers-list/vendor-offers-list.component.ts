@@ -5,7 +5,12 @@ import { Subscription } from 'rxjs';
 import { LanguageDirService } from 'src/app/core/services/language-dir.service';
 import { LocalStorageService } from 'src/app/core/services/local-storage.service';
 import { TranslationService } from 'src/app/core/services/translation.service';
-import { VendorOfferBackend, VendorOfferListItem } from '../../../models/vendor-offer.model';
+import {
+  VendorOfferBackend,
+  VendorOfferListItem,
+  getVendorOfferStatusLabelKey,
+  getVendorOfferStatusSeverity,
+} from '../../../models/vendor-offer.model';
 import { VendorOffersService } from '../../services/vendor-offers.service';
 
 type VendorOffersListContext = 'list';
@@ -29,7 +34,7 @@ export class VendorOffersListComponent implements OnInit, OnDestroy {
   statusOptions: { label: string; value: number | null }[] = [];
 
   private rawOffers: VendorOfferBackend[] = [];
-  private statusLabelById: Record<number, string> = {};
+  private statusCodeById: Record<number, string> = {};
   private skeletonRows: VendorOfferListItem[] = this.createSkeletonRows();
   private subscriptions: Subscription[] = [];
 
@@ -43,6 +48,19 @@ export class VendorOffersListComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    const toastDetailKey = history.state?.['toastDetailKey'];
+    if (toastDetailKey) {
+      const { toastDetailKey: _removed, ...restState } = history.state || {};
+      history.replaceState(restState, '');
+      setTimeout(() => {
+        this.messageService.add({
+          severity: 'success',
+          summary: this.translate.getInstant('common.success'),
+          detail: this.translate.getInstant(String(toastDetailKey)),
+        });
+      });
+    }
+
     this.statusOptions = [
       { label: this.translate.getInstant('donations.vendorOffers.filters.allStatuses'), value: null },
     ];
@@ -104,10 +122,15 @@ export class VendorOffersListComponent implements OnInit, OnDestroy {
   }
 
   getStatusLabel(row: VendorOfferListItem): string {
-    if (row.statusCode) {
-      return row.statusCode;
+    if (!row.statusId && !row.statusCode) {
+      return '-';
     }
-    return this.statusLabelById[row.statusId] || String(row.statusId || '-');
+    const code = String(row.statusCode || this.statusCodeById[row.statusId] || '').trim();
+    return this.translate.getInstant(getVendorOfferStatusLabelKey(row.statusId, code));
+  }
+
+  getStatusSeverity(row: VendorOfferListItem) {
+    return getVendorOfferStatusSeverity(row.statusId, row.statusCode);
   }
 
   // #region Load data
@@ -160,17 +183,16 @@ export class VendorOffersListComponent implements OnInit, OnDestroy {
   private buildStatusMapsFromOffers(): void {
     for (const item of this.rawOffers) {
       const id = Number(item.Vendor_Offer_Status_ID ?? item.Status ?? 0);
-      if (!id || this.statusLabelById[id]) {
+      if (!id || this.statusCodeById[id]) {
         continue;
       }
-      const code = String(item.Status_Code || '').trim();
-      this.statusLabelById[id] = code || String(id);
+      this.statusCodeById[id] = String(item.Status_Code || '').trim();
     }
   }
 
   private rebuildStatusOptions(): void {
-    const dynamicOptions = Object.entries(this.statusLabelById).map(([id, label]) => ({
-      label,
+    const dynamicOptions = Object.entries(this.statusCodeById).map(([id, code]) => ({
+      label: this.translate.getInstant(getVendorOfferStatusLabelKey(Number(id), code)),
       value: Number(id),
     }));
     this.statusOptions = [

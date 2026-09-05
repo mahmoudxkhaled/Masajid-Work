@@ -440,7 +440,8 @@
             </div>
 
             <div class="flex pt-4 justify-content-between">
-                <p-button [label]="'notificationsManagement.send.back' | translate" icon="pi pi-arrow-left" severity="secondary" (onClick)="goToStep(0)">
+                <p-button [label]="'notificationsManagement.send.back' | translate" icon="pi pi-arrow-left"
+                    severity="secondary" [outlined]="true" (onClick)="goToStep(0)">
                 </p-button>
                 <p-button [label]="'notificationsManagement.send.sendNotification' | translate" icon="pi pi-send" (onClick)="send()" [loading]="sending"
                     [disabled]="sending || !isStep2Valid">

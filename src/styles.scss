@@ -302,6 +302,40 @@ html[dir='rtl'] .p-datepicker .p-datepicker-next .pi {
   transform: scaleX(-1);
 }
 
+html[dir='rtl'] .p-dropdown.p-dropdown-clearable .p-dropdown-label,
+.rtl-layout .p-dropdown.p-dropdown-clearable .p-dropdown-label {
+  padding-right: 0.75rem;
+  padding-left: 1.75rem;
+}
+
+html[dir='rtl'] .p-dropdown .p-dropdown-clear-icon,
+.rtl-layout .p-dropdown .p-dropdown-clear-icon {
+  right: auto;
+  left: 2.357rem;
+}
+
+html[dir='ltr'] .pi.pi-arrow-left,
+.ltr-layout .pi.pi-arrow-left {
+  transform: scaleX(-1);
+}
+
+html[dir='rtl'] .pi.pi-arrow-left,
+.rtl-layout .pi.pi-arrow-left {
+  transform: none;
+}
+
+.p-button:has(.p-button-icon-left.pi-arrow-left):not(.p-button-icon-only) {
+  flex-direction: row-reverse;
+  gap: 0.5rem;
+
+  .p-button-icon-left {
+    margin-right: 0 !important;
+    margin-left: 0 !important;
+    margin-inline-start: 0;
+    margin-inline-end: 0;
+  }
+}
+
 
  
 

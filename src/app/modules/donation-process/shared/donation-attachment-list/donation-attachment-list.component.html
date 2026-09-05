@@ -1,8 +1,9 @@
 <div class="donation-attachment-list">
   <ng-container *ngIf="loading; else listContent">
-    <div class="flex flex-column gap-2">
-      <p-skeleton height="2.5rem" width="100%" borderRadius="6px"></p-skeleton>
-      <p-skeleton height="2.5rem" width="100%" borderRadius="6px"></p-skeleton>
+    <div class="grid">
+      <div class="col-12 md:col-6" *ngFor="let _ of [1, 2]">
+        <p-skeleton height="2.5rem" width="100%" borderRadius="6px"></p-skeleton>
+      </div>
     </div>
   </ng-container>
 
@@ -11,32 +12,43 @@
       {{ 'donations.attachments.empty' | translate }}
     </p>
 
-    <div *ngIf="attachments.length > 0" class="flex flex-column gap-2">
-      <div
-        *ngFor="let item of attachments"
-        class="attachment-row flex align-items-center justify-content-between gap-3"
-      >
-        <div class="flex align-items-center gap-2 min-w-0 flex-1">
-          <i class="text-500" [ngClass]="getKindIcon(item)"></i>
-          <div class="min-w-0">
-            <div class="font-semibold text-overflow-ellipsis" [pTooltip]="getDisplayName(item)">
-              {{ getDisplayName(item) }}
-            </div>
-            <div class="text-500 text-sm">
-              <span>{{ getKindLabel(item) }}</span>
-              <span *ngIf="item.createdAt"> · <span dir="ltr">{{ item.createdAt | date:'yyyy-MM-dd' }}</span></span>
+    <div *ngIf="attachments.length > 0" class="grid">
+      <div *ngFor="let item of attachments" class="col-12 md:col-6">
+        <div class="attachment-row flex align-items-center justify-content-between gap-3">
+          <div class="flex align-items-center gap-2 min-w-0 flex-1">
+            <i class="text-500" [ngClass]="getKindIcon(item)"></i>
+            <div class="min-w-0">
+              <div class="font-semibold text-overflow-ellipsis" [pTooltip]="getDisplayName(item)">
+                {{ getDisplayName(item) }}
+              </div>
+              <div class="text-500 text-sm">
+                <span>{{ getKindLabel(item) }}</span>
+                <span *ngIf="item.createdAt"> · <span dir="ltr">{{ item.createdAt | date:'yyyy-MM-dd' }}</span></span>
+              </div>
             </div>
           </div>
+          <div class="flex align-items-center gap-2 flex-shrink-0">
+            <p-button
+              *ngIf="canDownload(item)"
+              icon="pi pi-download"
+              severity="secondary"
+              [text]="true"
+              [rounded]="true"
+              [pTooltip]="'donations.attachments.actions.download' | translate"
+              [disabled]="downloadingFileId === item.fileId"
+              (onClick)="downloadAttachment(item)"
+            ></p-button>
+            <p-button
+              *ngIf="allowRemove && !readonly"
+              icon="pi pi-trash"
+              severity="danger"
+              [text]="true"
+              [rounded]="true"
+              [pTooltip]="'donations.attachments.actions.remove' | translate"
+              (onClick)="openRemoveDialog(item)"
+            ></p-button>
+          </div>
         </div>
-        <p-button
-          *ngIf="allowRemove && !readonly"
-          icon="pi pi-trash"
-          severity="danger"
-          [text]="true"
-          [rounded]="true"
-          [pTooltip]="'donations.attachments.actions.remove' | translate"
-          (onClick)="openRemoveDialog(item)"
-        ></p-button>
       </div>
     </div>
   </ng-template>

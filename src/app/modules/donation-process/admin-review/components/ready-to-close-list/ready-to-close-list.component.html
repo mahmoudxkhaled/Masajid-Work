@@ -1,0 +1,148 @@
+<p-toast />
+<div class="block-section card">
+  <div class="flex flex-column gap-2 mb-3">
+    <h2 class="block-title mb-0">{{ 'donations.adminClose.title' | translate }}</h2>
+    <p class="mb-0 text-500">{{ 'donations.adminClose.subtitle' | translate }}</p>
+  </div>
+
+  <div class="block-card">
+    <p-table
+      #readyToCloseTable
+      [value]="tableValue"
+      [paginator]="true"
+      [lazy]="true"
+      [first]="first"
+      [rows]="rows"
+      [totalRecords]="totalRecords"
+      [rowsPerPageOptions]="rowsPerPageOptions"
+      [showCurrentPageReport]="true"
+      [currentPageReportTemplate]="'donations.adminClose.pagination' | translate"
+      responsiveLayout="scroll"
+      styleClass="p-datatable-sm"
+      (onLazyLoad)="onPageChange($event)"
+    >
+      <ng-template pTemplate="caption">
+        <div class="flex align-items-center justify-content-between gap-3 mb-2 flex-wrap">
+          <span class="p-input-icon-left flex-1 min-w-200px max-w-md">
+            <ng-container *ngIf="tableLoadingSpinner && requests.length === 0; else searchInput">
+              <p-skeleton height="2.5rem" width="100%" borderRadius="6px"></p-skeleton>
+            </ng-container>
+            <ng-template #searchInput>
+              <i class="pi pi-search"></i>
+              <input
+                pInputText
+                type="text"
+                class="w-full"
+                [(ngModel)]="textFilter"
+                [placeholder]="'donations.adminClose.searchPlaceholder' | translate"
+                (ngModelChange)="onSearchInput($event)"
+              />
+            </ng-template>
+          </span>
+        </div>
+      </ng-template>
+
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="width: 14rem">{{ 'donations.shared.columns.title' | translate }}</th>
+          <th style="width: 11rem">{{ 'donations.adminClose.columns.category' | translate }}</th>
+          <th class="text-center" style="width: 8rem">{{ 'donations.adminClose.columns.quantity' | translate }}</th>
+          <th class="text-center" style="width: 10rem">{{ 'donations.shared.columns.estimatedCost' | translate }}</th>
+          <th class="text-center" style="width: 10rem">{{ 'donations.adminClose.columns.location' | translate }}</th>
+          <th class="text-center" style="width: 8rem">{{ 'donations.adminClose.columns.status' | translate }}</th>
+          <th class="text-center" style="width: 8rem">{{ 'donations.adminClose.columns.actions' | translate }}</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-row>
+        <tr
+          class="ready-to-close-row-clickable"
+          [style.cursor]="tableLoadingSpinner ? 'default' : 'pointer'"
+          (click)="!tableLoadingSpinner && viewDetails(row)"
+        >
+          <td class="donation-table-cell-ellipsis" style="width: 14rem">
+            <ng-container *ngIf="tableLoadingSpinner; else titleCell">
+              <p-skeleton height="1.25rem" width="12rem"></p-skeleton>
+            </ng-container>
+            <ng-template #titleCell>
+              <span class="font-semibold text-overflow-ellipsis" [pTooltip]="getTitle(row)"
+                tooltipPosition="top">{{ getTitle(row) }}</span>
+            </ng-template>
+          </td>
+          <td class="donation-table-cell-ellipsis" style="width: 11rem">
+            <ng-container *ngIf="tableLoadingSpinner; else categoryCell">
+              <p-skeleton height="1.25rem" width="9rem"></p-skeleton>
+            </ng-container>
+            <ng-template #categoryCell>
+              <span class="text-overflow-ellipsis" [pTooltip]="getCategoryLabel(row)"
+                tooltipPosition="top">{{ getCategoryLabel(row) }}</span>
+            </ng-template>
+          </td>
+          <td class="text-center">
+            <ng-container *ngIf="tableLoadingSpinner; else quantityCell">
+              <div class="flex justify-content-center">
+                <p-skeleton height="1.25rem" width="5rem"></p-skeleton>
+              </div>
+            </ng-container>
+            <ng-template #quantityCell>{{ getQuantityLabel(row) }}</ng-template>
+          </td>
+          <td class="text-center">
+            <ng-container *ngIf="tableLoadingSpinner; else costCell">
+              <div class="flex justify-content-center">
+                <p-skeleton height="1.25rem" width="7rem"></p-skeleton>
+              </div>
+            </ng-container>
+            <ng-template #costCell>{{ formatEstimatedCost(row) }}</ng-template>
+          </td>
+          <td class="text-center">
+            <ng-container *ngIf="tableLoadingSpinner; else locationCell">
+              <div class="flex justify-content-center">
+                <p-skeleton height="1.25rem" width="7rem"></p-skeleton>
+              </div>
+            </ng-container>
+            <ng-template #locationCell>
+              <span class="text-overflow-ellipsis" [pTooltip]="getLocationLabel(row)">{{ getLocationLabel(row) }}</span>
+            </ng-template>
+          </td>
+          <td class="text-center">
+            <ng-container *ngIf="tableLoadingSpinner; else statusCell">
+              <div class="flex justify-content-center">
+                <p-skeleton height="1.5rem" width="5rem" borderRadius="16px"></p-skeleton>
+              </div>
+            </ng-container>
+            <ng-template #statusCell>
+              <div class="flex justify-content-center">
+                <app-donation-status-badge
+                  [label]="getStatusLabel(row)"
+                  [severity]="getStatusSeverity(row)"
+                ></app-donation-status-badge>
+              </div>
+            </ng-template>
+          </td>
+          <td class="text-center">
+            <ng-container *ngIf="tableLoadingSpinner; else actionsCell">
+              <div class="flex justify-content-center">
+                <p-skeleton height="2rem" width="5rem" borderRadius="6px"></p-skeleton>
+              </div>
+            </ng-container>
+            <ng-template #actionsCell>
+              <p-button
+                [label]="'donations.adminClose.actions.viewDetails' | translate"
+                icon="pi pi-eye"
+                size="small"
+                [outlined]="true"
+                (onClick)="viewDetails(row, $event)"
+              ></p-button>
+            </ng-template>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="7" class="text-center py-4">{{ 'donations.adminClose.empty' | translate }}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>

@@ -48,7 +48,8 @@
         <div class="col-12">
           <div class="info-item">
             <p-skeleton height="0.8rem" width="25%" class="mb-2"></p-skeleton>
-            <p-skeleton height="3rem" width="100%"></p-skeleton>
+            <p-skeleton height="2.5rem" width="100%" class="mb-2"></p-skeleton>
+            <p-skeleton height="2.5rem" width="100%"></p-skeleton>
           </div>
         </div>
       </div>
@@ -173,6 +174,24 @@
                 ) | translate
               }}
             </span>
+          </div>
+        </div>
+        <div class="col-12">
+          <div class="info-item proof-attachments">
+            <span class="info-label">{{ 'donations.commitments.fulfillment.detailsDialog.proofFiles' | translate }}</span>
+            <app-donation-attachment-uploader
+              [ownerType]="fulfillmentAttachmentOwnerType"
+              [ownerId]="donationFulfillmentId"
+              storageFolder="fulfillmentProofs"
+              (attachmentAdded)="onProofAttachmentAdded()"
+            ></app-donation-attachment-uploader>
+            <app-donation-attachment-list
+              #proofAttachmentList
+              [ownerType]="fulfillmentAttachmentOwnerType"
+              [ownerId]="donationFulfillmentId"
+              [allowRemove]="true"
+              [allowDownload]="true"
+            ></app-donation-attachment-list>
           </div>
         </div>
       </div>

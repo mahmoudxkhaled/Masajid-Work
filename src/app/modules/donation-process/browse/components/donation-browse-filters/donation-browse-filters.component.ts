@@ -1,5 +1,7 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { MessageService } from 'primeng/api';
+import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 import { TranslationService } from 'src/app/core/services/translation.service';
 import { DonationBrowseFilterForm } from '../../../models/donation-request.model';
 
@@ -9,7 +11,7 @@ import { DonationBrowseFilterForm } from '../../../models/donation-request.model
   templateUrl: './donation-browse-filters.component.html',
   styleUrl: './donation-browse-filters.component.scss',
 })
-export class DonationBrowseFiltersComponent {
+export class DonationBrowseFiltersComponent implements OnInit, OnDestroy {
   @Input() loading = false;
   @Input() initialLoading = false;
   @Input() typeOptions: { label: string; value: number | null }[] = [];
@@ -25,10 +27,30 @@ export class DonationBrowseFiltersComponent {
   filterDialogVisible = false;
   draftFilters: DonationBrowseFilterForm = this.createDefaultFilters();
 
+  typePlaceholder = '';
+  categoryPlaceholder = '';
+  countryPlaceholder = '';
+
+  private subscriptions: Subscription[] = [];
+
   constructor(
     private translate: TranslationService,
+    private translateService: TranslateService,
     private messageService: MessageService,
   ) { }
+
+  ngOnInit(): void {
+    this.refreshPlaceholders();
+    this.subscriptions.push(
+      this.translateService.onLangChange.subscribe(() => {
+        this.refreshPlaceholders();
+      }),
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
+  }
 
   get activeFilterCount(): number {
     let count = 0;
@@ -54,6 +76,7 @@ export class DonationBrowseFiltersComponent {
   }
 
   openFilterDialog(): void {
+    this.refreshPlaceholders();
     this.draftFilters = { ...this.filters };
     this.typeChange.emit(this.draftFilters.donationTypeId);
     this.filterDialogVisible = true;
@@ -85,6 +108,12 @@ export class DonationBrowseFiltersComponent {
 
   onFilterDialogHide(): void {
     this.typeChange.emit(this.filters.donationTypeId);
+  }
+
+  private refreshPlaceholders(): void {
+    this.typePlaceholder = this.translate.getInstant('donations.facility.requests.form.donationTypePlaceholder');
+    this.categoryPlaceholder = this.translate.getInstant('donations.shared.categoryPicker.placeholder');
+    this.countryPlaceholder = this.translate.getInstant('donations.facility.requests.form.countryPlaceholder');
   }
 
   private createDefaultFilters(): DonationBrowseFilterForm {

@@ -6,7 +6,8 @@
         </div>
 
         <div class="flex flex-wrap gap-4 mt-3 mb-6">
-            <div *ngFor="let module of function.modules" [id]="'module-card-' + module.code" class="module-glass-card"
+            <ng-container *ngFor="let module of function.modules">
+            <div *ngIf="module.code !== 'VOFR_NEW'" [id]="'module-card-' + module.code" class="module-glass-card"
                 [class.is-locked]="!module.isImplemented && module.code !== 'LGOT'"
                 [class.module-highlighted]="isModuleHighlighted(module.code)" (click)="onModuleClick(module)">
 
@@ -26,6 +27,7 @@
 
                 <div class="active-bar"></div>
             </div>
+            </ng-container>
         </div>
     </div>
 </div>

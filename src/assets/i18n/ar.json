@@ -1289,6 +1289,8 @@
             "donations.commitments.details.title": "تفاصيل الالتزام",
             "donations.adminReview.title": "مراجعة الإدارة",
             "donations.adminReview.details.title": "مراجعة طلب التبرع",
+            "donations.adminClose.title": "جاهزة للإغلاق",
+            "donations.adminClose.details.title": "إغلاق طلب التبرع",
             "donations.vendorOffers.title": "عروض الموردين",
             "donations.vendorOffers.requests.title": "طلبات المورد",
             "donations.vendorOffers.requestDetails.title": "تفاصيل طلب المورد",
@@ -3441,6 +3443,7 @@
                 "messages": {
                     "notOwnerFacility": "غير مسموح لك بإدارة طلب المنشأة هذا.",
                     "created": "تم حفظ طلب التبرع كمسودة.",
+                    "createdPartialAttachments": "تم إنشاء طلب التبرع، ولكن تعذر حفظ بعض المرفقات.",
                     "updated": "تم تحديث طلب التبرع بنجاح.",
                     "submitted": "تم إرسال طلب التبرع لمراجعة الإدارة.",
                     "deleted": "تم حذف مسودة طلب التبرع بنجاح."
@@ -3479,8 +3482,7 @@
                     "saveDraft": "حفظ كمسودة",
                     "saveAndSubmit": "حفظ وإرسال للمراجعة",
                     "cancel": "إلغاء",
-                    "attachmentsTodoTitle": "المرفقات",
-                    "attachmentsTodo": "سيتم تنفيذ مرفقات طلب التبرع في مرحلة المرفقات باستخدام Add_Donation_Attachment 111000.",
+                    "attachments": "مرفقات الطلب",
                     "validation": {
                         "categoryRequired": "فئة التبرع مطلوبة.",
                         "titleRequired": "العنوان مطلوب.",
@@ -3508,6 +3510,7 @@
                         "donation": "معلومات التبرع",
                         "location": "الموقع",
                         "meta": "معلومات الطلب",
+                        "attachments": "مرفقات الطلب",
                         "workflow": "سجل الحالة"
                     }
                 }
@@ -3633,7 +3636,29 @@
                 "sections": {
                     "donation": "معلومات التبرع",
                     "facility": "معلومات المنشأة",
-                    "location": "الموقع"
+                    "location": "الموقع",
+                    "attachments": "مرفقات الطلب",
+                    "vendorOffers": "عروض الموردين"
+                },
+                "vendorOffers": {
+                    "empty": "لا توجد عروض موردين بعد.",
+                    "count": "{{count}} عروض",
+                    "columns": {
+                        "vendor": "المورد",
+                        "amount": "مبلغ العرض",
+                        "includesSupply": "التوريد",
+                        "includesInstallation": "التركيب",
+                        "description": "الوصف",
+                        "validUntil": "صالح حتى",
+                        "status": "الحالة",
+                        "createdAt": "تاريخ الإنشاء"
+                    },
+                    "errors": {
+                        "requestNotFound": "لم يتم العثور على طلب التبرع.",
+                        "notAccessible": "عروض الموردين غير متاحة لهذا الطلب.",
+                        "accessDenied": "ليس لديك صلاحية للوصول إلى هذا القسم.",
+                        "sessionExpired": "انتهت صلاحية جلستك. يرجى تسجيل الدخول مرة أخرى."
+                    }
                 }
             },
             "validation": {
@@ -3839,6 +3864,7 @@
                 "accepted": "تم قبول التبرع بنجاح.",
                 "cancelled": "تم إلغاء التزام التبرع بنجاح.",
                 "fulfillmentSubmitted": "تم تقديم إثبات التنفيذ بنجاح.",
+                "fulfillmentSubmittedPartialAttachments": "تم تقديم التنفيذ، لكن تعذر حفظ بعض مرفقات الإثبات.",
                 "fulfillmentSubmitAfterUploadFailed": "تم رفع ملفات الإثبات وربطها، لكن تعذر تقديم إثبات التنفيذ."
             },
             "errors": {
@@ -3885,6 +3911,7 @@
                     "donation": "تفاصيل التبرع",
                     "location": "الموقع",
                     "meta": "معلومات الطلب",
+                    "attachments": "مرفقات الطلب",
                     "workflow": "سجل سير العمل"
                 }
             },
@@ -3905,6 +3932,70 @@
                 "invalidStatus": "هذا الإجراء غير مسموح لحالة الطلب الحالية.",
                 "accessDenied": "ليس لديك صلاحية لتنفيذ هذا الإجراء.",
                 "sessionExpired": "انتهت صلاحية جلستك. يرجى تسجيل الدخول مرة أخرى."
+            }
+        },
+        "adminClose": {
+            "title": "طلبات التبرع الجاهزة للإغلاق",
+            "subtitle": "أغلق طلبات التبرع التي اجتازت التحقق المجتمعي بنجاح.",
+            "searchPlaceholder": "ابحث في الطلبات...",
+            "pagination": "عرض '{first}' إلى '{last}' من أصل '{totalRecords}'",
+            "empty": "لا توجد طلبات تبرع جاهزة للإغلاق.",
+            "fulfillmentsEmpty": "لم يتم العثور على سجلات تنفيذ لهذا الطلب.",
+            "validationsEmpty": "لم يتم العثور على تحققات مجتمعية لهذا الطلب.",
+            "noNotes": "لا توجد ملاحظات",
+            "columns": {
+                "requestId": "معرف الطلب",
+                "facility": "المنشأة",
+                "category": "الفئة",
+                "quantity": "الكمية",
+                "location": "الموقع",
+                "status": "الحالة",
+                "actions": "الإجراءات",
+                "fulfillmentId": "معرف التنفيذ",
+                "commitmentId": "معرف الالتزام",
+                "fulfilledBy": "نُفذ بواسطة",
+                "vendorOfferId": "معرف عرض المورد",
+                "submittedAt": "تاريخ الإرسال",
+                "fulfillmentNote": "ملاحظة التنفيذ",
+                "validationId": "معرف التحقق",
+                "validator": "معرف مستخدم المتحقق",
+                "validatedAt": "تاريخ التحقق",
+                "notes": "الملاحظات"
+            },
+            "actions": {
+                "viewDetails": "عرض التفاصيل",
+                "backToList": "العودة إلى الجاهزة للإغلاق",
+                "closeRequest": "إغلاق طلب التبرع",
+                "confirmClose": "إغلاق الطلب"
+            },
+            "details": {
+                "title": "إغلاق طلب التبرع",
+                "subtitle": "راجع ملخص التنفيذ والتحقق قبل الإغلاق."
+            },
+            "sections": {
+                "requestSummary": "ملخص الطلب",
+                "requestAttachments": "مرفقات الطلب",
+                "fulfillments": "سجلات التنفيذ",
+                "fulfillmentAttachments": "مرفقات التنفيذ",
+                "validations": "التحققات المجتمعية",
+                "validationAttachments": "مرفقات التحقق"
+            },
+            "dialog": {
+                "title": "إغلاق طلب التبرع",
+                "warning": "سيؤدي هذا إلى إغلاق طلب التبرع ومنع أي إجراءات لاحقة في سير العمل."
+            },
+            "messages": {
+                "closed": "تم إغلاق طلب التبرع بنجاح.",
+                "statusUnverified": "تعذر التحقق من حالة الطلب.",
+                "alreadyClosedOrTerminal": "هذا الطلب مغلق بالفعل أو في حالة نهائية."
+            },
+            "errors": {
+                "requestNotFound": "لم يتم العثور على طلب التبرع.",
+                "invalidStatus": "لا يمكن إغلاق طلب التبرع في حالته الحالية.",
+                "actionNotAccessible": "هذا الإجراء غير متاح لحسابك.",
+                "accessDenied": "ليس لديك صلاحية لإغلاق طلبات التبرع.",
+                "notOwnerFacility": "غير مسموح لك بعرض طلبات التبرع لهذه المنشأة.",
+                "sessionExpired": "انتهت جلستك. يرجى تسجيل الدخول مرة أخرى."
             }
         },
         "vendorOffers": {
@@ -3929,15 +4020,26 @@
                 "back": "العودة إلى طلبات المورد",
                 "sections": {
                     "request": "طلب التبرع",
-                    "location": "الموقع"
+                    "location": "الموقع",
+                    "attachments": "مرفقات الطلب"
                 }
             },
             "offerDetails": {
                 "title": "تفاصيل عرض المورد",
                 "back": "العودة إلى عروضي",
                 "sections": {
-                    "offer": "عرض المورد"
+                    "offer": "عرض المورد",
+                    "request": "طلب التبرع",
+                    "location": "الموقع",
+                    "attachments": "مرفقات الطلب"
                 }
+            },
+            "status": {
+                "active": "نشط",
+                "withdrawn": "مسحوب",
+                "selected": "مختار",
+                "expired": "منتهي",
+                "unknown": "غير معروف"
             },
             "filters": {
                 "category": "التصنيف",
@@ -4096,7 +4198,17 @@
             },
             "actions": {
                 "selectFiles": "اختيار ملفات",
-                "remove": "إزالة"
+                "remove": "إزالة",
+                "download": "تنزيل"
+            },
+            "uploadHintCreate": "اختر الملفات الآن. سيتم رفعها عند حفظ الطلب.",
+            "uploadHintEdit": "ارفع الملفات لإرفاقها بهذا الطلب مباشرة.",
+            "existingTitle": "المرفقات الحالية",
+            "picker": {
+                "dropFiles": "أو اسحب الملفات وأفلتها هنا",
+                "allowedTypes": "الأنواع المسموحة: {types}",
+                "maxFileSize": "الحد الأقصى لحجم الملف: {size} ميجابايت",
+                "removeFile": "إزالة الملف"
             },
             "removeDialog": {
                 "title": "إزالة المرفق",
@@ -4105,6 +4217,7 @@
             "messages": {
                 "added": "تمت إضافة المرفق بنجاح.",
                 "removed": "تمت إزالة المرفق بنجاح.",
+                "downloaded": "تم تنزيل الملف بنجاح.",
                 "uploadLinkedFailed": "تم رفع الملف بنجاح، لكن تعذر ربطه كمرفق تبرع."
             },
             "errors": {
@@ -4116,7 +4229,9 @@
                 "invalidFileSize": "حجم الملف غير صالح أو كبير جداً.",
                 "uploadFailed": "فشل رفع الملف. يرجى المحاولة مرة أخرى.",
                 "accessDenied": "ليس لديك صلاحية لإدارة المرفقات.",
-                "sessionExpired": "انتهت صلاحية جلستك. يرجى تسجيل الدخول مرة أخرى."
+                "sessionExpired": "انتهت صلاحية جلستك. يرجى تسجيل الدخول مرة أخرى.",
+                "invalidFileAllocation": "تخصيص الملف غير صالح (الملف والمجلد). تعذر تنزيل الملف.",
+                "downloadFailed": "فشل تنزيل الملف."
             }
         },
         "requestStatus": {
@@ -4227,6 +4342,8 @@
             },
             "messages": {
                 "submitted": "تم تقديم التحقق بنجاح.",
+                "submittedPartialAttachments": "تم تقديم التحقق، لكن تعذر حفظ بعض المرفقات.",
+                "validationIdRequiredToLink": "تم تقديم التحقق، لكن تعذر ربط المرفقات لعدم إرجاع مرجع التحقق.",
                 "submitAfterUploadFailed": "تم رفع مرفقات التحقق وربطها، لكن تعذر تقديم التحقق.",
                 "downloaded": "تم تنزيل الملف بنجاح."
             },

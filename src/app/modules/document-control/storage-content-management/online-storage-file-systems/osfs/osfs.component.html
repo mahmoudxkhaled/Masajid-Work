@@ -8,7 +8,7 @@
         icon="pi pi-arrow-left"
         [label]="'fileSystem.osfs.backToFileSystems' | translate"
         [routerLink]="['/document-control', 'storage-content-management', 'osfs']"
-        class="p-button-outlined">
+        class="p-button-outlined p-button-secondary">
       </button>
     </div>
     <app-folder-management [fileSystemId]="fileSystemId"></app-folder-management>
@@ -31,7 +31,7 @@
             icon="pi pi-arrow-left"
             [label]="'fileSystem.backToHome' | translate"
             [routerLink]="['/document-control', 'storage-content-management']"
-            class="p-button-outlined p-button-sm w-full md:w-auto">
+            class="p-button-outlined p-button-secondary p-button-sm w-full md:w-auto">
           </button>
         </div>
       </div>

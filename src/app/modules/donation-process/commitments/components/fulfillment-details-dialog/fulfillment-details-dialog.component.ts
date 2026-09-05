@@ -1,14 +1,16 @@
-import { Component, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { LanguageDirService } from 'src/app/core/services/language-dir.service';
 import { TranslationService } from 'src/app/core/services/translation.service';
+import { DonationAttachmentOwnerType } from '../../../models/donation-attachment.constants';
 import {
   DonationFulfillmentBackend,
   DonationFulfillmentDetails,
 } from '../../../models/donation-fulfillment.model';
 import { getFulfillmentStatusLabelKey } from '../../../models/donation-fulfillment-status.model';
 import { getFulfilledByLabelKey } from '../../../models/fulfilled-by.model';
+import { DonationAttachmentListComponent } from '../../../shared/donation-attachment-list/donation-attachment-list.component';
 import { DonationFulfillmentService } from '../../../services/donation-fulfillment.service';
 
 type FulfillmentDetailsDialogContext = 'load';
@@ -29,6 +31,9 @@ export class FulfillmentDetailsDialogComponent implements OnChanges, OnDestroy {
   details: DonationFulfillmentDetails | null = null;
   fulfilledByLabel = '';
   statusLabel = '';
+  readonly fulfillmentAttachmentOwnerType = DonationAttachmentOwnerType.DonationFulfillment;
+
+  @ViewChild('proofAttachmentList') proofAttachmentList?: DonationAttachmentListComponent;
 
   private rawDetails: DonationFulfillmentBackend | null = null;
   private languageSub?: Subscription;
@@ -61,6 +66,10 @@ export class FulfillmentDetailsDialogComponent implements OnChanges, OnDestroy {
     this.rawDetails = null;
     this.fulfilledByLabel = '';
     this.statusLabel = '';
+  }
+
+  onProofAttachmentAdded(): void {
+    this.proofAttachmentList?.reload();
   }
 
   private loadDetails(): void {

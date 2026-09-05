@@ -81,3 +81,7 @@ export function isDonationRequestPublished(statusId: number): boolean {
 export function isDonationRequestDraft(statusId: number): boolean {
   return statusId === DonationRequestStatusId.Draft;
 }
+
+export function canCloseDonationRequest(statusId: number | null | undefined): boolean {
+  return statusId === DonationRequestStatusId.Validated;
+}

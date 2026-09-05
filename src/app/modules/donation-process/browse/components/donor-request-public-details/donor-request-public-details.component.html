@@ -7,11 +7,12 @@
       <p class="mb-0 text-500" *ngIf="details">{{ details.title }}</p>
     </div>
     <div class="flex flex-wrap gap-2">
-      <p-button [label]="'donations.browse.details.back' | translate" icon="pi pi-arrow-left" severity="secondary"
-        [outlined]="true" (onClick)="backToList()"></p-button>
       <p-button *ngIf="isPublished && !activeCommitmentId"
         [label]="'donations.browse.details.acceptDonation' | translate" icon="pi pi-check" severity="success"
         (onClick)="openAcceptDialog()"></p-button>
+      <p-button [label]="'donations.browse.details.back' | translate" icon="pi pi-arrow-left" severity="secondary"
+        [outlined]="true" (onClick)="backToList()"></p-button>
+
     </div>
   </div>
 
@@ -40,6 +41,51 @@
         </div>
       </div>
     </div>
+
+    <div class="block-card details-card p-0 mb-3">
+      <div class="details-section-header">
+        <div class="flex align-items-center gap-3 flex-1 min-w-0">
+          <p-skeleton shape="circle" size="2.25rem"></p-skeleton>
+          <p-skeleton height="1.25rem" width="8rem"></p-skeleton>
+        </div>
+      </div>
+      <div class="grid p-3 pt-2">
+        <div class="col-12 md:col-6 lg:col-4" *ngFor="let _ of [1, 2, 3]">
+          <div class="info-item">
+            <p-skeleton height="0.85rem" width="45%" class="mb-2"></p-skeleton>
+            <p-skeleton height="1.25rem" width="70%"></p-skeleton>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="block-card details-card p-0 mb-3">
+      <div class="details-section-header">
+        <div class="flex align-items-center gap-3 flex-1 min-w-0">
+          <p-skeleton shape="circle" size="2.25rem"></p-skeleton>
+          <p-skeleton height="1.25rem" width="10rem"></p-skeleton>
+        </div>
+      </div>
+      <div class="p-3 pt-2">
+        <p-skeleton height="4rem" width="100%" borderRadius="8px"></p-skeleton>
+      </div>
+    </div>
+
+    <div class="block-card details-card p-0">
+      <div class="details-section-header">
+        <div class="flex align-items-center gap-3 flex-1 min-w-0">
+          <p-skeleton shape="circle" size="2.25rem"></p-skeleton>
+          <p-skeleton height="1.25rem" width="10rem"></p-skeleton>
+        </div>
+      </div>
+      <div class="p-3 pt-2">
+        <div class="flex flex-column gap-2">
+          <p-skeleton height="2.5rem" width="100%" borderRadius="6px"></p-skeleton>
+          <p-skeleton height="2.5rem" width="100%" borderRadius="6px"></p-skeleton>
+          <p-skeleton height="2.5rem" width="100%" borderRadius="6px"></p-skeleton>
+        </div>
+      </div>
+    </div>
   </ng-container>
 
   <ng-template #detailsContent>
@@ -50,8 +96,15 @@
             <span class="details-section-icon"><i class="pi pi-box"></i></span>
             <h3 class="details-section-title">{{ 'donations.browse.details.sections.donation' | translate }}</h3>
           </div>
-          <app-donation-status-badge *ngIf="statusLabel" [label]="statusLabel"
-            [severity]="statusSeverity"></app-donation-status-badge>
+          <div class="flex align-items-center gap-2 flex-wrap">
+            <app-donation-status-badge *ngIf="statusLabel" [label]="statusLabel"
+              [severity]="statusSeverity"></app-donation-status-badge>
+            <p-skeleton *ngIf="offersLoading" height="1.5rem" width="5.5rem" borderRadius="16px"></p-skeleton>
+            <p-tag *ngIf="!offersLoading" severity="info" icon="pi pi-shopping-bag"
+              styleClass="vendor-offers-count-tag"
+              [value]="'donations.browse.details.vendorOffers.count' | translate: { count: vendorOffers.length }"
+              (click)="scrollToVendorOffers()"></p-tag>
+          </div>
         </div>
         <div class="grid p-3 pt-2">
           <div class="col-12 md:col-6 lg:col-4">
@@ -108,7 +161,7 @@
         </div>
       </div>
 
-      <div class="block-card details-card p-0">
+      <div class="block-card details-card p-0 mb-3">
         <div class="details-section-header details-section-header--with-action">
           <div class="flex align-items-center gap-3 flex-1 min-w-0">
             <span class="details-section-icon"><i class="pi pi-map-marker"></i></span>
@@ -136,6 +189,84 @@
               <span class="info-value">{{ details.address || '-' }}</span>
             </div>
           </div>
+        </div>
+      </div>
+
+      <div class="block-card details-card p-0 mb-3">
+        <div class="details-section-header">
+          <span class="details-section-icon"><i class="pi pi-paperclip"></i></span>
+          <h3 class="details-section-title">{{ 'donations.browse.details.sections.attachments' | translate }}</h3>
+        </div>
+        <div class="p-3 pt-2">
+          <app-donation-attachment-list [ownerType]="requestAttachmentOwnerType" [ownerId]="requestId"
+            [readonly]="true"></app-donation-attachment-list>
+        </div>
+      </div>
+
+      <div id="vendor-offers-section" class="block-card details-card p-0">
+        <div class="details-section-header">
+          <span class="details-section-icon"><i class="pi pi-shopping-bag"></i></span>
+          <h3 class="details-section-title">{{ 'donations.browse.details.sections.vendorOffers' | translate }}</h3>
+        </div>
+        <div class="p-3 pt-2">
+          <ng-container *ngIf="offersLoading; else offersLoaded">
+            <div class="flex flex-column gap-2">
+              <p-skeleton height="2.5rem" width="100%" borderRadius="6px"></p-skeleton>
+              <p-skeleton height="2.5rem" width="100%" borderRadius="6px"></p-skeleton>
+              <p-skeleton height="2.5rem" width="100%" borderRadius="6px"></p-skeleton>
+            </div>
+          </ng-container>
+
+          <ng-template #offersLoaded>
+            <p *ngIf="vendorOffers.length === 0" class="mb-0 text-500">
+              {{ 'donations.browse.details.vendorOffers.empty' | translate }}
+            </p>
+
+            <p-table *ngIf="vendorOffers.length > 0" [value]="vendorOffers" responsiveLayout="scroll"
+              styleClass="p-datatable-sm">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th style="width: 7rem">{{ 'donations.browse.details.vendorOffers.columns.vendor' | translate }}</th>
+                  <th style="width: 8rem">{{ 'donations.browse.details.vendorOffers.columns.amount' | translate }}</th>
+                  <th class="text-center" style="width: 6rem">
+                    {{ 'donations.browse.details.vendorOffers.columns.includesSupply' | translate }}
+                  </th>
+                  <th class="text-center" style="width: 6rem">
+                    {{ 'donations.browse.details.vendorOffers.columns.includesInstallation' | translate }}
+                  </th>
+                  <th style="width: 12rem">
+                    {{ 'donations.browse.details.vendorOffers.columns.description' | translate }}
+                  </th>
+                  <th style="width: 8rem">{{ 'donations.browse.details.vendorOffers.columns.validUntil' | translate }}
+                  </th>
+                  <th class="text-center" style="width: 7rem">
+                    {{ 'donations.browse.details.vendorOffers.columns.status' | translate }}
+                  </th>
+                  <th style="width: 9rem">{{ 'donations.browse.details.vendorOffers.columns.createdAt' | translate }}
+                  </th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-row>
+                <tr>
+                  <td>{{ getVendorLabel(row) }}</td>
+                  <td dir="ltr">{{ formatOfferAmount(row) }}</td>
+                  <td class="text-center">{{ getYesNo(row.includesSupply) }}</td>
+                  <td class="text-center">{{ getYesNo(row.includesInstallation) }}</td>
+                  <td>
+                    <div class="offer-description-cell" [pTooltip]="row.description || ''" tooltipPosition="top">
+                      {{ row.description || '-' }}
+                    </div>
+                  </td>
+                  <td dir="ltr">{{ row.validUntil ? (row.validUntil | date:'yyyy-MM-dd') : '-' }}</td>
+                  <td class="text-center">
+                    <app-donation-status-badge [label]="getOfferStatusLabel(row)"
+                      [severity]="getOfferStatusSeverity(row)"></app-donation-status-badge>
+                  </td>
+                  <td dir="ltr">{{ row.createdAt ? (row.createdAt | date:'yyyy-MM-dd') : '-' }}</td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </ng-template>
         </div>
       </div>
     </div>

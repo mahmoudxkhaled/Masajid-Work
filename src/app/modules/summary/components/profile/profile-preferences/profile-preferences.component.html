@@ -6,7 +6,8 @@
             <h1 class="text-3xl font-bold mb-2">{{ 'profile.preferences.title' | translate }}</h1>
             <p class="text-gray-600 m-0">{{ 'profile.preferences.description' | translate }}</p>
         </div>
-        <p-button [label]="'profile.edit.backToOverview' | translate" icon="pi pi-arrow-left" (onClick)="navigateBack()"></p-button>
+        <p-button [label]="'profile.edit.backToOverview' | translate" icon="pi pi-arrow-left"
+            severity="secondary" [outlined]="true" (onClick)="navigateBack()"></p-button>
     </div>
 
     <app-config></app-config>

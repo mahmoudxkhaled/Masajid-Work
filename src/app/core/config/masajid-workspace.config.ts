@@ -58,6 +58,14 @@ export const MASAJID_WORKSPACE_MODULES: IModulesDetails = {
     Default_Order: 10,
     URL: '/donations/admin/pending-review',
   },
+  ADM_CLOSE: {
+    ModuleID: 307,
+    FunctionID: 11,
+    Name: 'Ready to Close',
+    Name_Regional: '\u062c\u0627\u0647\u0632\u0629 \u0644\u0644\u0625\u063a\u0644\u0627\u0642',
+    Default_Order: 15,
+    URL: '/donations/admin/ready-to-close',
+  },
   ADM_OVER: {
     ModuleID: 302,
     FunctionID: 11,
@@ -214,6 +222,7 @@ export const MASAJID_WORKSPACE_MODULES: IModulesDetails = {
 
 export const MASAJID_WORKSPACE_MODULE_ROLE_VISIBILITY: Partial<Record<string, Roles[]>> = {
   ADM_REV: [Roles.Developer, Roles.SystemAdministrator],
+  ADM_CLOSE: [Roles.Developer, Roles.SystemAdministrator],
   ADM_OVER: [Roles.Developer, Roles.SystemAdministrator],
   ADM_FAC: [Roles.Developer, Roles.SystemAdministrator],
   DNREF: [Roles.Developer, Roles.SystemAdministrator],

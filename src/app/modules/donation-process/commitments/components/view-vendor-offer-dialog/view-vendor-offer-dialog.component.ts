@@ -1,6 +1,10 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { TranslationService } from 'src/app/core/services/translation.service';
-import { VendorOfferListItem } from '../../../models/vendor-offer.model';
+import {
+  VendorOfferListItem,
+  getVendorOfferStatusLabelKey,
+  getVendorOfferStatusSeverity,
+} from '../../../models/vendor-offer.model';
 
 @Component({
   standalone: false,
@@ -50,6 +54,17 @@ export class ViewVendorOfferDialogComponent {
     if (!this.offer) {
       return '-';
     }
-    return this.offer.statusCode || String(this.offer.statusId || '-');
+    const code = String(this.offer.statusCode || '').trim();
+    if (!code && !this.offer.statusId) {
+      return '-';
+    }
+    return this.translate.getInstant(getVendorOfferStatusLabelKey(this.offer.statusId, code));
+  }
+
+  getStatusSeverity() {
+    if (!this.offer) {
+      return 'secondary';
+    }
+    return getVendorOfferStatusSeverity(this.offer.statusId, this.offer.statusCode);
   }
 }

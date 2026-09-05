@@ -36,7 +36,7 @@ export class FacilityRequestsListComponent implements OnInit, OnDestroy {
 
   first = 0;
   totalRecords = 0;
-  tableLoadingSpinner = false;
+  tableLoadingSpinner = true;
   initialLoading = true;
 
   menuItems: MenuItem[] = [];
@@ -48,6 +48,9 @@ export class FacilityRequestsListComponent implements OnInit, OnDestroy {
   private statusCodeById: Record<number, string> = {};
   private categoryLabelById: Record<number, string> = {};
   private countryLabelByCode: Record<string, string> = {};
+  private skeletonRows: DonationRequestBackend[] = Array(10)
+    .fill(null)
+    .map(() => ({} as DonationRequestBackend));
   private searchDebounceTimer: ReturnType<typeof setTimeout> | null = null;
   private subscriptions: Subscription[] = [];
 
@@ -84,14 +87,22 @@ export class FacilityRequestsListComponent implements OnInit, OnDestroy {
 
   get tableValue(): DonationRequestBackend[] {
     if (this.tableLoadingSpinner && this.requests.length === 0) {
-      return Array(this.rows).fill(null).map(() => ({}));
+      return this.skeletonRows;
     }
     return this.requests;
   }
 
   onPageChange(event: any): void {
     this.first = event?.first ?? 0;
-    this.rows = event?.rows ?? this.rows;
+    const nextRows = event?.rows ?? this.rows;
+    if (nextRows !== this.rows) {
+      this.rows = nextRows;
+      this.skeletonRows = Array(this.rows)
+        .fill(null)
+        .map(() => ({} as DonationRequestBackend));
+    } else {
+      this.rows = nextRows;
+    }
     this.loadRequests();
   }
 
@@ -237,12 +248,12 @@ export class FacilityRequestsListComponent implements OnInit, OnDestroy {
     }
   }
 
-  formatEstimatedCost(row: DonationRequestBackend): string {
-    if (!row.Estimated_Cost) {
-      return '-';
-    }
-    return `${row.Estimated_Cost} ${row.Currency_Code || ''}`.trim();
-  }
+  // formatEstimatedCost(row: DonationRequestBackend): string {
+  //   if (!row.Estimated_Cost) {
+  //     return '-';
+  //   }
+  //   return `${row.Estimated_Cost} ${row.Currency_Code || ''}`.trim();
+  // }
 
   getCategoryLabel(row: DonationRequestBackend): string {
     const categoryId = Number(row.Donation_Category_ID || 0);

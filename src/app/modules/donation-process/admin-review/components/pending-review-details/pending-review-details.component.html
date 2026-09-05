@@ -7,12 +7,13 @@
       <p class="mb-0 text-500" *ngIf="details">{{ details.title }}</p>
     </div>
     <div class="flex flex-wrap gap-2">
-      <p-button [label]="'donations.adminReview.details.back' | translate" icon="pi pi-arrow-left" severity="secondary"
-        [outlined]="true" (onClick)="backToList()"></p-button>
+
       <p-button *ngIf="isPendingReview" [label]="'donations.adminReview.actions.approve' | translate" icon="pi pi-check"
         severity="success" (onClick)="openApproveDialog()"></p-button>
       <p-button *ngIf="isPendingReview" [label]="'donations.adminReview.actions.reject' | translate" icon="pi pi-times"
         severity="danger" [outlined]="true" (onClick)="openRejectDialog()"></p-button>
+      <p-button [label]="'donations.adminReview.details.back' | translate" icon="pi pi-arrow-left" severity="secondary"
+        [outlined]="true" (onClick)="backToList()"></p-button>
     </div>
   </div>
 
@@ -132,6 +133,17 @@
               <span class="info-value">{{ details.address || '-' }}</span>
             </div>
           </div>
+        </div>
+      </div>
+
+      <div class="block-card details-card p-0 mb-3">
+        <div class="details-section-header">
+          <span class="details-section-icon"><i class="pi pi-paperclip"></i></span>
+          <h3 class="details-section-title">{{ 'donations.adminReview.details.sections.attachments' | translate }}</h3>
+        </div>
+        <div class="p-3 pt-2">
+          <app-donation-attachment-list [ownerType]="requestAttachmentOwnerType" [ownerId]="requestId"
+            [readonly]="true"></app-donation-attachment-list>
         </div>
       </div>
 

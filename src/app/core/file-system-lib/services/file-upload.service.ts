@@ -42,7 +42,7 @@ export class FileUploadService {
     onProgress?: (percent: number) => void
   ): Promise<void> {
     await this.uploadFileInternal(
-      file,
+      this.withTimestampedFileName(file),
       accessToken,
       fileSystemId,
       folderId,
@@ -59,8 +59,9 @@ export class FileUploadService {
     folderId: bigint,
     onProgress?: (percent: number) => void
   ): Promise<UploadedStorageFileResult> {
+    const uniqueFile = this.withTimestampedFileName(file);
     const fileId = await this.uploadFileInternal(
-      file,
+      uniqueFile,
       accessToken,
       fileSystemId,
       folderId,
@@ -77,12 +78,30 @@ export class FileUploadService {
 
     return {
       fileId,
-      fileName: file.name,
-      fileType: file.type || '',
-      fileSize: file.size,
+      fileName: uniqueFile.name,
+      fileType: uniqueFile.type || '',
+      fileSize: uniqueFile.size,
       folderId: Number(folderId),
       fileSystemId,
     };
+  }
+
+  private withTimestampedFileName(file: File): File {
+    const originalName = String(file?.name || '').trim();
+    const lastDot = originalName.lastIndexOf('.');
+    const baseName = lastDot > 0 ? originalName.substring(0, lastDot) : originalName || 'file';
+    const extension = lastDot > 0 ? originalName.substring(lastDot) : '';
+    const timestampedName = `${baseName}_${Date.now()}${extension}`;
+
+    console.log('Upload unique file name', {
+      originalName,
+      timestampedName,
+    });
+
+    return new File([file], timestampedName, {
+      type: file.type,
+      lastModified: file.lastModified,
+    });
   }
 
   private async uploadFileInternal(

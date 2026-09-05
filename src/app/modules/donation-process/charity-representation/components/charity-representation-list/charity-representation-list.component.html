@@ -44,7 +44,7 @@
 
       <ng-template pTemplate="header">
         <tr>
-          <th style="width: 12rem">{{ 'donations.shared.columns.title' | translate }}</th>
+          <th style="width: 14rem">{{ 'donations.shared.columns.title' | translate }}</th>
           <th class="text-center" style="width: 7rem">{{ 'donations.charityRepresentation.columns.commitmentId' | translate }}</th>
           <th class="text-center" style="width: 9rem">{{ 'donations.commitments.columns.status' | translate }}</th>
           <th class="text-center" style="width: 7rem">{{ 'donations.charityRepresentation.columns.anonymous' | translate }}</th>
@@ -61,9 +61,9 @@
           [style.cursor]="tableLoadingSpinner ? 'default' : 'pointer'"
           (click)="!tableLoadingSpinner && viewDetails(row)"
         >
-          <td>
+          <td class="donation-table-cell-ellipsis" style="width: 14rem">
             <ng-container *ngIf="tableLoadingSpinner; else titleCell">
-              <p-skeleton height="1.25rem" width="90%"></p-skeleton>
+              <p-skeleton height="1.25rem" width="12rem"></p-skeleton>
             </ng-container>
             <ng-template #titleCell>
               <span class="text-overflow-ellipsis" [pTooltip]="row.title" tooltipPosition="top">{{ row.title || '-' }}</span>

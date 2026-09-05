@@ -3,7 +3,8 @@
         <h2>{{ 'summaryNotifications.details.pageTitle' | translate }}</h2>
         <div class="flex gap-2">
             <p-button *ngIf="notification" [label]="'summaryNotifications.details.send' | translate" icon="pi pi-send" (onClick)="sendNotification()"></p-button>
-            <p-button [label]="'summaryNotifications.details.back' | translate" icon="pi pi-arrow-left" class="p-button-secondary" (onClick)="navigateBack()"></p-button>
+            <p-button [label]="'summaryNotifications.details.back' | translate" icon="pi pi-arrow-left"
+                severity="secondary" [outlined]="true" (onClick)="navigateBack()"></p-button>
         </div>
     </div>
 

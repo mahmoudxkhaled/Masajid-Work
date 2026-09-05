@@ -1,19 +1,39 @@
 <div class="donation-attachment-uploader" *ngIf="!readonly">
-  <div class="flex align-items-center gap-2 flex-wrap">
-    <label class="p-button p-button-outlined p-button-secondary" [class.p-disabled]="!canUpload">
-      <i class="pi pi-upload mr-2"></i>
-      {{ 'donations.attachments.actions.selectFiles' | translate }}
+  <div
+    class="attachment-upload-area"
+    [class.attachment-upload-area--disabled]="!canUpload"
+    [class.attachment-upload-area--dragover]="isDragOver"
+    [class.attachment-upload-area--busy]="uploading"
+    (dragover)="onDragOver($event)"
+    (dragleave)="onDragLeave($event)"
+    (drop)="onFileDrop($event)"
+  >
+    <label class="attachment-upload-button" [class.p-disabled]="!canUpload">
+      <i class="pi attachment-upload-button__icon" [ngClass]="uploading ? 'pi-spin pi-spinner' : 'pi-cloud-upload'"></i>
+      <span class="attachment-upload-button__label">
+        {{
+          (uploading ? 'donations.attachments.uploading' : 'donations.attachments.actions.selectFiles')
+            | translate
+        }}
+        <ng-container *ngIf="uploading"> {{ uploadPercent }}%</ng-container>
+      </span>
+      <span class="attachment-upload-button__hint">
+        {{ 'donations.attachments.picker.dropFiles' | translate }}
+      </span>
+      <span class="attachment-upload-button__hint">
+        {{ 'donations.attachments.picker.allowedTypes' | translate: { types: allowedExtensionsLabel } }}
+      </span>
+      <span class="attachment-upload-button__hint">
+        {{ 'donations.attachments.picker.maxFileSize' | translate: { size: maxFileSizeLabel } }}
+      </span>
       <input
         type="file"
         class="hidden-file-input"
         [disabled]="!canUpload"
         [multiple]="maxFiles > 1"
-        accept=".pdf,.png,.jpg,.jpeg,.webp"
+        [accept]="fileAcceptAttribute"
         (change)="onFilesSelected($event)"
       />
     </label>
-    <span class="text-500 text-sm" *ngIf="uploading">
-      {{ 'donations.attachments.uploading' | translate }} {{ uploadPercent }}%
-    </span>
   </div>
 </div>

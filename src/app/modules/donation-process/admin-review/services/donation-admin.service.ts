@@ -38,6 +38,15 @@ export class DonationAdminService {
     );
   }
 
+  closeDonationRequest(donationRequestId: number): Observable<any> {
+    this.isLoadingSubject.next(true);
+    const params = [donationRequestId.toString()];
+    console.log('closeDonationRequest params', params);
+    return this.apiServices.callAPI(100305, this.getAccessToken(), params).pipe(
+      finalize(() => this.isLoadingSubject.next(false)),
+    );
+  }
+
   private getAccessToken(): string {
     return this.localStorageService.getAccessToken();
   }

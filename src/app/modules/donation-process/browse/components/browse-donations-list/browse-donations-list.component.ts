@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
+import { TranslateService } from '@ngx-translate/core';
 import { Subscription, forkJoin } from 'rxjs';
 import { CountryLookup } from 'src/app/core/models/lookup.model';
 import { LanguageDirService } from 'src/app/core/services/language-dir.service';
@@ -56,6 +57,7 @@ export class BrowseDonationsListComponent implements OnInit, OnDestroy {
     private lookupService: PublicLookupService,
     private languageDirService: LanguageDirService,
     private translate: TranslationService,
+    private translateService: TranslateService,
     private messageService: MessageService,
     private router: Router,
   ) { }
@@ -64,12 +66,10 @@ export class BrowseDonationsListComponent implements OnInit, OnDestroy {
     this.buildSortOptions();
     this.subscriptions.push(
       this.languageDirService.userLanguageCode$.subscribe(() => {
-        this.buildSortOptions();
-        this.buildTypeOptions();
-        this.buildCategoryMaps();
-        this.buildCategoryOptions();
-        this.buildCountryOptions();
-        this.buildCountryMaps();
+        this.remapLocalizedOptions();
+      }),
+      this.translateService.onLangChange.subscribe(() => {
+        this.remapLocalizedOptions();
       }),
     );
     this.loadLookups();
@@ -323,10 +323,20 @@ export class BrowseDonationsListComponent implements OnInit, OnDestroy {
 
   private buildCountryOptions(): void {
     const isArabic = this.localStorageService.isArabicUi();
+    this.countries = this.lookupService.sortCountriesByLabel(this.countries, isArabic);
     this.countryOptions = this.countries.map((item) => ({
       label: this.lookupService.getCountryLabel(item, isArabic),
       value: item.code,
     }));
+  }
+
+  private remapLocalizedOptions(): void {
+    this.buildSortOptions();
+    this.buildTypeOptions();
+    this.buildCategoryMaps();
+    this.buildCategoryOptions();
+    this.buildCountryOptions();
+    this.buildCountryMaps();
   }
 
   private buildCategoryMaps(): void {

@@ -67,11 +67,8 @@ export interface SubmitFulfillmentProofRequest {
   donationCommitmentId: number;
   fulfilledBy: number;
   donationVendorOfferId: number;
-  fulfillmentNote: string;
+  fulfillmentNote?: string;
   isRegional: boolean;
-  proofAttachmentIds: number[];
-  fileSystemId: number;
-  folderId: number;
 }
 
 export function canSubmitFulfillmentProof(

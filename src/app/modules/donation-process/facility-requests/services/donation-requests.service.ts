@@ -212,6 +212,7 @@ export class DonationRequestsService {
       filterCount.toString(),
       textFilter || '',
     ];
+    console.log('listEntityDonationRequestsRaw params', params);
     return this.apiServices.callAPI(100205, this.getAccessToken(), params).pipe(
       finalize(() => this.isLoadingSubject.next(false)),
     );

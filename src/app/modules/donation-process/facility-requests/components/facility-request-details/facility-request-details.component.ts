@@ -18,6 +18,7 @@ import {
 } from '../../../models/donation-request-status.model';
 import { DonationCategoryBackend } from '../../../models/donation-category.model';
 import { DonationTypeBackend } from '../../../models/donation-type.model';
+import { DonationAttachmentOwnerType } from '../../../models/donation-attachment.constants';
 import { DonationReferenceService } from '../../../services/donation-reference.service';
 import { DonationRequestsService } from '../../services/donation-requests.service';
 
@@ -30,6 +31,7 @@ type FacilityRequestDetailsContext = 'load' | 'submit' | 'delete';
   styleUrl: './facility-request-details.component.scss',
 })
 export class FacilityRequestDetailsComponent implements OnInit, OnDestroy {
+  readonly requestAttachmentOwnerType = DonationAttachmentOwnerType.DonationRequest;
   requestId = 0;
   loading = true;
   workflowLoading = true;
@@ -68,6 +70,23 @@ export class FacilityRequestDetailsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.requestId = Number(this.route.snapshot.paramMap.get('id') || 0);
+
+    const toastDetailKey = history.state?.['toastDetailKey'];
+    if (toastDetailKey) {
+      const toastSeverity = String(history.state?.['toastSeverity'] || 'success');
+      const { toastDetailKey: _removed, toastSeverity: _severityRemoved, ...restState } = history.state || {};
+      history.replaceState(restState, '');
+      setTimeout(() => {
+        this.messageService.add({
+          severity: toastSeverity === 'warn' ? 'warn' : 'success',
+          summary: this.translate.getInstant(
+            toastSeverity === 'warn' ? 'common.warning' : 'common.success',
+          ),
+          detail: this.translate.getInstant(String(toastDetailKey)),
+        });
+      });
+    }
+
     this.subscriptions.push(
       this.languageDirService.userLanguageCode$.subscribe(() => {
         this.buildStatusMaps();

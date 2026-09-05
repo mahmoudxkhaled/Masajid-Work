@@ -1,7 +1,8 @@
 <div class="card">
     <div class="flex justify-content-between align-items-center mb-4">
         <h2>{{ 'summaryNotifications.send.title' | translate }}</h2>
-        <p-button [label]="'summaryNotifications.send.back' | translate" icon="pi pi-arrow-left" class="p-button-secondary" (onClick)="navigateBack()"></p-button>
+        <p-button [label]="'summaryNotifications.send.back' | translate" icon="pi pi-arrow-left"
+            severity="secondary" [outlined]="true" (onClick)="navigateBack()"></p-button>
     </div>
 
     <!-- Skeleton: same layout as page (Notification Details panel + Select Target panel) -->

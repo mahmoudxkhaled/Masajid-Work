@@ -9,6 +9,9 @@ import {
 } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
+import { FileDownloadService } from 'src/app/core/file-system-lib/services/file-download.service';
+import { TransferProgressService } from 'src/app/core/file-system-lib/services/transfer-progress.service';
+import { LocalStorageService } from 'src/app/core/services/local-storage.service';
 import { TranslationService } from 'src/app/core/services/translation.service';
 import { DonationAttachment } from '../../models/donation-attachment.model';
 import {
@@ -17,7 +20,7 @@ import {
 } from '../../models/donation-attachment.constants';
 import { DonationAttachmentService } from '../../services/donation-attachment.service';
 
-type DonationAttachmentListContext = 'list' | 'remove';
+type DonationAttachmentListContext = 'list' | 'remove' | 'download';
 
 @Component({
   standalone: false,
@@ -30,13 +33,16 @@ export class DonationAttachmentListComponent implements OnChanges, OnDestroy {
   @Input() ownerId = 0;
   @Input() readonly = false;
   @Input() allowRemove = false;
+  @Input() allowDownload = true;
 
   @Output() attachmentsChanged = new EventEmitter<void>();
+  @Output() attachmentsLoaded = new EventEmitter<DonationAttachment[]>();
 
   loading = false;
   attachments: DonationAttachment[] = [];
   removeDialogVisible = false;
   selectedAttachment: DonationAttachment | null = null;
+  downloadingFileId: number | null = null;
 
   isLoading$ = this.donationAttachmentService.isLoadingSubject.asObservable();
 
@@ -44,6 +50,9 @@ export class DonationAttachmentListComponent implements OnChanges, OnDestroy {
 
   constructor(
     private donationAttachmentService: DonationAttachmentService,
+    private fileDownloadService: FileDownloadService,
+    private transferProgressService: TransferProgressService,
+    private localStorageService: LocalStorageService,
     private translate: TranslationService,
     private messageService: MessageService,
   ) {}
@@ -56,6 +65,7 @@ export class DonationAttachmentListComponent implements OnChanges, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
+    this.transferProgressService.resetDownloadProgress();
   }
 
   reload(): void {
@@ -63,6 +73,7 @@ export class DonationAttachmentListComponent implements OnChanges, OnDestroy {
     const ownerId = Number(this.ownerId || 0);
     if (!ownerType || !ownerId) {
       this.attachments = [];
+      this.attachmentsLoaded.emit(this.attachments);
       return;
     }
 
@@ -82,6 +93,7 @@ export class DonationAttachmentListComponent implements OnChanges, OnDestroy {
           .mapDonationAttachments(raw)
           .sort((a, b) => a.sortOrder - b.sortOrder || a.donationAttachmentId - b.donationAttachmentId);
         this.loading = false;
+        this.attachmentsLoaded.emit(this.attachments);
       },
       error: () => {
         this.attachments = [];
@@ -131,6 +143,73 @@ export class DonationAttachmentListComponent implements OnChanges, OnDestroy {
     this.subscriptions.push(sub);
   }
 
+  canDownload(item: DonationAttachment): boolean {
+    return this.allowDownload && item.fileId > 0 && item.folderId > 0 && item.fileSystemId > 0;
+  }
+
+  async downloadAttachment(item: DonationAttachment): Promise<void> {
+    if (!this.canDownload(item) || this.downloadingFileId) {
+      return;
+    }
+
+    const accessToken = this.localStorageService.getAccessToken();
+    const fallbackName = this.getDisplayName(item) || `file_${item.fileId}`;
+    this.downloadingFileId = item.fileId;
+    this.transferProgressService.setDownloadProgress({
+      visible: true,
+      percent: 0,
+      fileName: fallbackName,
+      fileSizeBytes: 0,
+      remainingBytes: 0,
+    });
+
+    try {
+      const blob = await this.fileDownloadService.downloadFile(
+        accessToken,
+        BigInt(item.fileId),
+        BigInt(item.folderId),
+        item.fileSystemId,
+        (percent) => {
+          this.transferProgressService.setDownloadProgress({
+            visible: true,
+            percent: Math.round(percent),
+            fileName: fallbackName,
+            fileSizeBytes: 0,
+            remainingBytes: 0,
+          });
+        },
+      );
+
+      const downloadName = fallbackName;
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = downloadName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      this.messageService.add({
+        severity: 'success',
+        summary: this.translate.getInstant('common.success'),
+        detail: this.translate.getInstant('donations.attachments.messages.downloaded'),
+      });
+    } catch (err: unknown) {
+      console.error('downloadAttachment failed', err);
+      const errorCode =
+        err && typeof err === 'object' && 'errorCode' in err
+          ? String((err as { errorCode?: unknown }).errorCode || '')
+          : err && typeof err === 'object' && 'message' in err
+            ? String((err as { message?: unknown }).message || '')
+            : '';
+      this.handleBusinessError('download', { message: errorCode });
+    } finally {
+      this.downloadingFileId = null;
+      this.transferProgressService.resetDownloadProgress();
+    }
+  }
+
   getDisplayName(item: DonationAttachment): string {
     return item.caption || `#${item.fileId || item.donationAttachmentId}`;
   }
@@ -162,6 +241,9 @@ export class DonationAttachmentListComponent implements OnChanges, OnDestroy {
         break;
       case 'remove':
         detail = this.getRemoveErrorMessage(code);
+        break;
+      case 'download':
+        detail = this.getDownloadErrorMessage(code);
         break;
     }
 
@@ -203,6 +285,21 @@ export class DonationAttachmentListComponent implements OnChanges, OnDestroy {
         return this.translate.getInstant('donations.attachments.errors.sessionExpired');
       default:
         return null;
+    }
+  }
+
+  private getDownloadErrorMessage(code: string): string | null {
+    switch (code) {
+      case 'DAP12280':
+        return this.translate.getInstant('donations.attachments.errors.invalidFileAllocation');
+      case 'DAP11055':
+        return this.translate.getInstant('donations.attachments.errors.accessDenied');
+      case 'DAP11040':
+      case 'DAP11041':
+      case 'DAP11042':
+        return this.translate.getInstant('donations.attachments.errors.sessionExpired');
+      default:
+        return this.translate.getInstant('donations.attachments.errors.downloadFailed');
     }
   }
 }

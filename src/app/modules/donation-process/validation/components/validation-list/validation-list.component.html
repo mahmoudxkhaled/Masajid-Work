@@ -36,12 +36,13 @@
           [style.cursor]="tableLoadingSpinner ? 'default' : 'pointer'"
           (click)="!tableLoadingSpinner && openRequest(row)"
         >
-          <td style="width: 14rem">
+          <td class="donation-table-cell-ellipsis" style="width: 14rem">
             <ng-container *ngIf="tableLoadingSpinner; else titleCell">
               <p-skeleton height="1.25rem" width="12rem"></p-skeleton>
             </ng-container>
             <ng-template #titleCell>
-              <span class="font-semibold text-overflow-ellipsis" [pTooltip]="getTitle(row)">{{ getTitle(row) }}</span>
+              <span class="font-semibold text-overflow-ellipsis" [pTooltip]="getTitle(row)"
+                tooltipPosition="top">{{ getTitle(row) }}</span>
             </ng-template>
           </td>
           <td class="text-center" style="width: 10rem">
@@ -50,12 +51,13 @@
             </ng-container>
             <ng-template #quantityCell>{{ formatQuantity(row) }}</ng-template>
           </td>
-          <td style="width: 11rem">
+          <td class="donation-table-cell-ellipsis" style="width: 11rem">
             <ng-container *ngIf="tableLoadingSpinner; else locationCell">
               <p-skeleton height="1.25rem" width="8rem"></p-skeleton>
             </ng-container>
             <ng-template #locationCell>
-              <span class="text-overflow-ellipsis" [pTooltip]="getLocationLabel(row)">{{ getLocationLabel(row) }}</span>
+              <span class="text-overflow-ellipsis" [pTooltip]="getLocationLabel(row)"
+                tooltipPosition="top">{{ getLocationLabel(row) }}</span>
             </ng-template>
           </td>
           <td class="text-center" style="width: 10rem">

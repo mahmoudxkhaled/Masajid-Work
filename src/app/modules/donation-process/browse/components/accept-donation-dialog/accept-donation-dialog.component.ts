@@ -79,15 +79,12 @@ export class AcceptDonationDialogComponent implements OnChanges {
         }
 
         const commitmentId = Number(response.message || 0);
-        this.messageService.add({
-          severity: 'success',
-          summary: this.translate.getInstant('common.success'),
-          detail: this.translate.getInstant('donations.commitments.messages.accepted'),
-        });
         this.closeDialog();
         this.accepted.emit(commitmentId);
         if (commitmentId) {
-          void this.router.navigate(['/donations/commitments', commitmentId]);
+          void this.router.navigate(['/donations/commitments', commitmentId], {
+            state: { toastDetailKey: 'donations.commitments.messages.accepted' },
+          });
         }
       },
     });

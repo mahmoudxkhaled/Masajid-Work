@@ -40,11 +40,6 @@ export class WithdrawVendorOfferDialogComponent {
           return;
         }
 
-        this.messageService.add({
-          severity: 'success',
-          summary: this.translate.getInstant('common.success'),
-          detail: this.translate.getInstant('donations.vendorOffers.messages.withdrawn'),
-        });
         this.closeDialog();
         this.withdrawn.emit();
       },

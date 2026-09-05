@@ -13,6 +13,7 @@ import {
 import { DonationRequestStatusBackend } from '../../../models/donation-request-status.model';
 import { DonationCategoryBackend } from '../../../models/donation-category.model';
 import { DonationTypeBackend } from '../../../models/donation-type.model';
+import { DonationAttachmentOwnerType } from '../../../models/donation-attachment.constants';
 import { DonationReferenceService } from '../../../services/donation-reference.service';
 import { DonationRequestsService } from '../../../facility-requests/services/donation-requests.service';
 import { DonationAdminService } from '../../services/donation-admin.service';
@@ -26,6 +27,7 @@ type PendingReviewDetailsContext = 'load' | 'approve' | 'reject';
   styleUrl: './pending-review-details.component.scss',
 })
 export class PendingReviewDetailsComponent implements OnInit, OnDestroy {
+  readonly requestAttachmentOwnerType = DonationAttachmentOwnerType.DonationRequest;
   requestId = 0;
   loading = true;
   workflowLoading = true;
@@ -121,13 +123,10 @@ export class PendingReviewDetailsComponent implements OnInit, OnDestroy {
           this.handleBusinessError('approve', response);
           return;
         }
-        this.messageService.add({
-          severity: 'success',
-          summary: this.translate.getInstant('common.success'),
-          detail: this.translate.getInstant('donations.adminReview.messages.approved'),
-        });
         this.closeApproveDialog();
-        this.router.navigate(['/donations/admin/pending-review']);
+        this.router.navigate(['/donations/admin/pending-review'], {
+          state: { toastDetailKey: 'donations.adminReview.messages.approved' },
+        });
       },
     });
     this.subscriptions.push(sub);
@@ -140,13 +139,10 @@ export class PendingReviewDetailsComponent implements OnInit, OnDestroy {
           this.handleBusinessError('reject', response);
           return;
         }
-        this.messageService.add({
-          severity: 'success',
-          summary: this.translate.getInstant('common.success'),
-          detail: this.translate.getInstant('donations.adminReview.messages.rejected'),
-        });
         this.closeRejectDialog();
-        this.router.navigate(['/donations/admin/pending-review']);
+        this.router.navigate(['/donations/admin/pending-review'], {
+          state: { toastDetailKey: 'donations.adminReview.messages.rejected' },
+        });
       },
     });
     this.subscriptions.push(sub);

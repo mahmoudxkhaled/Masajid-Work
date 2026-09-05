@@ -1,0 +1,98 @@
+.hidden-file-input {
+  display: none;
+}
+
+.pending-upload-area {
+  display: flex;
+  border: 1px dashed var(--surface-border);
+  border-radius: 10px;
+  background: var(--surface-ground);
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.pending-upload-area:not(.pending-upload-area--disabled):hover,
+.pending-upload-area--dragover:not(.pending-upload-area--disabled) {
+  border-color: var(--primary-color);
+  background: var(--surface-hover);
+}
+
+.pending-upload-area--dragover:not(.pending-upload-area--disabled) {
+  border-style: solid;
+  box-shadow: inset 0 0 0 1px var(--primary-color);
+}
+
+.pending-upload-area--disabled {
+  opacity: 0.65;
+}
+
+.pending-upload-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  width: 100%;
+  min-height: 9.5rem;
+  padding: 1.25rem 1rem;
+  cursor: pointer;
+  text-align: center;
+}
+
+.pending-upload-button.p-disabled {
+  pointer-events: none;
+  cursor: default;
+}
+
+.pending-upload-button__icon {
+  font-size: 1.75rem;
+  color: var(--primary-color);
+}
+
+.pending-upload-button__label {
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.pending-upload-button__hint {
+  font-size: 0.8rem;
+  color: var(--text-color-secondary);
+}
+
+.pending-files-list {
+  max-height: 14rem;
+  overflow-y: auto;
+}
+
+.pending-file-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.75rem 0.85rem;
+  border: 1px solid var(--surface-border);
+  border-radius: 8px;
+  background: var(--surface-card);
+}
+
+.pending-file-item__main {
+  flex: 1;
+}
+
+.pending-file-item__icon {
+  font-size: 1.15rem;
+  color: var(--primary-color);
+  flex-shrink: 0;
+}
+
+.pending-file-item__name {
+  display: block;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pending-file-item__meta {
+  font-size: 0.8rem;
+  color: var(--text-color-secondary);
+}

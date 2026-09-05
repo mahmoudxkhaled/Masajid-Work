@@ -7,6 +7,7 @@ import { LanguageDirService } from 'src/app/core/services/language-dir.service';
 import { LocalStorageService } from 'src/app/core/services/local-storage.service';
 import { PublicLookupService } from 'src/app/core/services/public-lookup.service';
 import { TranslationService } from 'src/app/core/services/translation.service';
+import { DonationAttachmentOwnerType } from '../../../models/donation-attachment.constants';
 import {
   DonationRequestDetails,
   DonationRequestDetailsBackend,
@@ -17,8 +18,15 @@ import { DonationTypeBackend } from '../../../models/donation-type.model';
 import { DonationReferenceService } from '../../../services/donation-reference.service';
 import { DonationRequestsService } from '../../../facility-requests/services/donation-requests.service';
 import { DonationBrowseService } from '../../services/donation-browse.service';
+import {
+  VendorOfferBackend,
+  VendorOfferListItem,
+  getVendorOfferStatusLabelKey,
+  getVendorOfferStatusSeverity,
+} from '../../../models/vendor-offer.model';
+import { VendorOffersService } from '../../../vendor-offers/services/vendor-offers.service';
 
-type DonorRequestPublicDetailsContext = 'load';
+type DonorRequestPublicDetailsContext = 'load' | 'listOffers';
 
 @Component({
   standalone: false,
@@ -33,14 +41,18 @@ export class DonorRequestPublicDetailsComponent implements OnInit, OnDestroy {
   activeCommitmentId = 0;
   locationMapVisible = false;
   acceptDialogVisible = false;
+  offersLoading = false;
+  vendorOffers: VendorOfferListItem[] = [];
 
   typeLabel = '';
   categoryLabel = '';
   statusLabel = '';
   statusSeverity: 'success' | 'info' | 'warning' | 'danger' | 'secondary' | 'contrast' = 'info';
   countryLabel = '';
+  readonly requestAttachmentOwnerType = DonationAttachmentOwnerType.DonationRequest;
 
   private rawDetails: DonationRequestDetailsBackend | null = null;
+  private rawVendorOffers: VendorOfferBackend[] = [];
   private statuses: DonationRequestStatusBackend[] = [];
   private rawTypes: DonationTypeBackend[] = [];
   private rawCategories: DonationCategoryBackend[] = [];
@@ -59,6 +71,7 @@ export class DonorRequestPublicDetailsComponent implements OnInit, OnDestroy {
     private donationBrowseService: DonationBrowseService,
     private donationRequestsService: DonationRequestsService,
     private donationReferenceService: DonationReferenceService,
+    private vendorOffersService: VendorOffersService,
     private lookupService: PublicLookupService,
     private localStorageService: LocalStorageService,
     private languageDirService: LanguageDirService,
@@ -75,6 +88,7 @@ export class DonorRequestPublicDetailsComponent implements OnInit, OnDestroy {
         this.buildCategoryMaps();
         this.buildCountryMaps();
         this.refreshDisplay();
+        this.remapVendorOffers();
       }),
     );
     this.loadLookups();
@@ -115,6 +129,44 @@ export class DonorRequestPublicDetailsComponent implements OnInit, OnDestroy {
 
   openAcceptDialog(): void {
     this.acceptDialogVisible = true;
+  }
+
+  formatOfferAmount(row: VendorOfferListItem): string {
+    const amount = row.offerAmount;
+    const currency = row.currencyCode || '';
+    if (!amount && !currency) {
+      return '-';
+    }
+    return currency ? `${amount} ${currency}` : String(amount);
+  }
+
+  getYesNo(value: boolean): string {
+    return value
+      ? this.translate.getInstant('donations.browse.yes')
+      : this.translate.getInstant('donations.browse.no');
+  }
+
+  getOfferStatusLabel(row: VendorOfferListItem): string {
+    const code = String(row.statusCode || '').trim();
+    if (!code && !row.statusId) {
+      return '-';
+    }
+    return this.translate.getInstant(getVendorOfferStatusLabelKey(row.statusId, code));
+  }
+
+  getOfferStatusSeverity(row: VendorOfferListItem) {
+    return getVendorOfferStatusSeverity(row.statusId, row.statusCode);
+  }
+
+  getVendorLabel(row: VendorOfferListItem): string {
+    if (!row.vendorEntityId) {
+      return '-';
+    }
+    return `#${row.vendorEntityId}`;
+  }
+
+  scrollToVendorOffers(): void {
+    document.getElementById('vendor-offers-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   // #region Load data
@@ -201,12 +253,54 @@ export class DonorRequestPublicDetailsComponent implements OnInit, OnDestroy {
         this.rawDetails = this.mapPublicDetailsMessage(message);
         this.loading = false;
         this.refreshDisplay();
+        this.loadVendorOffers();
       },
       error: () => {
         this.loading = false;
       },
     });
     this.subscriptions.push(sub);
+  }
+
+  private loadVendorOffers(): void {
+    if (!this.requestId) {
+      this.rawVendorOffers = [];
+      this.vendorOffers = [];
+      this.offersLoading = false;
+      return;
+    }
+
+    this.offersLoading = true;
+    const sub = this.vendorOffersService.listVendorOffersForRequest(this.requestId).subscribe({
+      next: (response: any) => {
+        console.log('listVendorOffersForRequest response', response);
+        if (!response?.success) {
+          this.handleBusinessError('listOffers', response);
+          this.rawVendorOffers = [];
+          this.vendorOffers = [];
+          this.offersLoading = false;
+          return;
+        }
+
+        this.rawVendorOffers = Array.isArray(response.message)
+          ? (response.message as VendorOfferBackend[])
+          : this.vendorOffersService.extractVendorOffers(response.message);
+        this.remapVendorOffers();
+        this.offersLoading = false;
+      },
+      error: () => {
+        this.rawVendorOffers = [];
+        this.vendorOffers = [];
+        this.offersLoading = false;
+      },
+    });
+    this.subscriptions.push(sub);
+  }
+
+  private remapVendorOffers(): void {
+    this.vendorOffers = this.rawVendorOffers.map((item) =>
+      this.vendorOffersService.mapVendorOfferListItem(item),
+    );
   }
 
   private mapPublicDetailsMessage(message: Record<string, unknown>): DonationRequestDetailsBackend | null {
@@ -332,6 +426,9 @@ export class DonorRequestPublicDetailsComponent implements OnInit, OnDestroy {
       case 'load':
         detail = this.getLoadErrorMessage(code);
         break;
+      case 'listOffers':
+        detail = this.getListOffersErrorMessage(code);
+        break;
     }
 
     if (detail) {
@@ -353,6 +450,23 @@ export class DonorRequestPublicDetailsComponent implements OnInit, OnDestroy {
       case 'DAP11041':
       case 'DAP11042':
         return this.translate.getInstant('donations.browse.errors.sessionExpired');
+      default:
+        return null;
+    }
+  }
+
+  private getListOffersErrorMessage(code: string): string | null {
+    switch (code) {
+      case 'DAP13000':
+        return this.translate.getInstant('donations.browse.details.vendorOffers.errors.requestNotFound');
+      case 'DAP13033':
+        return this.translate.getInstant('donations.browse.details.vendorOffers.errors.notAccessible');
+      case 'DAP11055':
+        return this.translate.getInstant('donations.browse.details.vendorOffers.errors.accessDenied');
+      case 'DAP11040':
+      case 'DAP11041':
+      case 'DAP11042':
+        return this.translate.getInstant('donations.browse.details.vendorOffers.errors.sessionExpired');
       default:
         return null;
     }

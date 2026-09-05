@@ -7,8 +7,8 @@
             </ng-container>
             <ng-template #headerTitle>{{ 'entityRoles.details.title' | translate }}</ng-template>
         </h2>
-        <p-button [label]="'entityRoles.details.backToList' | translate" icon="pi pi-arrow-left" class="p-button-secondary" (onClick)="navigateBack()"
-            [disabled]="loading">
+        <p-button [label]="'entityRoles.details.backToList' | translate" icon="pi pi-arrow-left"
+            severity="secondary" [outlined]="true" (onClick)="navigateBack()" [disabled]="loading">
         </p-button>
     </div>
 

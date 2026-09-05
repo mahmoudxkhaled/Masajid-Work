@@ -132,7 +132,7 @@
       [label]="'donations.validation.actions.submitValidation' | translate"
       icon="pi pi-check"
       (onClick)="confirmSubmit()"
-      [disabled]="busy || !!(isLoading$ | async)"
+      [disabled]="busy || !!(isLoading$ | async) || (selectedFiles.length > 0 && !storageConfigured)"
     ></p-button>
   </ng-template>
 </p-dialog>

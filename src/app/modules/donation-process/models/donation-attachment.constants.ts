@@ -43,27 +43,49 @@ export function getDonationAttachmentKindLabelKey(kind: number): string {
   }
 }
 
-export function resolveFulfillmentProofAttachmentOwner(donationCommitmentId: number): {
+export function resolveFulfillmentProofAttachmentOwner(donationFulfillmentId: number): {
   ownerType: number;
   ownerId: number;
 } {
-  // TODO: If backend later attaches proofs to DonationFulfillment after create, change only here.
   return {
-    ownerType: DonationAttachmentOwnerType.DonationCommitment,
-    ownerId: donationCommitmentId,
+    ownerType: DonationAttachmentOwnerType.DonationFulfillment,
+    ownerId: donationFulfillmentId,
   };
 }
 
-export function resolveValidationAttachmentOwner(donationRequestId: number): {
+export function resolveValidationAttachmentOwner(donationValidationId: number): {
   ownerType: number;
   ownerId: number;
 } {
-  // Temporary owner strategy for validation attachments until backend confirms whether
-  // validation attachments should be linked before or after Submit_Donation_Validation.
   return {
-    ownerType: DonationAttachmentOwnerType.DonationRequest,
-    ownerId: donationRequestId,
+    ownerType: DonationAttachmentOwnerType.DonationValidation,
+    ownerId: donationValidationId,
   };
+}
+
+export function resolveValidationAttachmentOwnerForLink(
+  donationValidationId: number,
+): { ownerType: number; ownerId: number } | null {
+  if (donationValidationId > 0) {
+    return resolveValidationAttachmentOwner(donationValidationId);
+  }
+  return null;
+}
+
+export function resolveDonationAttachmentKindFromFile(file: File): number {
+  const mimeType = String(file?.type || '').toLowerCase();
+
+  if (mimeType.startsWith('image/')) {
+    return DonationAttachmentKind.PhotoImage;
+  }
+  if (mimeType === 'application/pdf') {
+    return DonationAttachmentKind.PdfDocument;
+  }
+  if (mimeType.startsWith('video/')) {
+    return DonationAttachmentKind.Video;
+  }
+
+  return resolveDonationAttachmentKindFromFileName(String(file?.name || ''));
 }
 
 export function resolveDonationAttachmentKindFromFileName(fileName: string): number {

@@ -7,6 +7,7 @@ import { LanguageDirService } from 'src/app/core/services/language-dir.service';
 import { LocalStorageService } from 'src/app/core/services/local-storage.service';
 import { PublicLookupService } from 'src/app/core/services/public-lookup.service';
 import { TranslationService } from 'src/app/core/services/translation.service';
+import { DonationAttachmentOwnerType } from '../../../models/donation-attachment.constants';
 import {
   DonationRequestDetails,
   DonationRequestDetailsBackend,
@@ -38,6 +39,7 @@ export class VendorRequestDetailsComponent implements OnInit, OnDestroy {
   statusLabel = '';
   statusSeverity: 'success' | 'info' | 'warning' | 'danger' | 'secondary' | 'contrast' = 'info';
   countryLabel = '';
+  readonly requestAttachmentOwnerType = DonationAttachmentOwnerType.DonationRequest;
 
   private rawDetails: DonationRequestDetailsBackend | null = null;
   private statuses: DonationRequestStatusBackend[] = [];
@@ -105,12 +107,6 @@ export class VendorRequestDetailsComponent implements OnInit, OnDestroy {
 
   openLocationMap(): void {
     this.locationMapVisible = true;
-  }
-
-  onOfferCreated(offerId: number): void {
-    if (offerId) {
-      void this.router.navigate(['/donations/vendor/offers', offerId]);
-    }
   }
 
   // #region Load data

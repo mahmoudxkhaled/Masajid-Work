@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
+import { TranslateService } from '@ngx-translate/core';
 import { Subscription, forkJoin } from 'rxjs';
 import { CountryLookup } from 'src/app/core/models/lookup.model';
 import { LanguageDirService } from 'src/app/core/services/language-dir.service';
@@ -52,6 +53,7 @@ export class VendorRequestsListComponent implements OnInit, OnDestroy {
     private lookupService: PublicLookupService,
     private languageDirService: LanguageDirService,
     private translate: TranslationService,
+    private translateService: TranslateService,
     private messageService: MessageService,
     private router: Router,
   ) { }
@@ -59,6 +61,10 @@ export class VendorRequestsListComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.subscriptions.push(
       this.languageDirService.userLanguageCode$.subscribe(() => {
+        this.buildCategoryMaps();
+        this.buildCountryMaps();
+      }),
+      this.translateService.onLangChange.subscribe(() => {
         this.buildCategoryMaps();
         this.buildCategoryOptions();
         this.buildCountryOptions();

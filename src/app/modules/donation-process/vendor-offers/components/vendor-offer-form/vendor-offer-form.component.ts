@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
+import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { CurrencyLookup } from 'src/app/core/models/lookup.model';
 import { LocalStorageService } from 'src/app/core/services/local-storage.service';
@@ -31,6 +32,7 @@ export class VendorOfferFormComponent implements OnInit, OnDestroy {
   minValidUntilDate = new Date();
 
   currencyOptions: { label: string; value: string }[] = [];
+  currencyPlaceholder = '';
   isLoading$ = this.vendorOffersService.isLoadingSubject.asObservable();
 
   private currencies: CurrencyLookup[] = [];
@@ -43,13 +45,20 @@ export class VendorOfferFormComponent implements OnInit, OnDestroy {
     private localStorageService: LocalStorageService,
     private lookupService: PublicLookupService,
     private translate: TranslationService,
+    private translateService: TranslateService,
     private messageService: MessageService,
   ) {
+    this.currencyPlaceholder = this.translate.getInstant('donations.vendorOffers.form.currencyPlaceholder');
     this.loadCurrencies();
   }
 
   ngOnInit(): void {
     this.offerId = Number(this.route.snapshot.paramMap.get('offerId') || 0);
+    this.subscriptions.push(
+      this.translateService.onLangChange.subscribe(() => {
+        this.rebuildCurrencyOptions();
+      }),
+    );
     this.loadDetails();
   }
 
@@ -137,13 +146,19 @@ export class VendorOfferFormComponent implements OnInit, OnDestroy {
     const sub = this.lookupService.getCurrencies().subscribe({
       next: (items) => {
         this.currencies = items;
-        this.currencyOptions = items.map((item) => ({
-          label: `${item.code} - ${this.lookupService.getCurrencyLabel(item, this.localStorageService.isArabicUi())}`,
-          value: String(item.code || '').trim().toUpperCase(),
-        }));
+        this.rebuildCurrencyOptions();
       },
     });
     this.subscriptions.push(sub);
+  }
+
+  private rebuildCurrencyOptions(): void {
+    this.currencyPlaceholder = this.translate.getInstant('donations.vendorOffers.form.currencyPlaceholder');
+    const isArabic = this.localStorageService.isArabicUi();
+    this.currencyOptions = this.currencies.map((item) => ({
+      label: `${item.code} - ${this.lookupService.getCurrencyLabel(item, isArabic)}`,
+      value: String(item.code || '').trim().toUpperCase(),
+    }));
   }
 
   // #endregion

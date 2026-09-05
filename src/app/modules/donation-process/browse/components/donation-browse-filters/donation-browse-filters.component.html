@@ -24,8 +24,7 @@
       <div class="filter-field">
         <label class="font-medium">{{ 'donations.facility.requests.form.donationType' | translate }}</label>
         <p-dropdown [appendTo]="'body'" [options]="typeOptions" [(ngModel)]="draftFilters.donationTypeId"
-          optionLabel="label" optionValue="value"
-          [placeholder]="'donations.facility.requests.form.donationTypePlaceholder' | translate" [showClear]="true"
+          optionLabel="label" optionValue="value" [filter]="true" [placeholder]="typePlaceholder" [showClear]="true"
           [style]="{ width: '100%' }" (onChange)="onDraftTypeChange()"></p-dropdown>
       </div>
     </div>
@@ -34,8 +33,7 @@
       <div class="filter-field">
         <label class="font-medium">{{ 'donations.facility.requests.form.donationCategory' | translate }}</label>
         <p-dropdown [appendTo]="'body'" [options]="categoryOptions" [(ngModel)]="draftFilters.donationCategoryId"
-          optionLabel="label" optionValue="value"
-          [placeholder]="'donations.shared.categoryPicker.placeholder' | translate" [showClear]="true"
+          optionLabel="label" optionValue="value" [filter]="true" [placeholder]="categoryPlaceholder" [showClear]="true"
           [disabled]="!draftFilters.donationTypeId" [style]="{ width: '100%' }"></p-dropdown>
       </div>
     </div>
@@ -44,8 +42,7 @@
       <div class="filter-field">
         <label class="font-medium">{{ 'donations.facility.requests.form.country' | translate }}</label>
         <p-dropdown [appendTo]="'body'" [options]="countryOptions" [(ngModel)]="draftFilters.countryCode"
-          optionLabel="label" optionValue="value"
-          [placeholder]="'donations.facility.requests.form.countryPlaceholder' | translate" [showClear]="true"
+          optionLabel="label" optionValue="value" [placeholder]="countryPlaceholder" [showClear]="true"
           [filter]="true" [style]="{ width: '100%' }"></p-dropdown>
       </div>
     </div>

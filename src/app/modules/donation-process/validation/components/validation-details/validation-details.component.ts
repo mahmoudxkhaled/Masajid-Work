@@ -100,7 +100,7 @@ export class ValidationDetailsComponent implements OnInit, OnDestroy {
     });
 
     try {
-      const { blob, fileName } = await this.fileDownloadService.downloadFile(
+      const blob = await this.fileDownloadService.downloadFile(
         accessToken,
         BigInt(item.fileId),
         BigInt(item.folderId),
@@ -116,7 +116,7 @@ export class ValidationDetailsComponent implements OnInit, OnDestroy {
         },
       );
 
-      const downloadName = String(fileName || fallbackName).trim() || fallbackName;
+      const downloadName = fallbackName;
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
@@ -174,12 +174,12 @@ export class ValidationDetailsComponent implements OnInit, OnDestroy {
   }
 
   private loadAttachments(): void {
-    if (!this.requestId) {
+    if (!this.validationId) {
       this.attachments = [];
       return;
     }
 
-    const owner = resolveValidationAttachmentOwner(this.requestId);
+    const owner = resolveValidationAttachmentOwner(this.validationId);
     this.attachmentsLoading = true;
     const sub = this.donationAttachmentService
       .listDonationAttachments(owner.ownerType, owner.ownerId)

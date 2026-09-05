@@ -45,9 +45,6 @@ export interface SubmitDonationValidationRequest {
   validationResult: number;
   notes: string;
   isRegional: boolean;
-  validationAttachmentIds: number[];
-  fileSystemId: number;
-  folderId: number;
 }
 
 export function canSubmitDonationValidation(statusId: number | null | undefined): boolean {

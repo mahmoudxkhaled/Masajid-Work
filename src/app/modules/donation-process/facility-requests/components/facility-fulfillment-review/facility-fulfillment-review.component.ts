@@ -163,7 +163,7 @@ export class FacilityFulfillmentReviewComponent implements OnInit, OnDestroy {
     this.syncDownloadProgressOverlay();
 
     try {
-      const { blob, fileName } = await this.fileDownloadService.downloadFile(
+      const blob = await this.fileDownloadService.downloadFile(
         accessToken,
         BigInt(item.fileId),
         BigInt(item.folderId),
@@ -180,7 +180,7 @@ export class FacilityFulfillmentReviewComponent implements OnInit, OnDestroy {
         },
       );
 
-      const downloadName = String(fileName || fallbackName).trim() || fallbackName;
+      const downloadName = fallbackName;
       this.currentDownloadingFileName = downloadName;
       this.syncDownloadProgressOverlay();
 

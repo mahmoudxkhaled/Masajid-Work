@@ -1,17 +1,23 @@
-:host ::ng-deep {
+﻿:host ::ng-deep {
   .p-datatable .p-datatable-tbody > tr.validation-list-row-clickable {
     transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: var(--surface-hover);
+    }
   }
 
-  .p-datatable .p-datatable-tbody > tr.validation-list-row-clickable:hover {
-    background-color: var(--surface-hover);
+  .p-datatable .p-datatable-tbody > tr > td.donation-table-cell-ellipsis {
+    max-width: 0;
+    overflow: hidden;
   }
 }
 
 .text-overflow-ellipsis {
   display: block;
+  min-width: 0;
+  max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  min-width: 0;
 }

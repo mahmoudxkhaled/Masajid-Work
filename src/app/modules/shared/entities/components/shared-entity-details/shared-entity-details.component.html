@@ -3,8 +3,8 @@
         <h2>
             {{ getDetailsLabelKey('title') | translate }}
         </h2>
-        <p-button [label]="'entities.details.backToList' | translate" icon="pi pi-arrow-left" class="p-button-secondary"
-            (onClick)="navigateBack()" [disabled]="loading && !entityDetails">
+        <p-button [label]="'entities.details.backToList' | translate" icon="pi pi-arrow-left"
+            severity="secondary" [outlined]="true" (onClick)="navigateBack()" [disabled]="loading && !entityDetails">
         </p-button>
     </div>
 

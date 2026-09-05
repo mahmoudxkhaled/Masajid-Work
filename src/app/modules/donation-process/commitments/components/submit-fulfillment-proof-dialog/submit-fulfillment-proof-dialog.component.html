@@ -76,6 +76,6 @@
     <p-button [label]="'common.cancel' | translate" icon="pi pi-times" severity="secondary" [outlined]="true"
       (onClick)="closeDialog()" [disabled]="busy || !!(isLoading$ | async)"></p-button>
     <p-button [label]="'donations.commitments.actions.submitFulfillmentProof' | translate" icon="pi pi-check"
-      (onClick)="confirmSubmit()" [disabled]="busy || !!(isLoading$ | async) || !storageConfigured"></p-button>
+      (onClick)="confirmSubmit()" [disabled]="busy || !!(isLoading$ | async) || (selectedFiles.length > 0 && !storageConfigured)"></p-button>
   </ng-template>
 </p-dialog>

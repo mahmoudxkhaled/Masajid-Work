@@ -46,9 +46,9 @@ export class DonationValidationService {
       dto.validationResult.toString(),
       String(dto.notes || '').trim(),
       dto.isRegional.toString(),
-      this.formatIntegerList(dto.validationAttachmentIds),
-      dto.fileSystemId.toString(),
-      dto.folderId.toString(),
+      this.formatIntegerList([]),
+      '0',
+      '0',
     ];
     console.log('submitDonationValidation params', params);
     return this.apiServices.callAPI(110001, this.getAccessToken(), params).pipe(

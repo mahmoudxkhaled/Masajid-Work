@@ -4,13 +4,7 @@ import { firstValueFrom } from 'rxjs';
 
 import { ApiService } from '../../api/api.service';
 
-/** Request code for Download_Request (Files Basic). */
 const DOWNLOAD_REQUEST_CODE = 1111;
-
-export interface FileDownloadResult {
-  blob: Blob;
-  fileName: string;
-}
 
 @Injectable({
   providedIn: 'root',
@@ -25,7 +19,7 @@ export class FileDownloadService {
     folderId: bigint,
     fileSystemId: number,
     onProgress?: (percent: number) => void
-  ): Promise<FileDownloadResult> {
+  ): Promise<Blob> {
     const downloadInfo = await this.requestDownloadToken(
       accessToken,
       fileId,
@@ -39,10 +33,7 @@ export class FileDownloadService {
       onProgress
     );
 
-    return {
-      blob: new Blob(chunks, { type: 'application/octet-stream' }),
-      fileName: downloadInfo.fileName,
-    };
+    return new Blob(chunks, { type: 'application/octet-stream' });
   }
 
   private async requestDownloadToken(
@@ -66,19 +57,16 @@ export class FileDownloadService {
     )) as unknown as {
       success: boolean;
       message:
-        | string
-        | {
-            download_Token: string;
-            file_Name: string;
-            chunks_Count: number;
-          };
+      | string
+      | {
+        download_Token: string;
+        file_Name: string;
+        chunks_Count: number;
+      };
     };
 
-    console.log('Download_Request response:', response);
+    console.log('Download_Request response', response);
 
-    // If API failed (e.g. { success: false, message: "DAP12241" }), throw a response-like
-    // object so callers (folder-management component) can use getFileSystemErrorDetail
-    // with the Storage/File System API error codes.
     if (!response?.success || !response?.message) {
       throw {
         errorCode: typeof response?.message === 'string' ? response.message : undefined,
@@ -87,7 +75,6 @@ export class FileDownloadService {
     }
 
     if (typeof response.message === 'string') {
-      // Unexpected payload shape - propagate as error for generic handling.
       throw {
         message: response.message,
       };
@@ -112,37 +99,74 @@ export class FileDownloadService {
     downloadToken: string,
     chunksCount: number,
     onProgress?: (percent: number) => void
-  ): Promise<BlobPart[]> {
-    const allChunks: BlobPart[] = [];
+  ): Promise<ArrayBuffer[]> {
+    const allChunks: ArrayBuffer[] = [];
 
-    for (let currentChunk = 1; currentChunk <= chunksCount; currentChunk++) {
+    console.log('Download_File_Chunk using key', {
+      downloadToken,
+      chunksCount,
+    });
+
+    for (let chunkId = 1; chunkId <= chunksCount; chunkId++) {
       const formData = new FormData();
-      formData.append('Chunk_ID', currentChunk.toString());
+      formData.append('download_token', downloadToken);
+      formData.append('chunk_id', chunkId.toString());
 
-      const arrayBuffer = await firstValueFrom(
+      const arrayBuffer = (await firstValueFrom(
         this.http.post(
-          this.apiService.getBaseUrl() + '/Download?Download_Token=' + encodeURIComponent(downloadToken),
+          `${this.apiService.getBaseUrl()}/Download`,
           formData,
-          { responseType: 'arraybuffer' as 'json' }
+          { responseType: 'arraybuffer' }
         )
-      );
+      )) as ArrayBuffer;
 
-      allChunks.push(arrayBuffer as ArrayBuffer);
+      this.throwIfChunkIsJson(arrayBuffer);
 
-      if (currentChunk === 1 || currentChunk === chunksCount) {
+      allChunks.push(arrayBuffer);
+
+      if (chunkId === 1 || chunkId === chunksCount) {
         console.log('Download_File_Chunk received:', {
-          currentChunk,
+          currentChunk: chunkId,
           chunksCount,
-          bytes: (arrayBuffer as ArrayBuffer).byteLength,
+          bytes: arrayBuffer.byteLength,
         });
       }
 
       if (onProgress) {
-        const percent = (100 * currentChunk) / chunksCount;
-        onProgress(percent);
+        onProgress((100 * chunkId) / chunksCount);
       }
     }
 
     return allChunks;
+  }
+
+  private throwIfChunkIsJson(arrayBuffer: ArrayBuffer): void {
+    if (!arrayBuffer || arrayBuffer.byteLength < 2) {
+      throw {
+        message: 'Download chunk was empty.',
+      };
+    }
+
+    const firstByte = new Uint8Array(arrayBuffer, 0, 1)[0];
+    if (firstByte !== 0x7b) {
+      return;
+    }
+
+    const text = new TextDecoder().decode(arrayBuffer);
+    let parsed: { success?: boolean; message?: string };
+    try {
+      parsed = JSON.parse(text);
+    } catch {
+      return;
+    }
+
+    console.log('Download_File_Chunk JSON response', parsed);
+
+    if (parsed && typeof parsed === 'object' && ('success' in parsed || 'message' in parsed)) {
+      throw {
+        errorCode: typeof parsed?.message === 'string' ? parsed.message : undefined,
+        message: parsed?.message || 'Download chunk was not a file stream.',
+      };
+    }
   }
 }

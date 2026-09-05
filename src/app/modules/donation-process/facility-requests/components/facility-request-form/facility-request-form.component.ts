@@ -1,14 +1,27 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
-import { Subscription, forkJoin } from 'rxjs';
+import { Subscription, firstValueFrom, forkJoin } from 'rxjs';
+import { FileUploadService } from 'src/app/core/file-system-lib/services/file-upload.service';
+import {
+  TransferFileStatus,
+  TransferProgressService,
+} from 'src/app/core/file-system-lib/services/transfer-progress.service';
 import { CountryLookup, CurrencyLookup } from 'src/app/core/models/lookup.model';
 import { LanguageDirService } from 'src/app/core/services/language-dir.service';
 import { LocalStorageService } from 'src/app/core/services/local-storage.service';
 import { PublicLookupService } from 'src/app/core/services/public-lookup.service';
 import { TranslationService } from 'src/app/core/services/translation.service';
 import { EntitiesService } from 'src/app/modules/entity-administration/entities/services/entities.service';
+import { getDonationStorageLocation } from '../../../config/donation-storage.config';
+import { DonationAttachment } from '../../../models/donation-attachment.model';
+import {
+  DonationAttachmentOwnerType,
+  resolveDonationAttachmentKindFromFile,
+} from '../../../models/donation-attachment.constants';
+import { DonationAttachmentService } from '../../../services/donation-attachment.service';
+import { DonationAttachmentListComponent } from '../../../shared/donation-attachment-list/donation-attachment-list.component';
 import {
   CreateDonationRequestRequest,
   DonationRequestDetails,
@@ -29,7 +42,7 @@ import {
   quantityValidator,
 } from '../../utils/donation-request.validators';
 
-type FacilityRequestFormContext = 'create' | 'update' | 'submit' | 'load';
+type FacilityRequestFormContext = 'create' | 'update' | 'submit' | 'load' | 'attachment';
 
 @Component({
   standalone: false,
@@ -46,9 +59,15 @@ export class FacilityRequestFormComponent implements OnInit, OnDestroy {
   typeOptions: { label: string; value: number }[] = [];
   countryOptions: { label: string; value: string }[] = [];
   currencyOptions: { label: string; value: string }[] = [];
+  yesNoOptions: { label: string; value: boolean }[] = [];
   selectedDonationTypeId: number | null = null;
   selectedCategoryId: number | null = null;
+  pendingAttachmentFiles: File[] = [];
+  nextAttachmentSortOrder = 1;
+  readonly requestAttachmentOwnerType = DonationAttachmentOwnerType.DonationRequest;
   private submitted = false;
+
+  @ViewChild('requestAttachmentList') requestAttachmentList?: DonationAttachmentListComponent;
 
   private countries: CountryLookup[] = [];
   private currencies: CurrencyLookup[] = [];
@@ -79,6 +98,9 @@ export class FacilityRequestFormComponent implements OnInit, OnDestroy {
     private router: Router,
     private donationRequestsService: DonationRequestsService,
     private donationReferenceService: DonationReferenceService,
+    private donationAttachmentService: DonationAttachmentService,
+    private fileUploadService: FileUploadService,
+    private transferProgressService: TransferProgressService,
     private entityExtraDataService: EntityExtraDataService,
     private entitiesService: EntitiesService,
     private localStorageService: LocalStorageService,
@@ -97,6 +119,7 @@ export class FacilityRequestFormComponent implements OnInit, OnDestroy {
       this.languageDirService.userLanguageCode$.subscribe(() => {
         this.remapTypes();
         this.remapLookups();
+        this.buildYesNoOptions();
         this.patchRegionalFormState();
       }),
     );
@@ -106,6 +129,7 @@ export class FacilityRequestFormComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
+    this.transferProgressService.resetUploadProgress();
   }
 
   onDonationTypeChange(typeId: number | null): void {
@@ -180,6 +204,7 @@ export class FacilityRequestFormComponent implements OnInit, OnDestroy {
         );
         this.currencies = results.currencies;
         this.remapLookups();
+        this.buildYesNoOptions();
 
         if (this.isEditMode && this.requestId) {
           this.loadExistingRequest();
@@ -388,14 +413,21 @@ export class FacilityRequestFormComponent implements OnInit, OnDestroy {
       ...payloadBase,
     };
     const sub = this.donationRequestsService.createDonationRequest(dto).subscribe({
-      next: (response: any) => {
+      next: async (response: any) => {
         console.log('createDonationRequest response', response);
         if (!response?.success) {
           this.handleBusinessError('create', response);
           return;
         }
+
         const newId = this.donationRequestsService.extractDonationRequestId(response.message);
-        this.onSaveSuccess(submitAfterSave, newId, 'created');
+        let attachmentLinkFailed = false;
+        if (this.pendingAttachmentFiles.length && newId) {
+          attachmentLinkFailed = await this.uploadAndLinkRequestAttachments(newId);
+        }
+
+        this.pendingAttachmentFiles = [];
+        this.onSaveSuccess(submitAfterSave, newId, 'created', attachmentLinkFailed);
       },
       error: () => {
         this.saving = false;
@@ -404,15 +436,21 @@ export class FacilityRequestFormComponent implements OnInit, OnDestroy {
     this.subscriptions.push(sub);
   }
 
-  private onSaveSuccess(submitAfterSave: boolean, requestId: number, messageKey: 'created' | 'updated'): void {
+  private onSaveSuccess(
+    submitAfterSave: boolean,
+    requestId: number,
+    messageKey: 'created' | 'updated',
+    skipSuccessMessage = false,
+  ): void {
     if (!submitAfterSave) {
-      this.messageService.add({
-        severity: 'success',
-        summary: this.translate.getInstant('common.success'),
-        detail: this.translate.getInstant(`donations.facility.requests.messages.${messageKey}`),
-      });
       this.saving = false;
-      this.router.navigate(['/donations/facility/requests', requestId]);
+      const toastDetailKey = skipSuccessMessage
+        ? 'donations.facility.requests.messages.createdPartialAttachments'
+        : `donations.facility.requests.messages.${messageKey}`;
+      const toastSeverity = skipSuccessMessage ? 'warn' : 'success';
+      this.router.navigate(['/donations/facility/requests', requestId], {
+        state: { toastDetailKey, toastSeverity },
+      });
       return;
     }
 
@@ -424,12 +462,9 @@ export class FacilityRequestFormComponent implements OnInit, OnDestroy {
           this.router.navigate(['/donations/facility/requests', requestId]);
           return;
         }
-        this.messageService.add({
-          severity: 'success',
-          summary: this.translate.getInstant('common.success'),
-          detail: this.translate.getInstant('donations.facility.requests.messages.submitted'),
+        this.router.navigate(['/donations/facility/requests', requestId], {
+          state: { toastDetailKey: 'donations.facility.requests.messages.submitted' },
         });
-        this.router.navigate(['/donations/facility/requests', requestId]);
       },
       error: () => {
         this.saving = false;
@@ -437,6 +472,137 @@ export class FacilityRequestFormComponent implements OnInit, OnDestroy {
     });
     this.subscriptions.push(sub);
   }
+
+  // #region Request attachments
+  onPendingAttachmentFilesChange(files: File[]): void {
+    this.pendingAttachmentFiles = files;
+  }
+
+  onRequestAttachmentsLoaded(attachments: DonationAttachment[]): void {
+    const highestSortOrder = attachments.reduce(
+      (max, item) => Math.max(max, Number(item.sortOrder || 0)),
+      0,
+    );
+    this.nextAttachmentSortOrder = highestSortOrder + 1;
+  }
+
+  onRequestAttachmentAdded(): void {
+    this.requestAttachmentList?.reload();
+  }
+
+  private async uploadAndLinkRequestAttachments(donationRequestId: number): Promise<boolean> {
+    const storageLocation = getDonationStorageLocation('donationRequests');
+    if (!storageLocation) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: this.translate.getInstant('common.warning'),
+        detail: this.translate.getInstant('donations.attachments.errors.locationNotConfigured'),
+      });
+      return true;
+    }
+
+    const files = [...this.pendingAttachmentFiles];
+    const accessToken = this.localStorageService.getAccessToken();
+    const fileStatus = new Map<string, TransferFileStatus>();
+    files.forEach((file) => fileStatus.set(file.name, 'pending'));
+
+    let anyFailed = false;
+    let uploadPercent = 0;
+
+    const syncOverlay = (visible: boolean) => {
+      this.transferProgressService.setUploadProgress({
+        visible,
+        percent: uploadPercent,
+        files: files.map((file) => ({
+          name: file.name,
+          size: file.size,
+          status: fileStatus.get(file.name) || 'pending',
+        })),
+        blockInteraction: visible,
+      });
+    };
+
+    syncOverlay(true);
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      fileStatus.set(file.name, 'uploading');
+      syncOverlay(true);
+
+      try {
+        const uploaded = await this.fileUploadService.uploadFileWithResult(
+          file,
+          accessToken,
+          storageLocation.fileSystemId,
+          BigInt(storageLocation.folderId),
+          (percent) => {
+            const completed = Array.from(fileStatus.values()).filter(
+              (status) => status === 'completed',
+            ).length;
+            uploadPercent = Math.round(((completed + percent / 100) / files.length) * 100);
+            syncOverlay(true);
+          },
+        );
+
+        const caption = String(file.name || '').trim() || `attachment_${i + 1}`;
+        const attachmentKind = resolveDonationAttachmentKindFromFile(file);
+
+        const linkResponse: any = await firstValueFrom(
+          this.donationAttachmentService.addDonationAttachment({
+            ownerType: this.requestAttachmentOwnerType,
+            ownerId: donationRequestId,
+            attachmentKind,
+            fileId: uploaded.fileId,
+            folderId: uploaded.folderId,
+            fileSystemId: uploaded.fileSystemId,
+            caption,
+            isRegional: false,
+            sortOrder: i + 1,
+          }),
+        );
+
+        console.log('addDonationAttachment response', linkResponse);
+        console.log('addDonationAttachment donation request', {
+          Donation_Request_ID: donationRequestId,
+          File_ID: uploaded.fileId,
+          Folder_ID: uploaded.folderId,
+          File_System_ID: uploaded.fileSystemId,
+          Owner_Type: this.requestAttachmentOwnerType,
+          Owner_ID: donationRequestId,
+          Attachment_Kind: attachmentKind,
+        });
+
+        if (!linkResponse?.success) {
+          anyFailed = true;
+          fileStatus.set(file.name, 'error');
+          console.log('Donation attachment link failed after upload', {
+            Donation_Request_ID: donationRequestId,
+            File_ID: uploaded.fileId,
+            Folder_ID: uploaded.folderId,
+            File_System_ID: uploaded.fileSystemId,
+            Owner_Type: this.requestAttachmentOwnerType,
+            Owner_ID: donationRequestId,
+            Attachment_Kind: attachmentKind,
+            response: linkResponse,
+          });
+          this.handleBusinessError('attachment', linkResponse);
+          continue;
+        }
+
+        fileStatus.set(file.name, 'completed');
+      } catch (err: unknown) {
+        anyFailed = true;
+        fileStatus.set(file.name, 'error');
+        console.error('Donation request attachment upload/link failed', err);
+      } finally {
+        syncOverlay(true);
+      }
+    }
+
+    this.transferProgressService.resetUploadProgress();
+    return anyFailed;
+  }
+  // #endregion
 
   private remapTypes(): void {
     this.typeOptions = this.donationReferenceService.toTypeDropdownOptions(this.rawTypes);
@@ -452,6 +618,13 @@ export class FacilityRequestFormComponent implements OnInit, OnDestroy {
       label: `${this.lookupService.getCurrencyLabel(item, isArabic)} (${item.code})`,
       value: item.code,
     }));
+  }
+
+  private buildYesNoOptions(): void {
+    this.yesNoOptions = [
+      { label: this.translate.getInstant('common.yes'), value: true },
+      { label: this.translate.getInstant('common.no'), value: false },
+    ];
   }
 
   private handleBusinessError(context: FacilityRequestFormContext, response: any): void {
@@ -471,10 +644,15 @@ export class FacilityRequestFormComponent implements OnInit, OnDestroy {
       case 'load':
         detail = this.getLoadErrorMessage(code);
         break;
+      case 'attachment':
+        detail = this.getAttachmentErrorMessage(code);
+        break;
     }
 
-    this.saving = false;
-    this.loading = false;
+    if (context !== 'attachment') {
+      this.saving = false;
+      this.loading = false;
+    }
 
     if (detail) {
       this.messageService.add({
@@ -504,6 +682,23 @@ export class FacilityRequestFormComponent implements OnInit, OnDestroy {
         return this.translate.getInstant('donations.facility.requests.errors.invalidRequestId');
       case 'DAP13010':
         return this.translate.getInstant('donations.facility.requests.errors.invalidStatusForAction');
+      default:
+        return null;
+    }
+  }
+
+  private getAttachmentErrorMessage(code: string): string | null {
+    switch (code) {
+      case 'DAP13008':
+        return this.translate.getInstant('donations.attachments.errors.invalidOwner');
+      case 'DAP13010':
+        return this.translate.getInstant('donations.attachments.errors.ownerNotEditable');
+      case 'DAP11055':
+        return this.translate.getInstant('donations.attachments.errors.accessDenied');
+      case 'DAP11040':
+      case 'DAP11041':
+      case 'DAP11042':
+        return this.translate.getInstant('donations.attachments.errors.sessionExpired');
       default:
         return null;
     }

@@ -266,19 +266,9 @@ export class SubmitFulfillmentProofDialogComponent implements OnChanges, OnDestr
       return;
     }
 
-    if (!this.selectedFiles.length) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: this.translate.getInstant('common.warning'),
-        detail: this.translate.getInstant(
-          'donations.commitments.submitProofDialog.validation.proofRequired',
-        ),
-      });
-      return;
-    }
-
+    const hasFiles = this.selectedFiles.length > 0;
     const storageLocation = getDonationStorageLocation('fulfillmentProofs');
-    if (!storageLocation) {
+    if (hasFiles && !storageLocation) {
       this.messageService.add({
         severity: 'warn',
         summary: this.translate.getInstant('common.warning'),
@@ -291,23 +281,96 @@ export class SubmitFulfillmentProofDialogComponent implements OnChanges, OnDestr
       return;
     }
 
-    this.uploadFiles = this.selectedFiles.map((file, index) =>
-      this.createTimestampedFile(file, index),
-    );
+    this.uploading = true;
+    this.uploadPercent = 0;
+    this.fileUploadStatus.clear();
+    this.uploadFiles = [];
+
+    const payload = {
+      donationCommitmentId: this.donationCommitmentId,
+      fulfilledBy: this.fulfilledBy,
+      donationVendorOfferId: this.selectedVendorOfferId > 0 ? this.selectedVendorOfferId : 0,
+      fulfillmentNote: String(this.fulfillmentNote || '').trim(),
+      isRegional: this.localStorageService.isRegionalApiInput(),
+    };
+
+    console.log('submitFulfillmentProof params', payload);
+
+    try {
+      const response: any = await firstValueFrom(
+        this.donationFulfillmentService.submitFulfillmentProof(payload),
+      );
+      console.log('submitFulfillmentProof response', response);
+
+      if (!response?.success) {
+        this.handleBusinessError('submit', response);
+        this.uploading = false;
+        this.syncUploadProgressOverlay();
+        return;
+      }
+
+      const fulfillmentId = this.donationFulfillmentService.extractFulfillmentId(response.message);
+      let attachmentLinkFailed = false;
+
+      if (hasFiles) {
+        if (!fulfillmentId) {
+          console.warn('Donation_Fulfillment_ID is required to link fulfillment proof attachments after submit.', {
+            Donation_Commitment_ID: payload.donationCommitmentId,
+            Donation_Fulfillment_ID: fulfillmentId,
+            response,
+          });
+          attachmentLinkFailed = true;
+        } else if (storageLocation) {
+          attachmentLinkFailed = await this.uploadAndLinkProofFiles(fulfillmentId, storageLocation.fileSystemId);
+        }
+      }
+
+      if (attachmentLinkFailed) {
+        this.messageService.add({
+          severity: 'warn',
+          summary: this.translate.getInstant('common.warning'),
+          detail: this.translate.getInstant(
+            'donations.commitments.messages.fulfillmentSubmittedPartialAttachments',
+          ),
+        });
+      } else {
+        this.messageService.add({
+          severity: 'success',
+          summary: this.translate.getInstant('common.success'),
+          detail: this.translate.getInstant('donations.commitments.messages.fulfillmentSubmitted'),
+        });
+      }
+
+      this.uploading = false;
+      this.transferProgressService.resetUploadProgress();
+      this.closeDialog();
+      this.submitted.emit(fulfillmentId);
+    } catch (err: unknown) {
+      console.error('submitFulfillmentProof failed', err);
+      this.handleBusinessError('submit', this.normalizeUploadError(err));
+    } finally {
+      this.uploading = false;
+      this.currentUploadingFileName = null;
+      this.transferProgressService.resetUploadProgress();
+    }
+  }
+
+  private async uploadAndLinkProofFiles(donationFulfillmentId: number, uploadTargetFileSystemId: number): Promise<boolean> {
+    const storageLocation = getDonationStorageLocation('fulfillmentProofs');
+    if (!storageLocation) {
+      return true;
+    }
+
+    this.uploadFiles = [...this.selectedFiles];
     this.fileUploadStatus.clear();
     this.uploadFiles.forEach((file) => this.fileUploadStatus.set(file.name, 'pending'));
-
-    this.uploading = true;
     this.uploadPercent = 0;
     this.syncUploadProgressOverlay();
 
-    const proofAttachmentIds: number[] = [];
-    let uploadFileSystemId = storageLocation.fileSystemId;
-    let uploadFolderId = storageLocation.folderId;
-    const totalFiles = this.uploadFiles.length;
-    const owner = resolveFulfillmentProofAttachmentOwner(this.donationCommitmentId);
-
+    const owner = resolveFulfillmentProofAttachmentOwner(donationFulfillmentId);
     const accessToken = this.localStorageService.getAccessToken();
+    const totalFiles = this.uploadFiles.length;
+    let anyFailed = false;
 
     for (let i = 0; i < this.uploadFiles.length; i++) {
       const file = this.uploadFiles[i];
@@ -320,191 +383,89 @@ export class SubmitFulfillmentProofDialogComponent implements OnChanges, OnDestr
         const uploaded = await this.fileUploadService.uploadFileWithResult(
           file,
           accessToken,
-          storageLocation.fileSystemId,
+          uploadTargetFileSystemId || storageLocation.fileSystemId,
           BigInt(storageLocation.folderId),
           (percent) => {
             const completedFiles = Array.from(this.fileUploadStatus.values()).filter(
               (status) => status === 'completed',
             ).length;
-            const currentFileProgress = percent / 100;
-            this.uploadPercent = Math.round(
-              ((completedFiles + currentFileProgress) / totalFiles) * 100,
-            );
+            this.uploadPercent = Math.round(((completedFiles + percent / 100) / totalFiles) * 100);
             this.syncUploadProgressOverlay();
           },
         );
 
-        uploadFileSystemId = uploaded.fileSystemId;
-        uploadFolderId = uploaded.folderId;
         linkingFile = true;
-
         const caption =
           String(this.selectedFiles[i]?.name || file.name || uploaded.fileName || '').trim() ||
           `proof_${i + 1}`;
+        const attachmentKind = resolveDonationAttachmentKindFromFileName(caption);
 
         const linkResponse: any = await firstValueFrom(
           this.donationAttachmentService.addDonationAttachment({
             ownerType: owner.ownerType,
             ownerId: owner.ownerId,
-            attachmentKind: resolveDonationAttachmentKindFromFileName(caption),
+            attachmentKind,
             fileId: uploaded.fileId,
             folderId: uploaded.folderId,
             fileSystemId: uploaded.fileSystemId,
             caption,
-            isRegional: this.localStorageService.isRegionalApiInput(),
+            isRegional: false,
             sortOrder: i + 1,
           }),
         );
 
         console.log('addDonationAttachment response', linkResponse);
+        console.log('addDonationAttachment fulfillment proof', {
+          Donation_Fulfillment_ID: donationFulfillmentId,
+          File_ID: uploaded.fileId,
+          Folder_ID: uploaded.folderId,
+          File_System_ID: uploaded.fileSystemId,
+          Owner_Type: owner.ownerType,
+          Owner_ID: owner.ownerId,
+          Attachment_Kind: attachmentKind,
+        });
 
         if (!linkResponse?.success) {
+          anyFailed = true;
+          this.fileUploadStatus.set(file.name, 'error');
           console.log('Donation attachment link failed after upload', {
+            Donation_Fulfillment_ID: donationFulfillmentId,
             File_ID: uploaded.fileId,
             Folder_ID: uploaded.folderId,
             File_System_ID: uploaded.fileSystemId,
             Owner_Type: owner.ownerType,
             Owner_ID: owner.ownerId,
+            Attachment_Kind: attachmentKind,
             response: linkResponse,
-          });
-          this.fileUploadStatus.set(file.name, 'error');
-          this.currentUploadingFileName = null;
-          this.syncUploadProgressOverlay();
-          this.messageService.add({
-            severity: 'warn',
-            summary: this.translate.getInstant('common.warning'),
-            detail: this.translate.getInstant('donations.attachments.messages.uploadLinkedFailed'),
           });
           this.handleBusinessError('link', linkResponse);
-          this.uploading = false;
-          this.syncUploadProgressOverlay();
-          return;
+          continue;
         }
 
-        const donationAttachmentId =
-          this.donationAttachmentService.extractDonationAttachmentId(linkResponse.message);
-        if (!donationAttachmentId) {
-          console.log('Donation attachment link returned invalid id', {
-            File_ID: uploaded.fileId,
-            response: linkResponse,
-          });
-          this.fileUploadStatus.set(file.name, 'error');
-          this.currentUploadingFileName = null;
-          this.syncUploadProgressOverlay();
-          this.messageService.add({
-            severity: 'warn',
-            summary: this.translate.getInstant('common.warning'),
-            detail: this.translate.getInstant('donations.attachments.messages.uploadLinkedFailed'),
-          });
-          this.uploading = false;
-          this.syncUploadProgressOverlay();
-          return;
-        }
-
-        proofAttachmentIds.push(donationAttachmentId);
         this.fileUploadStatus.set(file.name, 'completed');
-        this.currentUploadingFileName = null;
-        this.syncUploadProgressOverlay();
       } catch (err: unknown) {
+        anyFailed = true;
         console.error('Fulfillment proof upload/link failed', err);
         if (this.currentUploadingFileName) {
           this.fileUploadStatus.set(this.currentUploadingFileName, 'error');
-          this.currentUploadingFileName = null;
-          this.syncUploadProgressOverlay();
         }
         const response = this.normalizeUploadError(err);
         if (linkingFile) {
-          this.messageService.add({
-            severity: 'warn',
-            summary: this.translate.getInstant('common.warning'),
-            detail: this.translate.getInstant('donations.attachments.messages.uploadLinkedFailed'),
-          });
           this.handleBusinessError('link', response);
         } else {
           this.handleBusinessError('upload', response);
         }
-        this.uploading = false;
+      } finally {
+        this.currentUploadingFileName = null;
         this.syncUploadProgressOverlay();
-        return;
       }
     }
 
-    this.uploading = false;
-    this.transferProgressService.resetUploadProgress();
-
-    if (!proofAttachmentIds.length) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: this.translate.getInstant('common.warning'),
-        detail: this.translate.getInstant(
-          'donations.commitments.submitProofDialog.validation.proofRequired',
-        ),
-      });
-      return;
-    }
-
-    const payload = {
-      donationCommitmentId: this.donationCommitmentId,
-      fulfilledBy: this.fulfilledBy,
-      donationVendorOfferId: this.selectedVendorOfferId > 0 ? this.selectedVendorOfferId : 0,
-      fulfillmentNote: String(this.fulfillmentNote || '').trim(),
-      isRegional: this.localStorageService.isRegionalApiInput(),
-      proofAttachmentIds,
-      fileSystemId: uploadFileSystemId,
-      folderId: uploadFolderId,
-    };
-
-    console.log('submitFulfillmentProof params', payload);
-
-    this.donationFulfillmentService.submitFulfillmentProof(payload).subscribe({
-      next: (response: any) => {
-        console.log('submitFulfillmentProof response', response);
-        if (!response?.success) {
-          console.log('Fulfillment proof submit failed after upload/link', {
-            Donation_Commitment_ID: payload.donationCommitmentId,
-            Donation_Attachment_IDs: payload.proofAttachmentIds,
-            Fulfilled_By: payload.fulfilledBy,
-            Donation_Vendor_Offer_ID: payload.donationVendorOfferId,
-            File_System_ID: payload.fileSystemId,
-            Folder_ID: payload.folderId,
-            response,
-          });
-          this.messageService.add({
-            severity: 'warn',
-            summary: this.translate.getInstant('common.warning'),
-            detail: this.translate.getInstant(
-              'donations.commitments.messages.fulfillmentSubmitAfterUploadFailed',
-            ),
-          });
-          this.handleBusinessError('submit', response);
-          return;
-        }
-
-        const fulfillmentId = this.donationFulfillmentService.extractFulfillmentId(response.message);
-        this.messageService.add({
-          severity: 'success',
-          summary: this.translate.getInstant('common.success'),
-          detail: this.translate.getInstant('donations.commitments.messages.fulfillmentSubmitted'),
-        });
-        this.closeDialog();
-        this.submitted.emit(fulfillmentId);
-      },
-    });
+    return anyFailed;
   }
   // #endregion
 
   // #region Upload helpers
-  private createTimestampedFile(file: File, index: number): File {
-    const lastDot = file.name.lastIndexOf('.');
-    const baseName = lastDot > 0 ? file.name.substring(0, lastDot) : file.name;
-    const extension = lastDot > 0 ? file.name.substring(lastDot) : '';
-    const timestampedName = `${baseName}_${Date.now()}_${index}${extension}`;
-    return new File([file], timestampedName, {
-      type: file.type,
-      lastModified: file.lastModified,
-    });
-  }
-
   private getFileUploadStatus(fileName: string): TransferFileStatus {
     return this.fileUploadStatus.get(fileName) || 'pending';
   }

@@ -8,6 +8,7 @@ import {
   VendorOfferBackend,
   VendorOfferDetails,
   VendorOfferListItem,
+  isActiveVendorOfferStatus,
 } from '../../models/vendor-offer.model';
 
 @Injectable({
@@ -151,7 +152,7 @@ export class VendorOffersService {
         String(raw.Description || ''),
         String(raw.Description_Regional || ''),
       ),
-      statusId: Number(raw.Status || 0),
+      statusId: Number(raw.Vendor_Offer_Status_ID ?? raw.Status ?? 0),
       statusCode: String(raw.Status_Code || ''),
       validUntil: String(raw.Valid_Until || ''),
       createdAt: String(raw.Created_At || ''),
@@ -180,7 +181,7 @@ export class VendorOffersService {
         String(raw.Description_Regional || ''),
       ),
       validUntil: String(raw.Valid_Until || ''),
-      statusId: Number(raw.Status || 0),
+      statusId: Number(raw.Vendor_Offer_Status_ID ?? raw.Status ?? 0),
       statusCode: String(raw.Status_Code || '').toUpperCase(),
       createdAt: String(raw.Created_At || ''),
       updatedAt: String(raw.Updated_At || ''),
@@ -191,11 +192,7 @@ export class VendorOffersService {
     if (!details) {
       return false;
     }
-    const code = details.statusCode.toUpperCase();
-    if (code === 'WITHDRAWN' || code === 'SELECTED' || code === 'EXPIRED') {
-      return false;
-    }
-    return true;
+    return isActiveVendorOfferStatus(details.statusId, details.statusCode);
   }
 
   formatValidUntil(date: Date): string {

@@ -7,12 +7,13 @@
       <p class="mb-0 text-500" *ngIf="details">{{ details.requestTitle || ('#' + details.id) }}</p>
     </div>
     <div class="flex flex-wrap gap-2">
-      <p-button [label]="'donations.vendorOffers.offerDetails.back' | translate" icon="pi pi-arrow-left"
-        severity="secondary" [outlined]="true" (onClick)="backToList()"></p-button>
+
       <p-button *ngIf="canEdit && !loading" [label]="'donations.vendorOffers.actions.editOffer' | translate"
         icon="pi pi-pencil" severity="secondary" (onClick)="editOffer()"></p-button>
       <p-button *ngIf="canWithdraw && !loading" [label]="'donations.vendorOffers.actions.withdrawOffer' | translate"
         icon="pi pi-times" severity="danger" [outlined]="true" (onClick)="openWithdrawDialog()"></p-button>
+      <p-button [label]="'donations.vendorOffers.offerDetails.back' | translate" icon="pi pi-arrow-left"
+        severity="secondary" [outlined]="true" (onClick)="backToList()"></p-button>
     </div>
   </div>
 
@@ -44,25 +45,14 @@
             <h3 class="details-section-title">{{ 'donations.vendorOffers.offerDetails.sections.offer' | translate }}
             </h3>
           </div>
-          <app-donation-status-badge [label]="getStatusLabel()"></app-donation-status-badge>
+          <app-donation-status-badge [label]="getStatusLabel()"
+            [severity]="getStatusSeverity()"></app-donation-status-badge>
         </div>
         <div class="grid p-3 pt-2">
           <div class="col-12 md:col-6 lg:col-4">
             <div class="info-item">
               <span class="info-label">{{ 'donations.vendorOffers.columns.offerId' | translate }}</span>
               <span class="info-value">{{ details.id || '-' }}</span>
-            </div>
-          </div>
-          <div class="col-12 md:col-6 lg:col-4">
-            <div class="info-item">
-              <span class="info-label">{{ 'donations.commitments.columns.requestId' | translate }}</span>
-              <span class="info-value">{{ details.donationRequestId || '-' }}</span>
-            </div>
-          </div>
-          <div class="col-12 md:col-6 lg:col-4">
-            <div class="info-item">
-              <span class="info-label">{{ 'donations.vendorOffers.columns.requestTitle' | translate }}</span>
-              <span class="info-value">{{ details.requestTitle || '-' }}</span>
             </div>
           </div>
           <div class="col-12 md:col-6 lg:col-4">
@@ -115,9 +105,154 @@
           </div>
         </div>
       </div>
+
+      <ng-container *ngIf="requestLoading; else requestContent">
+        <div class="block-card details-card p-0 mb-3">
+          <div class="details-section-header">
+            <div class="flex align-items-center gap-3 flex-1 min-w-0">
+              <p-skeleton shape="circle" size="2.25rem"></p-skeleton>
+              <p-skeleton height="1.25rem" width="12rem"></p-skeleton>
+            </div>
+          </div>
+          <div class="grid p-3 pt-2">
+            <div class="col-12 md:col-6 lg:col-4" *ngFor="let _ of [1, 2, 3, 4, 5, 6]">
+              <div class="info-item">
+                <p-skeleton height="0.85rem" width="45%" class="mb-2"></p-skeleton>
+                <p-skeleton height="1.25rem" width="70%"></p-skeleton>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <ng-template #requestContent>
+        <div *ngIf="requestDetails">
+          <div class="block-card details-card p-0 mb-3">
+            <div class="details-section-header">
+              <div class="flex align-items-center gap-3 flex-1 min-w-0">
+                <span class="details-section-icon"><i class="pi pi-box"></i></span>
+                <h3 class="details-section-title">{{ 'donations.vendorOffers.offerDetails.sections.request' | translate
+                  }}</h3>
+              </div>
+            </div>
+            <div class="grid p-3 pt-2">
+              <div class="col-12 md:col-6 lg:col-4">
+                <div class="info-item">
+                  <span class="info-label">{{ 'donations.commitments.columns.requestId' | translate }}</span>
+                  <span class="info-value">{{ requestDetails.id || '-' }}</span>
+                </div>
+              </div>
+              <div class="col-12 md:col-6 lg:col-4">
+                <div class="info-item">
+                  <span class="info-label">{{ 'donations.shared.columns.title' | translate }}</span>
+                  <span class="info-value">{{ requestDetails.title || '-' }}</span>
+                </div>
+              </div>
+              <div class="col-12 md:col-6 lg:col-4">
+                <div class="info-item">
+                  <span class="info-label">{{ 'donations.facility.requests.form.donationType' | translate }}</span>
+                  <span class="info-value">{{ typeLabel || '-' }}</span>
+                </div>
+              </div>
+              <div class="col-12 md:col-6 lg:col-4">
+                <div class="info-item">
+                  <span class="info-label">{{ 'donations.facility.requests.form.donationCategory' | translate }}</span>
+                  <span class="info-value">{{ categoryLabel || '-' }}</span>
+                </div>
+              </div>
+              <div class="col-12 md:col-6 lg:col-4">
+                <div class="info-item">
+                  <span class="info-label">{{ 'donations.facility.requests.form.quantity' | translate }}</span>
+                  <span class="info-value">{{ requestDetails.quantity }} {{ requestDetails.unit }}</span>
+                </div>
+              </div>
+              <div class="col-12 md:col-6 lg:col-4">
+                <div class="info-item">
+                  <span class="info-label">{{ 'donations.shared.columns.estimatedCost' | translate }}</span>
+                  <span class="info-value">{{ formatRequestCost() }}</span>
+                </div>
+              </div>
+              <div class="col-12 md:col-6 lg:col-4">
+                <div class="info-item">
+                  <span class="info-label">{{ 'donations.facility.requests.form.needsInstallation' | translate }}</span>
+                  <span class="info-value">
+                    <i class="pi mr-1"
+                      [ngClass]="requestDetails.needsInstallation ? 'pi-check-circle text-green-500' : 'pi-times-circle text-500'"></i>
+                    {{
+                    (requestDetails.needsInstallation ? 'donations.reference.categories.yes' :
+                    'donations.reference.categories.no')
+                    | translate
+                    }}
+                  </span>
+                </div>
+              </div>
+              <div class="col-12 md:col-6 lg:col-4">
+                <div class="info-item">
+                  <span class="info-label">{{ 'donations.vendorOffers.columns.publishedAt' | translate }}</span>
+                  <span class="info-value" dir="ltr">{{ requestDetails.publishedAt ? (requestDetails.publishedAt |
+                    date:'yyyy-MM-dd hh:mm a') : '-' }}</span>
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="info-item">
+                  <span class="info-label">{{ 'donations.facility.requests.form.description' | translate }}</span>
+                  <span class="info-value line-height-3">{{ requestDetails.description || '-' }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="block-card details-card p-0 mb-3">
+            <div class="details-section-header details-section-header--with-action">
+              <div class="flex align-items-center gap-3 flex-1 min-w-0">
+                <span class="details-section-icon"><i class="pi pi-map-marker"></i></span>
+                <h3 class="details-section-title">{{ 'donations.vendorOffers.offerDetails.sections.location' | translate
+                  }}</h3>
+              </div>
+              <p-button *ngIf="hasMapCoordinates" [label]="'donations.shared.locationMap.viewOnMap' | translate"
+                icon="pi pi-map" size="small" [outlined]="true" (onClick)="openLocationMap()"></p-button>
+            </div>
+            <div class="grid p-3 pt-2">
+              <div class="col-12 md:col-6 lg:col-4">
+                <div class="info-item">
+                  <span class="info-label">{{ 'donations.facility.requests.form.country' | translate }}</span>
+                  <span class="info-value">{{ countryLabel }}</span>
+                </div>
+              </div>
+              <div class="col-12 md:col-6 lg:col-4">
+                <div class="info-item">
+                  <span class="info-label">{{ 'donations.facility.requests.form.city' | translate }}</span>
+                  <span class="info-value">{{ requestDetails.city || '-' }}</span>
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="info-item">
+                  <span class="info-label">{{ 'donations.facility.requests.form.address' | translate }}</span>
+                  <span class="info-value line-height-3">{{ requestDetails.address || '-' }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="block-card details-card p-0">
+            <div class="details-section-header">
+              <span class="details-section-icon"><i class="pi pi-paperclip"></i></span>
+              <h3 class="details-section-title">{{ 'donations.vendorOffers.offerDetails.sections.attachments' | translate
+                }}</h3>
+            </div>
+            <div class="p-3 pt-2">
+              <app-donation-attachment-list [ownerType]="requestAttachmentOwnerType" [ownerId]="requestId"
+                [readonly]="true"></app-donation-attachment-list>
+            </div>
+          </div>
+        </div>
+      </ng-template>
     </div>
   </ng-template>
 </div>
 
 <app-withdraw-vendor-offer-dialog [(visible)]="withdrawDialogVisible" [donationVendorOfferId]="offerId"
   (withdrawn)="onWithdrawn()"></app-withdraw-vendor-offer-dialog>
+
+<app-donation-location-map-dialog [(visible)]="locationMapVisible" [latitude]="requestDetails?.latitude || 0"
+  [longitude]="requestDetails?.longitude || 0"></app-donation-location-map-dialog>

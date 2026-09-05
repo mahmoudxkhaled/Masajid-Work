@@ -18,7 +18,7 @@ export class DonationFulfillmentService {
   constructor(
     private apiServices: ApiService,
     private localStorageService: LocalStorageService,
-  ) {}
+  ) { }
 
   submitFulfillmentProof(dto: SubmitFulfillmentProofRequest): Observable<any> {
     this.isLoadingSubject.next(true);
@@ -28,9 +28,9 @@ export class DonationFulfillmentService {
       dto.donationVendorOfferId.toString(),
       String(dto.fulfillmentNote || '').trim(),
       dto.isRegional.toString(),
-      this.formatIntegerList(dto.proofAttachmentIds),
-      dto.fileSystemId.toString(),
-      dto.folderId.toString(),
+      this.formatIntegerList([]),
+      '0',
+      '0',
     ];
     console.log('submitFulfillmentProof params', params);
     return this.apiServices.callAPI(100800, this.getAccessToken(), params).pipe(

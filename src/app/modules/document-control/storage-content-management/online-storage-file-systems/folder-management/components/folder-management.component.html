@@ -296,7 +296,7 @@
                                 <div class="flex align-items-center justify-content-between gap-2 flex-wrap">
                                     <button *ngIf="currentFolderId !== 0" pButton type="button"
                                         [label]="'fileSystem.folderManagement.back' | translate" icon="pi pi-arrow-left"
-                                        class="p-button-sm p-button-outlined" (click)="goBack()"></button>
+                                        class="p-button-sm p-button-outlined p-button-secondary" (click)="goBack()"></button>
                                     <span *ngIf="currentFolderId === 0"></span>
                                     <div class="flex gap-2 ml-auto">
                                         <button *ngIf="canModify" pButton type="button"

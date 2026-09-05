@@ -1288,6 +1288,8 @@
             "donations.commitments.details.title": "Commitment Details",
             "donations.adminReview.title": "Admin Review",
             "donations.adminReview.details.title": "Review Donation Request",
+            "donations.adminClose.title": "Ready to Close",
+            "donations.adminClose.details.title": "Close Donation Request",
             "donations.vendorOffers.title": "Vendor Offers",
             "donations.vendorOffers.requests.title": "Vendor Requests",
             "donations.vendorOffers.requestDetails.title": "Vendor Request Details",
@@ -3582,6 +3584,7 @@
                 "messages": {
                     "notOwnerFacility": "You are not allowed to manage this facility request.",
                     "created": "Donation request saved as draft.",
+                    "createdPartialAttachments": "Donation request was created, but some attachments could not be saved.",
                     "updated": "Donation request updated successfully.",
                     "submitted": "Donation request submitted for admin review.",
                     "deleted": "Draft donation request deleted successfully."
@@ -3620,8 +3623,7 @@
                     "saveDraft": "Save draft",
                     "saveAndSubmit": "Save & submit for review",
                     "cancel": "Cancel",
-                    "attachmentsTodoTitle": "Attachments",
-                    "attachmentsTodo": "Donation request attachments will be implemented in the attachments phase using Add_Donation_Attachment 111000.",
+                    "attachments": "Request Attachments",
                     "validation": {
                         "categoryRequired": "Donation category is required.",
                         "titleRequired": "Title is required.",
@@ -3649,6 +3651,7 @@
                         "donation": "Donation Information",
                         "location": "Location",
                         "meta": "Request Information",
+                        "attachments": "Request Attachments",
                         "workflow": "Status History"
                     }
                 }
@@ -3774,7 +3777,29 @@
                 "sections": {
                     "donation": "Donation Information",
                     "facility": "Facility Information",
-                    "location": "Location"
+                    "location": "Location",
+                    "attachments": "Request Attachments",
+                    "vendorOffers": "Vendor Offers"
+                },
+                "vendorOffers": {
+                    "empty": "No vendor offers are available yet.",
+                    "count": "{{count}} offers",
+                    "columns": {
+                        "vendor": "Vendor",
+                        "amount": "Offer amount",
+                        "includesSupply": "Supply",
+                        "includesInstallation": "Installation",
+                        "description": "Description",
+                        "validUntil": "Valid until",
+                        "status": "Status",
+                        "createdAt": "Created at"
+                    },
+                    "errors": {
+                        "requestNotFound": "Donation request was not found.",
+                        "notAccessible": "Vendor offers are not accessible for this request.",
+                        "accessDenied": "You do not have permission to access this section.",
+                        "sessionExpired": "Your session has expired. Please login again."
+                    }
                 }
             },
             "validation": {
@@ -3980,6 +4005,7 @@
                 "accepted": "Donation accepted successfully.",
                 "cancelled": "Donation commitment cancelled successfully.",
                 "fulfillmentSubmitted": "Fulfillment proof submitted successfully.",
+                "fulfillmentSubmittedPartialAttachments": "Fulfillment was submitted, but some proof attachments could not be saved.",
                 "fulfillmentSubmitAfterUploadFailed": "Proof attachments were uploaded and linked, but fulfillment proof could not be submitted."
             },
             "errors": {
@@ -4026,6 +4052,7 @@
                     "donation": "Donation details",
                     "location": "Location",
                     "meta": "Request information",
+                    "attachments": "Request Attachments",
                     "workflow": "Workflow history"
                 }
             },
@@ -4045,6 +4072,70 @@
                 "requestNotFound": "Donation request was not found.",
                 "invalidStatus": "This action is not allowed for the current request status.",
                 "accessDenied": "You do not have permission to perform this action.",
+                "sessionExpired": "Your session has expired. Please login again."
+            }
+        },
+        "adminClose": {
+            "title": "Ready to Close Donation Requests",
+            "subtitle": "Close donation requests that successfully passed community validation.",
+            "searchPlaceholder": "Search requests...",
+            "pagination": "Showing '{first}' to '{last}' of '{totalRecords}'",
+            "empty": "No donation requests are ready to close.",
+            "fulfillmentsEmpty": "No fulfillment records were found for this request.",
+            "validationsEmpty": "No community validations were found for this request.",
+            "noNotes": "No notes",
+            "columns": {
+                "requestId": "Request ID",
+                "facility": "Facility",
+                "category": "Category",
+                "quantity": "Quantity",
+                "location": "Location",
+                "status": "Status",
+                "actions": "Actions",
+                "fulfillmentId": "Fulfillment ID",
+                "commitmentId": "Commitment ID",
+                "fulfilledBy": "Fulfilled by",
+                "vendorOfferId": "Vendor offer ID",
+                "submittedAt": "Submitted at",
+                "fulfillmentNote": "Fulfillment note",
+                "validationId": "Validation ID",
+                "validator": "Validator user ID",
+                "validatedAt": "Validated at",
+                "notes": "Notes"
+            },
+            "actions": {
+                "viewDetails": "View Details",
+                "backToList": "Back to Ready to Close",
+                "closeRequest": "Close Donation Request",
+                "confirmClose": "Close Request"
+            },
+            "details": {
+                "title": "Close Donation Request",
+                "subtitle": "Review fulfillment and validation summaries before closing."
+            },
+            "sections": {
+                "requestSummary": "Request summary",
+                "requestAttachments": "Request attachments",
+                "fulfillments": "Fulfillment records",
+                "fulfillmentAttachments": "Fulfillment attachments",
+                "validations": "Community validations",
+                "validationAttachments": "Validation attachments"
+            },
+            "dialog": {
+                "title": "Close Donation Request",
+                "warning": "This will close the donation request and prevent further workflow actions."
+            },
+            "messages": {
+                "closed": "Donation request closed successfully.",
+                "statusUnverified": "Request status could not be verified.",
+                "alreadyClosedOrTerminal": "This request is already closed or in a terminal status."
+            },
+            "errors": {
+                "requestNotFound": "Donation request was not found.",
+                "invalidStatus": "This donation request cannot be closed in its current status.",
+                "actionNotAccessible": "This action is not accessible for your account.",
+                "accessDenied": "You do not have permission to close donation requests.",
+                "notOwnerFacility": "You are not allowed to list donation requests for this facility.",
                 "sessionExpired": "Your session has expired. Please login again."
             }
         },
@@ -4070,15 +4161,26 @@
                 "back": "Back to Vendor Requests",
                 "sections": {
                     "request": "Donation request",
-                    "location": "Location"
+                    "location": "Location",
+                    "attachments": "Request Attachments"
                 }
             },
             "offerDetails": {
                 "title": "Vendor Offer Details",
                 "back": "Back to My Offers",
                 "sections": {
-                    "offer": "Vendor offer"
+                    "offer": "Vendor offer",
+                    "request": "Donation request",
+                    "location": "Location",
+                    "attachments": "Request Attachments"
                 }
+            },
+            "status": {
+                "active": "Active",
+                "withdrawn": "Withdrawn",
+                "selected": "Selected",
+                "expired": "Expired",
+                "unknown": "Unknown"
             },
             "filters": {
                 "category": "Category",
@@ -4237,7 +4339,17 @@
             },
             "actions": {
                 "selectFiles": "Select files",
-                "remove": "Remove"
+                "remove": "Remove",
+                "download": "Download"
+            },
+            "uploadHintCreate": "Select files now. They will be uploaded when you save the request.",
+            "uploadHintEdit": "Upload files to attach them to this request immediately.",
+            "existingTitle": "Existing attachments",
+            "picker": {
+                "dropFiles": "or drop files here",
+                "allowedTypes": "Allowed types: {types}",
+                "maxFileSize": "Maximum file size: {size} MB",
+                "removeFile": "Remove file"
             },
             "removeDialog": {
                 "title": "Remove Attachment",
@@ -4246,6 +4358,7 @@
             "messages": {
                 "added": "Attachment added successfully.",
                 "removed": "Attachment removed successfully.",
+                "downloaded": "File downloaded successfully.",
                 "uploadLinkedFailed": "File uploaded successfully, but could not be linked as a donation attachment."
             },
             "errors": {
@@ -4257,7 +4370,9 @@
                 "invalidFileSize": "File size is invalid or too large.",
                 "uploadFailed": "File upload failed. Please try again.",
                 "accessDenied": "You do not have permission to manage attachments.",
-                "sessionExpired": "Your session has expired. Please login again."
+                "sessionExpired": "Your session has expired. Please login again.",
+                "invalidFileAllocation": "Invalid file allocation (file and folder). The file cannot be downloaded.",
+                "downloadFailed": "File download failed."
             }
         },
         "requestStatus": {
@@ -4368,6 +4483,8 @@
             },
             "messages": {
                 "submitted": "Validation submitted successfully.",
+                "submittedPartialAttachments": "Validation was submitted, but some attachments could not be saved.",
+                "validationIdRequiredToLink": "Your validation was submitted, but attachments could not be linked because the validation reference was not returned.",
                 "submitAfterUploadFailed": "Validation attachments were uploaded and linked, but validation could not be submitted.",
                 "downloaded": "File downloaded successfully."
             },

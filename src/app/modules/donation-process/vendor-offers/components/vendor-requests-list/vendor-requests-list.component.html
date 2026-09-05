@@ -19,7 +19,8 @@
             </ng-container>
             <ng-template #categoryFilter>
               <p-dropdown [options]="categoryOptions" [(ngModel)]="selectedCategoryId" optionLabel="label"
-                optionValue="value" [placeholder]="'donations.vendorOffers.filters.category' | translate"
+                optionValue="value" [filter]="true"
+                [placeholder]="'donations.vendorOffers.filters.category' | translate"
                 [style]="{ width: '12rem' }" (onChange)="onFiltersApply()"></p-dropdown>
             </ng-template>
 
@@ -28,7 +29,8 @@
             </ng-container>
             <ng-template #countryFilter>
               <p-dropdown [options]="countryOptions" [(ngModel)]="selectedCountryCode" optionLabel="label"
-                optionValue="value" [placeholder]="'donations.vendorOffers.filters.country' | translate"
+                optionValue="value" [filter]="true"
+                [placeholder]="'donations.vendorOffers.filters.country' | translate"
                 [style]="{ width: '10rem' }" (onChange)="onFiltersApply()"></p-dropdown>
             </ng-template>
 
@@ -53,7 +55,7 @@
       <ng-template pTemplate="header">
         <tr>
           <th style="width: 14rem">{{ 'donations.shared.columns.title' | translate }}</th>
-          <th style="width: 10rem">{{ 'donations.browse.columns.category' | translate }}</th>
+          <th style="width: 11rem">{{ 'donations.browse.columns.category' | translate }}</th>
           <th class="text-center" style="width: 8rem">{{ 'donations.browse.columns.quantity' | translate }}</th>
           <th class="text-center" style="width: 10rem">{{ 'donations.shared.columns.estimatedCost' | translate }}</th>
           <th style="width: 11rem">{{ 'donations.browse.columns.location' | translate }}</th>
@@ -61,27 +63,30 @@
           </th>
           <th class="text-center" style="width: 10rem">{{ 'donations.vendorOffers.columns.publishedAt' | translate }}
           </th>
-          <th class="text-center" style="width: 8rem">{{ 'donations.vendorOffers.columns.actions' | translate }}</th>
+          <!-- <th class="text-center" style="width: 8rem">{{ 'donations.vendorOffers.columns.actions' | translate }}</th> -->
         </tr>
       </ng-template>
 
       <ng-template pTemplate="body" let-row>
         <tr class="vendor-requests-row-clickable" [style.cursor]="tableLoadingSpinner ? 'default' : 'pointer'"
           (click)="!tableLoadingSpinner && viewDetails(row)">
-          <td>
+          <td class="donation-table-cell-ellipsis" style="width: 14rem">
             <ng-container *ngIf="tableLoadingSpinner; else titleCell">
-              <p-skeleton height="1.25rem" width="90%"></p-skeleton>
+              <p-skeleton height="1.25rem" width="12rem"></p-skeleton>
             </ng-container>
             <ng-template #titleCell>
               <span class="text-overflow-ellipsis" [pTooltip]="getTitle(row)" tooltipPosition="top">{{ getTitle(row) ||
                 '-' }}</span>
             </ng-template>
           </td>
-          <td>
+          <td class="donation-table-cell-ellipsis" style="width: 11rem">
             <ng-container *ngIf="tableLoadingSpinner; else categoryCell">
-              <p-skeleton height="1.25rem" width="7rem"></p-skeleton>
+              <p-skeleton height="1.25rem" width="9rem"></p-skeleton>
             </ng-container>
-            <ng-template #categoryCell>{{ getCategoryLabel(row) }}</ng-template>
+            <ng-template #categoryCell>
+              <span class="text-overflow-ellipsis" [pTooltip]="getCategoryLabel(row)"
+                tooltipPosition="top">{{ getCategoryLabel(row) }}</span>
+            </ng-template>
           </td>
           <td class="text-center">
             <ng-container *ngIf="tableLoadingSpinner; else quantityCell">
@@ -115,7 +120,7 @@
               <span dir="ltr">{{ row.Published_At ? (row.Published_At | date:'yyyy-MM-dd hh:mm a') : '-' }}</span>
             </ng-template>
           </td>
-          <td class="text-center">
+          <!-- <td class="text-center">
             <ng-container *ngIf="tableLoadingSpinner; else actionsCell">
               <p-skeleton height="2rem" width="5rem" borderRadius="6px"></p-skeleton>
             </ng-container>
@@ -123,13 +128,13 @@
               <p-button [label]="'donations.vendorOffers.actions.viewDetails' | translate" icon="pi pi-eye"
                 severity="secondary" [outlined]="true" size="small" (onClick)="viewDetails(row, $event)"></p-button>
             </ng-template>
-          </td>
+          </td> -->
         </tr>
       </ng-template>
 
       <ng-template pTemplate="emptymessage">
         <tr>
-          <td colspan="8" class="text-center py-4">{{ 'donations.vendorOffers.requests.empty' | translate }}</td>
+          <td colspan="7" class="text-center py-4">{{ 'donations.vendorOffers.requests.empty' | translate }}</td>
         </tr>
       </ng-template>
     </p-table>

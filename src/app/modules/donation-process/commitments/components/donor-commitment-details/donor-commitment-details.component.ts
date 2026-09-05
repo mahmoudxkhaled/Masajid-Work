@@ -21,7 +21,14 @@ import { getFulfillmentStatusLabelKey } from '../../../models/donation-fulfillme
 import { DonationRequestWorkflowItem } from '../../../models/donation-request.model';
 import { getFulfilledByLabelKey } from '../../../models/fulfilled-by.model';
 import { FulfillmentMode } from '../../../models/fulfillment-mode.model';
-import { VendorOfferBackend, VendorOfferListItem } from '../../../models/vendor-offer.model';
+import {
+  VendorOfferBackend,
+  VendorOfferListItem,
+  VendorOfferStatus,
+  getVendorOfferStatusLabelKey,
+  getVendorOfferStatusSeverity,
+  isActiveVendorOfferStatus,
+} from '../../../models/vendor-offer.model';
 import { DonationRequestsService } from '../../../facility-requests/services/donation-requests.service';
 import { DonationFulfillmentService } from '../../../services/donation-fulfillment.service';
 import { VendorOffersService } from '../../../vendor-offers/services/vendor-offers.service';
@@ -83,6 +90,20 @@ export class DonorCommitmentDetailsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.commitmentId = Number(this.route.snapshot.paramMap.get('id') || 0);
+
+    const toastDetailKey = history.state?.['toastDetailKey'];
+    if (toastDetailKey) {
+      const { toastDetailKey: _removed, ...restState } = history.state || {};
+      history.replaceState(restState, '');
+      setTimeout(() => {
+        this.messageService.add({
+          severity: 'success',
+          summary: this.translate.getInstant('common.success'),
+          detail: this.translate.getInstant(String(toastDetailKey)),
+        });
+      });
+    }
+
     this.subscriptions.push(
       this.languageDirService.userLanguageCode$.subscribe(() => {
         this.refreshDisplay();
@@ -120,10 +141,7 @@ export class DonorCommitmentDetailsComponent implements OnInit, OnDestroy {
   }
 
   get selectedVendorOfferId(): number {
-    const selected = this.vendorOffers.find((offer) => {
-      const code = String(offer.statusCode || '').toUpperCase();
-      return code === 'SELECTED';
-    });
+    const selected = this.vendorOffers.find((offer) => this.isSelectedOffer(offer));
     return selected ? Number(selected.id || 0) : 0;
   }
 
@@ -173,15 +191,18 @@ export class DonorCommitmentDetailsComponent implements OnInit, OnDestroy {
     this.loadDetails();
   }
 
+  private isSelectedOffer(row: VendorOfferListItem): boolean {
+    return (
+      row.statusId === VendorOfferStatus.Selected ||
+      String(row.statusCode || '').toUpperCase() === 'SELECTED'
+    );
+  }
+
   canSelectOffer(row: VendorOfferListItem): boolean {
     if (this.hasSelectedOffer) {
       return false;
     }
-    const code = String(row.statusCode || '').toUpperCase();
-    if (code === 'WITHDRAWN' || code === 'SELECTED' || code === 'EXPIRED') {
-      return false;
-    }
-    return true;
+    return isActiveVendorOfferStatus(row.statusId, row.statusCode);
   }
 
   formatOfferAmount(row: VendorOfferListItem): string {
@@ -200,10 +221,15 @@ export class DonorCommitmentDetailsComponent implements OnInit, OnDestroy {
   }
 
   getOfferStatusLabel(row: VendorOfferListItem): string {
-    if (row.statusCode) {
-      return row.statusCode;
+    const code = String(row.statusCode || '').trim();
+    if (!code && !row.statusId) {
+      return '-';
     }
-    return row.statusId ? String(row.statusId) : '-';
+    return this.translate.getInstant(getVendorOfferStatusLabelKey(row.statusId, code));
+  }
+
+  getOfferStatusSeverity(row: VendorOfferListItem) {
+    return getVendorOfferStatusSeverity(row.statusId, row.statusCode);
   }
 
   getVendorLabel(row: VendorOfferListItem): string {
@@ -330,10 +356,7 @@ export class DonorCommitmentDetailsComponent implements OnInit, OnDestroy {
         const rawOffers = Array.isArray(response.message) ? (response.message as VendorOfferBackend[]) : [];
         this.rawVendorOffers = rawOffers;
         this.vendorOffers = rawOffers.map((item) => this.vendorOffersService.mapVendorOfferListItem(item));
-        this.hasSelectedOffer = this.vendorOffers.some((offer) => {
-          const code = String(offer.statusCode || '').toUpperCase();
-          return code === 'SELECTED';
-        });
+        this.hasSelectedOffer = this.vendorOffers.some((offer) => this.isSelectedOffer(offer));
         this.offersLoading = false;
       },
       error: () => {
@@ -421,10 +444,7 @@ export class DonorCommitmentDetailsComponent implements OnInit, OnDestroy {
     this.details = this.donationCommitmentService.mapDonationCommitmentDetails(this.rawDetails);
     this.workflowItems = this.donationRequestsService.mapDonationRequestWorkflow(this.rawWorkflow);
     this.vendorOffers = this.rawVendorOffers.map((item) => this.vendorOffersService.mapVendorOfferListItem(item));
-    this.hasSelectedOffer = this.vendorOffers.some((offer) => {
-      const code = String(offer.statusCode || '').toUpperCase();
-      return code === 'SELECTED';
-    });
+    this.hasSelectedOffer = this.vendorOffers.some((offer) => this.isSelectedOffer(offer));
     this.fulfillments = this.rawFulfillments.map((item) =>
       this.donationFulfillmentService.mapFulfillmentListItem(item),
     );

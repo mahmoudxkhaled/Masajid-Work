@@ -1,6 +1,7 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges } from '@angular/core';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
+import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { CurrencyLookup } from 'src/app/core/models/lookup.model';
 import { LocalStorageService } from 'src/app/core/services/local-storage.service';
@@ -16,7 +17,7 @@ type CreateVendorOfferDialogContext = 'create';
   templateUrl: './create-vendor-offer-dialog.component.html',
   styleUrl: './create-vendor-offer-dialog.component.scss',
 })
-export class CreateVendorOfferDialogComponent implements OnChanges {
+export class CreateVendorOfferDialogComponent implements OnChanges, OnDestroy {
   @Input() visible = false;
   @Input() donationRequestId = 0;
 
@@ -32,6 +33,7 @@ export class CreateVendorOfferDialogComponent implements OnChanges {
   minValidUntilDate = new Date();
 
   currencyOptions: { label: string; value: string }[] = [];
+  currencyPlaceholder = '';
   isLoading$ = this.vendorOffersService.isLoadingSubject.asObservable();
 
   private currencies: CurrencyLookup[] = [];
@@ -42,16 +44,28 @@ export class CreateVendorOfferDialogComponent implements OnChanges {
     private localStorageService: LocalStorageService,
     private lookupService: PublicLookupService,
     private translate: TranslationService,
+    private translateService: TranslateService,
     private messageService: MessageService,
     private router: Router,
   ) {
+    this.currencyPlaceholder = this.translate.getInstant('donations.vendorOffers.form.currencyPlaceholder');
+    this.subscriptions.push(
+      this.translateService.onLangChange.subscribe(() => {
+        this.rebuildCurrencyOptions();
+      }),
+    );
     this.loadCurrencies();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['visible']?.currentValue === true) {
+      this.rebuildCurrencyOptions();
       this.resetForm();
     }
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
   closeDialog(): void {
@@ -91,15 +105,12 @@ export class CreateVendorOfferDialogComponent implements OnChanges {
           }
 
           const offerId = Number(response.message || 0);
-          this.messageService.add({
-            severity: 'success',
-            summary: this.translate.getInstant('common.success'),
-            detail: this.translate.getInstant('donations.vendorOffers.messages.created'),
-          });
           this.closeDialog();
           this.created.emit(offerId);
           if (offerId) {
-            void this.router.navigate(['/donations/vendor/offers', offerId]);
+            void this.router.navigate(['/donations/vendor/offers', offerId], {
+              state: { toastDetailKey: 'donations.vendorOffers.messages.created' },
+            });
           }
         },
       });
@@ -109,13 +120,19 @@ export class CreateVendorOfferDialogComponent implements OnChanges {
     const sub = this.lookupService.getCurrencies().subscribe({
       next: (items) => {
         this.currencies = items;
-        this.currencyOptions = items.map((item) => ({
-          label: `${item.code} - ${this.lookupService.getCurrencyLabel(item, this.localStorageService.isArabicUi())}`,
-          value: String(item.code || '').trim().toUpperCase(),
-        }));
+        this.rebuildCurrencyOptions();
       },
     });
     this.subscriptions.push(sub);
+  }
+
+  private rebuildCurrencyOptions(): void {
+    this.currencyPlaceholder = this.translate.getInstant('donations.vendorOffers.form.currencyPlaceholder');
+    const isArabic = this.localStorageService.isArabicUi();
+    this.currencyOptions = this.currencies.map((item) => ({
+      label: `${item.code} - ${this.lookupService.getCurrencyLabel(item, isArabic)}`,
+      value: String(item.code || '').trim().toUpperCase(),
+    }));
   }
 
   private resetForm(): void {

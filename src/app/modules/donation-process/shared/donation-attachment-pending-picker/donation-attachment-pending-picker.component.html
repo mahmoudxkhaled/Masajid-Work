@@ -1,0 +1,38 @@
+<div class="pending-picker flex flex-column gap-2">
+  <div class="pending-upload-area" [class.pending-upload-area--disabled]="!canSelectFiles"
+    [class.pending-upload-area--dragover]="isDragOver" (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)"
+    (drop)="onFileDrop($event)">
+    <label class="pending-upload-button" [class.p-disabled]="!canSelectFiles">
+      <i class="pi pi-cloud-upload pending-upload-button__icon"></i>
+      <span class="pending-upload-button__label">
+        {{ 'donations.attachments.actions.selectFiles' | translate }}
+      </span>
+      <span class="pending-upload-button__hint">
+        {{ 'donations.attachments.picker.dropFiles' | translate }}
+      </span>
+      <span class="pending-upload-button__hint">
+        {{ 'donations.attachments.picker.allowedTypes' | translate:{ types: allowedExtensionsLabel } }}
+      </span>
+      <span class="pending-upload-button__hint">
+        {{ 'donations.attachments.picker.maxFileSize' | translate:{ size: maxFileSizeLabel } }}
+      </span>
+      <input type="file" class="hidden-file-input" multiple [accept]="fileAcceptAttribute"
+        [disabled]="!canSelectFiles" (change)="onFilesSelected($event)" />
+    </label>
+  </div>
+
+  <div *ngIf="files.length" class="pending-files-list flex flex-column gap-2">
+    <div *ngFor="let file of files; let i = index" class="pending-file-item">
+      <div class="pending-file-item__main min-w-0 flex align-items-center gap-2">
+        <i [class]="getFileIcon(file)" class="pending-file-item__icon"></i>
+        <div class="min-w-0 flex flex-column">
+          <span class="pending-file-item__name" [pTooltip]="file.name" tooltipPosition="top">{{ file.name }}</span>
+          <span class="pending-file-item__meta">{{ formatFileSize(file.size) }}</span>
+        </div>
+      </div>
+      <p-button icon="pi pi-times" [rounded]="true" [text]="true" severity="danger" size="small"
+        [pTooltip]="'donations.attachments.picker.removeFile' | translate" tooltipPosition="top"
+        [disabled]="disabled" (onClick)="removeFile(i)"></p-button>
+    </div>
+  </div>
+</div>

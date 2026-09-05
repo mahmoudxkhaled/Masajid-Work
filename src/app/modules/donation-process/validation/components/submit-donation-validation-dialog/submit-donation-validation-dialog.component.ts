@@ -14,7 +14,7 @@ import {
 } from '../../../config/donation-storage.config';
 import {
   resolveDonationAttachmentKindFromFileName,
-  resolveValidationAttachmentOwner,
+  resolveValidationAttachmentOwnerForLink,
 } from '../../../models/donation-attachment.constants';
 import {
   DONATION_ATTACHMENT_ALLOWED_EXTENSIONS,
@@ -198,8 +198,9 @@ export class SubmitDonationValidationDialogComponent implements OnChanges, OnDes
       return;
     }
 
+    const hasFiles = this.selectedFiles.length > 0;
     const storageLocation = getDonationStorageLocation('communityValidations');
-    if (!storageLocation && this.selectedFiles.length) {
+    if (hasFiles && !storageLocation) {
       this.messageService.add({
         severity: 'warn',
         summary: this.translate.getInstant('common.warning'),
@@ -208,186 +209,193 @@ export class SubmitDonationValidationDialogComponent implements OnChanges, OnDes
       return;
     }
 
-    const validationAttachmentIds: number[] = [];
-    let uploadFileSystemId = storageLocation?.fileSystemId || 0;
-    let uploadFolderId = storageLocation?.folderId || 0;
-
-    if (this.selectedFiles.length) {
-      this.uploadFiles = this.selectedFiles.map((file, index) =>
-        this.createTimestampedFile(file, index),
-      );
-      this.fileUploadStatus.clear();
-      this.uploadFiles.forEach((file) => this.fileUploadStatus.set(file.name, 'pending'));
-      this.uploading = true;
-      this.uploadPercent = 0;
-      this.syncUploadProgressOverlay();
-
-      const owner = resolveValidationAttachmentOwner(this.donationRequestId);
-      const accessToken = this.localStorageService.getAccessToken();
-      const totalFiles = this.uploadFiles.length;
-
-      for (let i = 0; i < this.uploadFiles.length; i++) {
-        const file = this.uploadFiles[i];
-        let linkingFile = false;
-        this.currentUploadingFileName = file.name;
-        this.fileUploadStatus.set(file.name, 'uploading');
-        this.syncUploadProgressOverlay();
-
-        try {
-          const uploaded = await this.fileUploadService.uploadFileWithResult(
-            file,
-            accessToken,
-            storageLocation!.fileSystemId,
-            BigInt(storageLocation!.folderId),
-            (percent) => {
-              const completedFiles = Array.from(this.fileUploadStatus.values()).filter(
-                (status) => status === 'completed',
-              ).length;
-              this.uploadPercent = Math.round(
-                ((completedFiles + percent / 100) / totalFiles) * 100,
-              );
-              this.syncUploadProgressOverlay();
-            },
-          );
-
-          uploadFileSystemId = uploaded.fileSystemId;
-          uploadFolderId = uploaded.folderId;
-          linkingFile = true;
-
-          const caption =
-            String(this.selectedFiles[i]?.name || file.name || uploaded.fileName || '').trim() ||
-            `validation_${i + 1}`;
-
-          const linkResponse: any = await firstValueFrom(
-            this.donationAttachmentService.addDonationAttachment({
-              ownerType: owner.ownerType,
-              ownerId: owner.ownerId,
-              attachmentKind: resolveDonationAttachmentKindFromFileName(caption),
-              fileId: uploaded.fileId,
-              folderId: uploaded.folderId,
-              fileSystemId: uploaded.fileSystemId,
-              caption,
-              isRegional: this.localStorageService.isRegionalApiInput(),
-              sortOrder: i + 1,
-            }),
-          );
-
-          console.log('addDonationAttachment response', linkResponse);
-
-          if (!linkResponse?.success) {
-            this.fileUploadStatus.set(file.name, 'error');
-            this.currentUploadingFileName = null;
-            this.syncUploadProgressOverlay();
-            this.messageService.add({
-              severity: 'warn',
-              summary: this.translate.getInstant('common.warning'),
-              detail: this.translate.getInstant('donations.attachments.messages.uploadLinkedFailed'),
-            });
-            this.handleBusinessError('link', linkResponse);
-            this.uploading = false;
-            this.syncUploadProgressOverlay();
-            return;
-          }
-
-          const donationAttachmentId =
-            this.donationAttachmentService.extractDonationAttachmentId(linkResponse.message);
-          if (!donationAttachmentId) {
-            this.fileUploadStatus.set(file.name, 'error');
-            this.currentUploadingFileName = null;
-            this.syncUploadProgressOverlay();
-            this.messageService.add({
-              severity: 'warn',
-              summary: this.translate.getInstant('common.warning'),
-              detail: this.translate.getInstant('donations.attachments.messages.uploadLinkedFailed'),
-            });
-            this.uploading = false;
-            this.syncUploadProgressOverlay();
-            return;
-          }
-
-          validationAttachmentIds.push(donationAttachmentId);
-          this.fileUploadStatus.set(file.name, 'completed');
-          this.currentUploadingFileName = null;
-          this.syncUploadProgressOverlay();
-        } catch (err: unknown) {
-          console.error('Validation attachment upload/link failed', err);
-          if (this.currentUploadingFileName) {
-            this.fileUploadStatus.set(this.currentUploadingFileName, 'error');
-            this.currentUploadingFileName = null;
-            this.syncUploadProgressOverlay();
-          }
-          const response = this.normalizeUploadError(err);
-          if (linkingFile) {
-            this.messageService.add({
-              severity: 'warn',
-              summary: this.translate.getInstant('common.warning'),
-              detail: this.translate.getInstant('donations.attachments.messages.uploadLinkedFailed'),
-            });
-            this.handleBusinessError('link', response);
-          } else {
-            this.handleBusinessError('upload', response);
-          }
-          this.uploading = false;
-          this.syncUploadProgressOverlay();
-          return;
-        }
-      }
-
-      this.uploading = false;
-      this.transferProgressService.resetUploadProgress();
-
-      if (this.selectedFiles.length && !validationAttachmentIds.length) {
-        return;
-      }
-    }
+    this.uploading = true;
+    this.uploadPercent = 0;
+    this.fileUploadStatus.clear();
+    this.uploadFiles = [];
 
     const payload = {
       donationFulfillmentId: this.donationFulfillmentId,
       validationResult: this.validationResult,
       notes: trimmedNotes,
       isRegional: this.localStorageService.isRegionalApiInput(),
-      validationAttachmentIds,
-      fileSystemId: uploadFileSystemId,
-      folderId: uploadFolderId,
     };
 
     console.log('submitDonationValidation params', payload);
 
-    this.donationValidationService.submitDonationValidation(payload).subscribe({
-      next: (response: any) => {
-        console.log('submitDonationValidation response', response);
-        if (!response?.success) {
-          console.log('Validation submit failed after upload/link', {
+    try {
+      const response: any = await firstValueFrom(
+        this.donationValidationService.submitDonationValidation(payload),
+      );
+      console.log('submitDonationValidation response', response);
+
+      if (!response?.success) {
+        this.handleBusinessError('submit', response);
+        this.uploading = false;
+        this.syncUploadProgressOverlay();
+        return;
+      }
+
+      const validationId = this.donationValidationService.extractValidationId(response.message);
+      let attachmentLinkFailed = false;
+
+      if (hasFiles) {
+        const owner = resolveValidationAttachmentOwnerForLink(validationId);
+        if (!owner) {
+          console.warn('Donation_Validation_ID is required to link validation attachments after submit.', {
             Donation_Fulfillment_ID: payload.donationFulfillmentId,
-            Donation_Attachment_IDs: payload.validationAttachmentIds,
-            Validation_Result: payload.validationResult,
-            File_System_ID: payload.fileSystemId,
-            Folder_ID: payload.folderId,
+            Donation_Request_ID: this.donationRequestId,
+            Donation_Validation_ID: validationId,
             response,
           });
-          if (validationAttachmentIds.length) {
-            this.messageService.add({
-              severity: 'warn',
-              summary: this.translate.getInstant('common.warning'),
-              detail: this.translate.getInstant(
-                'donations.validation.messages.submitAfterUploadFailed',
-              ),
-            });
-          }
-          this.handleBusinessError('submit', response);
-          return;
+          this.messageService.add({
+            severity: 'warn',
+            summary: this.translate.getInstant('common.warning'),
+            detail: this.translate.getInstant('donations.validation.messages.validationIdRequiredToLink'),
+          });
+          attachmentLinkFailed = true;
+        } else {
+          attachmentLinkFailed = await this.uploadAndLinkValidationFiles(owner);
         }
+      }
 
-        const validationId = this.donationValidationService.extractValidationId(response.message);
+      if (attachmentLinkFailed) {
+        this.messageService.add({
+          severity: 'warn',
+          summary: this.translate.getInstant('common.warning'),
+          detail: this.translate.getInstant('donations.validation.messages.submittedPartialAttachments'),
+        });
+      } else {
         this.messageService.add({
           severity: 'success',
           summary: this.translate.getInstant('common.success'),
           detail: this.translate.getInstant('donations.validation.messages.submitted'),
         });
-        this.closeDialog();
-        this.submitted.emit(validationId);
-      },
-    });
+      }
+
+      this.uploading = false;
+      this.transferProgressService.resetUploadProgress();
+      this.closeDialog();
+      this.submitted.emit(validationId);
+    } catch (err: unknown) {
+      console.error('submitDonationValidation failed', err);
+      this.handleBusinessError('submit', this.normalizeUploadError(err));
+    } finally {
+      this.uploading = false;
+      this.currentUploadingFileName = null;
+      this.transferProgressService.resetUploadProgress();
+    }
+  }
+
+  private async uploadAndLinkValidationFiles(owner: {
+    ownerType: number;
+    ownerId: number;
+  }): Promise<boolean> {
+    const storageLocation = getDonationStorageLocation('communityValidations');
+    if (!storageLocation) {
+      return true;
+    }
+
+    this.uploadFiles = [...this.selectedFiles];
+    this.fileUploadStatus.clear();
+    this.uploadFiles.forEach((file) => this.fileUploadStatus.set(file.name, 'pending'));
+    this.uploadPercent = 0;
+    this.syncUploadProgressOverlay();
+
+    const accessToken = this.localStorageService.getAccessToken();
+    const totalFiles = this.uploadFiles.length;
+    let anyFailed = false;
+
+    for (let i = 0; i < this.uploadFiles.length; i++) {
+      const file = this.uploadFiles[i];
+      let linkingFile = false;
+      this.currentUploadingFileName = file.name;
+      this.fileUploadStatus.set(file.name, 'uploading');
+      this.syncUploadProgressOverlay();
+
+      try {
+        const uploaded = await this.fileUploadService.uploadFileWithResult(
+          file,
+          accessToken,
+          storageLocation.fileSystemId,
+          BigInt(storageLocation.folderId),
+          (percent) => {
+            const completedFiles = Array.from(this.fileUploadStatus.values()).filter(
+              (status) => status === 'completed',
+            ).length;
+            this.uploadPercent = Math.round(
+              ((completedFiles + percent / 100) / totalFiles) * 100,
+            );
+            this.syncUploadProgressOverlay();
+          },
+        );
+
+        linkingFile = true;
+        const caption =
+          String(this.selectedFiles[i]?.name || file.name || uploaded.fileName || '').trim() ||
+          `validation_${i + 1}`;
+        const attachmentKind = resolveDonationAttachmentKindFromFileName(caption);
+
+        const linkResponse: any = await firstValueFrom(
+          this.donationAttachmentService.addDonationAttachment({
+            ownerType: owner.ownerType,
+            ownerId: owner.ownerId,
+            attachmentKind,
+            fileId: uploaded.fileId,
+            folderId: uploaded.folderId,
+            fileSystemId: uploaded.fileSystemId,
+            caption,
+            isRegional: false,
+            sortOrder: i + 1,
+          }),
+        );
+
+        console.log('addDonationAttachment response', linkResponse);
+        console.log('addDonationAttachment validation', {
+          File_ID: uploaded.fileId,
+          Folder_ID: uploaded.folderId,
+          File_System_ID: uploaded.fileSystemId,
+          Owner_Type: owner.ownerType,
+          Owner_ID: owner.ownerId,
+          Attachment_Kind: attachmentKind,
+        });
+
+        if (!linkResponse?.success) {
+          anyFailed = true;
+          this.fileUploadStatus.set(file.name, 'error');
+          console.log('Donation attachment link failed after upload', {
+            File_ID: uploaded.fileId,
+            Folder_ID: uploaded.folderId,
+            File_System_ID: uploaded.fileSystemId,
+            Owner_Type: owner.ownerType,
+            Owner_ID: owner.ownerId,
+            Attachment_Kind: attachmentKind,
+            response: linkResponse,
+          });
+          this.handleBusinessError('link', linkResponse);
+          continue;
+        }
+
+        this.fileUploadStatus.set(file.name, 'completed');
+      } catch (err: unknown) {
+        anyFailed = true;
+        console.error('Validation attachment upload/link failed', err);
+        if (this.currentUploadingFileName) {
+          this.fileUploadStatus.set(this.currentUploadingFileName, 'error');
+        }
+        const response = this.normalizeUploadError(err);
+        if (linkingFile) {
+          this.handleBusinessError('link', response);
+        } else {
+          this.handleBusinessError('upload', response);
+        }
+      } finally {
+        this.currentUploadingFileName = null;
+        this.syncUploadProgressOverlay();
+      }
+    }
+
+    return anyFailed;
   }
 
   private resetForm(): void {
@@ -415,16 +423,6 @@ export class SubmitDonationValidationDialogComponent implements OnChanges, OnDes
       accepted.push(file);
     }
     this.selectedFiles = [...this.selectedFiles, ...accepted].slice(0, 10);
-  }
-
-  private createTimestampedFile(file: File, index: number): File {
-    const lastDot = file.name.lastIndexOf('.');
-    const baseName = lastDot > 0 ? file.name.substring(0, lastDot) : file.name;
-    const extension = lastDot > 0 ? file.name.substring(lastDot) : '';
-    return new File([file], `${baseName}_${Date.now()}_${index}${extension}`, {
-      type: file.type,
-      lastModified: file.lastModified,
-    });
   }
 
   private getFileExtension(file: File): string {
