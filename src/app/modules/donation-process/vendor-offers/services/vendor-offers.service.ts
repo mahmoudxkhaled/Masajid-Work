@@ -128,11 +128,23 @@ export class VendorOffersService {
     if (!message) {
       return [];
     }
-    const offers = message['Vendor_Offers'];
+    const offers = message['Vendor_Offers'] ?? message['Offers'];
     if (Array.isArray(offers)) {
-      return offers as VendorOfferBackend[];
+      return this.dedupeVendorOffersById(offers as VendorOfferBackend[]);
     }
-    return Object.values(offers ?? {}) as VendorOfferBackend[];
+    return this.dedupeVendorOffersById(Object.values(offers ?? {}) as VendorOfferBackend[]);
+  }
+
+  dedupeVendorOffersById(offers: VendorOfferBackend[]): VendorOfferBackend[] {
+    const unique = new Map<number, VendorOfferBackend>();
+    for (const offer of offers || []) {
+      const id = Number(offer?.Donation_Vendor_Offer_ID || 0);
+      if (!id || unique.has(id)) {
+        continue;
+      }
+      unique.set(id, offer);
+    }
+    return Array.from(unique.values());
   }
 
   mapVendorOfferListItem(raw: VendorOfferBackend): VendorOfferListItem {

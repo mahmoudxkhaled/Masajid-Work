@@ -159,7 +159,11 @@ export class VendorOffersListComponent implements OnInit, OnDestroy {
           }
 
           this.totalRecords = Number(response.message.Total_Count);
-          this.rawOffers = response.message.Offers;
+          this.rawOffers = this.vendorOffersService.dedupeVendorOffersById(
+            Array.isArray(response.message.Offers)
+              ? response.message.Offers
+              : Object.values(response.message.Offers ?? {}),
+          );
           this.buildStatusMapsFromOffers();
           this.rebuildStatusOptions();
           this.refreshOffers();

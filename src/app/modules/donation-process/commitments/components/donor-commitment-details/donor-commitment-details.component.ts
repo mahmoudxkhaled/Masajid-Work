@@ -15,7 +15,6 @@ import {
   canSubmitFulfillmentProof,
   DonationFulfillmentBackend,
   DonationFulfillmentListItem,
-  resolveDefaultFulfilledBy,
 } from '../../../models/donation-fulfillment.model';
 import { getFulfillmentStatusLabelKey } from '../../../models/donation-fulfillment-status.model';
 import { DonationRequestWorkflowItem } from '../../../models/donation-request.model';
@@ -24,10 +23,8 @@ import { FulfillmentMode } from '../../../models/fulfillment-mode.model';
 import {
   VendorOfferBackend,
   VendorOfferListItem,
-  VendorOfferStatus,
   getVendorOfferStatusLabelKey,
   getVendorOfferStatusSeverity,
-  isActiveVendorOfferStatus,
 } from '../../../models/vendor-offer.model';
 import { DonationRequestsService } from '../../../facility-requests/services/donation-requests.service';
 import { DonationFulfillmentService } from '../../../services/donation-fulfillment.service';
@@ -50,14 +47,13 @@ export class DonorCommitmentDetailsComponent implements OnInit, OnDestroy {
   offersMissingRequestId = false;
   fulfillmentsLoading = false;
   fulfillmentsMissingRequestId = false;
+  requestStatusLoading = false;
   details: DonationCommitmentDetails | null = null;
   workflowItems: DonationRequestWorkflowItem[] = [];
   vendorOffers: VendorOfferListItem[] = [];
   fulfillments: DonationFulfillmentListItem[] = [];
   cancelDialogVisible = false;
   viewOfferDialogVisible = false;
-  selectOfferDialogVisible = false;
-  submitProofDialogVisible = false;
   fulfillmentDetailsDialogVisible = false;
   selectedOffer: VendorOfferListItem | null = null;
   selectedFulfillmentId = 0;
@@ -73,7 +69,6 @@ export class DonorCommitmentDetailsComponent implements OnInit, OnDestroy {
   private rawWorkflow: Record<string, unknown>[] = [];
   private rawVendorOffers: VendorOfferBackend[] = [];
   private rawFulfillments: DonationFulfillmentBackend[] = [];
-  private hasSelectedOffer = false;
   private subscriptions: Subscription[] = [];
 
   constructor(
@@ -93,12 +88,15 @@ export class DonorCommitmentDetailsComponent implements OnInit, OnDestroy {
 
     const toastDetailKey = history.state?.['toastDetailKey'];
     if (toastDetailKey) {
-      const { toastDetailKey: _removed, ...restState } = history.state || {};
+      const toastSeverity = String(history.state?.['toastSeverity'] || 'success');
+      const { toastDetailKey: _removed, toastSeverity: _severityRemoved, ...restState } = history.state || {};
       history.replaceState(restState, '');
       setTimeout(() => {
         this.messageService.add({
-          severity: 'success',
-          summary: this.translate.getInstant('common.success'),
+          severity: toastSeverity === 'warn' ? 'warn' : 'success',
+          summary: this.translate.getInstant(
+            toastSeverity === 'warn' ? 'common.warning' : 'common.success',
+          ),
           detail: this.translate.getInstant(String(toastDetailKey)),
         });
       });
@@ -116,21 +114,48 @@ export class DonorCommitmentDetailsComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
-  get canCancel(): boolean {
-    if (!this.details) {
+  get actionButtonsReady(): boolean {
+    if (this.loading || !this.details) {
       return false;
     }
-    return canCancelCommitment(this.details.statusId);
+    return !this.fulfillmentsLoading && !this.workflowLoading && !this.requestStatusLoading;
   }
 
-  get canSubmitProof(): boolean {
-    if (!this.details) {
+  get canCancel(): boolean {
+    if (!this.actionButtonsReady) {
       return false;
     }
     if (this.hasFulfillmentSubmittedInWorkflow()) {
       return false;
     }
-    return canSubmitFulfillmentProof(this.details.statusId, this.requestStatusId);
+    if (this.fulfillments.length > 0) {
+      return false;
+    }
+    return canCancelCommitment(this.details!.statusId);
+  }
+
+  get canSubmitProof(): boolean {
+    if (!this.actionButtonsReady) {
+      return false;
+    }
+    if (this.hasFulfillmentSubmittedInWorkflow()) {
+      return false;
+    }
+    if (this.fulfillments.length > 0) {
+      return false;
+    }
+    return canSubmitFulfillmentProof(this.details!.statusId, this.requestStatusId);
+  }
+
+  get showOffersCountBadge(): boolean {
+    return !this.offersLoading && this.vendorOffers.length > 0;
+  }
+
+  get showFulfillmentSubmittedBadge(): boolean {
+    if (this.hasFulfillmentSubmittedInWorkflow()) {
+      return true;
+    }
+    return !this.fulfillmentsLoading && this.fulfillments.length > 0;
   }
 
   private hasFulfillmentSubmittedInWorkflow(): boolean {
@@ -138,18 +163,6 @@ export class DonorCommitmentDetailsComponent implements OnInit, OnDestroy {
       const code = String(item['Status_Code'] ?? item['status_Code'] ?? '').toUpperCase();
       return code === 'FULFILLMENT_SUBMITTED';
     });
-  }
-
-  get selectedVendorOfferId(): number {
-    const selected = this.vendorOffers.find((offer) => this.isSelectedOffer(offer));
-    return selected ? Number(selected.id || 0) : 0;
-  }
-
-  get defaultFulfilledBy(): number {
-    return resolveDefaultFulfilledBy(
-      this.selectedVendorOfferId,
-      Number(this.details?.fulfillmentMode || 0),
-    );
   }
 
   backToList(): void {
@@ -164,12 +177,11 @@ export class DonorCommitmentDetailsComponent implements OnInit, OnDestroy {
     this.loadDetails();
   }
 
-  openSubmitProofDialog(): void {
-    this.submitProofDialogVisible = true;
-  }
-
-  onFulfillmentSubmitted(): void {
-    this.loadDetails();
+  goToSubmitProof(): void {
+    if (!this.canSubmitProof || !this.commitmentId) {
+      return;
+    }
+    this.router.navigate(['/donations/commitments', this.commitmentId, 'submit-proof']);
   }
 
   openFulfillmentDetailsDialog(row: DonationFulfillmentListItem): void {
@@ -180,29 +192,6 @@ export class DonorCommitmentDetailsComponent implements OnInit, OnDestroy {
   openViewOfferDialog(row: VendorOfferListItem): void {
     this.selectedOffer = row;
     this.viewOfferDialogVisible = true;
-  }
-
-  openSelectOfferDialog(row: VendorOfferListItem): void {
-    this.selectedOffer = row;
-    this.selectOfferDialogVisible = true;
-  }
-
-  onVendorOfferSelected(): void {
-    this.loadDetails();
-  }
-
-  private isSelectedOffer(row: VendorOfferListItem): boolean {
-    return (
-      row.statusId === VendorOfferStatus.Selected ||
-      String(row.statusCode || '').toUpperCase() === 'SELECTED'
-    );
-  }
-
-  canSelectOffer(row: VendorOfferListItem): boolean {
-    if (this.hasSelectedOffer) {
-      return false;
-    }
-    return isActiveVendorOfferStatus(row.statusId, row.statusCode);
   }
 
   formatOfferAmount(row: VendorOfferListItem): string {
@@ -278,8 +267,31 @@ export class DonorCommitmentDetailsComponent implements OnInit, OnDestroy {
         }
 
         this.rawDetails = (response.message ?? null) as DonationCommitmentBackend | null;
-        this.loading = false;
         this.refreshDisplay();
+
+        const donationRequestId = Number(this.details?.donationRequestId || 0);
+        if (donationRequestId) {
+          this.workflowLoading = true;
+          this.offersLoading = true;
+          this.fulfillmentsLoading = true;
+          this.requestStatusLoading = true;
+        } else {
+          this.workflowLoading = false;
+          this.offersLoading = false;
+          this.fulfillmentsLoading = false;
+          this.requestStatusLoading = false;
+          this.rawWorkflow = [];
+          this.workflowItems = [];
+          this.rawVendorOffers = [];
+          this.vendorOffers = [];
+          this.rawFulfillments = [];
+          this.fulfillments = [];
+          this.requestStatusId = null;
+          this.offersMissingRequestId = true;
+          this.fulfillmentsMissingRequestId = true;
+        }
+
+        this.loading = false;
         this.loadWorkflow();
         this.loadVendorOffersAfterDetails();
         this.loadRequestStatusAfterDetails();
@@ -297,6 +309,7 @@ export class DonorCommitmentDetailsComponent implements OnInit, OnDestroy {
     if (!donationRequestId) {
       this.rawWorkflow = [];
       this.workflowItems = [];
+      this.workflowLoading = false;
       return;
     }
 
@@ -330,7 +343,6 @@ export class DonorCommitmentDetailsComponent implements OnInit, OnDestroy {
       this.offersMissingRequestId = true;
       this.rawVendorOffers = [];
       this.vendorOffers = [];
-      this.hasSelectedOffer = false;
       this.offersLoading = false;
       return;
     }
@@ -348,21 +360,22 @@ export class DonorCommitmentDetailsComponent implements OnInit, OnDestroy {
           this.handleBusinessError('listOffers', response);
           this.rawVendorOffers = [];
           this.vendorOffers = [];
-          this.hasSelectedOffer = false;
           this.offersLoading = false;
           return;
         }
 
-        const rawOffers = Array.isArray(response.message) ? (response.message as VendorOfferBackend[]) : [];
+        const rawOffers = this.vendorOffersService.dedupeVendorOffersById(
+          Array.isArray(response.message)
+            ? (response.message as VendorOfferBackend[])
+            : this.vendorOffersService.extractVendorOffers(response.message),
+        );
         this.rawVendorOffers = rawOffers;
         this.vendorOffers = rawOffers.map((item) => this.vendorOffersService.mapVendorOfferListItem(item));
-        this.hasSelectedOffer = this.vendorOffers.some((offer) => this.isSelectedOffer(offer));
         this.offersLoading = false;
       },
       error: () => {
         this.rawVendorOffers = [];
         this.vendorOffers = [];
-        this.hasSelectedOffer = false;
         this.offersLoading = false;
       },
     });
@@ -373,24 +386,29 @@ export class DonorCommitmentDetailsComponent implements OnInit, OnDestroy {
     const donationRequestId = Number(this.details?.donationRequestId || 0);
     if (!donationRequestId) {
       this.requestStatusId = null;
+      this.requestStatusLoading = false;
       return;
     }
 
+    this.requestStatusLoading = true;
     const sub = this.donationRequestsService.getDonationRequestDetails(donationRequestId).subscribe({
       next: (response: any) => {
         console.log('getDonationRequestDetails response', response);
         if (!response?.success) {
           this.handleBusinessError('loadRequestStatus', response);
           this.requestStatusId = null;
+          this.requestStatusLoading = false;
           return;
         }
 
         const raw = this.donationRequestsService.extractDonationRequestDetails(response.message);
         const mapped = this.donationRequestsService.mapDonationRequestDetails(raw);
         this.requestStatusId = mapped?.statusId ?? null;
+        this.requestStatusLoading = false;
       },
       error: () => {
         this.requestStatusId = null;
+        this.requestStatusLoading = false;
       },
     });
     this.subscriptions.push(sub);
@@ -444,7 +462,6 @@ export class DonorCommitmentDetailsComponent implements OnInit, OnDestroy {
     this.details = this.donationCommitmentService.mapDonationCommitmentDetails(this.rawDetails);
     this.workflowItems = this.donationRequestsService.mapDonationRequestWorkflow(this.rawWorkflow);
     this.vendorOffers = this.rawVendorOffers.map((item) => this.vendorOffersService.mapVendorOfferListItem(item));
-    this.hasSelectedOffer = this.vendorOffers.some((offer) => this.isSelectedOffer(offer));
     this.fulfillments = this.rawFulfillments.map((item) =>
       this.donationFulfillmentService.mapFulfillmentListItem(item),
     );

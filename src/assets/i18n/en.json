@@ -3677,6 +3677,7 @@
                     "estimatedCost": "Estimated cost",
                     "location": "City / country",
                     "status": "Status",
+                    "createdAt": "Created at",
                     "actions": "Actions",
                     "requestId": "Request ID",
                     "fulfillmentId": "Fulfillment ID",
@@ -3862,6 +3863,9 @@
                 "title": "Submit Fulfillment Proof",
                 "confirmation": "Confirm submission of fulfillment proof for this commitment.",
                 "fulfilledBy": "Fulfilled by",
+                "vendorOffer": "Vendor offer (optional)",
+                "vendorOfferNone": "None — fulfill without a vendor offer",
+                "vendorOfferHint": "Optionally select a vendor offer before submitting. Leave as None to fulfill directly.",
                 "fulfillmentNote": "Fulfillment note",
                 "fulfillmentNotePlaceholder": "Enter an optional fulfillment note",
                 "proofFiles": "Proof files",
@@ -3964,6 +3968,8 @@
             "vendorOffers": {
                 "title": "Vendor Offers",
                 "empty": "No vendor offers are available yet.",
+                "count": "{{count}} offers",
+                "optionalHint": "Review vendor offer details here. You can optionally select an offer when submitting fulfillment proof.",
                 "missingRequestId": "Vendor offers cannot be loaded because the related donation request ID was not returned.",
                 "columns": {
                     "vendor": "Vendor",
@@ -4146,7 +4152,7 @@
             "empty": "No requests available for vendor offers.",
             "requests": {
                 "title": "Vendor Requests",
-                "subtitle": "Browse published donation requests available for vendor offers.",
+                "subtitle": "Vendor Requests shows donation requests returned by backend as eligible for vendor offers.",
                 "pagination": "Showing '{first}' to '{last}' of '{totalRecords}'",
                 "empty": "No donation requests available for vendors."
             },

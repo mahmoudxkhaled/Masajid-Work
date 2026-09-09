@@ -1,12 +1,8 @@
-:host {
-  display: contents;
-}
-
 .hidden-file-input {
   display: none;
 }
 
-.submit-proof-dialog__columns {
+.submit-proof-page__columns {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1.25rem;
@@ -14,12 +10,12 @@
   min-height: 18rem;
 }
 
-.submit-proof-dialog__left,
-.submit-proof-dialog__right {
+.submit-proof-page__left,
+.submit-proof-page__right {
   min-width: 0;
 }
 
-.submit-proof-dialog__note {
+.submit-proof-page__note {
   resize: vertical;
   min-height: 10rem;
 }
@@ -121,17 +117,13 @@
   color: var(--text-color-secondary);
 }
 
-:host ::ng-deep .proof-upload-progress__bar {
-  height: 0.5rem;
-}
-
 @media (max-width: 768px) {
-  .submit-proof-dialog__columns {
+  .submit-proof-page__columns {
     grid-template-columns: 1fr;
     min-height: 0;
   }
 
-  .submit-proof-dialog__note {
+  .submit-proof-page__note {
     min-height: 6rem;
   }
 

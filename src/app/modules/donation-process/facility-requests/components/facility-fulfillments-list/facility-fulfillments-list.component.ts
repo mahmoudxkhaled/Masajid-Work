@@ -59,6 +59,22 @@ export class FacilityFulfillmentsListComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    const toastDetailKey = history.state?.['toastDetailKey'];
+    if (toastDetailKey) {
+      const toastSeverity = String(history.state?.['toastSeverity'] || 'success');
+      const { toastDetailKey: _removed, toastSeverity: _severityRemoved, ...restState } = history.state || {};
+      history.replaceState(restState, '');
+      setTimeout(() => {
+        this.messageService.add({
+          severity: toastSeverity === 'warn' ? 'warn' : 'success',
+          summary: this.translate.getInstant(
+            toastSeverity === 'warn' ? 'common.warning' : 'common.success',
+          ),
+          detail: this.translate.getInstant(String(toastDetailKey)),
+        });
+      });
+    }
+
     this.subscriptions.push(
       this.languageDirService.userLanguageCode$.subscribe(() => {
         this.buildStatusMaps();

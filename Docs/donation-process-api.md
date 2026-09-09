@@ -907,7 +907,7 @@ Fulfillment proof, validation attachments, and **`Add_Donation_Attachment`** use
 ### `List_Requests_For_Vendor`
 
 - **Code:** `100700`
-- **Description:** List `PUBLISHED` Donation Requests visible to vendors with optional category, country, and city filters.
+- **Description:** List donation requests returned by the backend as eligible for vendor offers, with optional category, country, and city filters. Eligibility may include Accepted (5) requests after donor acceptance; do not assume Published-only.
 - **Access Token:** Yes
 
 **Input:**

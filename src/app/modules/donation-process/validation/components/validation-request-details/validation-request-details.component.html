@@ -14,10 +14,11 @@
       </ng-template>
     </div>
     <div class="flex flex-wrap gap-2 flex-shrink-0">
-      <p-button [label]="'donations.validation.actions.backToList' | translate" icon="pi pi-arrow-left"
-        severity="secondary" [outlined]="true" (onClick)="goBack()"></p-button>
       <p-button *ngIf="canSubmit" [label]="'donations.validation.actions.submitValidation' | translate"
         icon="pi pi-check" (onClick)="openSubmitDialog()"></p-button>
+      <p-button [label]="'donations.validation.actions.backToList' | translate" icon="pi pi-arrow-left"
+        severity="secondary" [outlined]="true" (onClick)="goBack()"></p-button>
+
     </div>
   </div>
 

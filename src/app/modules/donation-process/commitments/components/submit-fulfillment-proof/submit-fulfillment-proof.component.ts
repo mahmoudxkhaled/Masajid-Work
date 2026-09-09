@@ -1,6 +1,7 @@
-import { Component, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
-import { firstValueFrom } from 'rxjs';
+import { Subscription, firstValueFrom } from 'rxjs';
 import { FileUploadService } from 'src/app/core/file-system-lib/services/file-upload.service';
 import {
   TransferFileStatus,
@@ -20,31 +21,40 @@ import {
   DONATION_ATTACHMENT_ALLOWED_EXTENSIONS,
   DONATION_ATTACHMENT_MAX_FILE_SIZE_BYTES,
 } from '../../../models/donation-attachment.model';
+import { DonationCommitmentBackend } from '../../../models/donation-commitment.model';
+import {
+  canSubmitFulfillmentProof,
+  resolveDefaultFulfilledBy,
+} from '../../../models/donation-fulfillment.model';
 import {
   FulfilledBy,
   getFulfilledByOptions,
   isValidFulfilledBy,
 } from '../../../models/fulfilled-by.model';
+import {
+  VendorOfferBackend,
+  VendorOfferListItem,
+  VendorOfferStatus,
+  isActiveVendorOfferStatus,
+} from '../../../models/vendor-offer.model';
 import { DonationAttachmentService } from '../../../services/donation-attachment.service';
 import { DonationFulfillmentService } from '../../../services/donation-fulfillment.service';
+import { VendorOffersService } from '../../../vendor-offers/services/vendor-offers.service';
+import { DonationCommitmentService } from '../../services/donation-commitment.service';
+import { DonationRequestsService } from '../../../facility-requests/services/donation-requests.service';
 
-type SubmitFulfillmentProofDialogContext = 'submit' | 'upload' | 'link';
+type SubmitFulfillmentProofContext = 'load' | 'submit' | 'upload' | 'link' | 'select';
 
 @Component({
   standalone: false,
-  selector: 'app-submit-fulfillment-proof-dialog',
-  templateUrl: './submit-fulfillment-proof-dialog.component.html',
-  styleUrl: './submit-fulfillment-proof-dialog.component.scss',
+  selector: 'app-submit-fulfillment-proof',
+  templateUrl: './submit-fulfillment-proof.component.html',
+  styleUrl: './submit-fulfillment-proof.component.scss',
 })
-export class SubmitFulfillmentProofDialogComponent implements OnChanges, OnDestroy {
-  @Input() visible = false;
-  @Input() donationCommitmentId = 0;
-  @Input() selectedVendorOfferId = 0;
-  @Input() defaultFulfilledBy: number = FulfilledBy.Donor;
-
-  @Output() visibleChange = new EventEmitter<boolean>();
-  @Output() submitted = new EventEmitter<number>();
-
+export class SubmitFulfillmentProofComponent implements OnInit, OnDestroy {
+  commitmentId = 0;
+  loading = true;
+  selectedVendorOfferId = 0;
   fulfilledBy: number = FulfilledBy.Donor;
   fulfillmentNote = '';
   selectedFiles: File[] = [];
@@ -52,6 +62,7 @@ export class SubmitFulfillmentProofDialogComponent implements OnChanges, OnDestr
   uploadPercent = 0;
 
   fulfilledByOptions: { value: number; label: string }[] = [];
+  vendorOfferOptions: { value: number; label: string }[] = [];
   isDragOver = false;
 
   isLoading$ = this.donationFulfillmentService.isLoadingSubject.asObservable();
@@ -59,8 +70,17 @@ export class SubmitFulfillmentProofDialogComponent implements OnChanges, OnDestr
   private uploadFiles: File[] = [];
   private fileUploadStatus = new Map<string, TransferFileStatus>();
   private currentUploadingFileName: string | null = null;
+  private fulfillmentMode = 0;
+  private selectableOffers: VendorOfferListItem[] = [];
+  private alreadySelectedOfferId = 0;
+  private subscriptions: Subscription[] = [];
 
   constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private donationCommitmentService: DonationCommitmentService,
+    private donationRequestsService: DonationRequestsService,
+    private vendorOffersService: VendorOffersService,
     private donationFulfillmentService: DonationFulfillmentService,
     private donationAttachmentService: DonationAttachmentService,
     private fileUploadService: FileUploadService,
@@ -70,13 +90,17 @@ export class SubmitFulfillmentProofDialogComponent implements OnChanges, OnDestr
     private messageService: MessageService,
   ) { }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['visible'] && this.visible) {
-      this.resetForm();
-    }
+  ngOnInit(): void {
+    this.commitmentId = Number(this.route.snapshot.paramMap.get('id') || 0);
+    this.fulfilledByOptions = getFulfilledByOptions().map((option) => ({
+      value: option.value,
+      label: this.translate.getInstant(option.labelKey),
+    }));
+    this.loadContext();
   }
 
   ngOnDestroy(): void {
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
     this.transferProgressService.resetUploadProgress();
   }
 
@@ -89,7 +113,7 @@ export class SubmitFulfillmentProofDialogComponent implements OnChanges, OnDestr
   }
 
   get canSelectFiles(): boolean {
-    return !this.busy && this.storageConfigured;
+    return !this.busy && !this.loading && this.storageConfigured;
   }
 
   get allowedExtensionsLabel(): string {
@@ -101,37 +125,181 @@ export class SubmitFulfillmentProofDialogComponent implements OnChanges, OnDestr
   }
 
   get maxFileSizeLabel(): string {
-    const mb = DONATION_ATTACHMENT_MAX_FILE_SIZE_BYTES / (1024 * 1024);
-    return String(mb);
+    return String(DONATION_ATTACHMENT_MAX_FILE_SIZE_BYTES / (1024 * 1024));
   }
 
-  // #region Dialog
-  closeDialog(): void {
+  // #region Navigation
+  backToDetails(): void {
     if (this.uploading) {
       return;
     }
-    this.visible = false;
-    this.visibleChange.emit(false);
-    this.resetForm();
+    this.router.navigate(['/donations/commitments', this.commitmentId]);
+  }
+  // #endregion
+
+  // #region Vendor offer selection
+  onVendorOfferChange(): void {
+    const offerId = Number(this.selectedVendorOfferId || 0);
+    if (offerId > 0) {
+      this.fulfilledBy = FulfilledBy.Vendor;
+      return;
+    }
+
+    const defaultFulfilledBy = resolveDefaultFulfilledBy(0, this.fulfillmentMode);
+    this.fulfilledBy = isValidFulfilledBy(defaultFulfilledBy)
+      ? defaultFulfilledBy
+      : FulfilledBy.Donor;
+  }
+  // #endregion
+
+  // #region Load context
+  private loadContext(): void {
+    if (!this.commitmentId) {
+      this.loading = false;
+      this.router.navigate(['/donations/commitments']);
+      return;
+    }
+
+    this.loading = true;
+    const sub = this.donationCommitmentService.getDonationCommitmentDetails(this.commitmentId).subscribe({
+      next: (response: any) => {
+        console.log('getDonationCommitmentDetails response', response);
+        if (!response?.success) {
+          this.handleBusinessError('load', response);
+          this.loading = false;
+          return;
+        }
+
+        const raw = (response.message ?? null) as DonationCommitmentBackend | null;
+        const details = this.donationCommitmentService.mapDonationCommitmentDetails(raw);
+        if (!details) {
+          this.loading = false;
+          this.router.navigate(['/donations/commitments']);
+          return;
+        }
+
+        this.fulfillmentMode = Number(details.fulfillmentMode || 0);
+        const donationRequestId = Number(details.donationRequestId || 0);
+        this.loadVendorOfferAndRequestStatus(donationRequestId, details.statusId);
+      },
+      error: () => {
+        this.loading = false;
+      },
+    });
+    this.subscriptions.push(sub);
   }
 
-  private resetForm(): void {
-    this.fulfilledBy = isValidFulfilledBy(this.defaultFulfilledBy)
-      ? this.defaultFulfilledBy
+  private loadVendorOfferAndRequestStatus(donationRequestId: number, commitmentStatusId: number): void {
+    if (!donationRequestId) {
+      this.selectedVendorOfferId = 0;
+      this.alreadySelectedOfferId = 0;
+      this.selectableOffers = [];
+      this.buildVendorOfferOptions();
+      this.applyDefaults(commitmentStatusId, null);
+      return;
+    }
+
+    const sub = this.vendorOffersService.listVendorOffersForRequest(donationRequestId).subscribe({
+      next: (offersResponse: any) => {
+        console.log('listVendorOffersForRequest response', offersResponse);
+        if (offersResponse?.success) {
+          const rawOffers = this.vendorOffersService.dedupeVendorOffersById(
+            Array.isArray(offersResponse.message)
+              ? (offersResponse.message as VendorOfferBackend[])
+              : this.vendorOffersService.extractVendorOffers(offersResponse.message),
+          );
+          const mapped = rawOffers.map((item) => this.vendorOffersService.mapVendorOfferListItem(item));
+          this.selectableOffers = mapped.filter(
+            (offer) =>
+              isActiveVendorOfferStatus(offer.statusId, offer.statusCode) || this.isSelectedOfferItem(offer),
+          );
+          const selected = mapped.find((offer) => this.isSelectedOfferItem(offer));
+          this.alreadySelectedOfferId = Number(selected?.id || 0);
+          this.selectedVendorOfferId = this.alreadySelectedOfferId;
+        } else {
+          this.selectedVendorOfferId = 0;
+          this.alreadySelectedOfferId = 0;
+          this.selectableOffers = [];
+        }
+        this.buildVendorOfferOptions();
+
+        const requestSub = this.donationRequestsService.getDonationRequestDetails(donationRequestId).subscribe({
+          next: (requestResponse: any) => {
+            console.log('getDonationRequestDetails response', requestResponse);
+            let requestStatusId: number | null = null;
+            if (requestResponse?.success) {
+              const message = requestResponse.message ?? {};
+              requestStatusId = Number(
+                message.Donation_Request_Status_ID ?? message.Status ?? 0,
+              ) || null;
+            }
+            this.applyDefaults(commitmentStatusId, requestStatusId);
+          },
+          error: () => {
+            this.applyDefaults(commitmentStatusId, null);
+          },
+        });
+        this.subscriptions.push(requestSub);
+      },
+      error: () => {
+        this.selectedVendorOfferId = 0;
+        this.alreadySelectedOfferId = 0;
+        this.selectableOffers = [];
+        this.buildVendorOfferOptions();
+        this.applyDefaults(commitmentStatusId, null);
+      },
+    });
+    this.subscriptions.push(sub);
+  }
+
+  private buildVendorOfferOptions(): void {
+    const noneLabel = this.translate.getInstant(
+      'donations.commitments.submitProofDialog.vendorOfferNone',
+    );
+    this.vendorOfferOptions = [
+      { value: 0, label: noneLabel },
+      ...this.selectableOffers.map((offer) => ({
+        value: Number(offer.id || 0),
+        label: this.formatVendorOfferOption(offer),
+      })),
+    ];
+  }
+
+  private formatVendorOfferOption(offer: VendorOfferListItem): string {
+    const vendor = offer.vendorEntityId ? `#${offer.vendorEntityId}` : '-';
+    const amount = offer.currencyCode
+      ? `${offer.offerAmount} ${offer.currencyCode}`
+      : String(offer.offerAmount || '-');
+    return `${vendor} — ${amount}`;
+  }
+
+  private applyDefaults(commitmentStatusId: number, requestStatusId: number | null): void {
+    if (!canSubmitFulfillmentProof(commitmentStatusId, requestStatusId)) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: this.translate.getInstant('common.warning'),
+        detail: this.translate.getInstant('donations.commitments.errors.invalidFulfillmentStatus'),
+      });
+      this.loading = false;
+      this.router.navigate(['/donations/commitments', this.commitmentId]);
+      return;
+    }
+
+    const defaultFulfilledBy = resolveDefaultFulfilledBy(
+      this.selectedVendorOfferId,
+      this.fulfillmentMode,
+    );
+    this.fulfilledBy = isValidFulfilledBy(defaultFulfilledBy)
+      ? defaultFulfilledBy
       : FulfilledBy.Donor;
-    this.fulfillmentNote = '';
-    this.selectedFiles = [];
-    this.uploadFiles = [];
-    this.fileUploadStatus.clear();
-    this.currentUploadingFileName = null;
-    this.uploading = false;
-    this.uploadPercent = 0;
-    this.isDragOver = false;
-    this.transferProgressService.resetUploadProgress();
-    this.fulfilledByOptions = getFulfilledByOptions().map((option) => ({
-      value: option.value,
-      label: this.translate.getInstant(option.labelKey),
-    }));
+    this.loading = false;
+  }
+
+  private isSelectedOfferItem(offer: VendorOfferListItem): boolean {
+    return (
+      offer.statusId === VendorOfferStatus.Selected ||
+      String(offer.statusCode || '').toUpperCase() === 'SELECTED'
+    );
   }
   // #endregion
 
@@ -162,13 +330,10 @@ export class SubmitFulfillmentProofDialogComponent implements OnChanges, OnDestr
     event.preventDefault();
     event.stopPropagation();
     this.isDragOver = false;
-
     if (!this.canSelectFiles) {
       return;
     }
-
-    const files = Array.from(event.dataTransfer?.files || []);
-    this.addSelectedFiles(files);
+    this.addSelectedFiles(Array.from(event.dataTransfer?.files || []));
   }
 
   removeFile(index: number): void {
@@ -240,7 +405,7 @@ export class SubmitFulfillmentProofDialogComponent implements OnChanges, OnDestr
 
   // #region Submit
   async confirmSubmit(): Promise<void> {
-    if (this.uploading) {
+    if (this.uploading || this.loading) {
       return;
     }
 
@@ -277,7 +442,7 @@ export class SubmitFulfillmentProofDialogComponent implements OnChanges, OnDestr
       return;
     }
 
-    if (!this.donationCommitmentId) {
+    if (!this.commitmentId) {
       return;
     }
 
@@ -286,17 +451,33 @@ export class SubmitFulfillmentProofDialogComponent implements OnChanges, OnDestr
     this.fileUploadStatus.clear();
     this.uploadFiles = [];
 
-    const payload = {
-      donationCommitmentId: this.donationCommitmentId,
-      fulfilledBy: this.fulfilledBy,
-      donationVendorOfferId: this.selectedVendorOfferId > 0 ? this.selectedVendorOfferId : 0,
-      fulfillmentNote: String(this.fulfillmentNote || '').trim(),
-      isRegional: this.localStorageService.isRegionalApiInput(),
-    };
-
-    console.log('submitFulfillmentProof params', payload);
+    const offerId = this.selectedVendorOfferId > 0 ? this.selectedVendorOfferId : 0;
 
     try {
+      if (offerId > 0 && offerId !== this.alreadySelectedOfferId) {
+        const selectResponse: any = await firstValueFrom(
+          this.vendorOffersService.selectVendorOffer(offerId),
+        );
+        console.log('selectVendorOffer response', selectResponse);
+        if (!selectResponse?.success) {
+          this.handleBusinessError('select', selectResponse);
+          this.uploading = false;
+          this.syncUploadProgressOverlay();
+          return;
+        }
+        this.alreadySelectedOfferId = offerId;
+      }
+
+      const payload = {
+        donationCommitmentId: this.commitmentId,
+        fulfilledBy: this.fulfilledBy,
+        donationVendorOfferId: offerId,
+        fulfillmentNote: String(this.fulfillmentNote || '').trim(),
+        isRegional: this.localStorageService.isRegionalApiInput(),
+      };
+
+      console.log('submitFulfillmentProof params', payload);
+
       const response: any = await firstValueFrom(
         this.donationFulfillmentService.submitFulfillmentProof(payload),
       );
@@ -326,25 +507,25 @@ export class SubmitFulfillmentProofDialogComponent implements OnChanges, OnDestr
       }
 
       if (attachmentLinkFailed) {
-        this.messageService.add({
-          severity: 'warn',
-          summary: this.translate.getInstant('common.warning'),
-          detail: this.translate.getInstant(
-            'donations.commitments.messages.fulfillmentSubmittedPartialAttachments',
-          ),
+        this.uploading = false;
+        this.transferProgressService.resetUploadProgress();
+        this.router.navigate(['/donations/commitments', this.commitmentId], {
+          state: {
+            toastDetailKey: 'donations.commitments.messages.fulfillmentSubmittedPartialAttachments',
+            toastSeverity: 'warn',
+          },
         });
-      } else {
-        this.messageService.add({
-          severity: 'success',
-          summary: this.translate.getInstant('common.success'),
-          detail: this.translate.getInstant('donations.commitments.messages.fulfillmentSubmitted'),
-        });
+        return;
       }
 
       this.uploading = false;
       this.transferProgressService.resetUploadProgress();
-      this.closeDialog();
-      this.submitted.emit(fulfillmentId);
+      this.router.navigate(['/donations/commitments', this.commitmentId], {
+        state: {
+          toastDetailKey: 'donations.commitments.messages.fulfillmentSubmitted',
+          toastSeverity: 'success',
+        },
+      });
     } catch (err: unknown) {
       console.error('submitFulfillmentProof failed', err);
       this.handleBusinessError('submit', this.normalizeUploadError(err));
@@ -355,7 +536,10 @@ export class SubmitFulfillmentProofDialogComponent implements OnChanges, OnDestr
     }
   }
 
-  private async uploadAndLinkProofFiles(donationFulfillmentId: number, uploadTargetFileSystemId: number): Promise<boolean> {
+  private async uploadAndLinkProofFiles(
+    donationFulfillmentId: number,
+    uploadTargetFileSystemId: number,
+  ): Promise<boolean> {
     const storageLocation = getDonationStorageLocation('fulfillmentProofs');
     if (!storageLocation) {
       return true;
@@ -507,11 +691,14 @@ export class SubmitFulfillmentProofDialogComponent implements OnChanges, OnDestr
   // #endregion
 
   // #region Errors
-  private handleBusinessError(context: SubmitFulfillmentProofDialogContext, response: any): void {
+  private handleBusinessError(context: SubmitFulfillmentProofContext, response: any): void {
     const code = String(response?.message || '');
     let detail: string | null = null;
 
     switch (context) {
+      case 'load':
+        detail = this.getLoadErrorMessage(code);
+        break;
       case 'upload':
         detail = this.getStorageApiErrorMessage(code) ?? this.getNonCodeErrorDetail(response);
         break;
@@ -521,6 +708,9 @@ export class SubmitFulfillmentProofDialogComponent implements OnChanges, OnDestr
       case 'submit':
         detail = this.getSubmitErrorMessage(code);
         break;
+      case 'select':
+        detail = this.getSelectErrorMessage(code);
+        break;
     }
 
     if (detail) {
@@ -529,6 +719,21 @@ export class SubmitFulfillmentProofDialogComponent implements OnChanges, OnDestr
         summary: this.translate.getInstant('common.error'),
         detail,
       });
+    }
+  }
+
+  private getLoadErrorMessage(code: string): string | null {
+    switch (code) {
+      case 'DAP13003':
+        return this.translate.getInstant('donations.commitments.errors.commitmentNotFound');
+      case 'DAP11055':
+        return this.translate.getInstant('donations.commitments.errors.accessDenied');
+      case 'DAP11040':
+      case 'DAP11041':
+      case 'DAP11042':
+        return this.translate.getInstant('donations.commitments.errors.sessionExpired');
+      default:
+        return null;
     }
   }
 
@@ -561,6 +766,25 @@ export class SubmitFulfillmentProofDialogComponent implements OnChanges, OnDestr
       case 'DAP11041':
       case 'DAP11042':
         return this.translate.getInstant('donations.attachments.errors.sessionExpired');
+      default:
+        return null;
+    }
+  }
+
+  private getSelectErrorMessage(code: string): string | null {
+    switch (code) {
+      case 'DAP13004':
+        return this.translate.getInstant('donations.commitments.vendorOffers.errors.offerNotFound');
+      case 'DAP13014':
+        return this.translate.getInstant('donations.commitments.vendorOffers.errors.notDonor');
+      case 'DAP13010':
+        return this.translate.getInstant('donations.commitments.vendorOffers.errors.invalidStatus');
+      case 'DAP11055':
+        return this.translate.getInstant('donations.commitments.vendorOffers.errors.accessDenied');
+      case 'DAP11040':
+      case 'DAP11041':
+      case 'DAP11042':
+        return this.translate.getInstant('donations.commitments.vendorOffers.errors.sessionExpired');
       default:
         return null;
     }

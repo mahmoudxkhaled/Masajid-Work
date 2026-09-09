@@ -387,7 +387,10 @@ export class ReadyToCloseDetailsComponent implements OnInit, OnDestroy {
     code: string,
   ): 'success' | 'info' | 'warning' | 'danger' | 'secondary' | 'contrast' {
     const normalized = String(code || '').toUpperCase();
-    if (normalized.includes('VALIDATED') || normalized.includes('CLOSED')) {
+    if (normalized.includes('CLOSED')) {
+      return 'danger';
+    }
+    if (normalized.includes('VALIDATED')) {
       return 'success';
     }
     if (normalized.includes('REJECT') || normalized.includes('CANCEL')) {

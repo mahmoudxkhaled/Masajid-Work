@@ -53,11 +53,6 @@ export class ConfirmFulfillmentDialogComponent implements OnChanges {
           return;
         }
 
-        this.messageService.add({
-          severity: 'success',
-          summary: this.translate.getInstant('common.success'),
-          detail: this.translate.getInstant('donations.facility.fulfillments.messages.confirmed'),
-        });
         this.closeDialog();
         this.confirmed.emit();
       },

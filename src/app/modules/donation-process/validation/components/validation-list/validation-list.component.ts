@@ -1,10 +1,14 @@
-﻿import { Component, OnDestroy } from '@angular/core';
+﻿import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
-import { Subscription } from 'rxjs';
+import { Subscription, forkJoin } from 'rxjs';
+import { LanguageDirService } from 'src/app/core/services/language-dir.service';
 import { LocalStorageService } from 'src/app/core/services/local-storage.service';
 import { TranslationService } from 'src/app/core/services/translation.service';
+import { DonationCategoryBackend } from '../../../models/donation-category.model';
 import { DonationRequestBackend } from '../../../models/donation-request.model';
+import { DonationTypeBackend } from '../../../models/donation-type.model';
+import { DonationReferenceService } from '../../../services/donation-reference.service';
 import { DonationValidationService } from '../../services/donation-validation.service';
 
 type ValidationListContext = 'list';
@@ -15,7 +19,7 @@ type ValidationListContext = 'list';
   templateUrl: './validation-list.component.html',
   styleUrl: './validation-list.component.scss',
 })
-export class ValidationListComponent implements OnDestroy {
+export class ValidationListComponent implements OnInit, OnDestroy {
   rows = 10;
   readonly rowsPerPageOptions = [10, 25, 50, 100];
 
@@ -24,15 +28,28 @@ export class ValidationListComponent implements OnDestroy {
   totalRecords = 0;
   tableLoadingSpinner = false;
 
+  private rawCategories: DonationCategoryBackend[] = [];
+  private categoryLabelById: Record<number, string> = {};
   private subscriptions: Subscription[] = [];
 
   constructor(
     private router: Router,
     private donationValidationService: DonationValidationService,
+    private donationReferenceService: DonationReferenceService,
     private localStorageService: LocalStorageService,
+    private languageDirService: LanguageDirService,
     private translate: TranslationService,
     private messageService: MessageService,
   ) {}
+
+  ngOnInit(): void {
+    this.subscriptions.push(
+      this.languageDirService.userLanguageCode$.subscribe(() => {
+        this.buildCategoryMaps();
+      }),
+    );
+    this.loadCategories();
+  }
 
   ngOnDestroy(): void {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
@@ -66,6 +83,11 @@ export class ValidationListComponent implements OnDestroy {
     );
   }
 
+  getCategoryLabel(row: DonationRequestBackend): string {
+    const categoryId = Number(row.Donation_Category_ID || 0);
+    return this.categoryLabelById[categoryId] || '-';
+  }
+
   getLocationLabel(row: DonationRequestBackend): string {
     const city = String(row.City || '').trim();
     const country = String(row.Country_Code || '').trim();
@@ -85,6 +107,55 @@ export class ValidationListComponent implements OnDestroy {
       return unit || '-';
     }
     return unit ? `${quantity} ${unit}` : String(quantity);
+  }
+
+  // #region Load data
+  private loadCategories(): void {
+    const sub = this.donationReferenceService.listDonationTypes().subscribe({
+      next: (typesResponse: any) => {
+        console.log('listDonationTypes response', typesResponse);
+        if (!typesResponse?.success) {
+          this.rawCategories = [];
+          this.buildCategoryMaps();
+          return;
+        }
+
+        const rawTypes = Object.values(typesResponse.message ?? {}) as DonationTypeBackend[];
+        const mappedTypes = this.donationReferenceService.mapDonationTypes(rawTypes);
+        if (!mappedTypes.length) {
+          this.rawCategories = [];
+          this.buildCategoryMaps();
+          return;
+        }
+
+        const categorySub = forkJoin(
+          mappedTypes.map((type) => this.donationReferenceService.listDonationCategories(type.id, false)),
+        ).subscribe({
+          next: (categoryResponses) => {
+            console.log('listDonationCategories response', categoryResponses);
+            this.rawCategories = [];
+            categoryResponses.forEach((response: any) => {
+              if (response?.success) {
+                this.rawCategories.push(
+                  ...(Object.values(response.message ?? {}) as DonationCategoryBackend[]),
+                );
+              }
+            });
+            this.buildCategoryMaps();
+          },
+          error: () => {
+            this.rawCategories = [];
+            this.buildCategoryMaps();
+          },
+        });
+        this.subscriptions.push(categorySub);
+      },
+      error: () => {
+        this.rawCategories = [];
+        this.buildCategoryMaps();
+      },
+    });
+    this.subscriptions.push(sub);
   }
 
   private loadRequests(): void {
@@ -113,6 +184,18 @@ export class ValidationListComponent implements OnDestroy {
       });
     this.subscriptions.push(sub);
   }
+
+  private buildCategoryMaps(): void {
+    this.categoryLabelById = {};
+    const mappedCategories = this.donationReferenceService.mapDonationCategories(this.rawCategories);
+    for (const item of mappedCategories) {
+      if (!item.id) {
+        continue;
+      }
+      this.categoryLabelById[item.id] = item.name;
+    }
+  }
+  // #endregion
 
   private handleBusinessError(context: ValidationListContext, response: any): void {
     const code = String(response?.message || '');

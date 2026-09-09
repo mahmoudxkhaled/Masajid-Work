@@ -7,8 +7,7 @@
       <p class="mb-0 text-500">{{ 'donations.facility.fulfillments.subtitle' | translate }}</p>
     </div>
   </div>
-
-  <div class="block-card">
+   <div class="block-card">
     <p-table #fulfillmentsTable [value]="tableValue" [paginator]="true" [lazy]="true" [first]="first" [rows]="rows"
       [totalRecords]="totalRecords" [rowsPerPageOptions]="rowsPerPageOptions" [showCurrentPageReport]="true"
       [currentPageReportTemplate]="'donations.facility.fulfillments.pagination' | translate" responsiveLayout="scroll"
@@ -42,9 +41,12 @@
           <th class="text-center" style="width: 10rem">{{ 'donations.facility.fulfillments.columns.status' | translate
             }}
           </th>
-          <th class="text-center" style="width: 12rem">{{ 'donations.facility.fulfillments.columns.actions' | translate
-            }}
+          <th class="text-center" style="width: 12rem">
+            {{ 'donations.facility.fulfillments.columns.createdAt' | translate }}
           </th>
+          <!-- <th class="text-center" style="width: 12rem">{{ 'donations.facility.fulfillments.columns.actions' | translate
+            }}
+          </th> -->
         </tr>
       </ng-template>
 
@@ -56,8 +58,8 @@
               <p-skeleton height="1.25rem" width="12rem"></p-skeleton>
             </ng-container>
             <ng-template #titleCell>
-              <span class="font-semibold text-overflow-ellipsis" [pTooltip]="getTitle(row)"
-                tooltipPosition="top">{{ getTitle(row) }}</span>
+              <span class="font-semibold text-overflow-ellipsis" [pTooltip]="getTitle(row)" tooltipPosition="top">{{
+                getTitle(row) }}</span>
             </ng-template>
           </td>
           <td class="donation-table-cell-ellipsis" style="width: 11rem">
@@ -65,8 +67,8 @@
               <p-skeleton height="1.25rem" width="9rem"></p-skeleton>
             </ng-container>
             <ng-template #categoryCell>
-              <span class="text-overflow-ellipsis" [pTooltip]="getCategoryLabel(row)"
-                tooltipPosition="top">{{ getCategoryLabel(row) }}</span>
+              <span class="text-overflow-ellipsis" [pTooltip]="getCategoryLabel(row)" tooltipPosition="top">{{
+                getCategoryLabel(row) }}</span>
             </ng-template>
           </td>
           <td class="text-center" style="width: 9rem">
@@ -105,6 +107,14 @@
             </ng-template>
           </td>
           <td class="text-center" style="width: 12rem">
+            <ng-container *ngIf="tableLoadingSpinner; else createdAtCell">
+              <p-skeleton height="1.25rem" width="8rem"></p-skeleton>
+            </ng-container>
+            <ng-template #createdAtCell>
+              <span dir="ltr">{{ row.Created_At ? (row.Created_At | date:'yyyy-MM-dd hh:mm a') : '-' }}</span>
+            </ng-template>
+          </td>
+          <!-- <td class="text-center" style="width: 12rem">
             <ng-container *ngIf="tableLoadingSpinner; else actionsCell">
               <div class="flex justify-content-center">
                 <p-skeleton height="2rem" width="6rem" borderRadius="6px"></p-skeleton>
@@ -114,7 +124,7 @@
               <p-button [label]="'donations.facility.fulfillments.actions.viewFulfillment' | translate" icon="pi pi-eye"
                 [outlined]="true" severity="secondary" size="small" (onClick)="viewFulfillment(row, $event)"></p-button>
             </ng-template>
-          </td>
+          </td> -->
         </tr>
       </ng-template>
 

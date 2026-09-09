@@ -64,11 +64,6 @@ export class RejectFulfillmentDialogComponent implements OnChanges {
           return;
         }
 
-        this.messageService.add({
-          severity: 'success',
-          summary: this.translate.getInstant('common.success'),
-          detail: this.translate.getInstant('donations.facility.fulfillments.messages.rejected'),
-        });
         this.closeDialog();
         this.rejected.emit();
       },

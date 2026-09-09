@@ -134,11 +134,21 @@ export class FacilityFulfillmentReviewComponent implements OnInit, OnDestroy {
   }
 
   onConfirmed(): void {
-    this.router.navigate(['/donations/facility/fulfillments']);
+    this.router.navigate(['/donations/facility/fulfillments'], {
+      state: {
+        toastDetailKey: 'donations.facility.fulfillments.messages.confirmed',
+        toastSeverity: 'success',
+      },
+    });
   }
 
   onRejected(): void {
-    this.router.navigate(['/donations/facility/fulfillments']);
+    this.router.navigate(['/donations/facility/fulfillments'], {
+      state: {
+        toastDetailKey: 'donations.facility.fulfillments.messages.rejected',
+        toastSeverity: 'success',
+      },
+    });
   }
 
   canDownload(item: ProofDisplayItem): boolean {

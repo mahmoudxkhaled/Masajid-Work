@@ -9,7 +9,7 @@
     <p-button [label]="'donations.validation.actions.backToRequest' | translate" icon="pi pi-arrow-left"
       severity="secondary" [outlined]="true" (onClick)="goBack()"></p-button>
   </div>
-
+  111
   <div class="block-card">
     <p-table [value]="tableValue" [paginator]="true" [rows]="rows" [rowsPerPageOptions]="[10, 25, 50, 100]"
       [showCurrentPageReport]="true" [currentPageReportTemplate]="'donations.validation.pagination' | translate"
@@ -17,7 +17,8 @@
       <ng-template pTemplate="header">
         <tr>
           <th style="width: 7rem">{{ 'donations.validation.columns.validationId' | translate }}</th>
-          <th class="text-center" style="width: 8rem">{{ 'donations.validation.columns.fulfillmentId' | translate }}</th>
+          <th class="text-center" style="width: 8rem">{{ 'donations.validation.columns.fulfillmentId' | translate }}
+          </th>
           <th class="text-center" style="width: 8rem">{{ 'donations.validation.columns.validator' | translate }}</th>
           <th style="width: 8rem">{{ 'donations.validation.columns.decision' | translate }}</th>
           <th style="width: 14rem">{{ 'donations.validation.columns.notes' | translate }}</th>
@@ -51,10 +52,8 @@
               <p-skeleton height="1.5rem" width="4.5rem" borderRadius="16px"></p-skeleton>
             </ng-container>
             <ng-template #decisionCell>
-              <app-donation-status-badge
-                [label]="getDecisionLabel(row.validationResult)"
-                [severity]="getDecisionSeverity(row.validationResult)"
-              ></app-donation-status-badge>
+              <app-donation-status-badge [label]="getDecisionLabel(row.validationResult)"
+                [severity]="getDecisionSeverity(row.validationResult)"></app-donation-status-badge>
             </ng-template>
           </td>
           <td>

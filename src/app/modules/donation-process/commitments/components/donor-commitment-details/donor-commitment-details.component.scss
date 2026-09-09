@@ -75,3 +75,16 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+:host ::ng-deep .vendor-offers-table,
+:host ::ng-deep .fulfillments-table {
+  .p-datatable-table {
+    table-layout: fixed;
+    width: 100%;
+  }
+
+  .p-datatable-thead > tr > th,
+  .p-datatable-tbody > tr > td {
+    padding-inline: 0.75rem;
+  }
+}

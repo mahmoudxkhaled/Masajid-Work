@@ -14,11 +14,12 @@
       </ng-template>
     </div>
     <div class="flex flex-wrap gap-2 flex-shrink-0">
+      <p-button [label]="'donations.facility.fulfillments.actions.backToList' | translate" icon="pi pi-list"
+      severity="secondary" [outlined]="true" (onClick)="backToList()"></p-button>
+  </div>
       <p-button [label]="'donations.facility.fulfillments.actions.backToRequest' | translate" icon="pi pi-arrow-left"
         severity="secondary" [outlined]="true" (onClick)="backToRequest()"></p-button>
-      <p-button [label]="'donations.facility.fulfillments.actions.backToList' | translate" icon="pi pi-list"
-        severity="secondary" [outlined]="true" (onClick)="backToList()"></p-button>
-    </div>
+
   </div>
 
   <div class="block-card details-card p-0 mb-3">
