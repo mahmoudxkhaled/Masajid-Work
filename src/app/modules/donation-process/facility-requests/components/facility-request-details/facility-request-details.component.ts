@@ -38,6 +38,7 @@ export class FacilityRequestDetailsComponent implements OnInit, OnDestroy {
   details: DonationRequestDetails | null = null;
   workflowItems: DonationRequestWorkflowItem[] = [];
   locationMapVisible = false;
+  hasBreakdownRequests = false;
 
   typeLabel = '';
   categoryLabel = '';
@@ -137,6 +138,19 @@ export class FacilityRequestDetailsComponent implements OnInit, OnDestroy {
     this.router.navigate(['/donations/facility/fulfillments', this.requestId], {
       state: { returnTo: `/donations/facility/requests/${this.requestId}` },
     });
+  }
+
+  goToRequestBreakdowns(): void {
+    if (!this.requestId || !this.hasBreakdownRequests) {
+      return;
+    }
+    this.router.navigate(['/donations/facility/requests', this.requestId, 'breakdown'], {
+      state: { returnTo: `/donations/facility/requests/${this.requestId}` },
+    });
+  }
+
+  onBreakdownHasItemsChange(hasItems: boolean): void {
+    this.hasBreakdownRequests = hasItems;
   }
 
   confirmSubmit(): void {

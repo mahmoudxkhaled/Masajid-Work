@@ -93,9 +93,9 @@ export class HeaderSectionComponent implements OnInit, OnDestroy {
       return;
     }
     this.langMenuOpen = false;
-    // Language-switch preloader (500ms). Revert: delete next line; add this.translationService.useLanguage(lang);
-    this.translationService.showLanguageSwitchPreloader();
-    this.languageDirService.setGuestLanguageCode(lang);
+    this.currentLang = lang;
+    this.translationService.showLanguageSwitchPreloader(4000);
+    this.languageDirService.setGuestLanguageCode(lang).subscribe();
   }
 
   toggleTheme(): void {

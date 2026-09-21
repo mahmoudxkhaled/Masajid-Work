@@ -63,6 +63,16 @@ export function resolveValidationAttachmentOwner(donationValidationId: number): 
   };
 }
 
+export function resolveBreakdownAttachmentOwner(donationBreakdownRequestId: number): {
+  ownerType: number;
+  ownerId: number;
+} {
+  return {
+    ownerType: DonationAttachmentOwnerType.DonationBreakdownRequest,
+    ownerId: donationBreakdownRequestId,
+  };
+}
+
 export function resolveValidationAttachmentOwnerForLink(
   donationValidationId: number,
 ): { ownerType: number; ownerId: number } | null {

@@ -1,0 +1,16 @@
+<p-dialog [(visible)]="visible" [modal]="true" [style]="{ width: '520px' }" [draggable]="false" [resizable]="false"
+  (onHide)="closeDialog()">
+  <ng-template pTemplate="header">
+    <h3 class="m-0">{{ 'donations.breakdown.applyDialog.title' | translate }}</h3>
+  </ng-template>
+
+  <p class="mb-2 text-500">{{ 'donations.breakdown.applyDialog.message' | translate }}</p>
+  <p class="mb-0 font-medium">{{ 'donations.breakdown.applyDialog.warning' | translate }}</p>
+
+  <ng-template pTemplate="footer">
+    <p-button [label]="'common.cancel' | translate" icon="pi pi-times" severity="secondary" [outlined]="true"
+      (onClick)="closeDialog()" [disabled]="!!(isLoading$ | async)"></p-button>
+    <p-button [label]="'donations.breakdown.actions.apply' | translate" icon="pi pi-check" severity="danger"
+      (onClick)="confirmApply()" [disabled]="!!(isLoading$ | async)"></p-button>
+  </ng-template>
+</p-dialog>

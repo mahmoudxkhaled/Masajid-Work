@@ -1,7 +1,7 @@
 <section class="register-page">
   <div class="register-page__inner register-page__inner--wide">
     <a class="register-page__back" [routerLink]="['/register']">
-      <span class="material-symbols-outlined">arrow_back</span>
+      <i class="pi pi-arrow-left" aria-hidden="true"></i>
       {{ 'public.register.common.backSelection' | translate }}
     </a>
 
@@ -12,7 +12,7 @@
 
     <div class="register-card" *ngIf="submitted; else charityForm">
       <div class="register-success">
-        <span class="material-symbols-outlined">check_circle</span>
+        <i class="pi pi-check-circle" aria-hidden="true"></i>
         <h2 class="register-success__title">{{ 'public.register.charity.successTitle' | translate }}</h2>
         <p class="register-success__text">{{ 'public.register.charity.success' | translate }}</p>
         <a class="register-success__link" [routerLink]="['/']">{{ 'public.register.common.backHome' | translate }}</a>
@@ -21,7 +21,7 @@
 
     <ng-template #charityForm>
       <div class="register-error-banner" *ngIf="submitErrorKey">
-        <span class="material-symbols-outlined">error</span>
+        <i class="pi pi-exclamation-circle" aria-hidden="true"></i>
         <span>{{ submitErrorKey | translate }}</span>
       </div>
 
@@ -90,7 +90,7 @@
         </div>
 
         <div class="register-submitting" *ngIf="submitting">
-          <span class="material-symbols-outlined">hourglass_top</span>
+          <i class="pi pi-spinner pi-spin" aria-hidden="true"></i>
           {{ 'public.register.common.submitting' | translate }}
         </div>
 

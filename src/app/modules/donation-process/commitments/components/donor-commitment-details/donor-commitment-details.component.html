@@ -12,6 +12,9 @@
       </ng-template>
     </div>
     <div class="flex flex-wrap gap-2">
+      <p-button *ngIf="canRequestBreakdown"
+        [label]="'donations.commitments.actions.requestBreakdown' | translate" icon="pi pi-sitemap"
+        [outlined]="true" (onClick)="goToRequestBreakdown()"></p-button>
       <p-button *ngIf="canSubmitProof"
         [label]="'donations.commitments.actions.submitFulfillmentProof' | translate" icon="pi pi-upload"
         (onClick)="goToSubmitProof()"></p-button>
@@ -20,6 +23,163 @@
       <p-button [label]="'donations.commitments.details.back' | translate" icon="pi pi-arrow-left" severity="secondary"
         [outlined]="true" (onClick)="backToList()"></p-button>
     </div>
+  </div>
+
+  <div class="block-card details-card p-0 mb-3">
+    <div class="details-section-header details-section-header--with-action">
+      <div class="flex align-items-center gap-3 flex-1 min-w-0">
+        <span class="details-section-icon"><i class="pi pi-file"></i></span>
+        <h3 class="details-section-title">{{ 'donations.commitments.details.sections.requestSummary' | translate }}</h3>
+      </div>
+      <ng-container *ngIf="loading || requestStatusLoading; else requestStatusBadge">
+        <p-skeleton height="1.5rem" width="5rem" borderRadius="16px"></p-skeleton>
+      </ng-container>
+      <ng-template #requestStatusBadge>
+        <app-donation-status-badge *ngIf="requestDetails" [label]="requestStatusLabel"
+          [severity]="requestStatusSeverity"></app-donation-status-badge>
+      </ng-template>
+    </div>
+
+    <ng-container *ngIf="loading || requestStatusLoading; else requestSummaryLoaded">
+      <div class="grid p-3 pt-2">
+        <div class="col-12 md:col-6 lg:col-4">
+          <div class="info-item">
+            <span class="info-label">{{ 'donations.commitments.columns.requestId' | translate }}</span>
+            <p-skeleton height="1.25rem" width="70%"></p-skeleton>
+          </div>
+        </div>
+        <div class="col-12 md:col-6 lg:col-4">
+          <div class="info-item">
+            <span class="info-label">{{ 'donations.commitments.details.requestTitle' | translate }}</span>
+            <p-skeleton height="1.25rem" width="70%"></p-skeleton>
+          </div>
+        </div>
+        <div class="col-12 md:col-6 lg:col-4">
+          <div class="info-item">
+            <span class="info-label">{{ 'donations.commitments.details.requestQuantity' | translate }}</span>
+            <p-skeleton height="1.25rem" width="70%"></p-skeleton>
+          </div>
+        </div>
+        <div class="col-12 md:col-6 lg:col-4">
+          <div class="info-item">
+            <span class="info-label">{{ 'donations.commitments.details.requestEstimatedCost' | translate }}</span>
+            <p-skeleton height="1.25rem" width="70%"></p-skeleton>
+          </div>
+        </div>
+        <div class="col-12 md:col-6 lg:col-4">
+          <div class="info-item">
+            <span class="info-label">{{ 'donations.commitments.details.requestNeedsInstallation' | translate }}</span>
+            <p-skeleton height="1.25rem" width="70%"></p-skeleton>
+          </div>
+        </div>
+        <div class="col-12 md:col-6 lg:col-4">
+          <div class="info-item">
+            <span class="info-label">{{ 'donations.commitments.details.requestLocation' | translate }}</span>
+            <p-skeleton height="1.25rem" width="70%"></p-skeleton>
+          </div>
+        </div>
+        <div class="col-12 md:col-6 lg:col-4">
+          <div class="info-item">
+            <span class="info-label">{{ 'donations.commitments.details.requestAddress' | translate }}</span>
+            <p-skeleton height="1.25rem" width="70%"></p-skeleton>
+          </div>
+        </div>
+        <div class="col-12 md:col-6 lg:col-4">
+          <div class="info-item">
+            <span class="info-label">{{ 'donations.commitments.details.requestPublishedAt' | translate }}</span>
+            <p-skeleton height="1.25rem" width="70%"></p-skeleton>
+          </div>
+        </div>
+        <div class="col-12 md:col-6 lg:col-4">
+          <div class="info-item">
+            <span class="info-label">{{ 'donations.commitments.details.requestCreatedAt' | translate }}</span>
+            <p-skeleton height="1.25rem" width="70%"></p-skeleton>
+          </div>
+        </div>
+        <div class="col-12">
+          <div class="info-item">
+            <span class="info-label">{{ 'donations.commitments.details.requestDescription' | translate }}</span>
+            <p-skeleton height="3rem" width="100%"></p-skeleton>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-template #requestSummaryLoaded>
+      <ng-container *ngIf="requestDetails; else requestSummaryUnavailable">
+        <div class="grid p-3 pt-2">
+          <div class="col-12 md:col-6 lg:col-4">
+            <div class="info-item">
+              <span class="info-label">{{ 'donations.commitments.columns.requestId' | translate }}</span>
+              <span class="info-value">{{ requestDetails.id || details?.donationRequestId || '-' }}</span>
+            </div>
+          </div>
+          <div class="col-12 md:col-6 lg:col-4">
+            <div class="info-item">
+              <span class="info-label">{{ 'donations.commitments.details.requestTitle' | translate }}</span>
+              <span class="info-value">{{ requestDetails.title || '-' }}</span>
+            </div>
+          </div>
+          <div class="col-12 md:col-6 lg:col-4">
+            <div class="info-item">
+              <span class="info-label">{{ 'donations.commitments.details.requestQuantity' | translate }}</span>
+              <span class="info-value">{{ formatRequestQuantity() }}</span>
+            </div>
+          </div>
+          <div class="col-12 md:col-6 lg:col-4">
+            <div class="info-item">
+              <span class="info-label">{{ 'donations.commitments.details.requestEstimatedCost' | translate }}</span>
+              <span class="info-value">{{ formatRequestEstimatedCost() }}</span>
+            </div>
+          </div>
+          <div class="col-12 md:col-6 lg:col-4">
+            <div class="info-item">
+              <span class="info-label">{{ 'donations.commitments.details.requestNeedsInstallation' | translate }}</span>
+              <span class="info-value">
+                {{ (requestDetails.needsInstallation ? 'donations.browse.yes' : 'donations.browse.no') | translate }}
+              </span>
+            </div>
+          </div>
+          <div class="col-12 md:col-6 lg:col-4">
+            <div class="info-item">
+              <span class="info-label">{{ 'donations.commitments.details.requestLocation' | translate }}</span>
+              <span class="info-value">{{ formatRequestLocation() }}</span>
+            </div>
+          </div>
+          <div class="col-12 md:col-6 lg:col-4">
+            <div class="info-item">
+              <span class="info-label">{{ 'donations.commitments.details.requestAddress' | translate }}</span>
+              <span class="info-value">{{ requestDetails.address || '-' }}</span>
+            </div>
+          </div>
+          <div class="col-12 md:col-6 lg:col-4">
+            <div class="info-item">
+              <span class="info-label">{{ 'donations.commitments.details.requestPublishedAt' | translate }}</span>
+              <span class="info-value" dir="ltr">
+                {{ requestDetails.publishedAt ? (requestDetails.publishedAt | date:'yyyy-MM-dd hh:mm a') : '-' }}
+              </span>
+            </div>
+          </div>
+          <div class="col-12 md:col-6 lg:col-4">
+            <div class="info-item">
+              <span class="info-label">{{ 'donations.commitments.details.requestCreatedAt' | translate }}</span>
+              <span class="info-value" dir="ltr">
+                {{ requestDetails.createdAt ? (requestDetails.createdAt | date:'yyyy-MM-dd hh:mm a') : '-' }}
+              </span>
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="info-item">
+              <span class="info-label">{{ 'donations.commitments.details.requestDescription' | translate }}</span>
+              <span class="info-value line-height-3 font-normal">{{ requestDetails.description || '-' }}</span>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+      <ng-template #requestSummaryUnavailable>
+        <p class="p-3 mb-0 text-500">{{ 'donations.commitments.details.requestSummaryUnavailable' | translate }}</p>
+      </ng-template>
+    </ng-template>
   </div>
 
   <ng-container *ngIf="loading; else detailsContent">

@@ -157,7 +157,7 @@ export class AuthService {
                 this.localStorageService.clearLoginDataPackage();
             }),
             finalize(() => {
-                window.location.reload();
+                window.location.assign(`${window.location.origin}/auth`);
                 this.isLoadingSubject.next(false);
             })
         );

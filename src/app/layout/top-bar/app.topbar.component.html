@@ -6,23 +6,12 @@
             [attr.alt]="'layout.top-bar.companyLogo' | translate" />
         <p *ngIf="headerDisplayTitle" class="topbar-entity-title">{{ headerDisplayTitle }}</p>
     </div>
-    <div class="company-info-mobile layout-topbar-start flex justify-content-between align-items-center"
-        style="margin-top: 10px">
-
-
-
-        <div id="" class="flex justify-content-center flex-grow-1">
+    <div class="company-info-mobile layout-topbar-start flex justify-content-between align-items-center">
+        <div class="flex justify-content-center flex-grow-1 topbar-brand-wrap">
             <a class="iaware-logo layout-topbar-logo" routerLink="/dashboard">
-                <!-- <svg width="150" viewBox="0 0 200 40" xmlns="http://www.w3.org/2000/svg">
-                    <text x="10" y="30" font-family="Arial, sans-serif" font-size="32"
-                        fill="var(--topbar-item-text-color)" font-weight="700">
-                        ERP Logo
-                    </text>
-                </svg> -->
-                <img width="80" src="../../assets/media/logo/PMAT_Logo_(Medium)_No_Bkgnd.png"
+                <img class="topbar-brand-logo" src="../../assets/media/logo/PMAT_Logo_(Medium)_No_Bkgnd.png"
                     [ngClass]="{ 'topbar-pmat-logo--white': layoutService.config().topbarTheme !== 'light' }"
                     [attr.alt]="'layout.top-bar.companyLogo' | translate" />
-                <!-- <img src="../../assets/media/logo1.png" alt="iAware Logo" /> -->
             </a>
         </div>
 
@@ -43,7 +32,7 @@
             </svg> -->
         <!-- <img src="../../assets/media/logo1.png" width="100" alt="Logo" /> -->
         <!-- </a> -->
-        <img width="80" src="../../assets/media/logo/Slogan.png" routerLink="/dashboard" style="cursor: pointer;"
+        <img class="topbar-brand-logo" src="../../assets/media/logo/Slogan.png" routerLink="/dashboard" style="cursor: pointer;"
             [ngClass]="{ 'topbar-pmat-logo--white': layoutService.config().topbarTheme !== 'light' }"
             [attr.alt]="'layout.top-bar.companyLogo' | translate" />
     </div>

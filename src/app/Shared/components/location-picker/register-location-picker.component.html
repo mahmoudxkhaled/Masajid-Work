@@ -12,7 +12,10 @@
     <div class="register-location-picker__map-loading" *ngIf="mapLoading">
       <p-skeleton height="100%" width="100%" borderRadius="8px"></p-skeleton>
     </div>
-    <div class="register-location-picker__map-overlay" *ngIf="!mapLoading && requireCountry && !hasCountryCode">
+    <div
+      class="register-location-picker__map-overlay"
+      *ngIf="!mapLoading && requireCountry && !hasCountryCode && !hasCoordinateInput"
+    >
       {{ 'public.register.location.selectCountryFirst' | translate }}
     </div>
   </div>
@@ -28,7 +31,7 @@
       (click)="useMyLocation()"
       [disabled]="locating"
     >
-      <span class="material-symbols-outlined">my_location</span>
+      <i class="pi pi-map-marker" aria-hidden="true"></i>
       <ng-container *ngIf="locating; else geoLabel">
         {{ 'public.register.location.locating' | translate }}
       </ng-container>

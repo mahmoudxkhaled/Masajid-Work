@@ -66,6 +66,14 @@ export const MASAJID_WORKSPACE_MODULES: IModulesDetails = {
     Default_Order: 15,
     URL: '/donations/admin/ready-to-close',
   },
+  ADM_BRK: {
+    ModuleID: 308,
+    FunctionID: 11,
+    Name: 'Breakdown Review',
+    Name_Regional: '\u0645\u0631\u0627\u062c\u0639\u0629 \u0627\u0644\u062a\u062c\u0632\u0626\u0629',
+    Default_Order: 17,
+    URL: '/donations/admin/breakdown-review',
+  },
   ADM_OVER: {
     ModuleID: 302,
     FunctionID: 11,
@@ -223,6 +231,7 @@ export const MASAJID_WORKSPACE_MODULES: IModulesDetails = {
 export const MASAJID_WORKSPACE_MODULE_ROLE_VISIBILITY: Partial<Record<string, Roles[]>> = {
   ADM_REV: [Roles.Developer, Roles.SystemAdministrator],
   ADM_CLOSE: [Roles.Developer, Roles.SystemAdministrator],
+  ADM_BRK: [Roles.Developer, Roles.SystemAdministrator],
   ADM_OVER: [Roles.Developer, Roles.SystemAdministrator],
   ADM_FAC: [Roles.Developer, Roles.SystemAdministrator],
   DNREF: [Roles.Developer, Roles.SystemAdministrator],

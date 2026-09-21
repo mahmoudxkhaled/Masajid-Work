@@ -51,6 +51,12 @@ export class RegisterLocationPickerComponent implements OnInit, AfterViewInit, O
     return String(this.countryCodeControl?.value ?? '').trim().length > 0;
   }
 
+  get hasCoordinateInput(): boolean {
+    const lat = String(this.latitudeControl?.value ?? '').trim();
+    const lng = String(this.longitudeControl?.value ?? '').trim();
+    return lat.length > 0 || lng.length > 0;
+  }
+
   constructor(
     private readonly reverseGeocode: ReverseGeocodeService,
     private readonly lookupService: PublicLookupService,
@@ -122,7 +128,7 @@ export class RegisterLocationPickerComponent implements OnInit, AfterViewInit, O
     }).addTo(this.map);
 
     this.map.on('click', (event: L.LeafletMouseEvent) => {
-      if (this.requireCountry && !this.hasCountryCode) {
+      if (this.requireCountry && !this.hasCountryCode && !this.hasCoordinateInput) {
         return;
       }
       this.placeMarker(event.latlng.lat, event.latlng.lng);

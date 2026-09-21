@@ -12,10 +12,13 @@
       </ng-template>
     </div>
     <div class="flex flex-wrap gap-2 flex-shrink-0">
-      <p-button [label]="'donations.adminClose.actions.backToList' | translate" icon="pi pi-arrow-left"
-        severity="secondary" [outlined]="true" (onClick)="backToList()"></p-button>
+
+      <p-button *ngIf="hasBreakdownRequests" [label]="'donations.breakdown.actions.viewAll' | translate"
+        icon="pi pi-sitemap" [outlined]="true" (onClick)="goToRequestBreakdowns()"></p-button>
       <p-button *ngIf="canClose" [label]="'donations.adminClose.actions.closeRequest' | translate" icon="pi pi-lock"
         severity="danger" (onClick)="openCloseDialog()"></p-button>
+              <p-button [label]="'donations.adminClose.actions.backToList' | translate" icon="pi pi-arrow-left"
+        severity="secondary" [outlined]="true" (onClick)="backToList()"></p-button>
     </div>
   </div>
 
@@ -267,6 +270,9 @@
       </ng-template>
     </div>
   </div>
+
+  <app-breakdown-requests-section [requestId]="requestId" mode="admin" [showViewAll]="true"
+    [hideWhenEmpty]="true" (hasItemsChange)="onBreakdownHasItemsChange($event)"></app-breakdown-requests-section>
 </div>
 
 <app-close-donation-request-dialog [(visible)]="closeDialogVisible" [donationRequestId]="requestId"

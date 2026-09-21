@@ -1284,7 +1284,7 @@ Fulfillment proof, validation attachments, and **`Add_Donation_Attachment`** use
 ### `Create_Breakdown_Request`
 
 - **Code:** `100900`
-- **Description:** Request a partial breakdown of a commitment into sub-requests. Each item specifies title, quantity, cost, currency, and donor-portion flag.
+- **Description:** Request a partial breakdown of a commitment into sub-requests. `Items` is a flat `List<string>`; every 6 consecutive values represent one breakdown item.
 - **Access Token:** Yes
 
 **Input:**
@@ -1292,8 +1292,23 @@ Fulfillment proof, validation attachments, and **`Add_Donation_Attachment`** use
 | # | Type | Name |
 |---|------|------|
 | 1 | `long` | `Donation_Commitment_ID` |
-| 2 | `List<object>` | `Items` |
+| 2 | `List<string>` | `Items` |
 | 3 | `bool` | `Is_Regional` |
+
+**Items layout (flat `List<string>`):**
+
+Each breakdown item uses exactly **6 consecutive strings** in this order:
+
+1. `Title`
+2. `Description`
+3. `Quantity` (string number)
+4. `Estimated_Cost` (string number)
+5. `Currency_Code` (uppercase, e.g. `EGP`)
+6. `Donor_Portion` (`'true'` or `'false'`)
+
+So: 1 item → 6 strings, 2 items → 12 strings, 3 items → 18 strings. Do **not** send nested arrays, objects, or dictionaries.
+
+**Frontend packaging:** DAP `callAPI` parameters are individual strings. Pass `Items` as one parameter via `JSON.stringify(flatStringArray)` so the wire value is a JSON array of double-quoted strings, e.g. `["Title","Description","10","1000","EGP","true","Title2","Description2","1","5000","EGP","false"]`.
 
 **Output:**
 
@@ -1336,19 +1351,19 @@ Fulfillment proof, validation attachments, and **`Add_Donation_Attachment`** use
 ### `List_Breakdown_Requests`
 
 - **Code:** `100902`
-- **Description:** List breakdown requests for a Donation Request with optional status filter.
+- **Description:** List breakdown requests. `Donation_Request_ID > 0` returns requests for that donation request. `Donation_Request_ID = 0` returns all breakdown requests (admin/global listing). Optional `Status_Filter` may be sent; admin Needs Review currently filters Confirmed (`2`) on the frontend after a global list.
 - **Access Token:** Yes
 
 **Input:**
 
 | # | Type | Name |
 |---|------|------|
-| 1 | `long` | `Donation_Request_ID` |
+| 1 | `long` | `Donation_Request_ID` (`0` = all breakdown requests) |
 | 2 | `List<int>` | `Status_Filter` |
 
 **Output:**
 
-- `List<Dictionary<string, object?>>` — `Breakdown_Requests`
+- `message` is the list array (live 100902). Each row includes `Donation_Breakdown_Request_ID`, `Commitment_ID`, `Status`, `Facility_Confirmed_At`, `Admin_Applied_At`, `Rejected_At`.
 
 **Permissions:** DEV, SADMIN, EADMIN, USER
 

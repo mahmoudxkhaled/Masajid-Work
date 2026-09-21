@@ -10,6 +10,13 @@ import { DonationWorkflowTimelineComponent } from './donation-workflow-timeline/
 import { DonationAttachmentListComponent } from './donation-attachment-list/donation-attachment-list.component';
 import { DonationAttachmentUploaderComponent } from './donation-attachment-uploader/donation-attachment-uploader.component';
 import { DonationAttachmentPendingPickerComponent } from './donation-attachment-pending-picker/donation-attachment-pending-picker.component';
+import { ApplyBreakdownDialogComponent } from './breakdown/apply-breakdown-dialog/apply-breakdown-dialog.component';
+import { BreakdownItemsListComponent } from './breakdown/breakdown-items-list/breakdown-items-list.component';
+import { BreakdownRequestDetailsComponent } from './breakdown/breakdown-request-details/breakdown-request-details.component';
+import { BreakdownRequestsListComponent } from './breakdown/breakdown-requests-list/breakdown-requests-list.component';
+import { BreakdownRequestsSectionComponent } from './breakdown/breakdown-requests-section/breakdown-requests-section.component';
+import { ConfirmBreakdownDialogComponent } from './breakdown/confirm-breakdown-dialog/confirm-breakdown-dialog.component';
+import { RejectBreakdownDialogComponent } from './breakdown/reject-breakdown-dialog/reject-breakdown-dialog.component';
 
 @NgModule({
   declarations: [
@@ -20,6 +27,13 @@ import { DonationAttachmentPendingPickerComponent } from './donation-attachment-
     DonationAttachmentListComponent,
     DonationAttachmentUploaderComponent,
     DonationAttachmentPendingPickerComponent,
+    ApplyBreakdownDialogComponent,
+    BreakdownItemsListComponent,
+    BreakdownRequestDetailsComponent,
+    BreakdownRequestsListComponent,
+    BreakdownRequestsSectionComponent,
+    ConfirmBreakdownDialogComponent,
+    RejectBreakdownDialogComponent,
   ],
   imports: [CommonModule, FormsModule, SharedModule, LocationPickerModule],
   exports: [
@@ -30,6 +44,13 @@ import { DonationAttachmentPendingPickerComponent } from './donation-attachment-
     DonationAttachmentListComponent,
     DonationAttachmentUploaderComponent,
     DonationAttachmentPendingPickerComponent,
+    ApplyBreakdownDialogComponent,
+    BreakdownItemsListComponent,
+    BreakdownRequestDetailsComponent,
+    BreakdownRequestsListComponent,
+    BreakdownRequestsSectionComponent,
+    ConfirmBreakdownDialogComponent,
+    RejectBreakdownDialogComponent,
     LocationPickerModule,
   ],
 })

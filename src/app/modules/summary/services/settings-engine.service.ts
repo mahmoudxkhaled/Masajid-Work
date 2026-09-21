@@ -4,7 +4,6 @@ import { IAccountSettings } from 'src/app/core/models/account-status.model';
 import { LanguageDirService } from 'src/app/core/services/language-dir.service';
 import { DashboardResolverService } from 'src/app/core/services/dashboard-resolver.service';
 import { LocalStorageService } from 'src/app/core/services/local-storage.service';
-import { TranslationService } from 'src/app/core/services/translation.service';
 import { LayoutService } from 'src/app/layout/app-services/app.layout.service';
 import { SettingsApiService } from './settings-api.service';
 import { SettingsLayer, SettingsLayersState, SETTINGS_CACHE_KEY } from '../models/settings-engine.model';
@@ -26,7 +25,6 @@ export class SettingsEngineService {
         private localStorageService: LocalStorageService,
         private dashboardResolverService: DashboardResolverService,
         private languageDirService: LanguageDirService,
-        private translationService: TranslationService,
         private layoutService: LayoutService
     ) { }
 
@@ -266,7 +264,6 @@ export class SettingsEngineService {
         const lang = this.normalizeResolvedLanguage(this.getSetting('language'));
         const theme = this.normalizeResolvedTheme(this.getSetting('theme'));
         this.localStorageService.setPreferredTheme(theme);
-        this.languageDirService.setUserLanguageCode(lang);
         this.layoutService.applyUserTheme(theme);
         const patch: Partial<IAccountSettings> = {};
         const fo = this.getSetting('Functions_Order') ?? this.getSetting('functions_order');
@@ -280,7 +277,7 @@ export class SettingsEngineService {
         if (Object.keys(patch).length > 0) {
             this.localStorageService.mergeAccountSettings(patch);
         }
-        return this.translationService.useLanguage(lang);
+        return this.languageDirService.setUserLanguageCode(lang);
     }
 
     private normalizeResolvedLanguage(raw: string | null): 'en' | 'ar' {

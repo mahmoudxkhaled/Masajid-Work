@@ -1,0 +1,67 @@
+<p-table [value]="tableValue" responsiveLayout="scroll" styleClass="p-datatable-sm">
+  <ng-template pTemplate="header">
+    <tr>
+      <th style="width: 20%">{{ 'donations.breakdown.columns.title' | translate }}</th>
+      <th style="width: 22%">{{ 'donations.breakdown.columns.description' | translate }}</th>
+      <th class="text-center" style="width: 12%">{{ 'donations.breakdown.columns.quantity' | translate }}</th>
+      <th class="text-center" style="width: 16%">{{ 'donations.breakdown.columns.estimatedCost' | translate }}</th>
+      <th class="text-center" style="width: 12%">{{ 'donations.breakdown.columns.currency' | translate }}</th>
+      <th class="text-center" style="width: 18%">{{ 'donations.breakdown.columns.donorPortion' | translate }}</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-row>
+    <tr>
+      <td class="donation-table-cell-ellipsis" style="width: 20%">
+        <ng-container *ngIf="loading; else titleCell">
+          <p-skeleton height="1.25rem" width="80%"></p-skeleton>
+        </ng-container>
+        <ng-template #titleCell>
+          <span class="text-overflow-ellipsis" [pTooltip]="row.title || ''" tooltipPosition="top">{{
+            row.title || '-' }}</span>
+        </ng-template>
+      </td>
+      <td class="donation-table-cell-ellipsis" style="width: 22%">
+        <ng-container *ngIf="loading; else descriptionCell">
+          <p-skeleton height="1.25rem" width="90%"></p-skeleton>
+        </ng-container>
+        <ng-template #descriptionCell>
+          <span class="text-overflow-ellipsis" [pTooltip]="row.description || ''" tooltipPosition="top">{{
+            row.description || '-' }}</span>
+        </ng-template>
+      </td>
+      <td class="text-center" style="width: 12%">
+        <ng-container *ngIf="loading; else quantityCell">
+          <p-skeleton height="1.25rem" width="4rem"></p-skeleton>
+        </ng-container>
+        <ng-template #quantityCell>{{ row.quantity || '-' }}</ng-template>
+      </td>
+      <td class="text-center" style="width: 16%">
+        <ng-container *ngIf="loading; else costCell">
+          <p-skeleton height="1.25rem" width="6rem"></p-skeleton>
+        </ng-container>
+        <ng-template #costCell>{{ formatCost(row) }}</ng-template>
+      </td>
+      <td class="text-center" style="width: 12%">
+        <ng-container *ngIf="loading; else currencyCell">
+          <p-skeleton height="1.25rem" width="4rem"></p-skeleton>
+        </ng-container>
+        <ng-template #currencyCell>{{ row.currencyCode || '-' }}</ng-template>
+      </td>
+      <td class="text-center" style="width: 18%">
+        <ng-container *ngIf="loading; else donorCell">
+          <p-skeleton height="1.25rem" width="5rem"></p-skeleton>
+        </ng-container>
+        <ng-template #donorCell>
+          {{ (row.donorPortion ? 'donations.browse.yes' : 'donations.browse.no') | translate }}
+        </ng-template>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td colspan="6" class="text-center p-4 text-500">
+        {{ 'donations.breakdown.itemsEmpty' | translate }}
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

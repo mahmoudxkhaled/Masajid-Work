@@ -1286,6 +1286,10 @@
             "donations.browse.details.title": "Donation Request Details",
             "donations.commitments.title": "My Commitments",
             "donations.commitments.details.title": "Commitment Details",
+            "donations.commitments.submitProofDialog.title": "Submit Fulfillment Proof",
+            "donations.breakdown.createDialog.title": "Request Breakdown",
+            "donations.breakdown.details.title": "Breakdown Request Details",
+            "donations.breakdown.list.title": "Breakdown Requests",
             "donations.adminReview.title": "Admin Review",
             "donations.adminReview.details.title": "Review Donation Request",
             "donations.adminClose.title": "Ready to Close",
@@ -3851,7 +3855,8 @@
             "actions": {
                 "viewDetails": "View details",
                 "cancelCommitment": "Cancel Commitment",
-                "submitFulfillmentProof": "Submit Fulfillment Proof"
+                "submitFulfillmentProof": "Submit Fulfillment Proof",
+                "requestBreakdown": "Request Breakdown"
             },
             "fulfilledBy": {
                 "donor": "Donor",
@@ -3959,9 +3964,20 @@
                 "cancelReason": "Cancellation reason",
                 "completedAt": "Completed at",
                 "entityId": "Facility ID",
+                "requestTitle": "Title",
+                "requestQuantity": "Quantity",
+                "requestEstimatedCost": "Estimated cost",
+                "requestNeedsInstallation": "Needs installation",
+                "requestLocation": "Location",
+                "requestAddress": "Address",
+                "requestPublishedAt": "Published at",
+                "requestCreatedAt": "Created at",
+                "requestDescription": "Description",
+                "requestSummaryUnavailable": "Request summary is currently unavailable.",
                 "sections": {
                     "commitment": "Commitment information",
                     "request": "Related donation request",
+                    "requestSummary": "Request summary",
                     "workflow": "Status History"
                 }
             },
@@ -4143,6 +4159,25 @@
                 "accessDenied": "You do not have permission to close donation requests.",
                 "notOwnerFacility": "You are not allowed to list donation requests for this facility.",
                 "sessionExpired": "Your session has expired. Please login again."
+            }
+        },
+        "adminBreakdownReview": {
+            "title": "Breakdown Review",
+            "subtitle": "Review facility-confirmed breakdown requests and either apply or reject them.",
+            "empty": "No breakdown requests are waiting for admin review.",
+            "searchPlaceholder": "Search breakdown requests...",
+            "pagination": "Showing '{first}' to '{last}' of '{totalRecords}'",
+            "columns": {
+                "breakdownRequestId": "Breakdown Request ID",
+                "commitmentId": "Commitment ID",
+                "facilityConfirmedAt": "Facility confirmation date",
+                "adminAppliedAt": "Admin applied at",
+                "rejectedAt": "Rejected at",
+                "status": "Status",
+                "actions": "Actions"
+            },
+            "actions": {
+                "viewReview": "View Review"
             }
         },
         "vendorOffers": {
@@ -4402,6 +4437,151 @@
             "confirmed": "Confirmed",
             "rejected": "Rejected",
             "unknown": "Unknown"
+        },
+        "breakdown": {
+            "list": {
+                "title": "Breakdown Requests",
+                "subtitle": "Review partial fulfillment requests for this donation request."
+            },
+            "details": {
+                "title": "Breakdown Request Details",
+                "subtitle": "Review breakdown items, status, and supporting attachments.",
+                "sections": {
+                    "summary": "Summary",
+                    "items": "Breakdown items",
+                    "attachments": "Attachments"
+                }
+            },
+            "section": {
+                "title": "Breakdown Requests",
+                "missingRequestId": "Breakdown requests cannot be loaded because the related donation request ID was not returned."
+            },
+            "pagination": "Showing '{first}' to '{last}' of '{totalRecords}'",
+            "searchPlaceholder": "Search breakdown requests",
+            "empty": "No breakdown requests found for this donation request.",
+            "itemsEmpty": "No breakdown items were returned.",
+            "status": {
+                "pending": "Pending facility review",
+                "confirmed": "Confirmed",
+                "applied": "Applied",
+                "rejected": "Rejected",
+                "unknown": "Unknown"
+            },
+            "filters": {
+                "allStatuses": "All statuses"
+            },
+            "columns": {
+                "id": "Breakdown ID",
+                "requestId": "Request ID",
+                "commitmentId": "Commitment ID",
+                "itemCount": "Items",
+                "createdAt": "Created at",
+                "createdBy": "Created by",
+                "facilityConfirmedAt": "Facility confirmed at",
+                "adminAppliedAt": "Admin applied at",
+                "rejectedAt": "Rejected at",
+                "status": "Status",
+                "actions": "Actions",
+                "title": "Title",
+                "description": "Description",
+                "quantity": "Quantity",
+                "estimatedCost": "Estimated cost",
+                "currency": "Currency",
+                "donorPortion": "Donor portion",
+                "rejectionNote": "Rejection note",
+                "subRequestIds": "Created sub-request IDs"
+            },
+            "actions": {
+                "viewDetails": "View details",
+                "viewAll": "View breakdowns",
+                "create": "Submit request",
+                "confirm": "Confirm",
+                "reject": "Reject",
+                "apply": "Apply breakdown",
+                "back": "Back",
+                "backToRequest": "Back to request"
+            },
+            "createDialog": {
+                "title": "Request Breakdown",
+                "message": "Specify the items that should become separate donation requests.",
+                "modes": {
+                    "quantity": "Split by quantity",
+                    "quantityHint": "Keep a quantity for yourself. The remaining quantity is sent automatically.",
+                    "custom": "Custom items",
+                    "customHint": "Add each item yourself and mark which ones are your donor portion."
+                },
+                "modeLabel": "How do you want to split this request?",
+                "instructions": {
+                    "overview": "A breakdown splits this commitment into separate donation requests. You must include at least one donor-portion item (what you will fulfill) and at least one remaining item (what stays on the original request).",
+                    "quantity": "Review the original request, then enter the quantity you will fulfill and the currency.",
+                    "custom": "Add at least two items. Check Donor portion on the item or items you will fulfill, and leave it unchecked on items that should remain. Each item needs a title, a quantity greater than zero, and a currency."
+                },
+                "originalRequestSummary": "Original request",
+                "originalQuantity": "Original quantity",
+                "donorQuantity": "Donor quantity",
+                "remainingQuantity": "Remaining quantity",
+                "donorPortionTitle": "Donor portion",
+                "remainingPortionTitle": "Remaining portion",
+                "itemsTitle": "Items",
+                "addItem": "Add item",
+                "removeItem": "Remove item",
+                "titlePlaceholder": "Item title",
+                "currencyPlaceholder": "Select currency",
+                "attachments": "Supporting files (optional)",
+                "validation": {
+                    "itemsRequired": "Add at least one breakdown item.",
+                    "minItems": "Add at least two breakdown items.",
+                    "titleRequired": "Each item must have a title.",
+                    "quantityRequired": "Each item quantity must be greater than zero.",
+                    "costInvalid": "Estimated cost cannot be negative.",
+                    "currencyRequired": "Currency is required.",
+                    "quantitySplitUnavailable": "Split by quantity is not available because the original quantity is missing or not greater than 1.",
+                    "donorQuantityRange": "Donor quantity must be greater than 0 and less than the original quantity.",
+                    "remainingQuantityRequired": "Remaining quantity must be greater than 0.",
+                    "donorPortionMix": "Include at least one donor-portion item and one remaining item."
+                }
+            },
+            "confirmDialog": {
+                "title": "Confirm Breakdown",
+                "message": "Confirm this breakdown request so it can be applied by an administrator."
+            },
+            "rejectDialog": {
+                "title": "Reject Breakdown",
+                "message": "Reject this breakdown request. A rejection note is required.",
+                "rejectionNote": "Rejection note",
+                "rejectionNotePlaceholder": "Enter the reason for rejection",
+                "validation": {
+                    "noteRequired": "A rejection note is required."
+                }
+            },
+            "applyDialog": {
+                "title": "Apply Breakdown Request",
+                "message": "This action will apply the confirmed breakdown, create the resulting sub-requests, and move the original donation request to Broken Down status.",
+                "warning": "This is an important workflow action and cannot be undone."
+            },
+            "messages": {
+                "created": "Breakdown request submitted successfully.",
+                "createdPartialAttachments": "Breakdown request was submitted, but some attachments could not be uploaded.",
+                "confirmed": "Breakdown request confirmed.",
+                "rejected": "Breakdown request rejected successfully.",
+                "applied": "Breakdown request applied successfully."
+            },
+            "errors": {
+                "invalidDonationRequestId": "Invalid donation request ID.",
+                "invalidCommitmentId": "Invalid commitment ID.",
+                "invalidBreakdownRequestId": "Invalid breakdown request ID.",
+                "notTheDonor": "Only the donor of this commitment can request a breakdown.",
+                "notOwnerFacility": "Only the owner facility can perform this action.",
+                "invalidBreakdownItems": "The breakdown items or quantities are invalid.",
+                "invalidStatus": "This action is not allowed for the current breakdown status.",
+                "invalidStatusApply": "The breakdown must be confirmed before it can be applied.",
+                "statusNoLongerReviewable": "This breakdown request can no longer be reviewed in its current status.",
+                "actionNotAccessible": "This action is not accessible for your account.",
+                "accessDenied": "You do not have permission to perform this action.",
+                "reviewAccessDenied": "You do not have permission to review breakdown requests.",
+                "sessionExpired": "Your session has expired. Please login again.",
+                "actionFailed": "The action could not be completed."
+            }
         },
         "validation": {
             "title": "Community Validation",

@@ -1287,6 +1287,10 @@
             "donations.browse.details.title": "تفاصيل طلب التبرع",
             "donations.commitments.title": "التزاماتي",
             "donations.commitments.details.title": "تفاصيل الالتزام",
+            "donations.commitments.submitProofDialog.title": "تقديم إثبات التنفيذ",
+            "donations.breakdown.createDialog.title": "طلب تفكيك",
+            "donations.breakdown.details.title": "تفاصيل طلب التفكيك",
+            "donations.breakdown.list.title": "طلبات التفكيك",
             "donations.adminReview.title": "مراجعة الإدارة",
             "donations.adminReview.details.title": "مراجعة طلب التبرع",
             "donations.adminClose.title": "جاهزة للإغلاق",
@@ -3710,7 +3714,8 @@
             "actions": {
                 "viewDetails": "عرض التفاصيل",
                 "cancelCommitment": "إلغاء الالتزام",
-                "submitFulfillmentProof": "تقديم إثبات التنفيذ"
+                "submitFulfillmentProof": "تقديم إثبات التنفيذ",
+                "requestBreakdown": "طلب تفكيك"
             },
             "fulfilledBy": {
                 "donor": "المتبرع",
@@ -3818,9 +3823,20 @@
                 "cancelReason": "سبب الإلغاء",
                 "completedAt": "تاريخ الإكمال",
                 "entityId": "رقم المنشأة",
+                "requestTitle": "العنوان",
+                "requestQuantity": "الكمية",
+                "requestEstimatedCost": "التكلفة التقديرية",
+                "requestNeedsInstallation": "يحتاج إلى تركيب",
+                "requestLocation": "الموقع",
+                "requestAddress": "العنوان التفصيلي",
+                "requestPublishedAt": "تاريخ النشر",
+                "requestCreatedAt": "تاريخ الإنشاء",
+                "requestDescription": "الوصف",
+                "requestSummaryUnavailable": "ملخص الطلب غير متاح حالياً.",
                 "sections": {
                     "commitment": "معلومات الالتزام",
                     "request": "طلب التبرع المرتبط",
+                    "requestSummary": "ملخص الطلب",
                     "workflow": "سجل الحالة"
                 }
             },
@@ -4002,6 +4018,25 @@
                 "accessDenied": "ليس لديك صلاحية لإغلاق طلبات التبرع.",
                 "notOwnerFacility": "غير مسموح لك بعرض طلبات التبرع لهذه المنشأة.",
                 "sessionExpired": "انتهت جلستك. يرجى تسجيل الدخول مرة أخرى."
+            }
+        },
+        "adminBreakdownReview": {
+            "title": "مراجعة التجزئة",
+            "subtitle": "راجع طلبات التجزئة المؤكدة من المنشأة ثم طبّقها أو ارفضها.",
+            "empty": "لا توجد طلبات تجزئة بانتظار مراجعة المسؤول.",
+            "searchPlaceholder": "ابحث في طلبات التجزئة...",
+            "pagination": "عرض '{first}' إلى '{last}' من أصل '{totalRecords}'",
+            "columns": {
+                "breakdownRequestId": "معرف طلب التجزئة",
+                "commitmentId": "معرف الالتزام",
+                "facilityConfirmedAt": "تاريخ تأكيد المنشأة",
+                "adminAppliedAt": "تاريخ تطبيق المسؤول",
+                "rejectedAt": "تاريخ الرفض",
+                "status": "الحالة",
+                "actions": "الإجراءات"
+            },
+            "actions": {
+                "viewReview": "عرض المراجعة"
             }
         },
         "vendorOffers": {
@@ -4261,6 +4296,151 @@
             "confirmed": "مؤكد",
             "rejected": "مرفوض",
             "unknown": "غير معروف"
+        },
+        "breakdown": {
+            "list": {
+                "title": "طلبات التفكيك",
+                "subtitle": "راجع طلبات التنفيذ الجزئي المرتبطة بطلب التبرع هذا."
+            },
+            "details": {
+                "title": "تفاصيل طلب التفكيك",
+                "subtitle": "راجع بنود التفكيك والحالة والمرفقات الداعمة.",
+                "sections": {
+                    "summary": "الملخص",
+                    "items": "بنود التفكيك",
+                    "attachments": "المرفقات"
+                }
+            },
+            "section": {
+                "title": "طلبات التفكيك",
+                "missingRequestId": "تعذر تحميل طلبات التفكيك لأن معرّف طلب التبرع المرتبط لم يُرجع."
+            },
+            "pagination": "عرض '{first}' إلى '{last}' من أصل '{totalRecords}'",
+            "searchPlaceholder": "البحث في طلبات التفكيك",
+            "empty": "لا توجد طلبات تفكيك لهذا الطلب.",
+            "itemsEmpty": "لم تُرجع أي بنود تفكيك.",
+            "status": {
+                "pending": "بانتظار مراجعة المنشأة",
+                "confirmed": "مؤكد",
+                "applied": "مُطبَّق",
+                "rejected": "مرفوض",
+                "unknown": "غير معروف"
+            },
+            "filters": {
+                "allStatuses": "كل الحالات"
+            },
+            "columns": {
+                "id": "معرّف التفكيك",
+                "requestId": "معرّف الطلب",
+                "commitmentId": "معرّف الالتزام",
+                "itemCount": "البنود",
+                "createdAt": "تاريخ الإنشاء",
+                "createdBy": "أنشئ بواسطة",
+                "facilityConfirmedAt": "تاريخ تأكيد المنشأة",
+                "adminAppliedAt": "تاريخ تطبيق المسؤول",
+                "rejectedAt": "تاريخ الرفض",
+                "status": "الحالة",
+                "actions": "الإجراءات",
+                "title": "العنوان",
+                "description": "الوصف",
+                "quantity": "الكمية",
+                "estimatedCost": "التكلفة التقديرية",
+                "currency": "العملة",
+                "donorPortion": "حصة المتبرع",
+                "rejectionNote": "ملاحظة الرفض",
+                "subRequestIds": "معرّفات الطلبات الفرعية المنشأة"
+            },
+            "actions": {
+                "viewDetails": "عرض التفاصيل",
+                "viewAll": "عرض طلبات التفكيك",
+                "create": "إرسال الطلب",
+                "confirm": "تأكيد",
+                "reject": "رفض",
+                "apply": "تطبيق التفكيك",
+                "back": "رجوع",
+                "backToRequest": "العودة إلى الطلب"
+            },
+            "createDialog": {
+                "title": "طلب تفكيك",
+                "message": "حدد البنود التي يجب أن تصبح طلبات تبرع منفصلة.",
+                "modes": {
+                    "quantity": "تقسيم حسب الكمية",
+                    "quantityHint": "احتفظ بكمية لنفسك. تُرسل الكمية المتبقية تلقائياً.",
+                    "custom": "بنود مخصصة",
+                    "customHint": "أضف كل بند بنفسك وحدد البنود التي تمثل حصة المتبرع."
+                },
+                "modeLabel": "كيف تريد تقسيم هذا الطلب؟",
+                "instructions": {
+                    "overview": "يفكك هذا الإجراء الالتزام إلى طلبات تبرع منفصلة. يجب تضمين بند واحد على الأقل لحصة المتبرع (ما ستنفّذه) وبند واحد على الأقل للحصة المتبقية (ما يبقى على الطلب الأصلي).",
+                    "quantity": "راجع الطلب الأصلي، ثم أدخل الكمية التي ستنفّذها والعملة.",
+                    "custom": "أضف بندين على الأقل. فعّل «حصة المتبرع» على البند أو البنود التي ستنفّذها، واتركها غير مفعّلة على البنود المتبقية. يجب أن يحتوي كل بند على عنوان وكمية أكبر من صفر وعملة."
+                },
+                "originalRequestSummary": "الطلب الأصلي",
+                "originalQuantity": "الكمية الأصلية",
+                "donorQuantity": "الكمية التي يتحملها المتبرع",
+                "remainingQuantity": "الكمية المتبقية",
+                "donorPortionTitle": "حصة المتبرع",
+                "remainingPortionTitle": "الحصة المتبقية",
+                "itemsTitle": "البنود",
+                "addItem": "إضافة بند",
+                "removeItem": "حذف البند",
+                "titlePlaceholder": "عنوان البند",
+                "currencyPlaceholder": "اختر العملة",
+                "attachments": "ملفات داعمة (اختياري)",
+                "validation": {
+                    "itemsRequired": "أضف بند تفكيك واحداً على الأقل.",
+                    "minItems": "أضف بندَي تفكيك على الأقل.",
+                    "titleRequired": "يجب أن يكون لكل بند عنوان.",
+                    "quantityRequired": "يجب أن تكون كمية كل بند أكبر من صفر.",
+                    "costInvalid": "لا يمكن أن تكون التكلفة التقديرية سالبة.",
+                    "currencyRequired": "العملة مطلوبة.",
+                    "quantitySplitUnavailable": "التقسيم حسب الكمية غير متاح لأن الكمية الأصلية غير موجودة أو ليست أكبر من 1.",
+                    "donorQuantityRange": "يجب أن تكون كمية المتبرع أكبر من صفر وأقل من الكمية الأصلية.",
+                    "remainingQuantityRequired": "يجب أن تكون الكمية المتبقية أكبر من صفر.",
+                    "donorPortionMix": "يجب تضمين بند لحصة المتبرع وبند للحصة المتبقية على الأقل."
+                }
+            },
+            "confirmDialog": {
+                "title": "تأكيد التفكيك",
+                "message": "أكد طلب التفكيك هذا ليتمكن المسؤول من تطبيقه."
+            },
+            "rejectDialog": {
+                "title": "رفض التفكيك",
+                "message": "ارفض طلب التفكيك هذا. ملاحظة الرفض مطلوبة.",
+                "rejectionNote": "ملاحظة الرفض",
+                "rejectionNotePlaceholder": "أدخل سبب الرفض",
+                "validation": {
+                    "noteRequired": "ملاحظة الرفض مطلوبة."
+                }
+            },
+            "applyDialog": {
+                "title": "تطبيق طلب التجزئة",
+                "message": "سيؤدي هذا الإجراء إلى تطبيق التجزئة المؤكدة وإنشاء الطلبات الفرعية الناتجة ونقل طلب التبرع الأصلي إلى حالة مفكك.",
+                "warning": "هذا إجراء مهم في سير العمل ولا يمكن التراجع عنه."
+            },
+            "messages": {
+                "created": "تم إرسال طلب التفكيك بنجاح.",
+                "createdPartialAttachments": "تم إرسال طلب التفكيك، لكن تعذر رفع بعض المرفقات.",
+                "confirmed": "تم تأكيد طلب التفكيك.",
+                "rejected": "تم رفض طلب التجزئة بنجاح.",
+                "applied": "تم تطبيق طلب التجزئة بنجاح."
+            },
+            "errors": {
+                "invalidDonationRequestId": "معرّف طلب التبرع غير صالح.",
+                "invalidCommitmentId": "معرّف الالتزام غير صالح.",
+                "invalidBreakdownRequestId": "معرّف طلب التفكيك غير صالح.",
+                "notTheDonor": "يمكن لمتبرع هذا الالتزام فقط طلب التفكيك.",
+                "notOwnerFacility": "يمكن للمنشأة المالكة فقط تنفيذ هذا الإجراء.",
+                "invalidBreakdownItems": "بنود التفكيك أو الكميات غير صالحة.",
+                "invalidStatus": "هذا الإجراء غير مسموح به لحالة التفكيك الحالية.",
+                "invalidStatusApply": "يجب تأكيد طلب التفكيك قبل تطبيقه.",
+                "statusNoLongerReviewable": "لم يعد بالإمكان مراجعة طلب التجزئة في حالته الحالية.",
+                "actionNotAccessible": "هذا الإجراء غير متاح لحسابك.",
+                "accessDenied": "ليس لديك صلاحية لتنفيذ هذا الإجراء.",
+                "reviewAccessDenied": "ليس لديك صلاحية لمراجعة طلبات التجزئة.",
+                "sessionExpired": "انتهت جلستك. يرجى تسجيل الدخول مرة أخرى.",
+                "actionFailed": "تعذر إكمال الإجراء."
+            }
         },
         "validation": {
             "title": "التحقق المجتمعي",

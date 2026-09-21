@@ -92,7 +92,7 @@
   margin-bottom: 1.25rem;
 }
 
-.register-section__head .material-symbols-outlined {
+.register-section__head .pi {
   color: var(--dh-primary);
   font-size: 1.5rem;
 }
@@ -237,7 +237,7 @@
   color: var(--dh-on-surface-variant);
 }
 
-.register-info .material-symbols-outlined {
+.register-info .pi {
   color: var(--dh-primary);
   flex-shrink: 0;
 }
@@ -323,7 +323,7 @@
   padding: 2.5rem 1.5rem;
 }
 
-.register-success .material-symbols-outlined {
+.register-success .pi {
   font-size: 4rem;
   color: var(--dh-primary);
   margin-bottom: 1rem;
@@ -399,6 +399,7 @@
   justify-content: center;
   border-radius: 0.5rem;
   margin-bottom: 1rem;
+  font-size: 1.5rem;
 }
 
 .selection-card__icon--primary {
@@ -491,7 +492,7 @@
   line-height: 1.5;
 }
 
-.register-error-banner .material-symbols-outlined {
+.register-error-banner .pi {
   flex-shrink: 0;
   font-size: 1.25rem;
 }

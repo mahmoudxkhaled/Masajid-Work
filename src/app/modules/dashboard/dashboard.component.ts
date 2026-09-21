@@ -145,6 +145,8 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
             'DNVAL': '🛡️',
             'DNREF': '📋',
             'ADM_REV': '✅',
+            'ADM_CLOSE': '🔒',
+            'ADM_BRK': '🔀',
             'ADM_OVER': '⏰',
             'ADM_FAC': '🕌',
             'ADM_ACC': '👥',

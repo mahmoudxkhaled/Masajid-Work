@@ -22,11 +22,12 @@
         [class.validation__node--in]="revealed"
         [style.animation-delay.ms]="nodeStaggerMs(i)"
       >
-        <span
-          class="material-symbols-outlined validation__icon"
+        <i
+          class="validation__icon"
+          [ngClass]="node.icon"
           [class.validation__icon--accent]="node.variant === 'accent'"
           aria-hidden="true"
-        >{{ node.icon }}</span>
+        ></i>
         <p class="validation__label">{{ node.labelKey | translate }}</p>
       </div>
     </div>

@@ -3,7 +3,6 @@ import { NavigationEnd, Router } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
 import { LanguageDirService } from 'src/app/core/services/language-dir.service';
 import { LocalStorageService } from 'src/app/core/services/local-storage.service';
-import { TranslationService } from 'src/app/core/services/translation.service';
 import { PUBLIC_LANDING_ROUTE_PATH } from '../data/public-landing.data';
 import { PublicThemePreferenceService } from '../services/public-theme-preference.service';
 
@@ -23,12 +22,10 @@ export class PublicLayoutComponent implements OnInit, OnDestroy, AfterViewInit {
   private langSub?: Subscription;
   private themeSub?: Subscription;
   private routerSub?: Subscription;
-  private bootstrapPreloaderDone = false;
 
   constructor(
     private readonly languageDirService: LanguageDirService,
     private readonly localStorageService: LocalStorageService,
-    private readonly translationService: TranslationService,
     private readonly theme: PublicThemePreferenceService,
     private readonly router: Router,
   ) { }
@@ -40,7 +37,7 @@ export class PublicLayoutComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     const code = this.languageDirService.getPublicLanguageCode();
-    this.languageDirService.setGuestLanguageCode(code);
+    this.syncHtmlAndLayout(code);
 
     this.langSub = this.languageDirService.userLanguageCode$.subscribe((lang) => {
       this.syncHtmlAndLayout(lang);
@@ -143,22 +140,6 @@ export class PublicLayoutComponent implements OnInit, OnDestroy, AfterViewInit {
     this.dir = this.lang === 'ar' ? 'rtl' : 'ltr';
     document.documentElement.lang = this.lang;
     document.documentElement.setAttribute('dir', this.dir);
-    this.translationService.useLanguage(this.lang).subscribe({
-      // bootstrapPreloaderDone: hide preloader only on first load, not on lang switch (spinner handled in header).
-      // Revert: always call hideBootstrapPreloader() here; remove bootstrapPreloaderDone field + checks.
-      next: () => {
-        if (!this.bootstrapPreloaderDone) {
-          this.bootstrapPreloaderDone = true;
-          this.translationService.hideBootstrapPreloaderWhenStable();
-        }
-      },
-      error: () => {
-        if (!this.bootstrapPreloaderDone) {
-          this.bootstrapPreloaderDone = true;
-          this.translationService.hideBootstrapPreloaderWhenStable();
-        }
-      },
-    });
   }
 
   private applyThemeClass(isDark: boolean): void {

@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, of, Subscription } from 'rxjs';
+import { catchError, finalize, shareReplay, tap } from 'rxjs/operators';
 import { LocalStorageService } from './local-storage.service';
+import { TranslationService } from './translation.service';
 
 @Injectable({
     providedIn: 'root',
@@ -13,7 +15,14 @@ export class LanguageDirService {
     private languageSubject!: BehaviorSubject<string>;
     userLanguageCode$!: Observable<string>;
 
-    constructor(private localStorage: LocalStorageService) {
+    private languageApplyInFlight: { code: string; stream$: Observable<unknown> } | null = null;
+    private languageApplySeq = 0;
+    private languageApplySubscription?: Subscription;
+
+    constructor(
+        private localStorage: LocalStorageService,
+        private translationService: TranslationService,
+    ) {
         this.languageSubject = new BehaviorSubject<string>(this.resolveBootstrapLanguageCode());
         this.rtlSubject = new BehaviorSubject<boolean>(this.getRtlFromStorage());
         this.userLanguageCode$ = this.languageSubject.asObservable();
@@ -41,24 +50,55 @@ export class LanguageDirService {
         return this.localStorage.getPreferredLanguageCode();
     }
 
-    setUserLanguageCode(lang: string) {
+    setUserLanguageCode(lang: string): Observable<unknown> {
         const code = lang === 'ar' ? 'ar' : 'en';
         this.localStorage.setPreferredLanguageCode(code);
-        this.languageSubject.next(code);
-        this.setRtl(code === 'ar');
-        this.syncDocumentLanguage(code);
+        return this.applyLanguageAfterLoad(code);
     }
 
     getPublicLanguageCode(): string {
         return this.localStorage.getGuestLanguageCode();
     }
 
-    setGuestLanguageCode(lang: string) {
+    setGuestLanguageCode(lang: string): Observable<unknown> {
         const code = lang === 'ar' ? 'ar' : 'en';
         this.localStorage.setGuestLanguageCode(code);
+        return this.applyLanguageAfterLoad(code);
+    }
+
+    private applyLanguageAfterLoad(code: 'en' | 'ar'): Observable<unknown> {
+        if (this.languageApplyInFlight?.code === code) {
+            return this.languageApplyInFlight.stream$;
+        }
+
+        const requestId = ++this.languageApplySeq;
+        this.languageApplySubscription?.unsubscribe();
+
+        const stream$ = this.translationService.useLanguage(code).pipe(
+            catchError(() => of(null)),
+            tap(() => {
+                if (requestId === this.languageApplySeq) {
+                    this.announceLanguage(code);
+                }
+            }),
+            finalize(() => {
+                if (this.languageApplyInFlight?.code === code) {
+                    this.languageApplyInFlight = null;
+                }
+            }),
+            shareReplay({ bufferSize: 1, refCount: false }),
+        );
+
+        this.languageApplyInFlight = { code, stream$ };
+        this.languageApplySubscription = stream$.subscribe();
+        return stream$;
+    }
+
+    private announceLanguage(code: 'en' | 'ar'): void {
         this.languageSubject.next(code);
         this.setRtl(code === 'ar');
         this.syncDocumentLanguage(code);
+        this.translationService.hideBootstrapPreloaderWhenStable();
     }
 
     private syncDocumentLanguage(code: 'en' | 'ar'): void {

@@ -4,6 +4,7 @@ import { MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { LanguageDirService } from 'src/app/core/services/language-dir.service';
 import { TranslationService } from 'src/app/core/services/translation.service';
+import { canRequestBreakdown } from '../../../models/donation-breakdown-request.model';
 import { DonationCommitmentBackend, DonationCommitmentDetails } from '../../../models/donation-commitment.model';
 import {
   canCancelCommitment,
@@ -17,7 +18,12 @@ import {
   DonationFulfillmentListItem,
 } from '../../../models/donation-fulfillment.model';
 import { getFulfillmentStatusLabelKey } from '../../../models/donation-fulfillment-status.model';
-import { DonationRequestWorkflowItem } from '../../../models/donation-request.model';
+import {
+  DonationRequestDetails,
+  DonationRequestDetailsBackend,
+  DonationRequestWorkflowItem,
+} from '../../../models/donation-request.model';
+import { getDonationRequestStatusLabelKey } from '../../../models/donation-request-status.model';
 import { getFulfilledByLabelKey } from '../../../models/fulfilled-by.model';
 import { FulfillmentMode } from '../../../models/fulfillment-mode.model';
 import {
@@ -58,6 +64,9 @@ export class DonorCommitmentDetailsComponent implements OnInit, OnDestroy {
   selectedOffer: VendorOfferListItem | null = null;
   selectedFulfillmentId = 0;
   requestStatusId: number | null = null;
+  requestDetails: DonationRequestDetails | null = null;
+  requestStatusLabel = '';
+  requestStatusSeverity: 'success' | 'info' | 'warning' | 'danger' | 'secondary' | 'contrast' = 'info';
 
   fulfillmentModeLabel = '';
   charityLabel = '';
@@ -66,6 +75,7 @@ export class DonorCommitmentDetailsComponent implements OnInit, OnDestroy {
   statusSeverity: CommitmentStatusSeverity = 'secondary';
 
   private rawDetails: DonationCommitmentBackend | null = null;
+  private rawRequestDetails: DonationRequestDetailsBackend | null = null;
   private rawWorkflow: Record<string, unknown>[] = [];
   private rawVendorOffers: VendorOfferBackend[] = [];
   private rawFulfillments: DonationFulfillmentBackend[] = [];
@@ -147,6 +157,13 @@ export class DonorCommitmentDetailsComponent implements OnInit, OnDestroy {
     return canSubmitFulfillmentProof(this.details!.statusId, this.requestStatusId);
   }
 
+  get canRequestBreakdown(): boolean {
+    if (!this.actionButtonsReady) {
+      return false;
+    }
+    return canRequestBreakdown(this.details!.statusId, this.requestStatusId);
+  }
+
   get showOffersCountBadge(): boolean {
     return !this.offersLoading && this.vendorOffers.length > 0;
   }
@@ -182,6 +199,13 @@ export class DonorCommitmentDetailsComponent implements OnInit, OnDestroy {
       return;
     }
     this.router.navigate(['/donations/commitments', this.commitmentId, 'submit-proof']);
+  }
+
+  goToRequestBreakdown(): void {
+    if (!this.canRequestBreakdown || !this.commitmentId) {
+      return;
+    }
+    this.router.navigate(['/donations/commitments', this.commitmentId, 'request-breakdown']);
   }
 
   openFulfillmentDetailsDialog(row: DonationFulfillmentListItem): void {
@@ -253,6 +277,32 @@ export class DonorCommitmentDetailsComponent implements OnInit, OnDestroy {
     return value.length > 80 ? `${value.slice(0, 80)}…` : value;
   }
 
+  formatRequestQuantity(): string {
+    if (!this.requestDetails) {
+      return '-';
+    }
+    const quantity = this.requestDetails.quantity;
+    const unit = this.requestDetails.unit || '';
+    if (!quantity && !unit) {
+      return '-';
+    }
+    return `${quantity || ''} ${unit}`.trim();
+  }
+
+  formatRequestEstimatedCost(): string {
+    if (!this.requestDetails?.estimatedCost) {
+      return '-';
+    }
+    return `${this.requestDetails.estimatedCost} ${this.requestDetails.currencyCode || ''}`.trim();
+  }
+
+  formatRequestLocation(): string {
+    if (!this.requestDetails) {
+      return '-';
+    }
+    return [this.requestDetails.city, this.requestDetails.countryCode].filter(Boolean).join(' / ') || '-';
+  }
+
   // #region Load data
 
   private loadDetails(): void {
@@ -287,6 +337,9 @@ export class DonorCommitmentDetailsComponent implements OnInit, OnDestroy {
           this.rawFulfillments = [];
           this.fulfillments = [];
           this.requestStatusId = null;
+          this.rawRequestDetails = null;
+          this.requestDetails = null;
+          this.requestStatusLabel = '';
           this.offersMissingRequestId = true;
           this.fulfillmentsMissingRequestId = true;
         }
@@ -386,6 +439,8 @@ export class DonorCommitmentDetailsComponent implements OnInit, OnDestroy {
     const donationRequestId = Number(this.details?.donationRequestId || 0);
     if (!donationRequestId) {
       this.requestStatusId = null;
+      this.rawRequestDetails = null;
+      this.refreshRequestSummary();
       this.requestStatusLoading = false;
       return;
     }
@@ -397,17 +452,23 @@ export class DonorCommitmentDetailsComponent implements OnInit, OnDestroy {
         if (!response?.success) {
           this.handleBusinessError('loadRequestStatus', response);
           this.requestStatusId = null;
+          this.rawRequestDetails = null;
+          this.refreshRequestSummary();
           this.requestStatusLoading = false;
           return;
         }
 
-        const raw = this.donationRequestsService.extractDonationRequestDetails(response.message);
-        const mapped = this.donationRequestsService.mapDonationRequestDetails(raw);
-        this.requestStatusId = mapped?.statusId ?? null;
+        this.rawRequestDetails = this.donationRequestsService.extractDonationRequestDetails(
+          response.message as Record<string, unknown>,
+        );
+        this.refreshRequestSummary();
+        this.requestStatusId = this.requestDetails?.statusId ?? null;
         this.requestStatusLoading = false;
       },
       error: () => {
         this.requestStatusId = null;
+        this.rawRequestDetails = null;
+        this.refreshRequestSummary();
         this.requestStatusLoading = false;
       },
     });
@@ -465,6 +526,7 @@ export class DonorCommitmentDetailsComponent implements OnInit, OnDestroy {
     this.fulfillments = this.rawFulfillments.map((item) =>
       this.donationFulfillmentService.mapFulfillmentListItem(item),
     );
+    this.refreshRequestSummary();
     if (!this.details) {
       return;
     }
@@ -474,6 +536,48 @@ export class DonorCommitmentDetailsComponent implements OnInit, OnDestroy {
     this.fulfillmentModeLabel = this.getFulfillmentModeLabel(this.details.fulfillmentMode);
     this.charityLabel = this.details.charityEntityId ? `#${this.details.charityEntityId}` : '-';
     this.charityRepLabel = this.details.charityRepUserId ? `#${this.details.charityRepUserId}` : '-';
+  }
+
+  private refreshRequestSummary(): void {
+    this.requestDetails = this.donationRequestsService.mapDonationRequestDetails(this.rawRequestDetails);
+    if (!this.requestDetails) {
+      this.requestStatusLabel = '';
+      this.requestStatusSeverity = 'info';
+      return;
+    }
+
+    this.requestStatusLabel = this.translate.getInstant(
+      getDonationRequestStatusLabelKey(this.requestDetails.statusId),
+    );
+    this.requestStatusSeverity = this.getRequestStatusSeverity(this.requestDetails.statusCode);
+  }
+
+  private getRequestStatusSeverity(
+    code: string,
+  ): 'success' | 'info' | 'warning' | 'danger' | 'secondary' | 'contrast' {
+    switch (String(code || '').toUpperCase()) {
+      case 'DRAFT':
+        return 'secondary';
+      case 'PENDING_REVIEW':
+        return 'warning';
+      case 'PUBLISHED':
+      case 'ACCEPTED':
+      case 'FACILITY_CONFIRMED':
+      case 'VALIDATED':
+      case 'CLOSED':
+        return 'success';
+      case 'REJECTED':
+      case 'CANCELLED':
+        return 'danger';
+      case 'BROKEN_DOWN':
+        return 'warning';
+      case 'FULFILLMENT_SUBMITTED':
+      case 'IN_FULFILLMENT':
+      case 'OPEN_FOR_VALIDATION':
+        return 'info';
+      default:
+        return 'info';
+    }
   }
 
   private getFulfillmentModeLabel(mode: number): string {

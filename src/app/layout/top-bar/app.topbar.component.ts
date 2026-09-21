@@ -384,21 +384,25 @@ export class AppTopbarComponent implements OnInit, OnDestroy {
             return;
         }
         this.langLoading = true;
-        // Language-switch preloader (500ms). Revert: delete next line; guard was only: !event.value || this.langLoading
-        this.translate.showLanguageSwitchPreloader();
+        this.translate.showLanguageSwitchPreloader(4000);
         this.userLanguageCode = event.value;
         this.userLanguageId = event.value;
 
         this.langListboxPanel?.nativeElement?.classList?.add('ng-hidden-temp');
 
-        this.localStorage.setPreferredLanguageCode(event.value === 'ar' ? 'ar' : 'en');
-        this.rtlService.setUserLanguageCode(event.value);
-        this.rtlService.setRtl(event.value === 'ar');
-        this.translate.useLanguage(event.value);
+        this.rtlService.setUserLanguageCode(event.value).subscribe({
+            next: () => {
+                this.langLoading = false;
+                this.ref.detectChanges();
+            },
+            error: () => {
+                this.langLoading = false;
+                this.ref.detectChanges();
+            },
+        });
 
         this.loadUserDetails();
         this.saveAccountPreferences(this.userLanguageCode, this.userTheme || 'light');
-        this.langLoading = false;
         this.ref.detectChanges();
     }
 

@@ -141,6 +141,8 @@ export class AppMenuComponent implements OnInit, OnDestroy {
             DNR_PROFILE: 'fa fa-user',
             DNR_NOT: 'fa fa-bell',
             ADM_REV: 'fa fa-check-circle',
+            ADM_CLOSE: 'fa fa-lock',
+            ADM_BRK: 'fa fa-sitemap',
             ADM_OVER: 'fa fa-clock',
             ADM_FAC: 'fa fa-building',
             ADM_ACC: 'fa fa-users-cog',

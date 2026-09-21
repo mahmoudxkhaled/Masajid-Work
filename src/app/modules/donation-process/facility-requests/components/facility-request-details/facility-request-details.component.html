@@ -19,6 +19,9 @@
         [label]="'donations.facility.requests.actions.viewFulfillments' | translate" icon="pi pi-verified"
         severity="success" [pTooltip]="'donations.facility.fulfillments.requestSubtitle' | translate"
         tooltipPosition="top" (onClick)="goToRequestFulfillments()"></p-button>
+      <p-button *ngIf="hasBreakdownRequests"
+        [label]="'donations.breakdown.actions.viewAll' | translate" icon="pi pi-sitemap" [outlined]="true"
+        (onClick)="goToRequestBreakdowns()"></p-button>
       <p-button [label]="'donations.facility.requests.details.back' | translate" icon="pi pi-arrow-left"
         severity="secondary" [outlined]="true" (onClick)="backToList()"></p-button>
     </div>
@@ -150,6 +153,9 @@
             [readonly]="true"></app-donation-attachment-list>
         </div>
       </div>
+
+      <app-breakdown-requests-section [requestId]="requestId" mode="facility" [showViewAll]="true"
+        [hideWhenEmpty]="true" (hasItemsChange)="onBreakdownHasItemsChange($event)"></app-breakdown-requests-section>
 
       <div class="block-card details-card p-0">
         <div class="details-section-header">

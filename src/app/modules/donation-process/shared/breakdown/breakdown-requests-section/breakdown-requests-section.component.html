@@ -1,0 +1,66 @@
+<div *ngIf="showSection" class="block-card details-card p-0 mb-3">
+  <div class="details-section-header" [class.details-section-header--with-action]="showViewAll">
+    <div class="flex align-items-center gap-3 flex-1 min-w-0">
+      <span class="details-section-icon"><i class="pi pi-sitemap"></i></span>
+      <h3 class="details-section-title">{{ 'donations.breakdown.section.title' | translate }}</h3>
+    </div>
+    <p-button *ngIf="showViewAll && requestId" [label]="'donations.breakdown.actions.viewAll' | translate"
+      icon="pi pi-list" size="small" [outlined]="true" (onClick)="viewAll()"></p-button>
+  </div>
+  <div class="p-3 pt-2">
+    <p *ngIf="missingRequestId" class="mb-0 text-500">
+      {{ 'donations.breakdown.section.missingRequestId' | translate }}
+    </p>
+
+    <ng-container *ngIf="!missingRequestId">
+      <ng-container *ngIf="loading; else listLoaded">
+        <div class="flex flex-column gap-2">
+          <p-skeleton height="2.5rem" width="100%" borderRadius="6px"></p-skeleton>
+          <p-skeleton height="2.5rem" width="100%" borderRadius="6px"></p-skeleton>
+          <p-skeleton height="2.5rem" width="100%" borderRadius="6px"></p-skeleton>
+        </div>
+      </ng-container>
+
+      <ng-template #listLoaded>
+        <p *ngIf="items.length === 0" class="mb-0 text-500">
+          {{ 'donations.breakdown.empty' | translate }}
+        </p>
+
+        <p-table *ngIf="items.length > 0" [value]="items" responsiveLayout="scroll"
+          styleClass="p-datatable-sm breakdown-table">
+          <ng-template pTemplate="header">
+            <tr>
+              <th style="width: 14%">{{ 'donations.breakdown.columns.id' | translate }}</th>
+              <th style="width: 14%">{{ 'donations.breakdown.columns.commitmentId' | translate }}</th>
+              <th class="text-center" style="width: 18%">{{ 'donations.breakdown.columns.facilityConfirmedAt' | translate }}
+              </th>
+              <th class="text-center" style="width: 18%">{{ 'donations.breakdown.columns.adminAppliedAt' | translate }}
+              </th>
+              <th class="text-center" style="width: 16%">{{ 'donations.breakdown.columns.rejectedAt' | translate }}
+              </th>
+              <th class="text-center" style="width: 10%">{{ 'donations.breakdown.columns.status' | translate }}</th>
+              <th class="text-center" style="width: 10%">{{ 'donations.breakdown.columns.actions' | translate }}</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-row>
+            <tr class="breakdown-row-clickable" style="cursor: pointer" (click)="viewDetails(row)">
+              <td>{{ row.id || '-' }}</td>
+              <td>{{ row.donationCommitmentId || '-' }}</td>
+              <td class="text-center" dir="ltr">{{ row.facilityConfirmedAt ? (row.facilityConfirmedAt | date:'yyyy-MM-dd') : '-' }}</td>
+              <td class="text-center" dir="ltr">{{ row.adminAppliedAt ? (row.adminAppliedAt | date:'yyyy-MM-dd') : '-' }}</td>
+              <td class="text-center" dir="ltr">{{ row.rejectedAt ? (row.rejectedAt | date:'yyyy-MM-dd') : '-' }}</td>
+              <td class="text-center">
+                <app-donation-status-badge [label]="getStatusLabel(row)"
+                  [severity]="getStatusSeverity(row)"></app-donation-status-badge>
+              </td>
+              <td class="text-center" (click)="$event.stopPropagation()">
+                <p-button [label]="'donations.breakdown.actions.viewDetails' | translate" icon="pi pi-eye"
+                  [outlined]="true" severity="secondary" size="small" (onClick)="viewDetails(row)"></p-button>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </ng-template>
+    </ng-container>
+  </div>
+</div>

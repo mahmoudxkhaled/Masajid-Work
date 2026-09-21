@@ -24,9 +24,7 @@
         [attr.aria-pressed]="isDarkTheme"
         [attr.aria-label]="(isDarkTheme ? 'public.landing.header.themeToLight' : 'public.landing.header.themeToDark') | translate"
       >
-        <span class="material-symbols-outlined" aria-hidden="true">{{
-          isDarkTheme ? 'light_mode' : 'dark_mode'
-        }}</span>
+        <i class="pi" [ngClass]="isDarkTheme ? 'pi-sun' : 'pi-moon'" aria-hidden="true"></i>
       </button>
       <div #langMenu class="header__lang-menu" [class.header__lang-menu--open]="langMenuOpen">
         <button
@@ -37,8 +35,8 @@
           aria-haspopup="menu"
           (click)="toggleLangMenu($event)"
         >
-          <span class="material-symbols-outlined" aria-hidden="true">language</span>
-          <span class="material-symbols-outlined header__lang-chevron" aria-hidden="true">expand_more</span>
+          <i class="pi pi-globe" aria-hidden="true"></i>
+          <i class="pi pi-chevron-down header__lang-chevron" aria-hidden="true"></i>
         </button>
         <div class="header__dropdown" role="menu">
           <button
@@ -65,7 +63,7 @@
       <div class="header__menu">
         <a class="header__register" [routerLink]="registerSelectionPath">
           {{ 'public.landing.header.register' | translate }}
-          <span class="material-symbols-outlined" aria-hidden="true">expand_more</span>
+          <i class="pi pi-chevron-down" aria-hidden="true"></i>
         </a>
         <div class="header__dropdown" role="menu">
           <a [routerLink]="registerSelectionPath" role="menuitem">{{ 'public.landing.header.allRegistration' | translate }}</a>

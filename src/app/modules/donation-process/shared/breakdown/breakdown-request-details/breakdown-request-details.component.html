@@ -1,0 +1,125 @@
+<p-toast />
+
+<div class="block-section card">
+  <div class="flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
+    <div class="flex flex-column gap-2 flex-1 min-w-0">
+      <h2 class="block-title mb-0">{{ 'donations.breakdown.details.title' | translate }}</h2>
+      <ng-container *ngIf="loading; else pageSubtitle">
+        <p-skeleton height="1rem" width="16rem"></p-skeleton>
+      </ng-container>
+      <ng-template #pageSubtitle>
+        <p class="mb-0 text-500">{{ 'donations.breakdown.details.subtitle' | translate }}</p>
+      </ng-template>
+    </div>
+    <div class="flex flex-wrap gap-2 flex-shrink-0">
+      <p-button *ngIf="canConfirm" [label]="'donations.breakdown.actions.confirm' | translate" icon="pi pi-check"
+        severity="success" (onClick)="openConfirmDialog()"></p-button>
+      <p-button *ngIf="canReject" [label]="'donations.breakdown.actions.reject' | translate" icon="pi pi-times"
+        severity="danger" [outlined]="true" (onClick)="openRejectDialog()"></p-button>
+      <p-button *ngIf="canApply" [label]="'donations.breakdown.actions.apply' | translate" icon="pi pi-check"
+        severity="danger" (onClick)="openApplyDialog()"></p-button>
+      <p-button [label]="'donations.breakdown.actions.back' | translate" icon="pi pi-arrow-left" severity="secondary"
+        [outlined]="true" (onClick)="back()"></p-button>
+    </div>
+  </div>
+
+  <div class="block-card details-card p-0 mb-3">
+    <ng-container *ngIf="loading; else summaryLoaded">
+      <div class="details-section-header details-section-header--with-action">
+        <div class="flex align-items-center gap-3 flex-1 min-w-0">
+          <p-skeleton shape="circle" size="2.25rem"></p-skeleton>
+          <p-skeleton height="1.25rem" width="12rem"></p-skeleton>
+        </div>
+        <p-skeleton height="1.5rem" width="5rem" borderRadius="16px"></p-skeleton>
+      </div>
+      <div class="grid p-3 pt-2">
+        <div class="col-12 md:col-6 lg:col-4" *ngFor="let _ of [1, 2, 3]">
+          <div class="info-item">
+            <p-skeleton height="0.85rem" width="45%" class="mb-2"></p-skeleton>
+            <p-skeleton height="1.25rem" width="70%"></p-skeleton>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-template #summaryLoaded>
+      <div class="details-section-header details-section-header--with-action">
+        <div class="flex align-items-center gap-3 flex-1 min-w-0">
+          <span class="details-section-icon"><i class="pi pi-info-circle"></i></span>
+          <h3 class="details-section-title">{{ 'donations.breakdown.details.sections.summary' | translate }}</h3>
+        </div>
+        <app-donation-status-badge *ngIf="details" [label]="statusLabel"
+          [severity]="statusSeverity"></app-donation-status-badge>
+      </div>
+      <div class="p-3 pt-2" *ngIf="details">
+        <div class="grid">
+          <div class="col-12 md:col-6 lg:col-4">
+            <div class="info-item">
+              <span class="info-label">{{ 'donations.breakdown.columns.id' | translate }}</span>
+              <span class="info-value">{{ details.id || '-' }}</span>
+            </div>
+          </div>
+          <div class="col-12 md:col-6 lg:col-4">
+            <div class="info-item">
+              <span class="info-label">{{ 'donations.breakdown.columns.requestId' | translate }}</span>
+              <span class="info-value">{{ details.donationRequestId || '-' }}</span>
+            </div>
+          </div>
+          <div class="col-12 md:col-6 lg:col-4">
+            <div class="info-item">
+              <span class="info-label">{{ 'donations.breakdown.columns.commitmentId' | translate }}</span>
+              <span class="info-value">{{ details.donationCommitmentId || '-' }}</span>
+            </div>
+          </div>
+          <div class="col-12" *ngIf="appliedSubRequestIds.length">
+            <div class="info-item">
+              <span class="info-label">{{ 'donations.breakdown.columns.subRequestIds' | translate }}</span>
+              <span class="info-value">{{ appliedSubRequestIds.join(', ') }}</span>
+            </div>
+          </div>
+          <div class="col-12" *ngIf="details.rejectionNote">
+            <div class="info-item">
+              <span class="info-label">{{ 'donations.breakdown.columns.rejectionNote' | translate }}</span>
+              <span class="info-value line-height-3">{{ details.rejectionNote }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </div>
+
+  <div class="block-card details-card p-0 mb-3">
+    <div class="details-section-header">
+      <span class="details-section-icon"><i class="pi pi-list"></i></span>
+      <h3 class="details-section-title">{{ 'donations.breakdown.details.sections.items' | translate }}</h3>
+    </div>
+    <div class="p-3 pt-2">
+      <app-breakdown-items-list [items]="details?.items || []" [loading]="loading"></app-breakdown-items-list>
+    </div>
+  </div>
+
+  <div class="block-card details-card p-0">
+    <div class="details-section-header">
+      <span class="details-section-icon"><i class="pi pi-paperclip"></i></span>
+      <h3 class="details-section-title">{{ 'donations.breakdown.details.sections.attachments' | translate }}</h3>
+    </div>
+    <div class="p-3 pt-2">
+      <ng-container *ngIf="loading; else attachmentsLoaded">
+        <p-skeleton height="2.5rem" width="100%" borderRadius="6px"></p-skeleton>
+      </ng-container>
+      <ng-template #attachmentsLoaded>
+        <app-donation-attachment-list [ownerType]="breakdownAttachmentOwnerType"
+          [ownerId]="breakdownRequestId" [readonly]="true"></app-donation-attachment-list>
+      </ng-template>
+    </div>
+  </div>
+</div>
+
+<app-confirm-breakdown-dialog [(visible)]="confirmDialogVisible" [donationBreakdownRequestId]="breakdownRequestId"
+  (confirmed)="onConfirmed()"></app-confirm-breakdown-dialog>
+
+<app-reject-breakdown-dialog [(visible)]="rejectDialogVisible" [donationBreakdownRequestId]="breakdownRequestId"
+  (rejected)="onRejected()" (refreshNeeded)="onStatusStale()"></app-reject-breakdown-dialog>
+
+<app-apply-breakdown-dialog [(visible)]="applyDialogVisible" [donationBreakdownRequestId]="breakdownRequestId"
+  (applied)="onApplied($event)" (refreshNeeded)="onStatusStale()"></app-apply-breakdown-dialog>

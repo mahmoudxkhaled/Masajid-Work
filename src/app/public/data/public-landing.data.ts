@@ -18,10 +18,10 @@ export const LOGO_SRC = img('Logo.png');
 export const LOGO_SRC_DARK = img('Black_Logo.png');
 
 export const TRUST_BAR_ITEMS: TrustBarItem[] = [
-  { icon: 'no_accounts', labelKey: 'public.landing.trustBar.noCash' },
-  { icon: 'id_card', labelKey: 'public.landing.trustBar.verifiedReps' },
-  { icon: 'photo_camera', labelKey: 'public.landing.trustBar.proof' },
-  { icon: 'groups', labelKey: 'public.landing.trustBar.community' },
+  { icon: 'fa-solid fa-user-slash', labelKey: 'public.landing.trustBar.noCash' },
+  { icon: 'pi pi-id-card', labelKey: 'public.landing.trustBar.verifiedReps' },
+  { icon: 'pi pi-camera', labelKey: 'public.landing.trustBar.proof' },
+  { icon: 'pi pi-users', labelKey: 'public.landing.trustBar.community' },
 ];
 
 export const STATS: StatItem[] = [
@@ -33,22 +33,22 @@ export const STATS: StatItem[] = [
 
 export const FEATURE_CARDS: FeatureCard[] = [
   {
-    icon: 'fact_check',
+    icon: 'pi pi-check-square',
     titleKey: 'public.landing.features.verifiedTitle',
     descriptionKey: 'public.landing.features.verifiedDesc',
   },
   {
-    icon: 'inventory_2',
+    icon: 'pi pi-box',
     titleKey: 'public.landing.features.physicalTitle',
     descriptionKey: 'public.landing.features.physicalDesc',
   },
   {
-    icon: 'task_alt',
+    icon: 'pi pi-check-circle',
     titleKey: 'public.landing.features.proofTitle',
     descriptionKey: 'public.landing.features.proofDesc',
   },
   {
-    icon: 'visibility',
+    icon: 'pi pi-eye',
     titleKey: 'public.landing.features.validationTitle',
     descriptionKey: 'public.landing.features.validationDesc',
   },
@@ -95,28 +95,28 @@ export const PROCESS_STEPS: ProcessStep[] = [
 
 export const USER_ROLES: UserRole[] = [
   {
-    icon: 'mosque',
+    icon: 'fa-solid fa-mosque',
     titleKey: 'public.landing.roles.facilityTitle',
     descriptionKey: 'public.landing.roles.facilityDesc',
     actionLabelKey: 'public.landing.roles.facilityBtn',
     registerPath: '/register/facility',
   },
   {
-    icon: 'volunteer_activism',
+    icon: 'fa-solid fa-hand-holding-heart',
     titleKey: 'public.landing.roles.donorTitle',
     descriptionKey: 'public.landing.roles.donorDesc',
     actionLabelKey: 'public.landing.roles.donorBtn',
     registerPath: '/register/donor',
   },
   {
-    icon: 'storefront',
+    icon: 'fa-solid fa-store',
     titleKey: 'public.landing.roles.vendorTitle',
     descriptionKey: 'public.landing.roles.vendorDesc',
     actionLabelKey: 'public.landing.roles.vendorBtn',
     registerPath: '/register/vendor',
   },
   {
-    icon: 'handshake',
+    icon: 'fa-solid fa-handshake',
     titleKey: 'public.landing.roles.charityTitle',
     descriptionKey: 'public.landing.roles.charityDesc',
     actionLabelKey: 'public.landing.roles.charityBtn',
@@ -136,9 +136,9 @@ export const DONATION_CATEGORIES: DonationCategory[] = [
 ];
 
 export const VALIDATION_NODES: ValidationNode[] = [
-  { icon: 'shield', labelKey: 'public.landing.validation.identity', variant: 'primary' },
-  { icon: 'add_photo_alternate', labelKey: 'public.landing.validation.visualProof', variant: 'primary' },
-  { icon: 'verified_user', labelKey: 'public.landing.validation.localValidation', variant: 'accent' },
+  { icon: 'pi pi-shield', labelKey: 'public.landing.validation.identity', variant: 'primary' },
+  { icon: 'pi pi-images', labelKey: 'public.landing.validation.visualProof', variant: 'primary' },
+  { icon: 'pi pi-verified', labelKey: 'public.landing.validation.localValidation', variant: 'accent' },
 ];
 
 export const FOOTER_QUICK_LINKS: SimpleLink[] = [

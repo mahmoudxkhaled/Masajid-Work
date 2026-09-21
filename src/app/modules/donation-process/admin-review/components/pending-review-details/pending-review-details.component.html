@@ -12,6 +12,8 @@
         severity="success" (onClick)="openApproveDialog()"></p-button>
       <p-button *ngIf="isPendingReview" [label]="'donations.adminReview.actions.reject' | translate" icon="pi pi-times"
         severity="danger" [outlined]="true" (onClick)="openRejectDialog()"></p-button>
+      <p-button *ngIf="!loading && requestId" [label]="'donations.breakdown.actions.viewAll' | translate"
+        icon="pi pi-sitemap" [outlined]="true" (onClick)="goToRequestBreakdowns()"></p-button>
       <p-button [label]="'donations.adminReview.details.back' | translate" icon="pi pi-arrow-left" severity="secondary"
         [outlined]="true" (onClick)="backToList()"></p-button>
     </div>
@@ -146,6 +148,9 @@
             [readonly]="true"></app-donation-attachment-list>
         </div>
       </div>
+
+      <app-breakdown-requests-section [requestId]="requestId" mode="admin"
+        [showViewAll]="true"></app-breakdown-requests-section>
 
       <div class="block-card details-card p-0">
         <div class="details-section-header">

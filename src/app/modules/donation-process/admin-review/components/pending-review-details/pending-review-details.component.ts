@@ -96,6 +96,15 @@ export class PendingReviewDetailsComponent implements OnInit, OnDestroy {
     this.router.navigate(['/donations/admin/pending-review']);
   }
 
+  goToRequestBreakdowns(): void {
+    if (!this.requestId) {
+      return;
+    }
+    this.router.navigate(['/donations/admin/requests', this.requestId, 'breakdown'], {
+      state: { returnTo: `/donations/admin/pending-review/${this.requestId}` },
+    });
+  }
+
   openApproveDialog(): void {
     this.reviewNote = '';
     this.approveDialogVisible = true;

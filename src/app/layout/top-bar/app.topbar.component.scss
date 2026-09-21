@@ -1503,15 +1503,48 @@ p-autoComplete {
 }
 
 @media (min-width: 961px) {
-  .layout-topbar-middel img {
+  .layout-topbar-middel img.topbar-brand-logo {
     position: fixed;
     left: 50vw;
-  width: 54px !important;
-
     top: 2rem;
+    width: auto !important;
+    height: 3.5rem !important;
+    max-height: 3.5rem;
+    object-fit: contain;
     transform: translate(-50%, -50%);
     z-index: 1000;
     margin: 0;
     right: auto;
   }
+}
+
+:host ::ng-deep .layout-topbar-start.company-info-mobile {
+  margin-top: 0 !important;
+  padding-block: 0 !important;
+  height: 4rem;
+  max-height: 4rem;
+  box-sizing: border-box;
+}
+
+:host ::ng-deep .layout-topbar-start.company-info-mobile .layout-topbar-logo img,
+.iaware-logo .topbar-brand-logo {
+  width: auto !important;
+  height: 3.5rem !important;
+  max-height: 3.5rem !important;
+  object-fit: contain;
+  display: block;
+}
+
+.topbar-brand-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 0;
+}
+
+.iaware-logo.layout-topbar-logo {
+  display: inline-flex !important;
+  align-items: center;
+  height: 100%;
 }

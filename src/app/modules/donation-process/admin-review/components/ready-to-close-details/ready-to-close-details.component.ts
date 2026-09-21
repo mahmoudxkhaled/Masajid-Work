@@ -54,6 +54,7 @@ export class ReadyToCloseDetailsComponent implements OnInit, OnDestroy {
   fulfillments: DonationFulfillmentBackend[] = [];
   validations: DonationValidationListItem[] = [];
   closeDialogVisible = false;
+  hasBreakdownRequests = false;
 
   typeLabel = '';
   categoryLabel = '';
@@ -129,6 +130,19 @@ export class ReadyToCloseDetailsComponent implements OnInit, OnDestroy {
 
   backToList(): void {
     this.router.navigate(['/donations/admin/ready-to-close']);
+  }
+
+  goToRequestBreakdowns(): void {
+    if (!this.requestId || !this.hasBreakdownRequests) {
+      return;
+    }
+    this.router.navigate(['/donations/admin/requests', this.requestId, 'breakdown'], {
+      state: { returnTo: `/donations/admin/ready-to-close/${this.requestId}` },
+    });
+  }
+
+  onBreakdownHasItemsChange(hasItems: boolean): void {
+    this.hasBreakdownRequests = hasItems;
   }
 
   openCloseDialog(): void {

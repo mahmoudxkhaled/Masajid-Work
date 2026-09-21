@@ -47,7 +47,6 @@ export class AuthModule {
     private applyLocale(): void {
         const lang = this.languageDirService.getPublicLanguageCode();
         const isRtl = lang === 'ar';
-        this.translationService.useLanguage(lang);
         document.documentElement.lang = lang;
         document.documentElement.setAttribute('dir', isRtl ? 'rtl' : 'ltr');
     }

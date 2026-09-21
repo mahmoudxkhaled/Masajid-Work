@@ -3,6 +3,7 @@ import { MessageService } from 'primeng/api';
 import { SharedModule } from 'src/app/Shared/shared/shared.module';
 import { DonationProcessSharedModule } from '../shared/donation-process-shared.module';
 import { AdminReviewRoutingModule } from './admin-review-routing.module';
+import { BreakdownReviewListComponent } from './components/breakdown-review-list/breakdown-review-list.component';
 import { CloseDonationRequestDialogComponent } from './components/close-donation-request-dialog/close-donation-request-dialog.component';
 import { PendingReviewDetailsComponent } from './components/pending-review-details/pending-review-details.component';
 import { PendingReviewListComponent } from './components/pending-review-list/pending-review-list.component';
@@ -16,6 +17,7 @@ import { ReadyToCloseListComponent } from './components/ready-to-close-list/read
     ReadyToCloseListComponent,
     ReadyToCloseDetailsComponent,
     CloseDonationRequestDialogComponent,
+    BreakdownReviewListComponent,
   ],
   imports: [AdminReviewRoutingModule, SharedModule, DonationProcessSharedModule],
   providers: [MessageService],

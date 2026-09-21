@@ -1,0 +1,214 @@
+<p-toast />
+
+<div class="block-section card">
+  <div class="flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
+    <div class="flex flex-column gap-2 flex-1 min-w-0">
+      <h2 class="block-title mb-0">{{ 'donations.breakdown.createDialog.title' | translate }}</h2>
+      <p class="mb-0 text-500">{{ 'donations.breakdown.createDialog.message' | translate }}</p>
+    </div>
+    <p-button [label]="'donations.commitments.details.back' | translate" icon="pi pi-arrow-left"
+      severity="secondary" [outlined]="true" (onClick)="backToDetails()" [disabled]="busy"></p-button>
+  </div>
+
+  <div class="block-card p-3">
+    <ng-container *ngIf="loading; else formContent">
+      <p-skeleton height="4.5rem" width="100%" borderRadius="8px" class="mb-3"></p-skeleton>
+      <p-skeleton height="0.85rem" width="16rem" class="mb-2"></p-skeleton>
+      <div class="grid mb-3">
+        <div class="col-12 md:col-6">
+          <p-skeleton height="4.5rem" width="100%" borderRadius="8px"></p-skeleton>
+        </div>
+        <div class="col-12 md:col-6">
+          <p-skeleton height="4.5rem" width="100%" borderRadius="8px"></p-skeleton>
+        </div>
+      </div>
+      <p-skeleton height="4.5rem" width="100%" borderRadius="8px" class="mb-3"></p-skeleton>
+      <div class="item-row mb-3">
+        <p-skeleton height="0.85rem" width="8rem" class="mb-2"></p-skeleton>
+        <p-skeleton height="1.25rem" width="70%" class="mb-2"></p-skeleton>
+        <p-skeleton height="0.85rem" width="6rem" class="mb-2"></p-skeleton>
+        <p-skeleton height="3rem" width="100%" class="mb-2"></p-skeleton>
+        <p-skeleton height="0.85rem" width="8rem" class="mb-2"></p-skeleton>
+        <p-skeleton height="1.25rem" width="40%"></p-skeleton>
+      </div>
+      <div class="grid mb-3">
+        <div class="col-12 md:col-6">
+          <p-skeleton height="0.85rem" width="45%" class="mb-2"></p-skeleton>
+          <p-skeleton height="2.5rem" width="100%" borderRadius="6px"></p-skeleton>
+        </div>
+        <div class="col-12 md:col-6">
+          <p-skeleton height="0.85rem" width="45%" class="mb-2"></p-skeleton>
+          <p-skeleton height="2.5rem" width="100%" borderRadius="6px"></p-skeleton>
+        </div>
+      </div>
+      <p-skeleton height="0.85rem" width="12rem" class="mb-2"></p-skeleton>
+      <p-skeleton height="6rem" width="100%" borderRadius="10px" class="mb-4"></p-skeleton>
+      <div class="flex flex-wrap gap-2">
+        <p-skeleton height="2.5rem" width="9rem" borderRadius="6px"></p-skeleton>
+        <p-skeleton height="2.5rem" width="7rem" borderRadius="6px"></p-skeleton>
+      </div>
+    </ng-container>
+
+    <ng-template #formContent>
+      <div class="flex flex-column gap-3">
+        <app-erp-info severity="info" icon="pi pi-info-circle"
+          [description]="'donations.breakdown.createDialog.instructions.overview' | translate"></app-erp-info>
+
+        <div class="flex flex-column gap-2">
+          <label class="font-medium">{{ 'donations.breakdown.createDialog.modeLabel' | translate }}</label>
+          <div class="grid">
+            <div class="col-12 md:col-6">
+              <div class="mode-option"
+                [class.mode-option--active]="mode === 'quantity'"
+                [class.mode-option--disabled]="formDisabled || !!(isLoading$ | async) || !canSplitByQuantity"
+                (click)="selectMode('quantity')">
+                <p-radioButton name="breakdownMode" inputId="breakdownModeQuantity" value="quantity"
+                  [(ngModel)]="mode" (ngModelChange)="onModeChange($event)"
+                  [disabled]="formDisabled || !!(isLoading$ | async) || !canSplitByQuantity"></p-radioButton>
+                <div class="mode-option__text">
+                  <label class="mode-option__title" for="breakdownModeQuantity">
+                    {{ 'donations.breakdown.createDialog.modes.quantity' | translate }}
+                  </label>
+                  <span class="mode-option__hint">
+                    {{ 'donations.breakdown.createDialog.modes.quantityHint' | translate }}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 md:col-6">
+              <div class="mode-option"
+                [class.mode-option--active]="mode === 'custom'"
+                [class.mode-option--disabled]="formDisabled || !!(isLoading$ | async)"
+                (click)="selectMode('custom')">
+                <p-radioButton name="breakdownMode" inputId="breakdownModeCustom" value="custom"
+                  [(ngModel)]="mode" (ngModelChange)="onModeChange($event)"
+                  [disabled]="formDisabled || !!(isLoading$ | async)"></p-radioButton>
+                <div class="mode-option__text">
+                  <label class="mode-option__title" for="breakdownModeCustom">
+                    {{ 'donations.breakdown.createDialog.modes.custom' | translate }}
+                  </label>
+                  <span class="mode-option__hint">
+                    {{ 'donations.breakdown.createDialog.modes.customHint' | translate }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <app-erp-info *ngIf="mode === 'quantity'" severity="info" icon="pi pi-info-circle"
+          [description]="'donations.breakdown.createDialog.instructions.quantity' | translate"></app-erp-info>
+        <app-erp-info *ngIf="mode === 'custom'" severity="info" icon="pi pi-info-circle"
+          [description]="'donations.breakdown.createDialog.instructions.custom' | translate"></app-erp-info>
+
+        <div class="item-row">
+          <div class="font-medium mb-3">{{ 'donations.breakdown.createDialog.originalRequestSummary' | translate }}</div>
+          <div class="grid">
+            <div class="col-12">
+              <span class="summary-label">{{ 'donations.breakdown.columns.title' | translate }}</span>
+              <span class="summary-value">{{ originalTitle || '-' }}</span>
+            </div>
+            <div class="col-12">
+              <span class="summary-label">{{ 'donations.breakdown.columns.description' | translate }}</span>
+              <span class="summary-value summary-value--multiline">{{ originalDescription || '-' }}</span>
+            </div>
+            <div class="col-12 md:col-4">
+              <span class="summary-label">{{ 'donations.breakdown.createDialog.originalQuantity' | translate }}</span>
+              <span class="summary-value">{{ originalQuantityLabel }}</span>
+            </div>
+          </div>
+        </div>
+
+        <ng-container *ngIf="mode === 'quantity'">
+          <p *ngIf="!canSplitByQuantity" class="mb-0 text-500">
+            {{ 'donations.breakdown.createDialog.validation.quantitySplitUnavailable' | translate }}
+          </p>
+
+          <ng-container *ngIf="canSplitByQuantity">
+            <div class="grid">
+              <div class="col-12 md:col-6">
+                <label class="font-medium mb-2 block">{{ 'donations.breakdown.createDialog.donorQuantity' | translate }}</label>
+                <p-inputNumber [(ngModel)]="donorQuantity" [min]="1" [max]="originalQuantity - 1"
+                  [showButtons]="false" styleClass="w-full"
+                  [disabled]="formDisabled || !!(isLoading$ | async)"></p-inputNumber>
+              </div>
+              <div class="col-12 md:col-6">
+                <label class="font-medium mb-2 block">{{ 'donations.breakdown.columns.currency' | translate }}</label>
+                <p-dropdown [options]="currencyOptions" [(ngModel)]="currencyCode" optionLabel="label"
+                  optionValue="value" [filter]="true" [placeholder]="currencyPlaceholder" styleClass="w-full"
+                  [disabled]="formDisabled || !!(isLoading$ | async)"></p-dropdown>
+              </div>
+            </div>
+          </ng-container>
+        </ng-container>
+
+        <ng-container *ngIf="mode === 'custom'">
+          <div class="flex align-items-center justify-content-between gap-2 flex-wrap">
+            <span class="font-medium">{{ 'donations.breakdown.createDialog.itemsTitle' | translate }}</span>
+            <p-button [label]="'donations.breakdown.createDialog.addItem' | translate" icon="pi pi-plus"
+              size="small" [outlined]="true" (onClick)="addItem()"
+              [disabled]="formDisabled || !!(isLoading$ | async)"></p-button>
+          </div>
+
+          <div *ngFor="let item of items; let i = index" class="item-row">
+            <div class="grid">
+              <div class="col-12">
+                <label class="font-medium mb-2 block">{{ 'donations.breakdown.columns.title' | translate }}</label>
+                <input pInputText class="w-full" [(ngModel)]="item.title"
+                  [placeholder]="'donations.breakdown.createDialog.titlePlaceholder' | translate"
+                  [disabled]="formDisabled || !!(isLoading$ | async)" />
+              </div>
+              <div class="col-12">
+                <label class="font-medium mb-2 block">{{ 'donations.breakdown.columns.description' | translate }}</label>
+                <textarea pInputTextarea rows="2" class="w-full" [(ngModel)]="item.description"
+                  [disabled]="formDisabled || !!(isLoading$ | async)"></textarea>
+              </div>
+              <div class="col-6 md:col-3">
+                <label class="font-medium mb-2 block">{{ 'donations.breakdown.columns.quantity' | translate }}</label>
+                <p-inputNumber [(ngModel)]="item.quantity" [min]="1" [showButtons]="false" styleClass="w-full"
+                  [disabled]="formDisabled || !!(isLoading$ | async)"></p-inputNumber>
+              </div>
+              <div class="col-6 md:col-3">
+                <label class="font-medium mb-2 block">{{ 'donations.breakdown.columns.estimatedCost' | translate }}</label>
+                <p-inputNumber [(ngModel)]="item.estimatedCost" [min]="0" mode="decimal" [minFractionDigits]="0"
+                  [maxFractionDigits]="2" styleClass="w-full"
+                  [disabled]="formDisabled || !!(isLoading$ | async)"></p-inputNumber>
+              </div>
+              <div class="col-12 md:col-3">
+                <label class="font-medium mb-2 block">{{ 'donations.breakdown.columns.currency' | translate }}</label>
+                <p-dropdown [options]="currencyOptions" [(ngModel)]="item.currencyCode" optionLabel="label"
+                  optionValue="value" [filter]="true" [placeholder]="currencyPlaceholder" styleClass="w-full"
+                  [disabled]="formDisabled || !!(isLoading$ | async)"></p-dropdown>
+              </div>
+              <div class="col-12 md:col-3 flex align-items-end justify-content-between gap-2 flex-wrap">
+                <div class="flex align-items-center gap-2 mb-2 md:mb-0">
+                  <p-checkbox [(ngModel)]="item.donorPortion" [binary]="true" [inputId]="'donorPortion' + i"
+                    [disabled]="formDisabled || !!(isLoading$ | async)"></p-checkbox>
+                  <label [for]="'donorPortion' + i">{{ 'donations.breakdown.columns.donorPortion' | translate }}</label>
+                </div>
+                <p-button icon="pi pi-trash" severity="danger" [outlined]="true" size="small"
+                  [disabled]="items.length <= 2 || formDisabled || !!(isLoading$ | async)"
+                  [pTooltip]="'donations.breakdown.createDialog.removeItem' | translate" tooltipPosition="top"
+                  (onClick)="removeItem(i)"></p-button>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+        <div class="flex flex-column gap-2">
+          <label class="font-medium">{{ 'donations.breakdown.createDialog.attachments' | translate }}</label>
+          <app-donation-attachment-pending-picker [(files)]="selectedFiles"
+            [disabled]="!canSelectFiles || formDisabled || !!(isLoading$ | async)"></app-donation-attachment-pending-picker>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap gap-2 mt-4">
+        <p-button [label]="'donations.breakdown.actions.create' | translate" icon="pi pi-check" severity="success"
+          (onClick)="confirmCreate()"
+          [disabled]="formDisabled || !!(isLoading$ | async) || (mode === 'quantity' && !canSplitByQuantity)"></p-button>
+        <p-button [label]="'common.cancel' | translate" icon="pi pi-times" severity="secondary" [outlined]="true"
+          (onClick)="backToDetails()" [disabled]="formDisabled || !!(isLoading$ | async)"></p-button>
+      </div>
+    </ng-template>
+  </div>
+</div>

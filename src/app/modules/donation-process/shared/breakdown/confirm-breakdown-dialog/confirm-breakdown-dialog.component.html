@@ -1,0 +1,15 @@
+<p-dialog [(visible)]="visible" [modal]="true" [style]="{ width: '480px' }" [draggable]="false" [resizable]="false"
+  (onHide)="closeDialog()">
+  <ng-template pTemplate="header">
+    <h3 class="m-0">{{ 'donations.breakdown.confirmDialog.title' | translate }}</h3>
+  </ng-template>
+
+  <p class="mb-0 text-500">{{ 'donations.breakdown.confirmDialog.message' | translate }}</p>
+
+  <ng-template pTemplate="footer">
+    <p-button [label]="'common.cancel' | translate" icon="pi pi-times" severity="secondary" [outlined]="true"
+      (onClick)="closeDialog()" [disabled]="!!(isLoading$ | async)"></p-button>
+    <p-button [label]="'donations.breakdown.actions.confirm' | translate" icon="pi pi-check"
+      (onClick)="confirm()" [disabled]="!!(isLoading$ | async)"></p-button>
+  </ng-template>
+</p-dialog>

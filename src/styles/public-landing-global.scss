@@ -121,21 +121,17 @@ html.dh-theme-dark .rtl-layout .dh,
 }
 // #endregion
 
-.material-symbols-outlined {
-  font-variation-settings:
-    'FILL' 0,
-    'wght' 400,
-    'GRAD' 0,
-    'opsz' 24;
+.dh .pi,
+.dh .fa-solid {
   vertical-align: middle;
 }
 
-.dh--rtl .register-page__back .material-symbols-outlined,
-.dh[dir='rtl'] .register-page__back .material-symbols-outlined {
+.dh--rtl .register-page__back .pi,
+.dh[dir='rtl'] .register-page__back .pi {
   transform: scaleX(-1);
 }
 
-.dh--rtl .selection-card__action .material-symbols-outlined,
-.dh[dir='rtl'] .selection-card__action .material-symbols-outlined {
+.dh--rtl .selection-card__action .pi,
+.dh[dir='rtl'] .selection-card__action .pi {
   transform: scaleX(-1);
 }

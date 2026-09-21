@@ -79,17 +79,16 @@ export class AppComponent implements OnInit, OnDestroy {
             this.isRtl = isRtl;
             this.ref.detectChanges();
         });
-        this.languageSubscription = this.rtlService.userLanguageCode$.subscribe((lang) => {
+        this.languageSubscription = this.rtlService.userLanguageCode$.subscribe(() => {
             if (!this.runtimeLanguageActive) {
                 return;
             }
-            this.translationService.useLanguage(lang).subscribe(() => this.ref.detectChanges());
+            this.ref.detectChanges();
         });
 
         if (!isAuthenticated) {
             const userLangCode = this.rtlService.getPublicLanguageCode();
-            this.rtlService.setGuestLanguageCode(userLangCode);
-            this.translationService.useLanguage(userLangCode || APP_DEFAULT_LANGUAGE).subscribe({
+            this.rtlService.setGuestLanguageCode(userLangCode || APP_DEFAULT_LANGUAGE).subscribe({
                 next: () => {
                     this.runtimeLanguageActive = true;
                     if (!this.isPublicGuestBootstrapRoute()) {
@@ -154,8 +153,12 @@ export class AppComponent implements OnInit, OnDestroy {
 
     toggleDirection() {
         this.isRtl = !this.isRtl;
-        this.rtlService.setRtl(this.isRtl);
-        this.translationService.useLanguage(this.isRtl ? 'ar' : 'en');
+        const code = this.isRtl ? 'ar' : 'en';
+        if (this.localStorage.getAccessToken()) {
+            this.rtlService.setUserLanguageCode(code).subscribe();
+        } else {
+            this.rtlService.setGuestLanguageCode(code).subscribe();
+        }
     }
 
     private isPublicGuestBootstrapRoute(): boolean {

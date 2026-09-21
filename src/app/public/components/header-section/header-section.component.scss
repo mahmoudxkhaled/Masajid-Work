@@ -7,7 +7,7 @@
   inset-block-start: 0;
   inset-inline: 0;
   width: 100%;
-  z-index: 50;
+  z-index: 1100;
   background-color: var(--dh-surface, #fdf7ff);
   box-shadow: 0 1px 3px var(--dh-header-shadow, rgb(0 0 0 / 0.08));
 }
@@ -111,6 +111,7 @@
   border: none;
   border-radius: 12px;
   cursor: pointer;
+  font-size: 1.25rem;
   color: var(--dh-on-surface-variant, #494551);
   background: var(--dh-surface-container-high, #ece6ee);
   transition:
@@ -151,8 +152,12 @@
   transform: scale(0.95);
 }
 
-.header__lang-chevron {
-  font-size: 1.25rem;
+.header__lang-trigger .pi {
+  font-size: 1.125rem;
+}
+
+.header__lang-trigger .header__lang-chevron {
+  font-size: 0.875rem;
 }
 
 .header__login {

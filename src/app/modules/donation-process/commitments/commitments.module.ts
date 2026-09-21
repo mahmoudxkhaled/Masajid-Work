@@ -8,6 +8,7 @@ import { CancelCommitmentDialogComponent } from './components/cancel-commitment-
 import { ViewVendorOfferDialogComponent } from './components/view-vendor-offer-dialog/view-vendor-offer-dialog.component';
 import { SelectVendorOfferDialogComponent } from './components/select-vendor-offer-dialog/select-vendor-offer-dialog.component';
 import { SubmitFulfillmentProofComponent } from './components/submit-fulfillment-proof/submit-fulfillment-proof.component';
+import { CreateBreakdownRequestComponent } from './components/create-breakdown-request/create-breakdown-request.component';
 import { FulfillmentDetailsDialogComponent } from './components/fulfillment-details-dialog/fulfillment-details-dialog.component';
 import { CommitmentsRoutingModule } from './commitments-routing.module';
 
@@ -19,6 +20,7 @@ import { CommitmentsRoutingModule } from './commitments-routing.module';
     ViewVendorOfferDialogComponent,
     SelectVendorOfferDialogComponent,
     SubmitFulfillmentProofComponent,
+    CreateBreakdownRequestComponent,
     FulfillmentDetailsDialogComponent,
   ],
   imports: [CommitmentsRoutingModule, SharedModule, DonationProcessSharedModule],

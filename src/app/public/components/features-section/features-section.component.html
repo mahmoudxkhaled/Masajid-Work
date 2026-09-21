@@ -8,7 +8,7 @@
     </header>
     <div class="features__grid">
       <article class="features__card" *ngFor="let card of cards">
-        <span class="material-symbols-outlined features__icon" aria-hidden="true">{{ card.icon }}</span>
+        <i class="features__icon" [ngClass]="card.icon" aria-hidden="true"></i>
         <h3 class="features__card-title">{{ card.titleKey | translate }}</h3>
         <p class="features__card-text">{{ card.descriptionKey | translate }}</p>
       </article>
