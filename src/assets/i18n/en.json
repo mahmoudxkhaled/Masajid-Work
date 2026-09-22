@@ -1292,6 +1292,7 @@
             "donations.breakdown.list.title": "Breakdown Requests",
             "donations.adminReview.title": "Admin Review",
             "donations.adminReview.details.title": "Review Donation Request",
+            "donations.adminBreakdownReview.title": "Breakdown Review",
             "donations.adminClose.title": "Ready to Close",
             "donations.adminClose.details.title": "Close Donation Request",
             "donations.vendorOffers.title": "Vendor Offers",
@@ -2101,6 +2102,7 @@
         "details": {
             "title": "Entity Details",
             "backToList": "Back to List",
+            "backToHome": "Back to Home",
             "editEntity": "Edit Entity",
             "profile": "Entity Profile",
             "byType": {

@@ -4,6 +4,7 @@
   padding-inline: var(--dh-gutter, 24px);
   padding-block-start: clamp(0.75rem, 2vw, 1.5rem);
   padding-block-end: clamp(3rem, 8vw, 7.5rem);
+  overflow-x: clip;
 }
 
 .hero__grid {
@@ -148,7 +149,7 @@ a.btn {
   flex: 1;
   width: 100%;
   min-width: 0;
-  overflow: visible;
+  overflow: hidden;
 }
 
 .hero__glow {
@@ -157,18 +158,17 @@ a.btn {
   margin: auto;
   width: 100%;
   aspect-ratio: 1;
-  max-width: 120%;
+  max-width: 100%;
   border-radius: 50%;
   background: var(--dh-hero-glow, rgb(103 80 164 / 0.2));
   filter: blur(48px);
-  transform: scale(1.15);
   z-index: -1;
   pointer-events: none;
 }
 
 .hero__figure {
   position: relative;
-  overflow: visible;
+  overflow: hidden;
   line-height: 0;
 }
 

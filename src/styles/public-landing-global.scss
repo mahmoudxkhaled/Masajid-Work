@@ -6,6 +6,11 @@
   }
 }
 
+html:has(.dh),
+body:has(.dh) {
+  overflow-x: clip;
+}
+
 body:has(.dh) {
   margin: 0;
 }
@@ -39,6 +44,7 @@ body:has(.dh) {
   --dh-dropdown-shadow: rgb(0 0 0 / 0.12);
 
   min-height: 100vh;
+  max-width: 100%;
   background-color: var(--dh-surface);
   color: var(--dh-on-surface);
   font-family: 'IBM Plex Sans', system-ui, sans-serif;

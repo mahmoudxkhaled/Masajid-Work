@@ -4,7 +4,12 @@
   <div class="flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
     <div class="flex flex-column gap-2 flex-1 min-w-0">
       <h2 class="block-title mb-0">{{ 'donations.adminReview.details.title' | translate }}</h2>
-      <p class="mb-0 text-500" *ngIf="details">{{ details.title }}</p>
+      <p class="mb-0 text-500" *ngIf="loading || details">
+        <ng-container *ngIf="loading; else requestTitle">
+          <p-skeleton height="1.5rem" width="18rem"></p-skeleton>
+        </ng-container>
+        <ng-template #requestTitle>{{ details?.title }}</ng-template>
+      </p>
     </div>
     <div class="flex flex-wrap gap-2">
 
@@ -12,7 +17,7 @@
         severity="success" (onClick)="openApproveDialog()"></p-button>
       <p-button *ngIf="isPendingReview" [label]="'donations.adminReview.actions.reject' | translate" icon="pi pi-times"
         severity="danger" [outlined]="true" (onClick)="openRejectDialog()"></p-button>
-      <p-button *ngIf="!loading && requestId" [label]="'donations.breakdown.actions.viewAll' | translate"
+      <p-button *ngIf="hasBreakdownRequests" [label]="'donations.breakdown.actions.viewAll' | translate"
         icon="pi pi-sitemap" [outlined]="true" (onClick)="goToRequestBreakdowns()"></p-button>
       <p-button [label]="'donations.adminReview.details.back' | translate" icon="pi pi-arrow-left" severity="secondary"
         [outlined]="true" (onClick)="backToList()"></p-button>
@@ -22,148 +27,182 @@
   <app-erp-info *ngIf="!loading && details && !isPendingReview" severity="info" icon="pi pi-info-circle"
     [description]="'donations.adminReview.messages.notPendingReview' | translate" class="mb-3"></app-erp-info>
 
-  <ng-container *ngIf="loading; else detailsContent">
+  <ng-container *ngIf="loading || details">
     <div class="block-card details-card p-0 mb-3">
       <div class="details-section-header details-section-header--with-action">
         <div class="flex align-items-center gap-3 flex-1 min-w-0">
-          <p-skeleton shape="circle" size="2.25rem"></p-skeleton>
-          <p-skeleton height="1.25rem" width="12rem"></p-skeleton>
+          <span class="details-section-icon"><i class="pi pi-box"></i></span>
+          <h3 class="details-section-title">{{ 'donations.adminReview.details.sections.donation' | translate }}</h3>
         </div>
-        <p-skeleton height="1.5rem" width="5rem" borderRadius="16px"></p-skeleton>
+        <ng-container *ngIf="loading; else statusBadge">
+          <p-skeleton height="1.75rem" width="6rem" borderRadius="6px"></p-skeleton>
+        </ng-container>
+        <ng-template #statusBadge>
+          <app-donation-status-badge [label]="statusLabel" [severity]="statusSeverity"></app-donation-status-badge>
+        </ng-template>
       </div>
       <div class="grid p-3 pt-2">
-        <div class="col-12 md:col-6 lg:col-4" *ngFor="let _ of [1, 2, 3, 4, 5, 6]">
+        <div class="col-12 md:col-6 lg:col-4">
           <div class="info-item">
-            <p-skeleton height="0.85rem" width="45%" class="mb-2"></p-skeleton>
-            <p-skeleton height="1.25rem" width="70%"></p-skeleton>
-          </div>
-        </div>
-      </div>
-    </div>
-  </ng-container>
-
-  <ng-template #detailsContent>
-    <div *ngIf="details">
-      <div class="block-card details-card p-0 mb-3">
-        <div class="details-section-header details-section-header--with-action">
-          <div class="flex align-items-center gap-3 flex-1 min-w-0">
-            <span class="details-section-icon"><i class="pi pi-box"></i></span>
-            <h3 class="details-section-title">{{ 'donations.adminReview.details.sections.donation' | translate }}</h3>
-          </div>
-          <app-donation-status-badge [label]="statusLabel" [severity]="statusSeverity"></app-donation-status-badge>
-        </div>
-        <div class="grid p-3 pt-2">
-          <div class="col-12 md:col-6 lg:col-4">
-            <div class="info-item">
-              <span class="info-label">{{ 'donations.facility.requests.form.donationType' | translate }}</span>
+            <span class="info-label">{{ 'donations.facility.requests.form.donationType' | translate }}</span>
+            <ng-container *ngIf="loading; else typeValue">
+              <p-skeleton height="1.45rem" width="70%"></p-skeleton>
+            </ng-container>
+            <ng-template #typeValue>
               <span class="info-value">{{ typeLabel || '-' }}</span>
-            </div>
+            </ng-template>
           </div>
-          <div class="col-12 md:col-6 lg:col-4">
-            <div class="info-item">
-              <span class="info-label">{{ 'donations.facility.requests.form.donationCategory' | translate }}</span>
+        </div>
+        <div class="col-12 md:col-6 lg:col-4">
+          <div class="info-item">
+            <span class="info-label">{{ 'donations.facility.requests.form.donationCategory' | translate }}</span>
+            <ng-container *ngIf="loading; else categoryValue">
+              <p-skeleton height="1.45rem" width="70%"></p-skeleton>
+            </ng-container>
+            <ng-template #categoryValue>
               <span class="info-value">{{ categoryLabel || '-' }}</span>
-            </div>
+            </ng-template>
           </div>
-          <div class="col-12 md:col-6 lg:col-4">
-            <div class="info-item">
-              <span class="info-label">{{ 'donations.facility.requests.form.quantity' | translate }}</span>
-              <span class="info-value">{{ details.quantity }} {{ details.unit }}</span>
-            </div>
+        </div>
+        <div class="col-12 md:col-6 lg:col-4">
+          <div class="info-item">
+            <span class="info-label">{{ 'donations.facility.requests.form.quantity' | translate }}</span>
+            <ng-container *ngIf="loading; else quantityValue">
+              <p-skeleton height="1.45rem" width="50%"></p-skeleton>
+            </ng-container>
+            <ng-template #quantityValue>
+              <span class="info-value">{{ details?.quantity }} {{ details?.unit }}</span>
+            </ng-template>
           </div>
-          <div class="col-12 md:col-6 lg:col-4">
-            <div class="info-item">
-              <span class="info-label">{{ 'donations.shared.columns.estimatedCost' | translate }}</span>
+        </div>
+        <div class="col-12 md:col-6 lg:col-4">
+          <div class="info-item">
+            <span class="info-label">{{ 'donations.shared.columns.estimatedCost' | translate }}</span>
+            <ng-container *ngIf="loading; else costValue">
+              <p-skeleton height="1.45rem" width="55%"></p-skeleton>
+            </ng-container>
+            <ng-template #costValue>
               <span class="info-value">{{ formatCost() }}</span>
-            </div>
+            </ng-template>
           </div>
-          <div class="col-12 md:col-6 lg:col-4">
-            <div class="info-item">
-              <span class="info-label">{{ 'donations.facility.requests.form.needsInstallation' | translate }}</span>
+        </div>
+        <div class="col-12 md:col-6 lg:col-4">
+          <div class="info-item">
+            <span class="info-label">{{ 'donations.facility.requests.form.needsInstallation' | translate }}</span>
+            <ng-container *ngIf="loading; else installationValue">
+              <p-skeleton height="1.45rem" width="40%"></p-skeleton>
+            </ng-container>
+            <ng-template #installationValue>
               <span class="info-value">
                 <i class="pi mr-1"
-                  [ngClass]="details.needsInstallation ? 'pi-check-circle text-green-500' : 'pi-times-circle text-500'"></i>
+                  [ngClass]="details?.needsInstallation ? 'pi-check-circle text-green-500' : 'pi-times-circle text-500'"></i>
                 {{
-                (details.needsInstallation ? 'donations.reference.categories.yes' : 'donations.reference.categories.no')
+                (details?.needsInstallation ? 'donations.reference.categories.yes' : 'donations.reference.categories.no')
                 | translate
                 }}
               </span>
-            </div>
+            </ng-template>
           </div>
-          <div class="col-12 md:col-6 lg:col-4">
-            <div class="info-item">
-              <span class="info-label">{{ 'donations.shared.columns.createdAt' | translate }}</span>
+        </div>
+        <div class="col-12 md:col-6 lg:col-4">
+          <div class="info-item">
+            <span class="info-label">{{ 'donations.shared.columns.createdAt' | translate }}</span>
+            <ng-container *ngIf="loading; else createdAtValue">
+              <p-skeleton height="1.45rem" width="75%"></p-skeleton>
+            </ng-container>
+            <ng-template #createdAtValue>
               <span class="info-value" dir="ltr">
-                {{ details.createdAt ? (details.createdAt | date:'yyyy-MM-dd hh:mm a') : '-' }}
+                {{ details?.createdAt ? (details?.createdAt | date:'yyyy-MM-dd hh:mm a') : '-' }}
               </span>
-            </div>
-          </div>
-          <div class="col-12">
-            <div class="info-item">
-              <span class="info-label">{{ 'donations.facility.requests.form.description' | translate }}</span>
-              <span class="info-value line-height-3">{{ details.description || '-' }}</span>
-            </div>
+            </ng-template>
           </div>
         </div>
-      </div>
-
-      <div class="block-card details-card p-0 mb-3">
-        <div class="details-section-header details-section-header--with-action">
-          <div class="flex align-items-center gap-3 flex-1 min-w-0">
-            <span class="details-section-icon"><i class="pi pi-map-marker"></i></span>
-            <h3 class="details-section-title">{{ 'donations.adminReview.details.sections.location' | translate }}</h3>
+        <div class="col-12">
+          <div class="info-item">
+            <span class="info-label">{{ 'donations.facility.requests.form.description' | translate }}</span>
+            <ng-container *ngIf="loading; else descriptionValue">
+              <p-skeleton height="1.45rem" width="90%"></p-skeleton>
+            </ng-container>
+            <ng-template #descriptionValue>
+              <span class="info-value line-height-3">{{ details?.description || '-' }}</span>
+            </ng-template>
           </div>
-          <p-button [label]="'donations.shared.locationMap.viewOnMap' | translate" icon="pi pi-map" size="small"
-            [outlined]="true" (onClick)="openLocationMap()"></p-button>
-        </div>
-        <div class="grid p-3 pt-2">
-          <div class="col-12 md:col-6 lg:col-4">
-            <div class="info-item">
-              <span class="info-label">{{ 'donations.facility.requests.form.country' | translate }}</span>
-              <span class="info-value">{{ details.countryCode || '-' }}</span>
-            </div>
-          </div>
-          <div class="col-12 md:col-6 lg:col-4">
-            <div class="info-item">
-              <span class="info-label">{{ 'donations.facility.requests.form.city' | translate }}</span>
-              <span class="info-value">{{ details.city || '-' }}</span>
-            </div>
-          </div>
-          <div class="col-12 md:col-6 lg:col-4">
-            <div class="info-item">
-              <span class="info-label">{{ 'donations.facility.requests.form.address' | translate }}</span>
-              <span class="info-value">{{ details.address || '-' }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="block-card details-card p-0 mb-3">
-        <div class="details-section-header">
-          <span class="details-section-icon"><i class="pi pi-paperclip"></i></span>
-          <h3 class="details-section-title">{{ 'donations.adminReview.details.sections.attachments' | translate }}</h3>
-        </div>
-        <div class="p-3 pt-2">
-          <app-donation-attachment-list [ownerType]="requestAttachmentOwnerType" [ownerId]="requestId"
-            [readonly]="true"></app-donation-attachment-list>
-        </div>
-      </div>
-
-      <app-breakdown-requests-section [requestId]="requestId" mode="admin"
-        [showViewAll]="true"></app-breakdown-requests-section>
-
-      <div class="block-card details-card p-0">
-        <div class="details-section-header">
-          <span class="details-section-icon"><i class="pi pi-history"></i></span>
-          <h3 class="details-section-title">{{ 'donations.adminReview.details.sections.workflow' | translate }}</h3>
-        </div>
-        <div class="p-3 pt-2">
-          <app-donation-workflow-timeline [items]="workflowItems"
-            [loading]="workflowLoading"></app-donation-workflow-timeline>
         </div>
       </div>
     </div>
-  </ng-template>
+
+    <div class="block-card details-card p-0 mb-3">
+      <div class="details-section-header details-section-header--with-action">
+        <div class="flex align-items-center gap-3 flex-1 min-w-0">
+          <span class="details-section-icon"><i class="pi pi-map-marker"></i></span>
+          <h3 class="details-section-title">{{ 'donations.adminReview.details.sections.location' | translate }}</h3>
+        </div>
+        <p-button [label]="'donations.shared.locationMap.viewOnMap' | translate" icon="pi pi-map" size="small"
+          [outlined]="true" (onClick)="openLocationMap()" [disabled]="loading"></p-button>
+      </div>
+      <div class="grid p-3 pt-2">
+        <div class="col-12 md:col-6 lg:col-4">
+          <div class="info-item">
+            <span class="info-label">{{ 'donations.facility.requests.form.country' | translate }}</span>
+            <ng-container *ngIf="loading; else countryValue">
+              <p-skeleton height="1.45rem" width="40%"></p-skeleton>
+            </ng-container>
+            <ng-template #countryValue>
+              <span class="info-value">{{ details?.countryCode || '-' }}</span>
+            </ng-template>
+          </div>
+        </div>
+        <div class="col-12 md:col-6 lg:col-4">
+          <div class="info-item">
+            <span class="info-label">{{ 'donations.facility.requests.form.city' | translate }}</span>
+            <ng-container *ngIf="loading; else cityValue">
+              <p-skeleton height="1.45rem" width="55%"></p-skeleton>
+            </ng-container>
+            <ng-template #cityValue>
+              <span class="info-value">{{ details?.city || '-' }}</span>
+            </ng-template>
+          </div>
+        </div>
+        <div class="col-12 md:col-6 lg:col-4">
+          <div class="info-item">
+            <span class="info-label">{{ 'donations.facility.requests.form.address' | translate }}</span>
+            <ng-container *ngIf="loading; else addressValue">
+              <p-skeleton height="1.45rem" width="80%"></p-skeleton>
+            </ng-container>
+            <ng-template #addressValue>
+              <span class="info-value">{{ details?.address || '-' }}</span>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="block-card details-card p-0 mb-3" *ngIf="requestId">
+      <div class="details-section-header">
+        <span class="details-section-icon"><i class="pi pi-paperclip"></i></span>
+        <h3 class="details-section-title">{{ 'donations.adminReview.details.sections.attachments' | translate }}</h3>
+      </div>
+      <div class="p-3 pt-2">
+        <app-donation-attachment-list [ownerType]="requestAttachmentOwnerType" [ownerId]="requestId"
+          [readonly]="true"></app-donation-attachment-list>
+      </div>
+    </div>
+
+    <app-breakdown-requests-section *ngIf="requestId" [requestId]="requestId" mode="admin"
+      [showViewAll]="true" [hideWhenEmpty]="true"
+      (hasItemsChange)="onBreakdownHasItemsChange($event)"></app-breakdown-requests-section>
+
+    <div class="block-card details-card p-0" *ngIf="requestId">
+      <div class="details-section-header">
+        <span class="details-section-icon"><i class="pi pi-history"></i></span>
+        <h3 class="details-section-title">{{ 'donations.adminReview.details.sections.workflow' | translate }}</h3>
+      </div>
+      <div class="p-3 pt-2">
+        <app-donation-workflow-timeline [items]="workflowItems"
+          [loading]="workflowLoading"></app-donation-workflow-timeline>
+      </div>
+    </div>
+  </ng-container>
 </div>
 
 <p-dialog [(visible)]="approveDialogVisible" [modal]="true" [style]="{ width: '480px' }" [draggable]="false"

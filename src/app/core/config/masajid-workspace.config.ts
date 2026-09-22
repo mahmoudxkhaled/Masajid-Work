@@ -74,14 +74,15 @@ export const MASAJID_WORKSPACE_MODULES: IModulesDetails = {
     Default_Order: 17,
     URL: '/donations/admin/breakdown-review',
   },
-  ADM_OVER: {
-    ModuleID: 302,
-    FunctionID: 11,
-    Name: 'Overdue Donations',
-    Name_Regional: '\u0627\u0644\u062a\u0628\u0631\u0639\u0627\u062a \u0627\u0644\u0645\u062a\u0623\u062e\u0631\u0629',
-    Default_Order: 20,
-    URL: '/donations/admin/overdue',
-  },
+  // TODO: restore Overdue Donations module later
+  // ADM_OVER: {
+  //   ModuleID: 302,
+  //   FunctionID: 11,
+  //   Name: 'Overdue Donations',
+  //   Name_Regional: '\u0627\u0644\u062a\u0628\u0631\u0639\u0627\u062a \u0627\u0644\u0645\u062a\u0623\u062e\u0631\u0629',
+  //   Default_Order: 20,
+  //   URL: '/donations/admin/overdue',
+  // },
   ADM_FAC: {
     ModuleID: 303,
     FunctionID: 11,
@@ -106,14 +107,15 @@ export const MASAJID_WORKSPACE_MODULES: IModulesDetails = {
     Default_Order: 40,
     URL: '/system-administration/user-accounts',
   },
-  ADM_NOT: {
-    ModuleID: 305,
-    FunctionID: 11,
-    Name: 'Notifications Management',
-    Name_Regional: '\u0625\u062f\u0627\u0631\u0629 \u0627\u0644\u0625\u0634\u0639\u0627\u0631\u0627\u062a',
-    Default_Order: 50,
-    URL: '/summary/notifications-management',
-  },
+  // TODO: restore Notifications + Notifications Management modules later
+  // ADM_NOT: {
+  //   ModuleID: 305,
+  //   FunctionID: 11,
+  //   Name: 'Notifications Management',
+  //   Name_Regional: '\u0625\u062f\u0627\u0631\u0629 \u0627\u0644\u0625\u0634\u0639\u0627\u0631\u0627\u062a',
+  //   Default_Order: 50,
+  //   URL: '/summary/notifications-management',
+  // },
   FDRQ: {
     ModuleID: 311,
     FunctionID: 12,
@@ -170,14 +172,15 @@ export const MASAJID_WORKSPACE_MODULES: IModulesDetails = {
     Default_Order: 40,
     URL: '/summary/profile',
   },
-  DNR_NOT: {
-    ModuleID: 325,
-    FunctionID: 13,
-    Name: 'Notifications',
-    Name_Regional: '\u0627\u0644\u0625\u0634\u0639\u0627\u0631\u0627\u062a',
-    Default_Order: 50,
-    URL: '/summary/notifications',
-  },
+  // TODO: restore Notifications + Notifications Management modules later
+  // DNR_NOT: {
+  //   ModuleID: 325,
+  //   FunctionID: 13,
+  //   Name: 'Notifications',
+  //   Name_Regional: '\u0627\u0644\u0625\u0634\u0639\u0627\u0631\u0627\u062a',
+  //   Default_Order: 50,
+  //   URL: '/summary/notifications',
+  // },
   VREQ: {
     ModuleID: 331,
     FunctionID: 14,
@@ -232,11 +235,13 @@ export const MASAJID_WORKSPACE_MODULE_ROLE_VISIBILITY: Partial<Record<string, Ro
   ADM_REV: [Roles.Developer, Roles.SystemAdministrator],
   ADM_CLOSE: [Roles.Developer, Roles.SystemAdministrator],
   ADM_BRK: [Roles.Developer, Roles.SystemAdministrator],
-  ADM_OVER: [Roles.Developer, Roles.SystemAdministrator],
+  // TODO: restore Overdue Donations module later
+  // ADM_OVER: [Roles.Developer, Roles.SystemAdministrator],
   ADM_FAC: [Roles.Developer, Roles.SystemAdministrator],
   DNREF: [Roles.Developer, Roles.SystemAdministrator],
   ADM_ACC: [Roles.Developer, Roles.SystemAdministrator],
-  ADM_NOT: [Roles.Developer, Roles.SystemAdministrator, Roles.EntityAdministrator],
+  // TODO: restore Notifications + Notifications Management modules later
+  // ADM_NOT: [Roles.Developer, Roles.SystemAdministrator, Roles.EntityAdministrator],
   FDRQ: DEFAULT_MODULE_VISIBLE_ROLES,
   FDRQ_NEW: DEFAULT_MODULE_VISIBLE_ROLES,
   FCONF: DEFAULT_MODULE_VISIBLE_ROLES,
@@ -244,7 +249,7 @@ export const MASAJID_WORKSPACE_MODULE_ROLE_VISIBILITY: Partial<Record<string, Ro
   DNCMT: DEFAULT_MODULE_VISIBLE_ROLES,
   DNVAL: DEFAULT_MODULE_VISIBLE_ROLES,
   DNR_PROFILE: [Roles.Developer, Roles.SystemAdministrator, Roles.EntityAdministrator, Roles.SystemUser, Roles.Guest],
-  DNR_NOT: [Roles.Developer, Roles.SystemAdministrator, Roles.EntityAdministrator, Roles.SystemUser, Roles.Guest],
+  // DNR_NOT: [Roles.Developer, Roles.SystemAdministrator, Roles.EntityAdministrator, Roles.SystemUser, Roles.Guest],
   VREQ: DEFAULT_MODULE_VISIBLE_ROLES,
   VOFR: DEFAULT_MODULE_VISIBLE_ROLES,
   VOFR_NEW: DEFAULT_MODULE_VISIBLE_ROLES,

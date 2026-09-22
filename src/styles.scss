@@ -362,3 +362,19 @@ app-register-location-picker .leaflet-container .leaflet-tile {
   width: 256px !important;
   height: 256px !important;
 }
+
+html body .p-button.p-button-secondary.p-button-outlined:not(:disabled) {
+  color: light-dark(#6c757d, #ffffff);
+  border-color: light-dark(#6c757d, rgba(255, 255, 255, 0.85));
+
+  .p-button-icon,
+  .p-button-label {
+    color: inherit;
+  }
+
+  &:hover {
+    background: light-dark(rgba(108, 117, 125, 0.08), rgba(255, 255, 255, 0.12));
+    color: light-dark(#6c757d, #ffffff);
+    border-color: light-dark(#6c757d, #ffffff);
+  }
+}

@@ -1,5 +1,4 @@
-﻿import { Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+﻿import { ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { LayoutService } from '../app-services/app.layout.service';
 import { Subscription } from 'rxjs';
@@ -10,7 +9,6 @@ import { TranslationService } from 'src/app/core/services/translation.service';
 import { LogoutComponent } from 'src/app/modules/auth/components/logout/logout.component';
 import { DialogService } from 'primeng/dynamicdialog';
 import { IAccountDetails, IAccountSettings, IUserDetails } from 'src/app/core/models/account-status.model';
-import { switchMap } from 'rxjs';
 
 
 @Component({
@@ -36,7 +34,7 @@ import { switchMap } from 'rxjs';
 export class AppMenuProfileComponent implements OnInit, OnDestroy {
     isAdmin: boolean = false;
     userName: string = 'John Doe';
-    imageUrl: string = '';
+    profilePictureUrl: string = '';
     subs: Subscription = new Subscription();
     user: IUserDetails;
     account: IAccountDetails;
@@ -51,7 +49,8 @@ export class AppMenuProfileComponent implements OnInit, OnDestroy {
         private profilePictureService: ProfilePictureService,
         private imageService: ImageService,
         private translate: TranslationService,
-        private dialogService: DialogService
+        private dialogService: DialogService,
+        private ref: ChangeDetectorRef,
     ) {
 
     }
@@ -61,15 +60,16 @@ export class AppMenuProfileComponent implements OnInit, OnDestroy {
         this.subs.add(
             this.profilePictureService.profilePicture$.subscribe((pictureUrl: string | null) => {
                 if (pictureUrl) {
-                    this.imageUrl = this.convertProfilePictureUrl(pictureUrl);
+                    this.profilePictureUrl = this.convertProfilePictureUrl(pictureUrl);
                 } else {
                     this.gender = this.localStorage.getGender() || false;
                     if (this.gender) {
-                        this.imageUrl = 'assets/media/avatar.png';
+                        this.profilePictureUrl = 'assets/media/avatar.png';
                     } else {
-                        this.imageUrl = 'assets/media/female-avatar.png';
+                        this.profilePictureUrl = 'assets/media/female-avatar.png';
                     }
                 }
+                this.ref.detectChanges();
             })
         );
     }
@@ -105,20 +105,19 @@ export class AppMenuProfileComponent implements OnInit, OnDestroy {
                 this.userName = this.account?.Email || 'User';
             }
         }
-        if (this.account) {
 
-            this.gender = this.localStorage.getGender() || false;
-            if (this.gender) {
-                this.imageUrl = this.account.Profile_Picture || 'assets/media/avatar.png';
-            } else {
-                this.imageUrl = this.account.Profile_Picture || 'assets/media/female-avatar.png';
-            }
+        this.gender = this.localStorage.getGender() || false;
 
-            this.imageUrl = this.convertProfilePictureUrl(this.imageUrl);
+        if (this.gender) {
+            this.profilePictureUrl = this.account?.Profile_Picture || 'assets/media/avatar.png';
+        } else {
+            this.profilePictureUrl = this.account?.Profile_Picture || 'assets/media/female-avatar.png';
+        }
 
-            if (this.imageUrl) {
-                this.profilePictureService.updateProfilePicture(this.imageUrl);
-            }
+        this.profilePictureUrl = this.convertProfilePictureUrl(this.profilePictureUrl);
+
+        if (this.profilePictureUrl) {
+            this.profilePictureService.updateProfilePicture(this.profilePictureUrl);
         }
     }
 

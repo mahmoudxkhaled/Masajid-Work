@@ -1293,6 +1293,7 @@
             "donations.breakdown.list.title": "طلبات التفكيك",
             "donations.adminReview.title": "مراجعة الإدارة",
             "donations.adminReview.details.title": "مراجعة طلب التبرع",
+            "donations.adminBreakdownReview.title": "مراجعة التجزئة",
             "donations.adminClose.title": "جاهزة للإغلاق",
             "donations.adminClose.details.title": "إغلاق طلب التبرع",
             "donations.vendorOffers.title": "عروض الموردين",
@@ -1960,6 +1961,7 @@
         "details": {
             "title": "تفاصيل الشركة",
             "backToList": "العودة للقائمة",
+            "backToHome": "العودة إلى الرئيسية",
             "editEntity": "تعديل الشركة",
             "profile": "ملف الشركة",
             "byType": {

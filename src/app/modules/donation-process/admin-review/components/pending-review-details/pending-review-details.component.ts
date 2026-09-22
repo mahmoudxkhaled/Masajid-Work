@@ -43,6 +43,7 @@ export class PendingReviewDetailsComponent implements OnInit, OnDestroy {
   rejectDialogVisible = false;
   locationMapVisible = false;
   reviewNote = '';
+  hasBreakdownRequests = false;
 
   isLoading$ = this.donationAdminService.isLoadingSubject.asObservable();
 
@@ -97,12 +98,16 @@ export class PendingReviewDetailsComponent implements OnInit, OnDestroy {
   }
 
   goToRequestBreakdowns(): void {
-    if (!this.requestId) {
+    if (!this.requestId || !this.hasBreakdownRequests) {
       return;
     }
     this.router.navigate(['/donations/admin/requests', this.requestId, 'breakdown'], {
       state: { returnTo: `/donations/admin/pending-review/${this.requestId}` },
     });
+  }
+
+  onBreakdownHasItemsChange(hasItems: boolean): void {
+    this.hasBreakdownRequests = hasItems;
   }
 
   openApproveDialog(): void {

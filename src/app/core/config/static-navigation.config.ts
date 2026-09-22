@@ -9,18 +9,20 @@ export const DEFAULT_MODULE_VISIBLE_ROLES: Roles[] = [
 ];
 
 export const MODULE_ROLE_VISIBILITY: Partial<Record<string, Roles[]>> = {
-    SDB: [Roles.Developer, Roles.SystemAdministrator],
+    // TODO: restore System Dashboard later
+    // SDB: [Roles.Developer, Roles.SystemAdministrator],
     SSM: [Roles.Developer, Roles.SystemAdministrator],
     SENT: [Roles.Developer, Roles.SystemAdministrator],
     USRACC: [Roles.Developer, Roles.SystemAdministrator],
-    NOT: [Roles.Developer, Roles.SystemAdministrator, Roles.EntityAdministrator, Roles.SystemUser, Roles.Guest],
+    // TODO: restore Notifications + Notifications Management modules later
+    // NOT: [Roles.Developer, Roles.SystemAdministrator, Roles.EntityAdministrator, Roles.SystemUser, Roles.Guest],
     PRF: [Roles.Developer, Roles.SystemAdministrator, Roles.EntityAdministrator, Roles.SystemUser, Roles.Guest],
     FAC_PROFILE: [Roles.Developer, Roles.SystemAdministrator, Roles.EntityAdministrator, Roles.SystemUser, Roles.Guest],
     VND_PROFILE: [Roles.Developer, Roles.SystemAdministrator, Roles.EntityAdministrator, Roles.SystemUser, Roles.Guest],
     CHR_PROFILE: [Roles.Developer, Roles.SystemAdministrator, Roles.EntityAdministrator, Roles.SystemUser, Roles.Guest],
     SET: [Roles.Developer, Roles.SystemAdministrator, Roles.EntityAdministrator, Roles.SystemUser, Roles.Guest],
     LGOT: [Roles.Developer, Roles.SystemAdministrator, Roles.EntityAdministrator, Roles.SystemUser, Roles.Guest],
-    NOTM: [Roles.Developer, Roles.SystemAdministrator, Roles.EntityAdministrator],
+    // NOTM: [Roles.Developer, Roles.SystemAdministrator, Roles.EntityAdministrator],
 };
 
 export const SYSTEM_ADMIN_ONLY_LEGACY_FUNCTIONS: readonly string[] = ['EntAdm', 'DC'];
@@ -105,22 +107,23 @@ export const STATIC_MODULES_DETAILS: IModulesDetails = {
         Default_Order: 30,
         URL: '/summary/settings',
     },
-    NOT: {
-        ModuleID: 2,
-        FunctionID: 1,
-        Name: 'Notifications',
-        Name_Regional: '\u0627\u0644\u0625\u0634\u0639\u0627\u0631\u0627\u062a',
-        Default_Order: 40,
-        URL: '/summary/notifications',
-    },
-    NOTM: {
-        ModuleID: 33,
-        FunctionID: 1,
-        Name: 'Notifications Management',
-        Name_Regional: '\u0625\u062f\u0627\u0631\u0629 \u0627\u0644\u0625\u0634\u0639\u0627\u0631\u0627\u062a',
-        Default_Order: 50,
-        URL: '/summary/notifications-management',
-    },
+    // TODO: restore Notifications + Notifications Management modules later
+    // NOT: {
+    //     ModuleID: 2,
+    //     FunctionID: 1,
+    //     Name: 'Notifications',
+    //     Name_Regional: '\u0627\u0644\u0625\u0634\u0639\u0627\u0631\u0627\u062a',
+    //     Default_Order: 40,
+    //     URL: '/summary/notifications',
+    // },
+    // NOTM: {
+    //     ModuleID: 33,
+    //     FunctionID: 1,
+    //     Name: 'Notifications Management',
+    //     Name_Regional: '\u0625\u062f\u0627\u0631\u0629 \u0627\u0644\u0625\u0634\u0639\u0627\u0631\u0627\u062a',
+    //     Default_Order: 50,
+    //     URL: '/summary/notifications-management',
+    // },
     GP: {
         ModuleID: 95,
         FunctionID: 1,
@@ -129,14 +132,15 @@ export const STATIC_MODULES_DETAILS: IModulesDetails = {
         Default_Order: 55,
         URL: '/summary/groups',
     },
-    SDB: {
-        ModuleID: 9,
-        FunctionID: 2,
-        Name: 'System Dashboard',
-        Name_Regional: '\u0644\u0648\u062d\u0629 \u062a\u062d\u0643\u0645 \u0627\u0644\u0646\u0638\u0627\u0645',
-        Default_Order: 10,
-        URL: '/system-administration/dashboard',
-    },
+    // TODO: restore System Dashboard later
+    // SDB: {
+    //     ModuleID: 9,
+    //     FunctionID: 2,
+    //     Name: 'System Dashboard',
+    //     Name_Regional: '\u0644\u0648\u062d\u0629 \u062a\u062d\u0643\u0645 \u0627\u0644\u0646\u0638\u0627\u0645',
+    //     Default_Order: 10,
+    //     URL: '/system-administration/dashboard',
+    // },
     SENT: {
         ModuleID: 91,
         FunctionID: 2,

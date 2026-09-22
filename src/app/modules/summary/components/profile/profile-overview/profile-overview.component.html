@@ -77,7 +77,9 @@
                                 </div>
                                 <div *ngIf="uploadingPicture" class="picture-loading-overlay">
                                     <div class="picture-upload-indicator">
-                                        <p-skeleton shape="circle" size="2.5rem"></p-skeleton>
+                                        <p-progressSpinner strokeWidth="4"
+                                            styleClass="picture-upload-spinner">
+                                        </p-progressSpinner>
                                         <span class="picture-upload-text">
                                             {{ 'profile.edit.uploading' | translate }}
                                         </span>

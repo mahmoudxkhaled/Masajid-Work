@@ -1,15 +1,14 @@
 ﻿import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { FileUpload } from 'primeng/fileupload';
 import { Subscription } from 'rxjs';
 import { EntitiesService } from 'src/app/modules/entity-administration/entities/services/entities.service';
 import { LocalStorageService } from 'src/app/core/services/local-storage.service';
-import { LanguageDirService } from 'src/app/core/services/language-dir.service';
 import { EntityDetailsRefreshService } from 'src/app/core/services/entity-details-refresh.service';
-import { ImageService } from 'src/app/core/services/image.service';
 import { PermissionService } from 'src/app/core/services/permission.service';
-import { IAccountSettings, IEntityDetails } from 'src/app/core/models/account-status.model';
+import { Roles } from 'src/app/core/models/system-roles';
+import { IEntityDetails } from 'src/app/core/models/account-status.model';
 import { AuthService } from 'src/app/modules/auth/services/auth.service';
 import { TranslateService } from '@ngx-translate/core';
 import { EntityExtraDataService } from 'src/app/modules/donation-process/services/entity-extra-data.service';
@@ -33,14 +32,10 @@ export class SharedEntityDetailsComponent implements OnInit, OnDestroy {
     loadingDetails: boolean = false;
     loadingPhoto: boolean = false;
     photoAwaitingApi: boolean = false;
-    activeTabIndex: number = 0;
 
     entityDetails: any = null;
     entityPhotoUrl: string = 'assets/media/upload-photo.jpg';
     hasPhoto: boolean = false;
-
-    accountSettings: IAccountSettings;
-    requestedSystemRole: number = 0;
 
     canManageEntityPhoto = false;
     canEditEntityDetails = false;
@@ -57,31 +52,17 @@ export class SharedEntityDetailsComponent implements OnInit, OnDestroy {
         private messageService: MessageService,
         private localStorageService: LocalStorageService,
         private entityDetailsRefreshService: EntityDetailsRefreshService,
-        private imageService: ImageService,
         private permissionService: PermissionService,
-        private languageDirService: LanguageDirService,
         private authService: AuthService,
         private translate: TranslateService,
         private entityExtraDataService: EntityExtraDataService,
-    ) {
-        this.accountSettings = this.localStorageService.getAccountSettings() as IAccountSettings;
-    }
+    ) {}
 
     ngOnInit(): void {
-        this.requestedSystemRole =
-            this.route.snapshot.data['requestedSystemRole'] ??
-            (this.localStorageService.getAccountDetails()?.System_Role_ID || 0);
-
         this.canManageEntityPhoto =
             this.permissionService.can('Assign_Entity_Photo') &&
             this.permissionService.can('Remove_Entity_Photo');
         this.canEditEntityDetails = this.permissionService.can('Update_Entity_Details');
-
-        this.applyTabIndexFromQuery(this.route.snapshot.queryParamMap);
-        this.bindTabFromQueryParam();
-        this.subscriptions.push(
-            this.languageDirService.userLanguageCode$.subscribe(() => { })
-        );
         this.bindEntityIdFromRoute();
     }
 
@@ -154,44 +135,6 @@ export class SharedEntityDetailsComponent implements OnInit, OnDestroy {
         this.subscriptions.push(sub);
     }
 
-    private parseTabIndex(raw: string | null): number | null {
-        if (raw === null || raw === '') {
-            return null;
-        }
-        const n = parseInt(raw, 10);
-        if (Number.isNaN(n)) {
-            return null;
-        }
-        return Math.max(0, Math.min(4, n));
-    }
-
-    private applyTabIndexFromQuery(paramMap: ParamMap): void {
-        const idx = this.parseTabIndex(paramMap.get('tab'));
-        if (idx !== null) {
-            this.activeTabIndex = idx;
-        }
-    }
-
-    private bindTabFromQueryParam(): void {
-        const sub = this.route.queryParamMap.subscribe((params) => {
-            const idx = this.parseTabIndex(params.get('tab'));
-            if (idx !== null) {
-                this.activeTabIndex = idx;
-            }
-        });
-        this.subscriptions.push(sub);
-    }
-
-    onTabChange(index: number): void {
-        this.activeTabIndex = index;
-        this.router.navigate([], {
-            relativeTo: this.route,
-            queryParams: { tab: index },
-            queryParamsHandling: 'merge',
-            replaceUrl: true
-        });
-    }
-
     ngOnDestroy(): void {
         this.getEntityPhotoSub?.unsubscribe();
         this.subscriptions.forEach((sub) => sub.unsubscribe());
@@ -233,11 +176,6 @@ export class SharedEntityDetailsComponent implements OnInit, OnDestroy {
         this.entityDetails = { ...stored };
         this.loading = false;
         this.loadingDetails = false;
-    }
-
-    private isCurrentAccountEntity(): boolean {
-        const ed = this.localStorageService.getEntityDetails() as IEntityDetails | null;
-        return !!(ed && String(ed.Entity_ID) === this.entityId);
     }
 
     private notifyTopBarIfCurrentOrParentEntity(): void {
@@ -311,11 +249,6 @@ export class SharedEntityDetailsComponent implements OnInit, OnDestroy {
         return this.entityDetails.Code || this.entityDetails.code || '';
     }
 
-    getParentEntityLabel(): string {
-        const parentId = this.entityDetails.Parent_Entity_ID;
-        return parentId ? ` ${parentId}` : 'Root Entity';
-    }
-
     getStatusLabel(): string {
         if (!this.entityDetails) return 'Unknown';
         const isActive = this.entityDetails.Is_Active !== undefined
@@ -352,10 +285,6 @@ export class SharedEntityDetailsComponent implements OnInit, OnDestroy {
         if (this.entityId) {
             this.router.navigate(['edit'], { relativeTo: this.route });
         }
-    }
-
-    handleEntityUpdated(): void {
-        this.loadAllData();
     }
 
     onPhotoUpload(event: any): void {
@@ -494,12 +423,19 @@ export class SharedEntityDetailsComponent implements OnInit, OnDestroy {
     }
 
     navigateBack(): void {
+        if (!this.canBackToList()) {
+            this.router.navigate(['/']);
+            return;
+        }
         const baseRoute = this.route.parent ?? this.route;
         this.router.navigate(['list'], { relativeTo: baseRoute });
     }
 
-    getEntityIdAsNumber(): number {
-        return Number(this.entityId) || 0;
+    canBackToList(): boolean {
+        return this.permissionService.hasAnyRole([
+            Roles.Developer,
+            Roles.SystemAdministrator,
+        ]);
     }
 
     private refreshTopBarAfterPhotoChange(): void {
