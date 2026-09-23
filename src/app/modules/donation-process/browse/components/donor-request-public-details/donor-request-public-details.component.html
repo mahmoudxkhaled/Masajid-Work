@@ -14,7 +14,7 @@
         [outlined]="true" (onClick)="backToList()"></p-button>
 
     </div>
-  </div>
+  </div>111111111111
 
   <app-erp-info *ngIf="!loading && activeCommitmentId" severity="info" icon="pi pi-info-circle"
     [description]="'donations.browse.details.alreadyCommitted' | translate" class="mb-3"></app-erp-info>
@@ -209,6 +209,9 @@
           <h3 class="details-section-title">{{ 'donations.browse.details.sections.vendorOffers' | translate }}</h3>
         </div>
         <div class="p-3 pt-2">
+          <p class="mb-3 text-500">
+            {{ 'donations.browse.details.vendorOffers.optionalHint' | translate }}
+          </p>
           <ng-container *ngIf="offersLoading; else offersLoaded">
             <div class="flex flex-column gap-2">
               <p-skeleton height="2.5rem" width="100%" borderRadius="6px"></p-skeleton>
@@ -248,14 +251,17 @@
               </ng-template>
               <ng-template pTemplate="body" let-row>
                 <tr>
-                  <td>{{ getVendorLabel(row) }}</td>
+                  <td class="donation-table-cell-ellipsis" style="width: 7rem"
+                    [pTooltip]="getVendorLabel(row)" tooltipPosition="top" appendTo="body">
+                    <span class="text-overflow-ellipsis">{{ getVendorLabel(row) }}</span>
+                  </td>
                   <td dir="ltr">{{ formatOfferAmount(row) }}</td>
                   <td class="text-center">{{ getYesNo(row.includesSupply) }}</td>
                   <td class="text-center">{{ getYesNo(row.includesInstallation) }}</td>
-                  <td>
-                    <div class="offer-description-cell" [pTooltip]="row.description || ''" tooltipPosition="top">
-                      {{ row.description || '-' }}
-                    </div>
+                  <td class="donation-table-cell-ellipsis" style="width: 12rem"
+                    [pTooltip]="row.description || ''" tooltipPosition="top" appendTo="body"
+                    [tooltipDisabled]="!row.description">
+                    <span class="text-overflow-ellipsis">{{ row.description || '-' }}</span>
                   </td>
                   <td dir="ltr">{{ row.validUntil ? (row.validUntil | date:'yyyy-MM-dd') : '-' }}</td>
                   <td class="text-center">

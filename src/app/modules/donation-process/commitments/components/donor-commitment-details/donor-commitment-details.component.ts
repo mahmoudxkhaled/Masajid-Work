@@ -4,6 +4,7 @@ import { MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { LanguageDirService } from 'src/app/core/services/language-dir.service';
 import { TranslationService } from 'src/app/core/services/translation.service';
+import { DonationAttachmentOwnerType } from '../../../models/donation-attachment.constants';
 import { canRequestBreakdown } from '../../../models/donation-breakdown-request.model';
 import { DonationCommitmentBackend, DonationCommitmentDetails } from '../../../models/donation-commitment.model';
 import {
@@ -46,7 +47,10 @@ type DonorCommitmentDetailsContext = 'load' | 'listOffers' | 'listFulfillments' 
   styleUrl: './donor-commitment-details.component.scss',
 })
 export class DonorCommitmentDetailsComponent implements OnInit, OnDestroy {
+  readonly requestAttachmentOwnerType = DonationAttachmentOwnerType.DonationRequest;
+
   commitmentId = 0;
+  requestId = 0;
   loading = true;
   workflowLoading = false;
   offersLoading = false;
@@ -320,6 +324,7 @@ export class DonorCommitmentDetailsComponent implements OnInit, OnDestroy {
         this.refreshDisplay();
 
         const donationRequestId = Number(this.details?.donationRequestId || 0);
+        this.requestId = donationRequestId;
         if (donationRequestId) {
           this.workflowLoading = true;
           this.offersLoading = true;

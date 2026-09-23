@@ -195,14 +195,24 @@ export class CharityRepresentationListComponent implements OnInit, OnDestroy {
       acceptedAt: String(item.Accepted_At || ''),
     }));
 
-    if (this.isAssignedMode && this.selectedStatusId) {
-      mapped = mapped.filter((item) => item.statusId === this.selectedStatusId);
+    if (this.isAssignedMode) {
+      mapped = mapped.filter((item) => this.isAssignedCommitmentStatus(item.statusId));
+      if (this.selectedStatusId) {
+        mapped = mapped.filter((item) => item.statusId === this.selectedStatusId);
+      }
       this.totalRecords = mapped.length;
     } else {
       this.totalRecords = this.serverTotalCount;
     }
 
     this.commitments = mapped;
+  }
+
+  private isAssignedCommitmentStatus(statusId: number): boolean {
+    return (
+      statusId === DonationCommitmentStatus.Accepted ||
+      statusId === DonationCommitmentStatus.Cancelled
+    );
   }
 
   private buildStatusOptions(): void {

@@ -3791,6 +3791,7 @@
                 "vendorOffers": {
                     "empty": "No vendor offers are available yet.",
                     "count": "{{count}} offers",
+                    "optionalHint": "Review vendor offer details here. You can optionally select an offer when submitting fulfillment proof.",
                     "columns": {
                         "vendor": "Vendor",
                         "amount": "Offer amount",
@@ -3980,6 +3981,7 @@
                     "commitment": "Commitment information",
                     "request": "Related donation request",
                     "requestSummary": "Request summary",
+                    "attachments": "Request Attachments",
                     "workflow": "Status History"
                 }
             },
@@ -4337,6 +4339,7 @@
                 "sections": {
                     "commitment": "Commitment",
                     "request": "Donation request",
+                    "attachments": "Request Attachments",
                     "facility": "Facility",
                     "donor": "Donor",
                     "workflow": "Status History"

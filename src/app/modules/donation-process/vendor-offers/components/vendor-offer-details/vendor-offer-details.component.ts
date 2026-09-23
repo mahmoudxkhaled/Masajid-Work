@@ -94,7 +94,7 @@ export class VendorOfferDetailsComponent implements OnInit, OnDestroy {
         this.buildTypeMaps();
         this.buildCategoryMaps();
         this.buildCountryMaps();
-        this.refreshRequestDisplay();
+        this.refreshDisplay();
       }),
     );
     this.loadLookups();
@@ -250,7 +250,7 @@ export class VendorOfferDetailsComponent implements OnInit, OnDestroy {
         }
 
         this.rawDetails = (response.message ?? null) as VendorOfferBackend | null;
-        this.details = this.vendorOffersService.mapVendorOfferDetails(this.rawDetails);
+        this.refreshDisplay();
         this.loading = false;
         this.requestId = Number(this.details?.donationRequestId || 0);
         this.loadRequestDetails();
@@ -291,6 +291,11 @@ export class VendorOfferDetailsComponent implements OnInit, OnDestroy {
   }
 
   // #endregion
+
+  private refreshDisplay(): void {
+    this.details = this.vendorOffersService.mapVendorOfferDetails(this.rawDetails);
+    this.refreshRequestDisplay();
+  }
 
   private refreshRequestDisplay(): void {
     this.requestDetails = this.donationRequestsService.mapDonationRequestDetails(this.rawRequestDetails);

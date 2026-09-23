@@ -4,6 +4,7 @@ import { MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { LanguageDirService } from 'src/app/core/services/language-dir.service';
 import { TranslationService } from 'src/app/core/services/translation.service';
+import { DonationAttachmentOwnerType } from '../../../models/donation-attachment.constants';
 import { DonationCommitmentBackend, DonationCommitmentDetails } from '../../../models/donation-commitment.model';
 import {
   canRespondToRepresentation,
@@ -11,12 +12,16 @@ import {
   getCommitmentStatusLabelKey,
   getCommitmentStatusSeverity,
 } from '../../../models/donation-commitment-status.model';
-import { DonationRequestWorkflowItem } from '../../../models/donation-request.model';
+import {
+  DonationRequestDetails,
+  DonationRequestDetailsBackend,
+  DonationRequestWorkflowItem,
+} from '../../../models/donation-request.model';
 import { FulfillmentMode } from '../../../models/fulfillment-mode.model';
 import { DonationRequestsService } from '../../../facility-requests/services/donation-requests.service';
 import { CharityRepresentationService } from '../../services/charity-representation.service';
 
-type CharityRepresentationDetailsContext = 'load';
+type CharityRepresentationDetailsContext = 'load' | 'loadRequest';
 
 @Component({
   standalone: false,
@@ -25,10 +30,15 @@ type CharityRepresentationDetailsContext = 'load';
   styleUrl: './charity-representation-details.component.scss',
 })
 export class CharityRepresentationDetailsComponent implements OnInit, OnDestroy {
+  readonly requestAttachmentOwnerType = DonationAttachmentOwnerType.DonationRequest;
+
   commitmentId = 0;
+  requestId = 0;
   loading = true;
+  requestLoading = false;
   workflowLoading = false;
   details: DonationCommitmentDetails | null = null;
+  requestDetails: DonationRequestDetails | null = null;
   workflowItems: DonationRequestWorkflowItem[] = [];
   respondDialogVisible = false;
   respondMode: 'accept' | 'reject' = 'accept';
@@ -40,6 +50,7 @@ export class CharityRepresentationDetailsComponent implements OnInit, OnDestroy 
   statusSeverity: CommitmentStatusSeverity = 'secondary';
 
   private rawDetails: DonationCommitmentBackend | null = null;
+  private rawRequestDetails: DonationRequestDetailsBackend | null = null;
   private rawWorkflow: Record<string, unknown>[] = [];
   private subscriptions: Subscription[] = [];
 
@@ -104,6 +115,22 @@ export class CharityRepresentationDetailsComponent implements OnInit, OnDestroy 
       : this.translate.getInstant('donations.browse.no');
   }
 
+  formatRequestQuantity(): string {
+    if (!this.requestDetails) {
+      return '-';
+    }
+    const quantity = this.requestDetails.quantity;
+    const unit = this.requestDetails.unit || '';
+    return `${quantity} ${unit}`.trim() || '-';
+  }
+
+  formatRequestEstimatedCost(): string {
+    if (!this.requestDetails?.estimatedCost) {
+      return '-';
+    }
+    return `${this.requestDetails.estimatedCost} ${this.requestDetails.currencyCode || ''}`.trim();
+  }
+
   // #region Load data
 
   private loadDetails(): void {
@@ -120,6 +147,8 @@ export class CharityRepresentationDetailsComponent implements OnInit, OnDestroy 
         this.rawDetails = (response.message ?? null) as DonationCommitmentBackend | null;
         this.loading = false;
         this.refreshDisplay();
+        this.requestId = Number(this.details?.donationRequestId || 0);
+        this.loadRequestDetails();
         this.loadWorkflow();
       },
       error: () => {
@@ -129,16 +158,48 @@ export class CharityRepresentationDetailsComponent implements OnInit, OnDestroy 
     this.subscriptions.push(sub);
   }
 
+  private loadRequestDetails(): void {
+    if (!this.requestId) {
+      this.rawRequestDetails = null;
+      this.requestDetails = null;
+      this.requestLoading = false;
+      return;
+    }
+
+    this.requestLoading = true;
+    const sub = this.donationRequestsService.getDonationRequestDetails(this.requestId).subscribe({
+      next: (response: any) => {
+        console.log('getDonationRequestDetails response', response);
+        if (!response?.success) {
+          this.handleBusinessError('loadRequest', response);
+          this.rawRequestDetails = null;
+          this.requestDetails = null;
+          this.requestLoading = false;
+          return;
+        }
+
+        this.rawRequestDetails = (response.message ?? null) as DonationRequestDetailsBackend | null;
+        this.refreshRequestDisplay();
+        this.requestLoading = false;
+      },
+      error: () => {
+        this.rawRequestDetails = null;
+        this.requestDetails = null;
+        this.requestLoading = false;
+      },
+    });
+    this.subscriptions.push(sub);
+  }
+
   private loadWorkflow(): void {
-    const donationRequestId = Number(this.details?.donationRequestId || 0);
-    if (!donationRequestId) {
+    if (!this.requestId) {
       this.rawWorkflow = [];
       this.workflowItems = [];
       return;
     }
 
     this.workflowLoading = true;
-    const sub = this.donationRequestsService.getDonationRequestWorkflow(donationRequestId).subscribe({
+    const sub = this.donationRequestsService.getDonationRequestWorkflow(this.requestId).subscribe({
       next: (response: any) => {
         console.log('getDonationRequestWorkflow response', response);
         if (!response?.success) {
@@ -148,7 +209,7 @@ export class CharityRepresentationDetailsComponent implements OnInit, OnDestroy 
           return;
         }
 
-        this.rawWorkflow = this.donationRequestsService.extractWorkflowHistory(response.message);
+        this.rawWorkflow = Array.isArray(response.message) ? response.message : [];
         this.workflowItems = this.donationRequestsService.mapDonationRequestWorkflow(this.rawWorkflow);
         this.workflowLoading = false;
       },
@@ -166,6 +227,7 @@ export class CharityRepresentationDetailsComponent implements OnInit, OnDestroy 
   private refreshDisplay(): void {
     this.details = this.charityRepresentationService.mapCommitmentDetails(this.rawDetails);
     this.workflowItems = this.donationRequestsService.mapDonationRequestWorkflow(this.rawWorkflow);
+    this.refreshRequestDisplay();
     if (!this.details) {
       return;
     }
@@ -175,6 +237,10 @@ export class CharityRepresentationDetailsComponent implements OnInit, OnDestroy 
     this.fulfillmentModeLabel = this.getFulfillmentModeLabel(this.details.fulfillmentMode);
     this.charityLabel = this.details.charityEntityId ? `#${this.details.charityEntityId}` : '-';
     this.charityRepLabel = this.details.charityRepUserId ? `#${this.details.charityRepUserId}` : '-';
+  }
+
+  private refreshRequestDisplay(): void {
+    this.requestDetails = this.donationRequestsService.mapDonationRequestDetails(this.rawRequestDetails);
   }
 
   private getFulfillmentModeLabel(mode: number): string {
@@ -195,6 +261,9 @@ export class CharityRepresentationDetailsComponent implements OnInit, OnDestroy 
       case 'load':
         detail = this.getLoadErrorMessage(code);
         break;
+      case 'loadRequest':
+        detail = this.getLoadRequestErrorMessage(code);
+        break;
     }
 
     if (detail) {
@@ -214,6 +283,21 @@ export class CharityRepresentationDetailsComponent implements OnInit, OnDestroy 
         return this.translate.getInstant('donations.charityRepresentation.errors.notAssignedRepresentative');
       case 'DAP13010':
         return this.translate.getInstant('donations.charityRepresentation.errors.invalidStatus');
+      case 'DAP11055':
+        return this.translate.getInstant('donations.charityRepresentation.errors.accessDenied');
+      case 'DAP11040':
+      case 'DAP11041':
+      case 'DAP11042':
+        return this.translate.getInstant('donations.charityRepresentation.errors.sessionExpired');
+      default:
+        return null;
+    }
+  }
+
+  private getLoadRequestErrorMessage(code: string): string | null {
+    switch (code) {
+      case 'DAP12001':
+        return this.translate.getInstant('donations.commitments.details.requestSummaryUnavailable');
       case 'DAP11055':
         return this.translate.getInstant('donations.charityRepresentation.errors.accessDenied');
       case 'DAP11040':

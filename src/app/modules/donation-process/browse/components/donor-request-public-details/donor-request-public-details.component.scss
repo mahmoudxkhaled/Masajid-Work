@@ -68,14 +68,22 @@
   word-break: break-word;
 }
 
-.offer-description-cell {
-  max-width: 12rem;
+:host ::ng-deep {
+  .p-datatable .p-datatable-tbody > tr > td.donation-table-cell-ellipsis {
+    max-width: 0;
+    overflow: hidden;
+  }
+
+  .vendor-offers-count-tag {
+    cursor: pointer;
+  }
+}
+
+.text-overflow-ellipsis {
+  display: block;
   min-width: 0;
+  max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-:host ::ng-deep .vendor-offers-count-tag {
-  cursor: pointer;
 }
