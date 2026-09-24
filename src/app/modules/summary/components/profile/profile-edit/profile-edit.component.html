@@ -1,6 +1,5 @@
 <div class="p-4 card">
     <p-toast></p-toast>
-
     <!-- Page Header -->
     <div class="flex justify-content-between align-items-center mb-4">
         <div>
@@ -131,8 +130,76 @@
             <!-- Contact Information Panel -->
             <div class="col-12 mt-4">
                 <p-panel [header]="'profile.edit.contactInformation' | translate" class="h-full">
-                    <div *ngIf="loadingContactInfo" class="flex justify-content-center align-items-center p-4">
-                        <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+                    <div *ngIf="loadingContactInfo" class="grid">
+                        <div class="col-12">
+                            <div class="field">
+                                <label class="block text-sm font-medium mb-2">
+                                    <i class="pi pi-map-marker mr-2 text-blue-500"></i>
+                                    {{ 'profile.edit.address' | translate }}
+                                </label>
+                                <p-skeleton height="5.5rem" width="100%" borderRadius="6px"></p-skeleton>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="flex justify-content-between align-items-center mb-2">
+                                <label class="block text-sm font-medium">
+                                    {{ 'profile.edit.phoneNumbers' | translate }} <span class="text-red-500">*</span>
+                                </label>
+                                <p-button [label]="'profile.edit.addPhone' | translate" icon="pi pi-plus" size="small"
+                                    type="button" [disabled]="true"></p-button>
+                            </div>
+                            <div class="flex flex-column gap-2">
+                                <p-skeleton height="2.5rem" width="100%" borderRadius="6px"></p-skeleton>
+                            </div>
+                        </div>
+
+                        <div class="col-12 md:col-6">
+                            <div class="field">
+                                <label class="block text-sm font-medium mb-2">
+                                    <i class="pi pi-linkedin mr-2 text-blue-500"></i>
+                                    {{ 'profile.edit.linkedinPage' | translate }}
+                                </label>
+                                <p-skeleton height="2.5rem" width="100%" borderRadius="6px"></p-skeleton>
+                            </div>
+                        </div>
+
+                        <div class="col-12 md:col-6">
+                            <div class="field">
+                                <label class="block text-sm font-medium mb-2">
+                                    <i class="pi pi-facebook mr-2 text-blue-500"></i>
+                                    {{ 'profile.edit.facebookPage' | translate }}
+                                </label>
+                                <p-skeleton height="2.5rem" width="100%" borderRadius="6px"></p-skeleton>
+                            </div>
+                        </div>
+
+                        <div class="col-12 md:col-6">
+                            <div class="field">
+                                <label class="block text-sm font-medium mb-2">
+                                    <i class="pi pi-instagram mr-2 text-blue-500"></i>
+                                    {{ 'profile.edit.instagramPage' | translate }}
+                                </label>
+                                <p-skeleton height="2.5rem" width="100%" borderRadius="6px"></p-skeleton>
+                            </div>
+                        </div>
+
+                        <div class="col-12 md:col-6">
+                            <div class="field">
+                                <label class="block text-sm font-medium mb-2">
+                                    <i class="pi pi-twitter mr-2 text-blue-500"></i>
+                                    {{ 'profile.edit.twitterPage' | translate }}
+                                </label>
+                                <p-skeleton height="2.5rem" width="100%" borderRadius="6px"></p-skeleton>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="flex justify-content-end gap-3 my-1">
+                                <p-button [label]="'profile.edit.saveContactInfo' | translate"
+                                    [disabled]="true"></p-button>
+                            </div>
+                        </div>
                     </div>
                     <form [formGroup]="contactInfoForm" (ngSubmit)="saveContactInfo()"
                         *ngIf="!loadingContactInfo && contactInfoForm">

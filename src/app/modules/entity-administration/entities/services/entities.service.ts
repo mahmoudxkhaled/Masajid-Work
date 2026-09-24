@@ -147,9 +147,7 @@ export class EntitiesService {
             address,
             isRegional.toString(),
             JSON.stringify(phoneNumbers),
-            city,
-            latitude,
-            longitude,
+            JSON.stringify([city, latitude, longitude]),
             JSON.stringify(emails),
         ];
         console.log('params', params);

@@ -8,6 +8,16 @@ export const DEFAULT_MODULE_VISIBLE_ROLES: Roles[] = [
     Roles.SystemUser,
 ];
 
+export const HIDDEN_NAVIGATION_MODULE_CODES = new Set<string>([
+    'SET',
+    'GP',
+    'ADM_FAC',
+    'ADM_ACC',
+    'ADM_NOT',
+    'ENTDT',
+    'EUA',
+]);
+
 export const MODULE_ROLE_VISIBILITY: Partial<Record<string, Roles[]>> = {
     // TODO: restore System Dashboard later
     // SDB: [Roles.Developer, Roles.SystemAdministrator],

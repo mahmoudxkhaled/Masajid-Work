@@ -11,6 +11,7 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { IMenuFunction, IMenuModule } from 'src/app/core/models/account-status.model';
 import { ModuleNavigationService } from 'src/app/core/services/module-navigation.service';
 import { DashboardResolverService } from 'src/app/core/services/dashboard-resolver.service';
+import { HIDDEN_NAVIGATION_MODULE_CODES } from 'src/app/core/config/static-navigation.config';
 
 @Component({
     selector: 'app-dashboard',
@@ -79,16 +80,6 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
         return role.replace('-', ' ').toUpperCase();
     }
 
-    private readonly hiddenDashboardModuleCodes = new Set([
-        'SET',
-        'GP',
-        'ADM_FAC',
-        'ADM_ACC',
-        'ADM_NOT',
-        'ENTDT',
-        'EUA',
-    ]);
-
     loadDashboardCategories(): void {
         this.dashboardSub?.unsubscribe();
         this.dashboardSub = this.dashboardResolverService.resolveCurrentUserType().subscribe((userType) => {
@@ -96,7 +87,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
                 .getFunctionsWithModules(userType)
                 .map((func) => ({
                     ...func,
-                    modules: func.modules.filter((mod) => !this.hiddenDashboardModuleCodes.has(mod.code)),
+                    modules: func.modules.filter((mod) => !HIDDEN_NAVIGATION_MODULE_CODES.has(mod.code)),
                 }))
                 .filter((func) => Array.isArray(func.modules) && func.modules.length > 0);
             this.cdr.detectChanges();
@@ -153,19 +144,19 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
             'ADM_NOT': '🛎️',
             'FDRQ_NEW': '➕',
             'FCONF': '📦',
-            'FAC_PROFILE': '🏢',
+            'FAC_PROFILE': '📇',
             'FAC_NOT': '🔔',
             'DNR_PROFILE': '👤',
             'DNR_NOT': '🔔',
             'VREQ': '🏪',
             'VOFR': '📋',
             'VOFR_NEW': '➕',
-            'VND_PROFILE': '🏪',
+            'VND_PROFILE': '📇',
             'VND_NOT': '🔔',
             'CHR_REQ': '🏛️',
             'CHR_CMT': '🤝',
             'CHR_SUPPORT': '📦',
-            'CHR_PROFILE': '👤',
+            'CHR_PROFILE': '📇',
             'CHR_NOT': '🔔',
         };
         return iconMap[moduleCode] || '📁';

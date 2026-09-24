@@ -164,14 +164,15 @@ export const MASAJID_WORKSPACE_MODULES: IModulesDetails = {
     Default_Order: 30,
     URL: '/donations/validation',
   },
-  DNR_PROFILE: {
-    ModuleID: 324,
-    FunctionID: 13,
-    Name: 'My Profile',
-    Name_Regional: '\u0645\u0644\u0641\u064a \u0627\u0644\u0634\u062e\u0635\u064a',
-    Default_Order: 40,
-    URL: '/summary/profile',
-  },
+  // TODO: restore Donor My Profile module later
+  // DNR_PROFILE: {
+  //   ModuleID: 324,
+  //   FunctionID: 13,
+  //   Name: 'My Profile',
+  //   Name_Regional: '\u0645\u0644\u0641\u064a \u0627\u0644\u0634\u062e\u0635\u064a',
+  //   Default_Order: 40,
+  //   URL: '/summary/profile',
+  // },
   // TODO: restore Notifications + Notifications Management modules later
   // DNR_NOT: {
   //   ModuleID: 325,
@@ -248,7 +249,7 @@ export const MASAJID_WORKSPACE_MODULE_ROLE_VISIBILITY: Partial<Record<string, Ro
   DNBR: DEFAULT_MODULE_VISIBLE_ROLES,
   DNCMT: DEFAULT_MODULE_VISIBLE_ROLES,
   DNVAL: DEFAULT_MODULE_VISIBLE_ROLES,
-  DNR_PROFILE: [Roles.Developer, Roles.SystemAdministrator, Roles.EntityAdministrator, Roles.SystemUser, Roles.Guest],
+  // DNR_PROFILE: [Roles.Developer, Roles.SystemAdministrator, Roles.EntityAdministrator, Roles.SystemUser, Roles.Guest],
   // DNR_NOT: [Roles.Developer, Roles.SystemAdministrator, Roles.EntityAdministrator, Roles.SystemUser, Roles.Guest],
   VREQ: DEFAULT_MODULE_VISIBLE_ROLES,
   VOFR: DEFAULT_MODULE_VISIBLE_ROLES,

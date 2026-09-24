@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DialogService } from 'primeng/dynamicdialog';
 import { Subscription } from 'rxjs';
 import { LogoutComponent } from 'src/app/modules/auth/components/logout/logout.component';
+import { HIDDEN_NAVIGATION_MODULE_CODES } from '../../core/config/static-navigation.config';
 import { IMenuFunction, IMenuModule } from '../../core/models/account-status.model';
 import { DashboardResolverService } from '../../core/services/dashboard-resolver.service';
 import { LanguageDirService } from '../../core/services/language-dir.service';
@@ -58,6 +59,10 @@ export class AppMenuComponent implements OnInit, OnDestroy {
 
             const functions = this.moduleNavigationService
                 .getFunctionsWithModules(userType)
+                .map((func) => ({
+                    ...func,
+                    modules: func.modules.filter((module) => !HIDDEN_NAVIGATION_MODULE_CODES.has(module.code)),
+                }))
                 .filter((func) => Array.isArray(func.modules) && func.modules.length > 0);
 
             const functionItems = functions.map((func) => ({
@@ -133,8 +138,7 @@ export class AppMenuComponent implements OnInit, OnDestroy {
             FDRQ: 'fa fa-list',
             FDRQ_NEW: 'fa fa-plus-circle',
             FCONF: 'fa fa-box',
-            FAC_PROFILE: 'fa fa-building',
-            FAC_NOT: 'fa fa-bell',
+            FAC_PROFILE: 'fa fa-id-card',
             DNBR: 'fa fa-search',
             DNCMT: 'fa fa-handshake',
             DNVAL: 'fa fa-shield-alt',
@@ -150,13 +154,11 @@ export class AppMenuComponent implements OnInit, OnDestroy {
             VREQ: 'fa fa-store',
             VOFR: 'fa fa-file-alt',
             VOFR_NEW: 'fa fa-plus',
-            VND_PROFILE: 'fa fa-store',
-            VND_NOT: 'fa fa-bell',
+            VND_PROFILE: 'fa fa-id-card',
             CHR_REQ: 'fa fa-university',
             CHR_CMT: 'fa fa-handshake',
             CHR_SUPPORT: 'fa fa-life-ring',
-            CHR_PROFILE: 'fa fa-user',
-            CHR_NOT: 'fa fa-bell',
+            CHR_PROFILE: 'fa fa-id-card',
         };
         return iconMap[moduleCode] || 'fa fa-file';
     }
