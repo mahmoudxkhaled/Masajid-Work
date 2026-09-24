@@ -1,0 +1,44 @@
+.ltr-layout {
+    .layout-config-button.p-button {
+        z-index: 999;
+        position: fixed;
+        top: 50%;
+        right: 0;
+        width: auto;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        padding: 0.5rem;
+
+        .p-button-icon {
+            font-size: 2rem;
+        }
+    }
+}
+
+.ltr-layout,
+.rtl-layout {
+    .layout-config-button.p-button {
+        z-index: 999;
+        position: fixed;
+        top: 50%;
+        width: auto;
+        padding: 0.5rem;
+
+        .p-button-icon {
+            font-size: 2rem;
+        }
+    }
+}
+
+// RTL specific styles
+.rtl-layout {
+    .layout-config-button.p-button {
+        right: auto;
+        left: 0; // Position the button on the left for RTL
+
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        border-top-left-radius: 0; // Optional: add this if you need consistency
+        border-bottom-left-radius: 0; // Optional: add this if you need consistency
+    }
+}

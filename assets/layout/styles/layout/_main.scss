@@ -1,0 +1,81 @@
+html {
+    height: 100%;
+    font-size: $scale;
+}
+
+body {
+    font-weight: 400;
+    padding: 0;
+    margin: 0;
+    min-height: 100%;
+    background: var(--surface-ground);
+    color: var(--text-color);
+    font-family: var(--font-family);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+    text-decoration: none;
+}
+
+.ltr-layout {
+    .p-toast {
+        &.p-toast-top-right,
+        &.p-toast-top-left,
+        &.p-toast-top-center {
+            top: 85px;
+        }
+    }
+}
+
+.ltr-layout,
+.rtl-layout {
+    .p-toast {
+        // Common styles for all toast notifications
+        position: fixed;
+        z-index: 1000; // Ensuring the toast appears above other elements
+
+        // Common top positioning
+        &.p-toast-top-right,
+        &.p-toast-top-left,
+        &.p-toast-top-center {
+            top: 85px;
+        }
+
+        // Common horizontal positioning
+        &.p-toast-top-right {
+            right: 15px;
+        }
+
+        &.p-toast-top-left {
+            left: 15px;
+        }
+
+        &.p-toast-top-center {
+            left: 50%;
+            transform: translateX(-50%);
+        }
+    }
+}
+
+// LTR specific adjustments (if needed)
+.ltr-layout {
+    // If additional LTR specific styles are required, add them here
+}
+
+// RTL specific adjustments
+.rtl-layout {
+    .p-toast {
+        // Override for RTL
+        &.p-toast-top-right {
+            right: auto;
+            left: 15px; // Move the toast to the left side in RTL
+        }
+
+        &.p-toast-top-left {
+            left: auto;
+            right: 15px; // Move the toast to the right side in RTL
+        }
+    }
+}
