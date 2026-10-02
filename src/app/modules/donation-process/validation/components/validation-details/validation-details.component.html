@@ -58,13 +58,13 @@
               <span class="info-value">{{ details.validatorName || details.validatorUserId || '-' }}</span>
             </div>
           </div>
-          <div class="col-12 md:col-6">
+          <!-- <div class="col-12 md:col-6">
             <div class="info-item">
               <span class="info-label">{{ 'donations.validation.columns.decision' | translate }}</span>
               <app-donation-status-badge [label]="decisionLabel"
                 [severity]="decisionSeverity"></app-donation-status-badge>
             </div>
-          </div>
+          </div> -->
           <div class="col-12 md:col-6">
             <div class="info-item">
               <span class="info-label">{{ 'donations.validation.columns.submittedAt' | translate }}</span>
@@ -94,8 +94,8 @@
     </div>
     <div class="p-3 pt-2">
       <ng-container *ngIf="loading || attachmentsLoading; else attachmentsContent">
-        <div class="flex flex-column gap-2">
-          <p-skeleton height="2.5rem" width="100%" *ngFor="let _ of [1, 2]"></p-skeleton>
+        <div class="proof-list">
+          <p-skeleton height="3.5rem" width="100%" borderRadius="8px" *ngFor="let _ of [1, 2]"></p-skeleton>
         </div>
       </ng-container>
       <ng-template #attachmentsContent>

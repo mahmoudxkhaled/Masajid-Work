@@ -24,7 +24,10 @@ import {
   DonationRequestDetailsBackend,
   DonationRequestWorkflowItem,
 } from '../../../models/donation-request.model';
-import { getDonationRequestStatusLabelKey } from '../../../models/donation-request-status.model';
+import {
+  DonationRequestStatusId,
+  getDonationRequestStatusLabelKey,
+} from '../../../models/donation-request-status.model';
 import { getFulfilledByLabelKey } from '../../../models/fulfilled-by.model';
 import { FulfillmentMode } from '../../../models/fulfillment-mode.model';
 import {
@@ -165,6 +168,15 @@ export class DonorCommitmentDetailsComponent implements OnInit, OnDestroy {
     if (!this.actionButtonsReady) {
       return false;
     }
+    if (
+      this.requestStatusId === DonationRequestStatusId.BrokenDown ||
+      this.requestStatusId === DonationRequestStatusId.FulfillmentSubmitted
+    ) {
+      return false;
+    }
+    if (this.hasFulfillmentSubmittedInWorkflow() || this.fulfillments.length > 0) {
+      return false;
+    }
     return canRequestBreakdown(this.details!.statusId, this.requestStatusId);
   }
 
@@ -173,6 +185,9 @@ export class DonorCommitmentDetailsComponent implements OnInit, OnDestroy {
   }
 
   get showFulfillmentSubmittedBadge(): boolean {
+    if (this.requestStatusId === DonationRequestStatusId.FulfillmentSubmitted) {
+      return false;
+    }
     if (this.hasFulfillmentSubmittedInWorkflow()) {
       return true;
     }

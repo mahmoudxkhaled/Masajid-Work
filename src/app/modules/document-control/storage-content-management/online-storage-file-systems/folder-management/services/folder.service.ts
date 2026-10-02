@@ -157,6 +157,7 @@ export class FolderService {
     const params: string[] = [
       folderId.toString(),
       fileSystemId.toString(),
+      "true",
     ];
 
     return this.apiService

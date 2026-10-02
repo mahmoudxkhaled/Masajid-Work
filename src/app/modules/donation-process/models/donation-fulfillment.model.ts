@@ -79,7 +79,12 @@ export function canSubmitFulfillmentProof(
     return false;
   }
 
-  if (requestStatusId != null && requestStatusId > 0 && isDonationRequestClosingStatus(requestStatusId)) {
+  if (
+    requestStatusId != null &&
+    requestStatusId > 0 &&
+    requestStatusId !== DonationRequestStatusId.BrokenDown &&
+    isDonationRequestClosingStatus(requestStatusId)
+  ) {
     return false;
   }
 

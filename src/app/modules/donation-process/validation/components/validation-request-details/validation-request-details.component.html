@@ -154,7 +154,8 @@
         <span class="details-section-icon"><i class="pi pi-users"></i></span>
         <h3 class="details-section-title">{{ 'donations.validation.sections.validations' | translate }}</h3>
       </div>
-      <p-button [label]="'donations.validation.actions.viewValidations' | translate" icon="pi pi-list"
+      <p-button *ngIf="!validationsLoading && validations.length > 0"
+        [label]="'donations.validation.actions.viewValidations' | translate" icon="pi pi-list"
         severity="secondary" [outlined]="true" (onClick)="viewValidations()"></p-button>
     </div>
 

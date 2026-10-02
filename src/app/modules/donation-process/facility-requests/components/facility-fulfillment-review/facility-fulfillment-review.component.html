@@ -134,7 +134,7 @@
     </div>
     <div class="p-3 pt-2">
       <ng-container *ngIf="loading || attachmentsLoading; else proofContent">
-        <div class="flex flex-column gap-2">
+        <div class="proof-list">
           <div class="proof-item flex align-items-center justify-content-between gap-2" *ngFor="let _ of [1, 2]">
             <div class="min-w-0 flex align-items-center gap-2 flex-1">
               <p-skeleton shape="circle" size="2rem"></p-skeleton>

@@ -16,7 +16,7 @@ import {
 const UPLOAD_REQUEST_CODE = 1101;
 
 /** Backend requires chunk size > 0 and < 250 KB. */
-const UPLOAD_CHUNK_SIZE_BYTES = 240 * 1024;
+const UPLOAD_CHUNK_SIZE_BYTES = 256 * 1024;
 
 export interface UploadedStorageFileResult {
   fileId: number;
@@ -116,6 +116,12 @@ export class FileUploadService {
     const chunkSize = UPLOAD_CHUNK_SIZE_BYTES;
     const totalBytes = file.size;
     const totalChunks = Math.ceil(totalBytes / chunkSize);
+
+    console.log('Upload chunk size', {
+      chunkSize,
+      totalBytes,
+      totalChunks,
+    });
 
     const fileName = file.name;
     const fileSize = file.size;
@@ -243,6 +249,7 @@ export class FileUploadService {
       chunkSize.toString(),
       fileSystemId.toString(),
       folderId.toString(),
+      "false"
     ];
 
     console.log('Upload_Request parameters:', parameters);

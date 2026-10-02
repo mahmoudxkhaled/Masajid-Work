@@ -109,7 +109,7 @@ export class SystemNotificationsListComponent implements OnInit, OnDestroy {
         const sub = this.notificationsService.listNotificationTypes().subscribe({
             next: (response: any) => {
                 if (response?.success) {
-                    console.log('loadNotificationType1111111111111sdasdasds response', response);
+                    console.log('loadNotificationType response', response);
                     const typesData = response?.message || [];
                     // Map to the expected format for dropdown
                     this.notificationTypes = Array.isArray(typesData) ? typesData.map((item: any) => ({

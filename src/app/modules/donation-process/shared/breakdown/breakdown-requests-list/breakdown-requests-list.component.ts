@@ -15,9 +15,11 @@ import {
   getBreakdownStatusLabelKey,
   getBreakdownStatusSeverity,
 } from '../../../models/donation-breakdown-request-status.model';
+import { DonationRequestDetails, DonationRequestDetailsBackend } from '../../../models/donation-request.model';
 import { DonationBreakdownService } from '../../../services/donation-breakdown.service';
+import { DonationRequestsService } from '../../../facility-requests/services/donation-requests.service';
 
-type BreakdownRequestsListContext = 'list';
+type BreakdownRequestsListContext = 'list' | 'loadRequest';
 
 @Component({
   standalone: false,
@@ -35,8 +37,11 @@ export class BreakdownRequestsListComponent implements OnInit, OnDestroy {
   items: DonationBreakdownRequestListItem[] = [];
   statusOptions: { label: string; value: number | null }[] = [];
   selectedStatusId: number | null = null;
+  requestLoading = false;
+  requestDetails: DonationRequestDetails | null = null;
 
   private rawItems: DonationBreakdownRequestBackend[] = [];
+  private rawRequestDetails: DonationRequestDetailsBackend | null = null;
   private skeletonRows: DonationBreakdownRequestListItem[] = this.createSkeletonRows();
   private returnTo = '';
   private subscriptions: Subscription[] = [];
@@ -45,6 +50,7 @@ export class BreakdownRequestsListComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private donationBreakdownService: DonationBreakdownService,
+    private donationRequestsService: DonationRequestsService,
     private languageDirService: LanguageDirService,
     private translate: TranslationService,
     private messageService: MessageService,
@@ -78,8 +84,10 @@ export class BreakdownRequestsListComponent implements OnInit, OnDestroy {
       this.languageDirService.userLanguageCode$.subscribe(() => {
         this.rebuildStatusOptions();
         this.refreshDisplay();
+        this.refreshRequestDisplay();
       }),
     );
+    this.loadRequestDetails();
     this.loadItems();
   }
 
@@ -121,6 +129,50 @@ export class BreakdownRequestsListComponent implements OnInit, OnDestroy {
 
   onStatusFilterChange(): void {
     this.loadItems();
+  }
+
+  formatRequestQuantity(): string {
+    if (!this.requestDetails) {
+      return '-';
+    }
+    return `${this.requestDetails.quantity} ${this.requestDetails.unit || ''}`.trim() || '-';
+  }
+
+  formatRequestEstimatedCost(): string {
+    if (!this.requestDetails?.estimatedCost) {
+      return '-';
+    }
+    return `${this.requestDetails.estimatedCost} ${this.requestDetails.currencyCode || ''}`.trim();
+  }
+
+  private loadRequestDetails(): void {
+    if (!this.requestId) {
+      return;
+    }
+
+    this.requestLoading = true;
+    const sub = this.donationRequestsService.getDonationRequestDetails(this.requestId).subscribe({
+      next: (response: any) => {
+        console.log('getDonationRequestDetails response', response);
+        if (!response?.success) {
+          this.handleBusinessError('loadRequest', response);
+          return;
+        }
+        this.rawRequestDetails = (response.message ?? null) as DonationRequestDetailsBackend | null;
+        this.refreshRequestDisplay();
+        this.requestLoading = false;
+      },
+      error: () => {
+        this.requestLoading = false;
+      },
+    });
+    this.subscriptions.push(sub);
+  }
+
+  private refreshRequestDisplay(): void {
+    this.requestDetails = this.rawRequestDetails
+      ? this.donationRequestsService.mapDonationRequestDetails(this.rawRequestDetails)
+      : null;
   }
 
   private loadItems(): void {
@@ -193,6 +245,11 @@ export class BreakdownRequestsListComponent implements OnInit, OnDestroy {
         detail = this.getListErrorMessage(code);
         this.tableLoadingSpinner = false;
         break;
+      case 'loadRequest':
+        detail = this.getLoadRequestErrorMessage(code);
+        this.requestDetails = null;
+        this.requestLoading = false;
+        break;
     }
 
     if (detail) {
@@ -218,6 +275,17 @@ export class BreakdownRequestsListComponent implements OnInit, OnDestroy {
         return this.translate.getInstant('donations.breakdown.errors.sessionExpired');
       default:
         return this.translate.getInstant('donations.breakdown.errors.actionFailed');
+    }
+  }
+
+  private getLoadRequestErrorMessage(code: string): string | null {
+    switch (code) {
+      case 'DAP13000':
+        return this.translate.getInstant('donations.breakdown.errors.invalidDonationRequestId');
+      case 'DAP11055':
+        return this.translate.getInstant('donations.breakdown.errors.accessDenied');
+      default:
+        return null;
     }
   }
 }

@@ -10,7 +10,107 @@
       severity="secondary" [outlined]="true" (onClick)="backToRequest()"></p-button>
   </div>
 
-  <div class="block-card">
+  <div class="block-card details-card p-0 mb-3" *ngIf="requestId">
+    <div class="details-section-header">
+      <span class="details-section-icon"><i class="pi pi-box"></i></span>
+      <h3 class="details-section-title">{{ 'donations.breakdown.list.sections.donation' | translate }}</h3>
+    </div>
+    <div class="grid p-3 pt-2">
+      <div class="col-12 md:col-6 lg:col-4">
+        <div class="info-item">
+          <span class="info-label">{{ 'donations.breakdown.columns.requestId' | translate }}</span>
+          <ng-container *ngIf="requestLoading; else requestIdValue">
+            <p-skeleton height="1.45rem" width="40%"></p-skeleton>
+          </ng-container>
+          <ng-template #requestIdValue>
+            <span class="info-value">{{ requestDetails?.id || requestId }}</span>
+          </ng-template>
+        </div>
+      </div>
+      <div class="col-12 md:col-6 lg:col-4">
+        <div class="info-item">
+          <span class="info-label">{{ 'donations.commitments.details.requestTitle' | translate }}</span>
+          <ng-container *ngIf="requestLoading; else titleValue">
+            <p-skeleton height="1.45rem" width="70%"></p-skeleton>
+          </ng-container>
+          <ng-template #titleValue>
+            <span class="info-value">{{ requestDetails?.title || '-' }}</span>
+          </ng-template>
+        </div>
+      </div>
+      <div class="col-12 md:col-6 lg:col-4">
+        <div class="info-item">
+          <span class="info-label">{{ 'donations.facility.requests.form.quantity' | translate }}</span>
+          <ng-container *ngIf="requestLoading; else quantityValue">
+            <p-skeleton height="1.45rem" width="50%"></p-skeleton>
+          </ng-container>
+          <ng-template #quantityValue>
+            <span class="info-value">{{ formatRequestQuantity() }}</span>
+          </ng-template>
+        </div>
+      </div>
+      <div class="col-12 md:col-6 lg:col-4">
+        <div class="info-item">
+          <span class="info-label">{{ 'donations.facility.requests.columns.estimatedCost' | translate }}</span>
+          <ng-container *ngIf="requestLoading; else costValue">
+            <p-skeleton height="1.45rem" width="55%"></p-skeleton>
+          </ng-container>
+          <ng-template #costValue>
+            <span class="info-value">{{ formatRequestEstimatedCost() }}</span>
+          </ng-template>
+        </div>
+      </div>
+      <div class="col-12 md:col-6 lg:col-4">
+        <div class="info-item">
+          <span class="info-label">{{ 'donations.facility.requests.form.needsInstallation' | translate }}</span>
+          <ng-container *ngIf="requestLoading; else installationValue">
+            <p-skeleton height="1.45rem" width="40%"></p-skeleton>
+          </ng-container>
+          <ng-template #installationValue>
+            <span class="info-value">
+              <i class="pi mr-1"
+                [ngClass]="requestDetails?.needsInstallation ? 'pi-check-circle text-green-500' : 'pi-times-circle text-500'"></i>
+              {{
+              (requestDetails?.needsInstallation ? 'donations.reference.categories.yes' : 'donations.reference.categories.no')
+              | translate
+              }}
+            </span>
+          </ng-template>
+        </div>
+      </div>
+      <div class="col-12 md:col-6 lg:col-4">
+        <div class="info-item">
+          <span class="info-label">{{ 'donations.facility.requests.columns.createdAt' | translate }}</span>
+          <ng-container *ngIf="requestLoading; else createdAtValue">
+            <p-skeleton height="1.45rem" width="75%"></p-skeleton>
+          </ng-container>
+          <ng-template #createdAtValue>
+            <span class="info-value" dir="ltr">
+              {{ requestDetails?.createdAt ? (requestDetails?.createdAt | date:'yyyy-MM-dd hh:mm a') : '-' }}
+            </span>
+          </ng-template>
+        </div>
+      </div>
+      <div class="col-12">
+        <div class="info-item">
+          <span class="info-label">{{ 'donations.facility.requests.form.description' | translate }}</span>
+          <ng-container *ngIf="requestLoading; else descriptionValue">
+            <p-skeleton height="1.45rem" width="90%"></p-skeleton>
+          </ng-container>
+          <ng-template #descriptionValue>
+            <span class="info-value line-height-3">{{ requestDetails?.description || '-' }}</span>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="block-card details-card p-0">
+    <div class="details-section-header">
+      <span class="details-section-icon"><i class="pi pi-sitemap"></i></span>
+      <h3 class="details-section-title">{{ 'donations.breakdown.section.title' | translate }}</h3>
+    </div>
+    <div class="p-3 pt-2">
     <p-table #tableRef [value]="tableValue" [paginator]="true" [rows]="rows"
       [rowsPerPageOptions]="rowsPerPageOptions" [showCurrentPageReport]="true"
       [currentPageReportTemplate]="'donations.breakdown.pagination' | translate" responsiveLayout="scroll"
@@ -113,5 +213,6 @@
         </tr>
       </ng-template>
     </p-table>
+    </div>
   </div>
 </div>

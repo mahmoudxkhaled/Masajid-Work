@@ -158,10 +158,10 @@ export const MASAJID_WORKSPACE_MODULES: IModulesDetails = {
   },
   DNVAL: {
     ModuleID: 323,
-    FunctionID: 13,
+    FunctionID: 11,
     Name: 'Donations Open for Validation',
     Name_Regional: '\u062a\u0628\u0631\u0639\u0627\u062a \u0645\u0641\u062a\u0648\u062d\u0629 \u0644\u0644\u062a\u062d\u0642\u0642',
-    Default_Order: 30,
+    Default_Order: 12,
     URL: '/donations/validation',
   },
   // TODO: restore Donor My Profile module later
@@ -248,7 +248,7 @@ export const MASAJID_WORKSPACE_MODULE_ROLE_VISIBILITY: Partial<Record<string, Ro
   FCONF: DEFAULT_MODULE_VISIBLE_ROLES,
   DNBR: DEFAULT_MODULE_VISIBLE_ROLES,
   DNCMT: DEFAULT_MODULE_VISIBLE_ROLES,
-  DNVAL: DEFAULT_MODULE_VISIBLE_ROLES,
+  DNVAL: [Roles.Developer, Roles.SystemAdministrator],
   // DNR_PROFILE: [Roles.Developer, Roles.SystemAdministrator, Roles.EntityAdministrator, Roles.SystemUser, Roles.Guest],
   // DNR_NOT: [Roles.Developer, Roles.SystemAdministrator, Roles.EntityAdministrator, Roles.SystemUser, Roles.Guest],
   VREQ: DEFAULT_MODULE_VISIBLE_ROLES,

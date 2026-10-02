@@ -4446,7 +4446,10 @@
         "breakdown": {
             "list": {
                 "title": "Breakdown Requests",
-                "subtitle": "Review partial fulfillment requests for this donation request."
+                "subtitle": "Review partial fulfillment requests for this donation request.",
+                "sections": {
+                    "donation": "Donation Information"
+                }
             },
             "details": {
                 "title": "Breakdown Request Details",
@@ -4454,7 +4457,7 @@
                 "sections": {
                     "summary": "Summary",
                     "items": "Breakdown items",
-                    "attachments": "Attachments"
+                    "attachments": "Breakdown attachments"
                 }
             },
             "section": {

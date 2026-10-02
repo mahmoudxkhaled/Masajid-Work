@@ -170,7 +170,7 @@ export class SharedAccountListComponent implements OnInit, OnDestroy, OnChanges 
     );
 
     if (this.entityId) {
-      this.loadAccounts();
+      this.loadEntityRoles();
       if (!this.isSystemScope()) {
         this.loadEntity();
       }

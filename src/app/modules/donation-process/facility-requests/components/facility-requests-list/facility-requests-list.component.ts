@@ -11,6 +11,7 @@ import { DonationRequestBackend } from '../../../models/donation-request.model';
 import { DonationCategoryBackend } from '../../../models/donation-category.model';
 import {
   DonationRequestStatusBackend,
+  DonationRequestStatusId,
   isDonationRequestDraft,
 } from '../../../models/donation-request-status.model';
 import { DonationTypeBackend } from '../../../models/donation-type.model';
@@ -341,7 +342,11 @@ export class FacilityRequestsListComponent implements OnInit, OnDestroy {
     this.tableLoadingSpinner = true;
     const currentPage = Math.floor(this.first / this.rows) + 1;
     const lastRequestId = -currentPage;
-    const statusFilter = this.selectedStatusId ? [this.selectedStatusId] : [];
+    const statusFilter = this.selectedStatusId
+      ? [this.selectedStatusId]
+      : Object.values(DonationRequestStatusId).filter(
+          (statusId) => statusId !== DonationRequestStatusId.FulfillmentSubmitted,
+        );
 
     const sub = this.donationRequestsService
       .listEntityDonationRequests({
@@ -428,7 +433,10 @@ export class FacilityRequestsListComponent implements OnInit, OnDestroy {
     this.statusOptions = [
       { label: this.translate.getInstant('donations.shared.filters.allStatuses'), value: null },
       ...this.statuses
-        .filter((item) => Number(item.Donation_Request_Status_ID || 0) > 0)
+        .filter((item) => {
+          const statusId = Number(item.Donation_Request_Status_ID || 0);
+          return statusId > 0 && statusId !== DonationRequestStatusId.FulfillmentSubmitted;
+        })
         .map((item) => ({
           label: this.localStorageService.pickLocalizedField(
             String(item.Name || ''),
