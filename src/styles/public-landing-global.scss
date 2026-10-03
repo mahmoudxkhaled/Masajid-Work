@@ -132,8 +132,12 @@ html.dh-theme-dark .rtl-layout .dh,
   vertical-align: middle;
 }
 
-.dh--rtl .register-page__back .pi,
-.dh[dir='rtl'] .register-page__back .pi {
+.dh .register-page__back .pi.pi-arrow-left {
+  transform: none;
+}
+
+.dh.dh--rtl .register-page__back .pi.pi-arrow-left,
+.dh[dir='rtl'] .register-page__back .pi.pi-arrow-left {
   transform: scaleX(-1);
 }
 
