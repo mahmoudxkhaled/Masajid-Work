@@ -7,8 +7,13 @@ import { ResetPasswordComponent } from './components/reset-password/reset-passwo
 import { ForgetPasswordComponent } from './components/forget-password/forget-password.component';
 import { AccountStatusComponent } from './components/account-status/account-status.component';
 import { Verify2FAComponent } from './components/verify-2fa/verify-2fa.component';
+import { AuthLayoutComponent } from './layout/auth-layout.component';
 
 const routes: Routes = [
+    {
+        path: '',
+        component: AuthLayoutComponent,
+        children: [
     { path: '', component: LoginComponent, data: { breadcrumb: 'login' } },
 
     { path: 'email-verified', component: EmailVerifiedComponent, data: { breadcrumb: 'emailVerified' } },
@@ -29,6 +34,8 @@ const routes: Routes = [
     { path: 'forget-password', component: ForgetPasswordComponent, data: { breadcrumb: 'forgetPassword' } },
     { path: 'verify-2fa/:email', component: Verify2FAComponent, data: { breadcrumb: 'verify2fa' } },
     { path: 'account-status', component: AccountStatusComponent, data: { breadcrumb: 'accountStatus' } },
+        ],
+    },
 ];
 
 @NgModule({

@@ -1,0 +1,15 @@
+<div class="auth-layout">
+    <div class="auth-waves" aria-hidden="true">
+        <div class="wave"></div>
+        <div class="wave"></div>
+        <div class="wave"></div>
+    </div>
+    <app-auth-back-home></app-auth-back-home>
+    <router-outlet></router-outlet>
+    <ngx-particles
+        class="auth-particles"
+        [id]="'auth-particles'"
+        [options]="particleOptions"
+        [particlesInit]="initParticles"
+    ></ngx-particles>
+</div>

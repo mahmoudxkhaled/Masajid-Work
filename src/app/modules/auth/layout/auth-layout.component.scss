@@ -1,0 +1,88 @@
+@import '../../../../brand-palette';
+
+:host {
+    display: block;
+    min-height: 100vh;
+}
+
+.auth-layout {
+    position: relative;
+    min-height: 100vh;
+    overflow: hidden;
+    background: radial-gradient(circle, $brand-primary-dark, $brand-primary, $brand-secondary-violet);
+    background-size: 400% 400%;
+    animation: authGradientShift 20s ease infinite;
+}
+
+@keyframes authGradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.auth-particles {
+    position: fixed;
+    inset: 0;
+    z-index: 2;
+    display: block;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.auth-waves {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.wave {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 200%;
+    height: 300px;
+    // background: url('https://iaware.wsseg.com/assets/wave.svg') repeat-x;
+    background-size: cover;
+    animation: waveMove 2s linear infinite;
+    opacity: 0.8;
+}
+
+.wave:nth-child(2) {
+    bottom: 30px;
+    animation: waveMove 3s linear infinite;
+    opacity: 0.6;
+}
+
+.wave:nth-child(3) {
+    bottom: 60px;
+    animation: waveMove 4s linear infinite;
+    opacity: 0.4;
+}
+
+@keyframes waveMove {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+:host ::ng-deep .auth-particles > div,
+:host ::ng-deep .auth-particles canvas {
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
