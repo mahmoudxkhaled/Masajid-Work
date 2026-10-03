@@ -262,19 +262,19 @@
                 <div class="flex gap-2">
                     <p-button *ngIf="userContactInfo?.linkedinPage" icon="pi pi-linkedin"
                         [pTooltip]="userContactInfo.linkedinPage" tooltipPosition="top"
-                        styleClass="p-button-rounded p-button-text"
+                        styleClass="p-button-rounded social-btn social-btn--linkedin"
                         (onClick)="openSocialLink(userContactInfo.linkedinPage)"></p-button>
                     <p-button *ngIf="userContactInfo?.facebookPage" icon="pi pi-facebook"
                         [pTooltip]="userContactInfo.facebookPage" tooltipPosition="top"
-                        styleClass="p-button-rounded p-button-text"
+                        styleClass="p-button-rounded social-btn social-btn--facebook"
                         (onClick)="openSocialLink(userContactInfo.facebookPage)"></p-button>
                     <p-button *ngIf="userContactInfo?.instagramPage" icon="pi pi-instagram"
                         [pTooltip]="userContactInfo.instagramPage" tooltipPosition="top"
-                        styleClass="p-button-rounded p-button-text"
+                        styleClass="p-button-rounded social-btn social-btn--instagram"
                         (onClick)="openSocialLink(userContactInfo.instagramPage)"></p-button>
                     <p-button *ngIf="userContactInfo?.twitterPage" icon="pi pi-twitter"
                         [pTooltip]="userContactInfo.twitterPage" tooltipPosition="top"
-                        styleClass="p-button-rounded p-button-text"
+                        styleClass="p-button-rounded social-btn social-btn--twitter"
                         (onClick)="openSocialLink(userContactInfo.twitterPage)"></p-button>
                 </div>
             </div>

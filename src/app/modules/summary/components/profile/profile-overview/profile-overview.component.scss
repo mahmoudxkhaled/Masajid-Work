@@ -353,3 +353,47 @@
     color: var(--text-color);
     word-break: break-word;
 }
+
+:host ::ng-deep .social-btn.p-button {
+    width: 2.5rem;
+    height: 2.5rem;
+    border: none;
+    color: #fff;
+}
+
+:host ::ng-deep .social-btn.p-button .pi {
+    padding: 0;
+    transform: none;
+}
+
+:host ::ng-deep .social-btn--linkedin.p-button {
+    background: #0a66c2;
+}
+
+:host ::ng-deep .social-btn--linkedin.p-button:hover {
+    background: #004182;
+}
+
+:host ::ng-deep .social-btn--facebook.p-button {
+    background: #1877f2;
+}
+
+:host ::ng-deep .social-btn--facebook.p-button:hover {
+    background: #0c63d4;
+}
+
+:host ::ng-deep .social-btn--instagram.p-button {
+    background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fd5949 45%, #d6249f 60%, #285aeb 90%);
+}
+
+:host ::ng-deep .social-btn--instagram.p-button:hover {
+    filter: brightness(0.92);
+}
+
+:host ::ng-deep .social-btn--twitter.p-button {
+    background: #1da1f2;
+}
+
+:host ::ng-deep .social-btn--twitter.p-button:hover {
+    background: #0c85d0;
+}

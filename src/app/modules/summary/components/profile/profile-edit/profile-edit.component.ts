@@ -99,10 +99,10 @@ export class ProfileEditComponent implements OnInit, OnDestroy {
                 }
 
                 const userData = response?.message || {};
-                const firstName = this.isRegional ? (userData?.First_Name_Regional || userData?.First_Name || '') : (userData?.First_Name || '');
-                const middleName = this.isRegional ? (userData?.Middle_Name_Regional || userData?.Middle_Name || '') : (userData?.Middle_Name || '');
-                const lastName = this.isRegional ? (userData?.Last_Name_Regional || userData?.Last_Name || '') : (userData?.Last_Name || '');
-                const prefix = this.isRegional ? (userData?.Prefix_Regional || userData?.Prefix || '') : (userData?.Prefix || '');
+                const firstName = this.pickUserName(userData?.First_Name, userData?.First_Name_Regional);
+                const middleName = this.pickUserName(userData?.Middle_Name, userData?.Middle_Name_Regional);
+                const lastName = this.pickUserName(userData?.Last_Name, userData?.Last_Name_Regional);
+                const prefix = this.pickUserName(userData?.Prefix, userData?.Prefix_Regional);
                 const gender = userData?.Gender !== undefined ? Boolean(userData.Gender) : (this.userDetails?.Gender || false);
 
                 this.profileForm.patchValue({
@@ -248,7 +248,12 @@ export class ProfileEditComponent implements OnInit, OnDestroy {
                     detail: this.translate.getInstant('profile.messages.saveSuccess')
                 });
 
-                // Sync user name with service to update top bar in real-time
+                this.applySavedNames(
+                    First_Name?.trim() || '',
+                    Middle_Name?.trim() || '',
+                    Last_Name?.trim() || '',
+                    Prefix?.trim() || ''
+                );
                 this.syncUserName();
 
                 // Reload user data (this will also update localStorage)
@@ -264,50 +269,22 @@ export class ProfileEditComponent implements OnInit, OnDestroy {
 
     getFirstName(): string {
         if (!this.userDetails) return '';
-
-        if (this.isRegional) {
-            const firstNameRegional = this.userDetails.First_Name_Regional || '';
-            if (firstNameRegional.trim()) {
-                return firstNameRegional;
-            }
-        }
-        return this.userDetails.First_Name || '';
+        return this.pickUserName(this.userDetails.First_Name, this.userDetails.First_Name_Regional);
     }
 
     getLastName(): string {
         if (!this.userDetails) return '';
-
-        if (this.isRegional) {
-            const lastNameRegional = this.userDetails.Last_Name_Regional || '';
-            if (lastNameRegional.trim()) {
-                return lastNameRegional;
-            }
-        }
-        return this.userDetails.Last_Name || '';
+        return this.pickUserName(this.userDetails.Last_Name, this.userDetails.Last_Name_Regional);
     }
 
     getMiddleName(): string {
         if (!this.userDetails) return '';
-
-        if (this.isRegional) {
-            const middleNameRegional = this.userDetails.Middle_Name_Regional || '';
-            if (middleNameRegional.trim()) {
-                return middleNameRegional;
-            }
-        }
-        return this.userDetails.Middle_Name || '';
+        return this.pickUserName(this.userDetails.Middle_Name, this.userDetails.Middle_Name_Regional);
     }
 
     getPrefix(): string {
         if (!this.userDetails) return '';
-
-        if (this.isRegional) {
-            const prefixRegional = this.userDetails.Prefix_Regional || '';
-            if (prefixRegional.trim()) {
-                return prefixRegional;
-            }
-        }
-        return this.userDetails.Prefix || '';
+        return this.pickUserName(this.userDetails.Prefix, this.userDetails.Prefix_Regional);
     }
 
     loadContactInfo(): void {
@@ -460,29 +437,39 @@ export class ProfileEditComponent implements OnInit, OnDestroy {
      * Sync user name with UserNameService and update localStorage
      * This ensures all components (top bar) are updated in real-time
      */
+    private pickUserName(defaultName: string | undefined, regionalName: string | undefined): string {
+        return this.localStorageService.pickRequestContentField(
+            String(defaultName || ''),
+            String(regionalName || '')
+        );
+    }
+
+    private applySavedNames(firstName: string, middleName: string, lastName: string, prefix: string): void {
+        if (!this.userDetails) return;
+
+        if (this.localStorageService.isRegionalApiInput()) {
+            this.userDetails.First_Name_Regional = firstName;
+            this.userDetails.Middle_Name_Regional = middleName;
+            this.userDetails.Last_Name_Regional = lastName;
+            this.userDetails.Prefix_Regional = prefix;
+        } else {
+            this.userDetails.First_Name = firstName;
+            this.userDetails.Middle_Name = middleName;
+            this.userDetails.Last_Name = lastName;
+            this.userDetails.Prefix = prefix;
+        }
+    }
+
     private syncUserName(): void {
         if (!this.userDetails) return;
 
-        const isRegional = this.localStorageService.isArabicUi();
-        let displayName = '';
+        const displayName = (
+            this.pickUserName(this.userDetails.First_Name, this.userDetails.First_Name_Regional)
+            + ' '
+            + this.pickUserName(this.userDetails.Last_Name, this.userDetails.Last_Name_Regional)
+        ).trim();
 
-        if (isRegional) {
-            const firstNameRegional = this.userDetails.First_Name_Regional || '';
-            const lastNameRegional = this.userDetails.Last_Name_Regional || '';
-            displayName = (firstNameRegional + ' ' + lastNameRegional).trim();
-        }
-
-        const firstNameEnglish = this.userDetails.First_Name || '';
-        const lastNameEnglish = this.userDetails.Last_Name || '';
-        const englishName = (firstNameEnglish + ' ' + lastNameEnglish).trim();
-
-        if (isRegional && displayName) {
-            this.userNameService.updateUserName(displayName);
-        } else if (englishName) {
-            this.userNameService.updateUserName(englishName);
-        } else {
-            this.userNameService.updateUserName(this.accountDetails?.Email || 'User');
-        }
+        this.userNameService.updateUserName(displayName || this.accountDetails?.Email || 'User');
 
         console.log('ProfileEdit: syncUserName called, userDetails:', this.userDetails);
 

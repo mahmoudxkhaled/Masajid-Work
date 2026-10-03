@@ -495,46 +495,34 @@ export class ProfileOverviewComponent implements OnInit, OnDestroy {
 
     getFirstName(): string {
         if (!this.userDetails) return '';
-        if (this.isRegional) {
-            const firstNameRegional = this.userDetails.First_Name_Regional || '';
-            if (firstNameRegional.trim()) {
-                return firstNameRegional;
-            }
-        }
-        return this.userDetails.First_Name || '';
+        return this.localStorageService.pickRequestContentField(
+            String(this.userDetails.First_Name || ''),
+            String(this.userDetails.First_Name_Regional || '')
+        );
     }
 
     getMiddleName(): string {
         if (!this.userDetails) return '';
-        if (this.isRegional) {
-            const middleNameRegional = this.userDetails.Middle_Name_Regional || '';
-            if (middleNameRegional.trim()) {
-                return middleNameRegional;
-            }
-        }
-        return this.userDetails.Middle_Name || '';
+        return this.localStorageService.pickRequestContentField(
+            String(this.userDetails.Middle_Name || ''),
+            String(this.userDetails.Middle_Name_Regional || '')
+        );
     }
 
     getLastName(): string {
         if (!this.userDetails) return '';
-        if (this.isRegional) {
-            const lastNameRegional = this.userDetails.Last_Name_Regional || '';
-            if (lastNameRegional.trim()) {
-                return lastNameRegional;
-            }
-        }
-        return this.userDetails.Last_Name || '';
+        return this.localStorageService.pickRequestContentField(
+            String(this.userDetails.Last_Name || ''),
+            String(this.userDetails.Last_Name_Regional || '')
+        );
     }
 
     getPrefix(): string {
         if (!this.userDetails) return '';
-        if (this.isRegional) {
-            const prefixRegional = this.userDetails.Prefix_Regional || '';
-            if (prefixRegional.trim()) {
-                return prefixRegional;
-            }
-        }
-        return this.userDetails.Prefix || '';
+        return this.localStorageService.pickRequestContentField(
+            String(this.userDetails.Prefix || ''),
+            String(this.userDetails.Prefix_Regional || '')
+        );
     }
 
     getGenderLabel(): string {

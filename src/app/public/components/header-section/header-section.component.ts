@@ -29,6 +29,7 @@ import { PublicThemePreferenceService } from '../../services/public-theme-prefer
 })
 export class HeaderSectionComponent implements OnInit, OnDestroy {
   @ViewChild('langMenu', { read: ElementRef }) langMenu?: ElementRef<HTMLElement>;
+  @ViewChild('registerMenu', { read: ElementRef }) registerMenu?: ElementRef<HTMLElement>;
 
   readonly logoSrcLight = LOGO_SRC;
   readonly logoSrcDark = LOGO_SRC_DARK;
@@ -42,6 +43,7 @@ export class HeaderSectionComponent implements OnInit, OnDestroy {
   currentLang: 'en' | 'ar' = 'ar';
   isDarkTheme = false;
   langMenuOpen = false;
+  registerMenuOpen = false;
 
   private langSub?: Subscription;
   private themeSub?: Subscription;
@@ -73,19 +75,27 @@ export class HeaderSectionComponent implements OnInit, OnDestroy {
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {
-    const root = this.langMenu?.nativeElement;
-    if (!root || !this.langMenuOpen) {
-      return;
-    }
     const target = event.target as Node | null;
-    if (target && !root.contains(target)) {
+    const langRoot = this.langMenu?.nativeElement;
+    if (this.langMenuOpen && langRoot && target && !langRoot.contains(target)) {
       this.langMenuOpen = false;
+    }
+    const registerRoot = this.registerMenu?.nativeElement;
+    if (this.registerMenuOpen && registerRoot && target && !registerRoot.contains(target)) {
+      this.registerMenuOpen = false;
     }
   }
 
   toggleLangMenu(event: Event): void {
     event.stopPropagation();
+    this.registerMenuOpen = false;
     this.langMenuOpen = !this.langMenuOpen;
+  }
+
+  toggleRegisterMenu(event: Event): void {
+    event.stopPropagation();
+    this.langMenuOpen = false;
+    this.registerMenuOpen = !this.registerMenuOpen;
   }
 
   setLang(lang: 'en' | 'ar'): void {

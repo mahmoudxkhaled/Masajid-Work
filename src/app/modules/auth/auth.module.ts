@@ -11,6 +11,7 @@ import { AccountStatusComponent } from './components/account-status/account-stat
 import { Verify2FAComponent } from './components/verify-2fa/verify-2fa.component';
 import { APP_DEFAULT_LANGUAGE } from 'src/app/core/config/app-branding.config';
 import { AuthBrandComponent } from './components/auth-brand/auth-brand.component';
+import { AuthBackHomeComponent } from './components/auth-back-home/auth-back-home.component';
 import { LanguageDirService } from 'src/app/core/services/language-dir.service';
 import { TranslationService } from 'src/app/core/services/translation.service';
 import { Subscription } from 'rxjs';
@@ -18,6 +19,7 @@ import { Subscription } from 'rxjs';
 @NgModule({
     declarations: [
         AuthBrandComponent,
+        AuthBackHomeComponent,
         LoginComponent,
         EmailVerifiedComponent,
         VerificationEmailComponent,

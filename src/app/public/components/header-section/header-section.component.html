@@ -60,12 +60,18 @@
         </div>
       </div>
       <a class="header__login" [routerLink]="loginPath">{{ 'public.landing.cta.login' | translate }}</a>
-      <div class="header__menu">
-        <a class="header__register" [routerLink]="registerSelectionPath">
+      <div #registerMenu class="header__menu" [class.header__menu--open]="registerMenuOpen">
+        <button
+          type="button"
+          class="header__register"
+          [attr.aria-expanded]="registerMenuOpen"
+          aria-haspopup="menu"
+          (click)="toggleRegisterMenu($event)"
+        >
           {{ 'public.landing.header.register' | translate }}
           <i class="pi pi-chevron-down" aria-hidden="true"></i>
-        </a>
-        <div class="header__dropdown" role="menu">
+        </button>
+        <div class="header__dropdown" role="menu" (click)="registerMenuOpen = false">
           <a [routerLink]="registerSelectionPath" role="menuitem">{{ 'public.landing.header.allRegistration' | translate }}</a>
           <a [routerLink]="registerDonorPath" role="menuitem">{{ 'public.landing.header.donorRegistration' | translate }}</a>
           <a [routerLink]="registerFacilityPath" role="menuitem">{{ 'public.landing.header.facilityRegistration' | translate }}</a>

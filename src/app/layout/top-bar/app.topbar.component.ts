@@ -205,6 +205,7 @@ export class AppTopbarComponent implements OnInit, OnDestroy {
             this.rtlService.userLanguageCode$.subscribe((lang) => {
                 this.userLanguageCode = lang || 'ar';
                 this.userLanguageId = this.userLanguageCode;
+                this.applyStoredUserName();
                 this.mapEntityDisplayName();
                 if (!this.headerTitleLoading) {
                     this.persistTopbarHeaderCacheIfReady();
@@ -280,26 +281,7 @@ export class AppTopbarComponent implements OnInit, OnDestroy {
             this.persistTopbarHeaderCacheIfReady();
         }
 
-        if (this.user) {
-            let regionalName = '';
-            if (this.isRegional) {
-                const firstNameRegional = this.user.First_Name_Regional || '';
-                const lastNameRegional = this.user.Last_Name_Regional || '';
-                regionalName = (firstNameRegional + ' ' + lastNameRegional).trim();
-            }
-
-            const firstNameEnglish = this.user.First_Name || '';
-            const lastNameEnglish = this.user.Last_Name || '';
-            const englishName = (firstNameEnglish + ' ' + lastNameEnglish).trim();
-
-            if (this.isRegional && regionalName) {
-                this.userName = regionalName;
-            } else if (englishName) {
-                this.userName = englishName;
-            } else {
-                this.userName = this.account?.Email || 'User';
-            }
-        }
+        this.applyStoredUserName();
         this.gender = this.localStorage.getGender() || false;
 
         if (this.gender) {
@@ -322,6 +304,30 @@ export class AppTopbarComponent implements OnInit, OnDestroy {
         if (this.userName) {
             this.userNameService.updateUserName(this.userName);
         }
+    }
+
+    private applyStoredUserName(): void {
+        const storedUser = this.localStorage.getUserDetails();
+        if (storedUser) {
+            this.user = storedUser;
+        }
+        if (!this.user) {
+            return;
+        }
+
+        const displayName = (
+            this.localStorage.pickRequestContentField(
+                String(this.user.First_Name || ''),
+                String(this.user.First_Name_Regional || '')
+            )
+            + ' '
+            + this.localStorage.pickRequestContentField(
+                String(this.user.Last_Name || ''),
+                String(this.user.Last_Name_Regional || '')
+            )
+        ).trim();
+
+        this.userName = displayName || this.account?.Email || 'User';
     }
 
     /**

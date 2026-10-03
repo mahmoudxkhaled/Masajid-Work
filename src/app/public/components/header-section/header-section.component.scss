@@ -192,6 +192,8 @@
   border: none;
   border-radius: 9999px;
   padding: 8px 24px;
+  font-family: inherit;
+  font-size: inherit;
   font-weight: 700;
   cursor: pointer;
   text-decoration: none;
@@ -219,12 +221,7 @@
   z-index: 50;
 }
 
-.header__menu:hover .header__dropdown,
-.header__menu:focus-within .header__dropdown {
-  opacity: 1;
-  visibility: visible;
-}
-
+.header__menu--open .header__dropdown,
 .header__lang-menu--open .header__dropdown {
   opacity: 1;
   visibility: visible;

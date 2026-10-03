@@ -1,0 +1,94 @@
+@import '../../../../../brand-palette';
+
+:host {
+    position: absolute;
+    top: 1.5rem;
+    inset-inline-end: 1.5rem;
+    z-index: 20;
+}
+
+.auth-back-home {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding-block: 0.3rem;
+    padding-inline: 1rem 0.3rem;
+    border: 1px solid rgb(255 255 255 / 0.28);
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.12);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 6px 20px rgb(20 0 50 / 0.18);
+    color: #ffffff;
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    text-decoration: none;
+    transition:
+        background-color 0.25s ease,
+        border-color 0.25s ease,
+        box-shadow 0.25s ease,
+        color 0.25s ease;
+}
+
+.auth-back-home__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: #ffffff;
+    color: $brand-primary;
+    box-shadow: 0 2px 6px rgb(20 0 50 / 0.2);
+    transition: transform 0.25s ease;
+}
+
+.auth-back-home__icon .pi {
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+:host-context(html[dir='ltr']) .auth-back-home__icon .pi {
+    transform: scaleX(-1);
+}
+
+:host-context(html[dir='rtl']) .auth-back-home__icon .pi {
+    transform: none;
+}
+
+.auth-back-home:hover {
+    background: rgb(255 255 255 / 0.22);
+    border-color: rgb(255 255 255 / 0.5);
+    box-shadow: 0 10px 28px rgb(20 0 50 / 0.28);
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.auth-back-home:hover .auth-back-home__icon {
+    transform: translateX(3px);
+}
+
+:host-context(html[dir='rtl']) .auth-back-home:hover .auth-back-home__icon {
+    transform: translateX(-3px);
+}
+
+.auth-back-home:active {
+    background: rgb(255 255 255 / 0.3);
+}
+
+.auth-back-home:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 3px;
+}
+
+@media (max-width: 576px) {
+    :host {
+        top: 1rem;
+        inset-inline-end: 1rem;
+    }
+
+    .auth-back-home {
+        font-size: 0.8125rem;
+    }
+}
