@@ -3,6 +3,9 @@ import { BehaviorSubject, Observable, finalize } from 'rxjs';
 import { ApiService } from 'src/app/core/api/api.service';
 import { LocalStorageService } from 'src/app/core/services/local-storage.service';
 
+// TODO: set request code provided by backend
+const LIST_SUSPENDED_ENTITIES_REQUEST_CODE = 0;
+
 @Injectable({
   providedIn: 'root',
 })
@@ -43,6 +46,15 @@ export class DonationAdminService {
     const params = [donationRequestId.toString()];
     console.log('closeDonationRequest params', params);
     return this.apiServices.callAPI(100305, this.getAccessToken(), params).pipe(
+      finalize(() => this.isLoadingSubject.next(false)),
+    );
+  }
+
+  listSuspendedEntities(entityTypeIdFilter: number, lastEntityId: number, filterCount: number): Observable<any> {
+    this.isLoadingSubject.next(true);
+    const params = [entityTypeIdFilter.toString(), lastEntityId.toString(), filterCount.toString()];
+    console.log('listSuspendedEntities params', params);
+    return this.apiServices.callAPI(LIST_SUSPENDED_ENTITIES_REQUEST_CODE, this.getAccessToken(), params).pipe(
       finalize(() => this.isLoadingSubject.next(false)),
     );
   }

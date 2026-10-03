@@ -22,6 +22,8 @@ import {
     MASAJID_WORKSPACE_MODULES,
     MASAJID_WORKSPACE_MODULE_ROLE_VISIBILITY,
 } from '../config/masajid-workspace.config';
+import { readCommunityTrusted } from '../utils/community-trusted.util';
+import { shouldShowOpenValidationToDonor } from '../utils/open-validation-access.util';
 
 @Injectable({
     providedIn: 'root'
@@ -92,6 +94,7 @@ export class ModuleNavigationService {
                 functionCode,
                 (moduleCode) => this.canSeeWorkspaceModule(moduleCode),
             );
+            modules = this.appendOpenValidationForTrustedDonor(functionCode, userType, modules);
 
             if (!modules.length) {
                 return;
@@ -151,6 +154,27 @@ export class ModuleNavigationService {
         }
 
         return this.permissionService.hasAnyRole([Roles.Developer, Roles.SystemAdministrator]);
+    }
+
+    private appendOpenValidationForTrustedDonor(
+        functionCode: string,
+        userType: MasajidUserType | null | undefined,
+        modules: IMenuModule[],
+    ): IMenuModule[] {
+        const communityTrusted = readCommunityTrusted(this.localStorageService.getAccountDetails());
+        if (functionCode !== 'MSD' || !shouldShowOpenValidationToDonor(userType, communityTrusted)) {
+            return modules;
+        }
+
+        const validationModules = this.getModulesForFunction(
+            MASAJID_WORKSPACE_FUNCTIONS['MSA'].FunctionID,
+            MASAJID_WORKSPACE_MODULES,
+            functionCode,
+            (moduleCode) => moduleCode === 'DNVAL',
+        );
+        const merged = [...modules, ...validationModules];
+        merged.sort((a, b) => (a.defaultOrder || 0) - (b.defaultOrder || 0));
+        return merged;
     }
 
     private canSeeWorkspaceModule(moduleCode: string): boolean {

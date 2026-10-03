@@ -2,12 +2,12 @@ export const DonationStorageConfig = {
   fileSystemId: 1,
 
   folders: {
-    donationRequests: 5,
-    donationCommitments: 6,
-    fulfillmentProofs: 7,
-    communityValidations: 8,
-    breakdownRequests: 9,
-    otherDonationAttachments: 10,
+    donationRequests: 11,
+    donationCommitments: 12,
+    fulfillmentProofs: 13,
+    communityValidations: 14,
+    breakdownRequests: 15,
+    otherDonationAttachments: 16,
   },
 } as const;
 

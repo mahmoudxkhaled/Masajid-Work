@@ -160,6 +160,9 @@
     </div>
 
     <div class="p-3 pt-2">
+      <p *ngIf="showSecondReviewHint" class="mb-3 text-500">
+        {{ 'donations.validation.secondReviewHint' | translate }}
+      </p>
       <ng-container *ngIf="validationsLoading; else validationsLoaded">
         <div class="flex flex-column gap-2">
           <p-skeleton height="2.5rem" width="100%" *ngFor="let _ of [1, 2, 3]"></p-skeleton>

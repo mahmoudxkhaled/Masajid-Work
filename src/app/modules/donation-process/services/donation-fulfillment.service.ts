@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, finalize } from 'rxjs';
 import { ApiService } from 'src/app/core/api/api.service';
 import { LocalStorageService } from 'src/app/core/services/local-storage.service';
+import { readCommunityTrusted } from 'src/app/core/utils/community-trusted.util';
 import {
   DonationFulfillmentBackend,
   DonationFulfillmentDetails,
@@ -112,6 +113,7 @@ export class DonationFulfillmentService {
       donationCommitmentId: String(raw.Donation_Commitment_ID || ''),
       donationRequestId: String(raw.Donation_Request_ID || ''),
       donorUserId: Number(raw.Donor_User_ID || 0),
+      communityTrusted: readCommunityTrusted(raw),
       fulfilledBy: Number(raw.Fulfilled_By || 0),
       fulfillmentNote: this.localStorageService.pickRequestContentField(
         String(raw.Fulfillment_Note || ''),

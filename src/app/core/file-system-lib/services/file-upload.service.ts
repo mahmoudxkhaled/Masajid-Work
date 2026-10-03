@@ -240,6 +240,10 @@ export class FileUploadService {
     totalChunks: number,
     chunkSize: number
   ): Promise<string> {
+    // TODO: Implement duplicate-file overwrite flow:
+    // first request with Overwrite_If_Existing = false;
+    // if backend reports existing file, ask user for confirmation;
+    // if confirmed, retry with Overwrite_If_Existing = true.
     const parameters: string[] = [
       file.name,
       file.type,
@@ -249,7 +253,7 @@ export class FileUploadService {
       chunkSize.toString(),
       fileSystemId.toString(),
       folderId.toString(),
-      "false"
+      "false", // Overwrite_If_Existing
     ];
 
     console.log('Upload_Request parameters:', parameters);

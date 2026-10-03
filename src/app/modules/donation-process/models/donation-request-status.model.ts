@@ -27,6 +27,7 @@ export const DonationRequestStatusId = {
   Validated: 11,
   Closed: 12,
   Cancelled: 13,
+  FulfillmentDisputed: 14,
 } as const;
 
 export type DonationRequestStatusIdValue =
@@ -60,6 +61,8 @@ export function getDonationRequestStatusLabelKey(statusId: number): string {
       return 'donations.requestStatus.closed';
     case DonationRequestStatusId.Cancelled:
       return 'donations.requestStatus.cancelled';
+    case DonationRequestStatusId.FulfillmentDisputed:
+      return 'donations.requestStatus.fulfillmentDisputed';
     default:
       return 'donations.requestStatus.unknown';
   }

@@ -363,6 +363,28 @@ app-register-location-picker .leaflet-container .leaflet-tile {
   height: 256px !important;
 }
 
+.community-trusted-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.7rem;
+  border: 1px solid var(--yellow-500, #eab308);
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--yellow-50, #fefce8), var(--yellow-100, #fef9c3));
+  box-shadow: inset 0 0 0 1px var(--yellow-200, #fde68a);
+  color: var(--yellow-900, #713f12);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.25;
+  white-space: nowrap;
+
+  .pi-star-fill {
+    color: var(--yellow-600, #ca8a04);
+    font-size: 0.7rem;
+  }
+}
+
 html body .p-button.p-button-secondary.p-button-outlined:not(:disabled) {
   color: light-dark(#6c757d, #ffffff);
   border-color: light-dark(#6c757d, rgba(255, 255, 255, 0.85));

@@ -78,7 +78,7 @@ export class FileService {
 
   /**
    * Delete_File_Allocation (1144)
-   * Input: File_ID, Folder_ID, File_System_ID
+   * Input: File_ID, Folder_ID, File_System_ID, Delete_All_References, Detach_All_References
    */
   deleteFileAllocation(
     fileId: number,
@@ -91,6 +91,8 @@ export class FileService {
       fileId.toString(),
       folderId.toString(),
       fileSystemId.toString(),
+      'false',
+      'false',
     ];
     console.log('params delete file allocation', params);
 

@@ -90,7 +90,7 @@ export class FolderService {
 
   /**
    * Delete_Folder (1133)
-   * Input: Folder_ID, File_System_ID
+   * Input: Folder_ID, File_System_ID, Delete_All_References, Detach_All_References
    */
   deleteFolder(folderId: number, fileSystemId: number): Observable<any> {
     this.isLoadingSubject.next(true);
@@ -98,6 +98,8 @@ export class FolderService {
     const params: string[] = [
       folderId.toString(),
       fileSystemId.toString(),
+      'false',
+      'false',
     ];
 
     return this.apiService

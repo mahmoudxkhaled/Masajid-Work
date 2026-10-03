@@ -9,6 +9,7 @@ import { PendingReviewDetailsComponent } from './components/pending-review-detai
 import { PendingReviewListComponent } from './components/pending-review-list/pending-review-list.component';
 import { ReadyToCloseDetailsComponent } from './components/ready-to-close-details/ready-to-close-details.component';
 import { ReadyToCloseListComponent } from './components/ready-to-close-list/ready-to-close-list.component';
+import { SuspendedEntitiesListComponent } from './components/suspended-entities-list/suspended-entities-list.component';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { ReadyToCloseListComponent } from './components/ready-to-close-list/read
     ReadyToCloseDetailsComponent,
     CloseDonationRequestDialogComponent,
     BreakdownReviewListComponent,
+    SuspendedEntitiesListComponent,
   ],
   imports: [AdminReviewRoutingModule, SharedModule, DonationProcessSharedModule],
   providers: [MessageService],

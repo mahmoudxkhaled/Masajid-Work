@@ -27,6 +27,10 @@ export interface DonationFulfillmentBackend {
   Rejection_Valid?: boolean | null;
   Donation_Request_ID?: number;
   Donor_User_ID?: number;
+  Community_Trusted?: boolean;
+  Donor?: {
+    Community_Trusted?: boolean;
+  };
 }
 
 export interface DonationFulfillmentListItem {
@@ -43,6 +47,7 @@ export interface DonationFulfillmentDetails {
   donationCommitmentId: string;
   donationRequestId: string;
   donorUserId: number;
+  communityTrusted: boolean;
   fulfilledBy: number;
   fulfillmentNote: string;
   donationVendorOfferId: number;

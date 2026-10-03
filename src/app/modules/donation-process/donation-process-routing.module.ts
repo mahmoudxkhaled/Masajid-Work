@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { OpenValidationGuard } from 'src/app/core/guards/open-validation.guard';
 
 const routes: Routes = [
   { path: '', redirectTo: 'facility', pathMatch: 'full' },
@@ -37,6 +38,7 @@ const routes: Routes = [
   },
   {
     path: 'validation',
+    canActivate: [OpenValidationGuard],
     loadChildren: () => import('./validation/validation.module').then((m) => m.ValidationModule),
     data: { breadcrumb: 'donations.validation.title' },
   },

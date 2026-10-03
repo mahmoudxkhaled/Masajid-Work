@@ -5,6 +5,10 @@ export interface DonationCommitmentBackend {
   Donation_Request_ID?: number;
   Status?: number;
   Donor_User_ID?: number;
+  Community_Trusted?: boolean;
+  Donor?: {
+    Community_Trusted?: boolean;
+  };
   Is_Anonymous?: boolean;
   Fulfillment_Mode?: number;
   Charity_Entity_ID?: number | null;
@@ -84,6 +88,7 @@ export interface DonationCommitmentDetails {
   statusId: number;
   statusCode: string;
   donorUserId: number;
+  communityTrusted: boolean;
   entityId: number;
   isAnonymous: boolean;
   fulfillmentMode: FulfillmentModeValue | number;

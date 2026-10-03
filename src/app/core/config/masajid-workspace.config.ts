@@ -74,6 +74,14 @@ export const MASAJID_WORKSPACE_MODULES: IModulesDetails = {
     Default_Order: 17,
     URL: '/donations/admin/breakdown-review',
   },
+  ADM_SUSP: {
+    ModuleID: 309,
+    FunctionID: 11,
+    Name: 'Suspended Entities',
+    Name_Regional: '\u0627\u0644\u062c\u0647\u0627\u062a \u0627\u0644\u0645\u0648\u0642\u0648\u0641\u0629',
+    Default_Order: 18,
+    URL: '/donations/admin/suspended-entities',
+  },
   // TODO: restore Overdue Donations module later
   // ADM_OVER: {
   //   ModuleID: 302,
@@ -236,6 +244,7 @@ export const MASAJID_WORKSPACE_MODULE_ROLE_VISIBILITY: Partial<Record<string, Ro
   ADM_REV: [Roles.Developer, Roles.SystemAdministrator],
   ADM_CLOSE: [Roles.Developer, Roles.SystemAdministrator],
   ADM_BRK: [Roles.Developer, Roles.SystemAdministrator],
+  ADM_SUSP: [Roles.Developer, Roles.SystemAdministrator],
   // TODO: restore Overdue Donations module later
   // ADM_OVER: [Roles.Developer, Roles.SystemAdministrator],
   ADM_FAC: [Roles.Developer, Roles.SystemAdministrator],

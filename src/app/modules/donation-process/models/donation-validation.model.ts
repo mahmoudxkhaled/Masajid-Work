@@ -47,7 +47,11 @@ export interface SubmitDonationValidationRequest {
   isRegional: boolean;
 }
 
-export function canSubmitDonationValidation(statusId: number | null | undefined): boolean {
+export function canSubmitDonationValidation(
+  statusId: number | null | undefined,
+  currentUserId?: number | null,
+  priorValidatorUserIds?: number[],
+): boolean {
   if (statusId == null || statusId <= 0) {
     return true;
   }
@@ -60,5 +64,17 @@ export function canSubmitDonationValidation(statusId: number | null | undefined)
     return false;
   }
 
-  return statusId === DonationRequestStatusId.OpenForValidation;
+  if (statusId === DonationRequestStatusId.OpenForValidation) {
+    return true;
+  }
+
+  if (statusId === DonationRequestStatusId.FulfillmentDisputed) {
+    const userId = Number(currentUserId || 0);
+    if (userId <= 0) {
+      return false;
+    }
+    return !(priorValidatorUserIds || []).includes(userId);
+  }
+
+  return false;
 }

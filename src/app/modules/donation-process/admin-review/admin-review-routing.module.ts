@@ -8,6 +8,7 @@ import { ReadyToCloseListComponent } from './components/ready-to-close-list/read
 import { BreakdownReviewListComponent } from './components/breakdown-review-list/breakdown-review-list.component';
 import { BreakdownRequestDetailsComponent } from '../shared/breakdown/breakdown-request-details/breakdown-request-details.component';
 import { BreakdownRequestsListComponent } from '../shared/breakdown/breakdown-requests-list/breakdown-requests-list.component';
+import { SuspendedEntitiesListComponent } from './components/suspended-entities-list/suspended-entities-list.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'pending-review', pathMatch: 'full' },
@@ -58,6 +59,12 @@ const routes: Routes = [
     component: BreakdownRequestsListComponent,
     canActivate: [SystemAdminGuard],
     data: { breadcrumb: 'donations.breakdown.list.title', mode: 'admin' },
+  },
+  {
+    path: 'suspended-entities',
+    component: SuspendedEntitiesListComponent,
+    canActivate: [SystemAdminGuard],
+    data: { breadcrumb: 'donations.adminSuspendedEntities.title' },
   },
 ];
 

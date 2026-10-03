@@ -96,6 +96,10 @@
                     <div class="flex align-items-center gap-3 mb-4">
                         <p-tag [value]="getStatusLabel()" [severity]="getStatusSeverity()"
                             styleClass="text-xs font-bold uppercase px-3"></p-tag>
+                        <span *ngIf="accountDetails?.Community_Trusted === true" class="community-trusted-badge">
+                            <i class="pi pi-star-fill" aria-hidden="true"></i>
+                            <span>{{ 'common.communityTrusted' | translate }}</span>
+                        </span>
                         <span class="text-500 font-mono text-sm">
                             {{ 'profile.labels.userId' | translate }}: {{ userDetails?.User_ID }}
                         </span>

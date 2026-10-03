@@ -26,7 +26,8 @@
         "no": "No",
         "select": "Select",
         "save": "Save",
-        "actions": "Actions"
+        "actions": "Actions",
+        "communityTrusted": "Community Trusted"
     },
     "underDevelopment": {
         "ariaLabel": "Page under development",
@@ -1293,6 +1294,7 @@
             "donations.adminReview.title": "Admin Review",
             "donations.adminReview.details.title": "Review Donation Request",
             "donations.adminBreakdownReview.title": "Breakdown Review",
+            "donations.adminSuspendedEntities.title": "Suspended Entities",
             "donations.adminClose.title": "Ready to Close",
             "donations.adminClose.details.title": "Close Donation Request",
             "donations.vendorOffers.title": "Vendor Offers",
@@ -4165,6 +4167,36 @@
                 "sessionExpired": "Your session has expired. Please login again."
             }
         },
+        "adminSuspendedEntities": {
+            "title": "Suspended Entities",
+            "subtitle": "Review currently suspended entities.",
+            "empty": "No suspended entities found.",
+            "pagination": "Showing '{first}' to '{last}' of '{totalRecords}'",
+            "filters": {
+                "entityType": "Entity type",
+                "allTypes": "All types"
+            },
+            "entityTypes": {
+                "facility": "Facility",
+                "vendor": "Vendor",
+                "charityCenter": "Charity Center"
+            },
+            "columns": {
+                "entityId": "Entity ID",
+                "entityType": "Entity Type",
+                "status": "Status"
+            },
+            "status": {
+                "suspended": "Suspended"
+            },
+            "errors": {
+                "invalidEntityType": "Invalid entity type.",
+                "invalidFilterCount": "Invalid page size. It must be between 5 and 100.",
+                "accessDenied": "You do not have permission to view suspended entities.",
+                "sessionExpired": "Your session has expired. Please sign in again.",
+                "listFailed": "Unable to load suspended entities. Please try again."
+            }
+        },
         "adminBreakdownReview": {
             "title": "Breakdown Review",
             "subtitle": "Review facility-confirmed breakdown requests and either apply or reject them.",
@@ -4435,12 +4467,14 @@
             "validated": "Validated",
             "closed": "Closed",
             "cancelled": "Cancelled",
+            "fulfillmentDisputed": "Fulfillment Disputed",
             "unknown": "Unknown Status"
         },
         "fulfillmentStatus": {
             "submitted": "Submitted",
             "confirmed": "Confirmed",
             "rejected": "Rejected",
+            "disputed": "Fulfillment Disputed",
             "unknown": "Unknown"
         },
         "breakdown": {
@@ -4603,6 +4637,7 @@
             "detailsTitle": "Validation Details",
             "detailsSubtitle": "Details of the selected community validation.",
             "validationsEmpty": "No community validations have been submitted yet.",
+            "secondReviewHint": "This fulfillment was disputed. Another validator must review it independently.",
             "detailsUnavailable": "Validation details are unavailable.",
             "requestSummaryUnavailable": "Request summary is unavailable.",
             "fulfillmentMissing": "No confirmed fulfillment was found for this request.",

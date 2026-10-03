@@ -88,7 +88,7 @@ export class FileAllocationsService {
 
   /**
    * Delete_File_Allocation (1144)
-   * Input: File_ID, Folder_ID, File_System_ID
+   * Input: File_ID, Folder_ID, File_System_ID, Delete_All_References, Detach_All_References
    */
   deleteFileAllocation(fileId: number, folderId: number, fileSystemId: number): Observable<any> {
     this.isLoadingSubject.next(true);
@@ -96,6 +96,8 @@ export class FileAllocationsService {
       fileId.toString(),
       folderId.toString(),
       fileSystemId.toString(),
+      'false',
+      'false',
     ];
     return this.apiService
       .callAPI(1144, this.getAccessToken(), params)

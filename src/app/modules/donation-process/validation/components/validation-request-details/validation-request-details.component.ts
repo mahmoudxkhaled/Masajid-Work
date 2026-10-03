@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { LanguageDirService } from 'src/app/core/services/language-dir.service';
+import { LocalStorageService } from 'src/app/core/services/local-storage.service';
 import { TranslationService } from 'src/app/core/services/translation.service';
 import { DonationRequestsService } from '../../../facility-requests/services/donation-requests.service';
 import { FulfillmentStatusId } from '../../../models/donation-fulfillment-status.model';
@@ -10,7 +11,10 @@ import {
   DonationRequestDetails,
   DonationRequestDetailsBackend,
 } from '../../../models/donation-request.model';
-import { getDonationRequestStatusLabelKey } from '../../../models/donation-request-status.model';
+import {
+  DonationRequestStatusId,
+  getDonationRequestStatusLabelKey,
+} from '../../../models/donation-request-status.model';
 import {
   DonationValidationBackend,
   DonationValidationListItem,
@@ -55,14 +59,23 @@ export class ValidationRequestDetailsComponent implements OnInit, OnDestroy {
     private donationValidationService: DonationValidationService,
     private donationFulfillmentService: DonationFulfillmentService,
     private languageDirService: LanguageDirService,
+    private localStorageService: LocalStorageService,
     private translate: TranslationService,
     private messageService: MessageService,
   ) {}
 
   get canSubmit(): boolean {
     return (
-      canSubmitDonationValidation(this.requestDetails?.statusId) && this.confirmedFulfillmentId > 0
+      canSubmitDonationValidation(
+        this.requestDetails?.statusId,
+        this.localStorageService.getUserDetails()?.User_ID,
+        this.validations.map((item) => item.validatorUserId),
+      ) && this.confirmedFulfillmentId > 0
     );
+  }
+
+  get showSecondReviewHint(): boolean {
+    return this.requestDetails?.statusId === DonationRequestStatusId.FulfillmentDisputed;
   }
 
   ngOnInit(): void {
@@ -223,8 +236,12 @@ export class ValidationRequestDetailsComponent implements OnInit, OnDestroy {
         }
         const items = Array.isArray(response.message) ? response.message : [];
         const confirmed = items.find(
-          (item: { Status?: number; Donation_Fulfillment_ID?: number }) =>
-            Number(item.Status) === FulfillmentStatusId.Confirmed,
+          (item: { Status?: number; Donation_Fulfillment_ID?: number }) => {
+            const statusId = Number(item.Status);
+            return (
+              statusId === FulfillmentStatusId.Confirmed || statusId === FulfillmentStatusId.Disputed
+            );
+          },
         );
         const fulfillmentId = Number(confirmed?.Donation_Fulfillment_ID || 0);
         if (fulfillmentId > 0) {
@@ -253,6 +270,9 @@ export class ValidationRequestDetailsComponent implements OnInit, OnDestroy {
     code: string,
   ): 'success' | 'info' | 'warning' | 'danger' | 'secondary' | 'contrast' {
     const normalized = String(code || '').toUpperCase();
+    if (normalized.includes('DISPUTED')) {
+      return 'warning';
+    }
     if (normalized.includes('OPEN_FOR_VALIDATION')) {
       return 'info';
     }

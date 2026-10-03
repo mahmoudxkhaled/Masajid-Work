@@ -2,6 +2,7 @@ export const FulfillmentStatusId = {
   Submitted: 1,
   Confirmed: 2,
   Rejected: 3,
+  Disputed: 4,
 } as const;
 
 export type FulfillmentStatusIdValue =
@@ -23,6 +24,8 @@ export function getFulfillmentStatusLabelKey(statusId: number): string {
       return 'donations.fulfillmentStatus.confirmed';
     case FulfillmentStatusId.Rejected:
       return 'donations.fulfillmentStatus.rejected';
+    case FulfillmentStatusId.Disputed:
+      return 'donations.fulfillmentStatus.disputed';
     default:
       return 'donations.fulfillmentStatus.unknown';
   }
@@ -36,6 +39,8 @@ export function getFulfillmentStatusSeverity(statusId: number): FulfillmentStatu
       return 'success';
     case FulfillmentStatusId.Rejected:
       return 'danger';
+    case FulfillmentStatusId.Disputed:
+      return 'warning';
     default:
       return 'secondary';
   }
@@ -51,4 +56,8 @@ export function isFulfillmentConfirmed(statusId: number): boolean {
 
 export function isFulfillmentRejected(statusId: number): boolean {
   return statusId === FulfillmentStatusId.Rejected;
+}
+
+export function isFulfillmentDisputed(statusId: number): boolean {
+  return statusId === FulfillmentStatusId.Disputed;
 }

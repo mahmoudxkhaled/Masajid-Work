@@ -1,0 +1,96 @@
+<p-toast />
+<div class="block-section card">
+  <div class="flex flex-column gap-2 mb-3">
+    <h2 class="block-title mb-0">{{ 'donations.adminSuspendedEntities.title' | translate }}</h2>
+    <p class="mb-0 text-500">{{ 'donations.adminSuspendedEntities.subtitle' | translate }}</p>
+  </div>
+
+  <div class="block-card">
+    <p-table
+      [value]="tableValue"
+      [paginator]="true"
+      [lazy]="true"
+      [first]="first"
+      [rows]="rows"
+      [totalRecords]="totalRecords"
+      [rowsPerPageOptions]="rowsPerPageOptions"
+      [showCurrentPageReport]="true"
+      [currentPageReportTemplate]="'donations.adminSuspendedEntities.pagination' | translate"
+      responsiveLayout="scroll"
+      styleClass="p-datatable-sm"
+      (onLazyLoad)="onPageChange($event)"
+    >
+      <ng-template pTemplate="caption">
+        <div class="flex align-items-center justify-content-between gap-3 mb-2 flex-wrap">
+          <div class="flex align-items-center gap-2 flex-wrap">
+            <label class="font-medium mb-0">{{ 'donations.adminSuspendedEntities.filters.entityType' | translate }}</label>
+            <ng-container *ngIf="initialLoading && entities.length === 0; else entityTypeDropdown">
+              <p-skeleton height="2.5rem" width="12rem" borderRadius="6px"></p-skeleton>
+            </ng-container>
+            <ng-template #entityTypeDropdown>
+              <p-dropdown
+                [options]="entityTypeOptions"
+                [(ngModel)]="entityTypeFilter"
+                optionLabel="label"
+                optionValue="value"
+                [style]="{ width: '12rem' }"
+                [disabled]="tableLoadingSpinner"
+                (onChange)="onEntityTypeFilterChange()"
+              ></p-dropdown>
+            </ng-template>
+          </div>
+        </div>
+      </ng-template>
+
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="width: 10rem">{{ 'donations.adminSuspendedEntities.columns.entityId' | translate }}</th>
+          <th style="width: 12rem">{{ 'donations.adminSuspendedEntities.columns.entityType' | translate }}</th>
+          <th class="text-center" style="width: 10rem">{{ 'donations.adminSuspendedEntities.columns.status' | translate }}</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-row>
+        <tr>
+          <td style="width: 10rem">
+            <ng-container *ngIf="tableLoadingSpinner; else entityIdCell">
+              <p-skeleton height="1.25rem" width="6rem"></p-skeleton>
+            </ng-container>
+            <ng-template #entityIdCell>{{ row.Entity_ID || '-' }}</ng-template>
+          </td>
+          <td class="suspended-entities-cell-ellipsis" style="width: 12rem">
+            <ng-container *ngIf="tableLoadingSpinner; else entityTypeCell">
+              <p-skeleton height="1.25rem" width="8rem"></p-skeleton>
+            </ng-container>
+            <ng-template #entityTypeCell>
+              <span class="text-overflow-ellipsis" [pTooltip]="getEntityTypeLabel(row)" tooltipPosition="top">
+                {{ getEntityTypeLabel(row) }}
+              </span>
+            </ng-template>
+          </td>
+          <td class="text-center" style="width: 10rem">
+            <ng-container *ngIf="tableLoadingSpinner; else statusCell">
+              <div class="flex justify-content-center">
+                <p-skeleton height="1.5rem" width="4.5rem" borderRadius="16px"></p-skeleton>
+              </div>
+            </ng-container>
+            <ng-template #statusCell>
+              <app-donation-status-badge
+                [label]="'donations.adminSuspendedEntities.status.suspended' | translate"
+                severity="danger"
+              ></app-donation-status-badge>
+            </ng-template>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="3" class="text-center p-4 text-500">
+            {{ 'donations.adminSuspendedEntities.empty' | translate }}
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>

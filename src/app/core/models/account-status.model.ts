@@ -20,6 +20,7 @@ export interface IAccountDetails {
     Two_FA: boolean;
     Profile_Picture: string;
     System_Role_ID: number;
+    Community_Trusted?: boolean;
 }
 
 

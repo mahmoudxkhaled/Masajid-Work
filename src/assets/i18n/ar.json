@@ -26,7 +26,8 @@
         "no": "لا",
         "select": "اختيار",
         "save": "حفظ",
-        "actions": "الإجراءات"
+        "actions": "الإجراءات",
+        "communityTrusted": "حساب موثوق من المجتمع"
     },
     "underDevelopment": {
         "ariaLabel": "الصفحة قيد التطوير",
@@ -1294,6 +1295,7 @@
             "donations.adminReview.title": "مراجعة الإدارة",
             "donations.adminReview.details.title": "مراجعة طلب التبرع",
             "donations.adminBreakdownReview.title": "مراجعة التجزئة",
+            "donations.adminSuspendedEntities.title": "الجهات الموقوفة",
             "donations.adminClose.title": "جاهزة للإغلاق",
             "donations.adminClose.details.title": "إغلاق طلب التبرع",
             "donations.vendorOffers.title": "عروض الموردين",
@@ -4024,6 +4026,36 @@
                 "sessionExpired": "انتهت جلستك. يرجى تسجيل الدخول مرة أخرى."
             }
         },
+        "adminSuspendedEntities": {
+            "title": "الجهات الموقوفة",
+            "subtitle": "مراجعة الجهات الموقوفة حاليًا.",
+            "empty": "لا توجد جهات موقوفة.",
+            "pagination": "عرض '{first}' إلى '{last}' من أصل '{totalRecords}'",
+            "filters": {
+                "entityType": "نوع الجهة",
+                "allTypes": "جميع الأنواع"
+            },
+            "entityTypes": {
+                "facility": "منشأة",
+                "vendor": "مورد",
+                "charityCenter": "مركز خيري"
+            },
+            "columns": {
+                "entityId": "رقم الجهة",
+                "entityType": "نوع الجهة",
+                "status": "الحالة"
+            },
+            "status": {
+                "suspended": "موقوفة"
+            },
+            "errors": {
+                "invalidEntityType": "نوع الجهة غير صالح.",
+                "invalidFilterCount": "حجم الصفحة غير صالح. يجب أن يكون بين 5 و100.",
+                "accessDenied": "ليس لديك صلاحية لعرض الجهات الموقوفة.",
+                "sessionExpired": "انتهت صلاحية الجلسة. يرجى تسجيل الدخول مرة أخرى.",
+                "listFailed": "تعذّر تحميل الجهات الموقوفة. يرجى المحاولة مرة أخرى."
+            }
+        },
         "adminBreakdownReview": {
             "title": "مراجعة التجزئة",
             "subtitle": "راجع طلبات التجزئة المؤكدة من المنشأة ثم طبّقها أو ارفضها.",
@@ -4294,12 +4326,14 @@
             "validated": "تم التحقق",
             "closed": "مغلق",
             "cancelled": "ملغى",
+            "fulfillmentDisputed": "تنفيذ محل نزاع",
             "unknown": "حالة غير معروفة"
         },
         "fulfillmentStatus": {
             "submitted": "مُقدَّم",
             "confirmed": "مؤكد",
             "rejected": "مرفوض",
+            "disputed": "تنفيذ محل نزاع",
             "unknown": "غير معروف"
         },
         "breakdown": {
@@ -4462,6 +4496,7 @@
             "detailsTitle": "تفاصيل التحقق",
             "detailsSubtitle": "تفاصيل عملية التحقق المجتمعي المحددة.",
             "validationsEmpty": "لم يتم تقديم أي تحقق مجتمعي بعد.",
+            "secondReviewHint": "تم الاعتراض على هذا التنفيذ. يجب أن يراجعه متحقّق آخر بشكل مستقل.",
             "detailsUnavailable": "تفاصيل التحقق غير متاحة.",
             "requestSummaryUnavailable": "ملخص الطلب غير متاح.",
             "fulfillmentMissing": "لم يتم العثور على تنفيذ مؤكد لهذا الطلب.",
