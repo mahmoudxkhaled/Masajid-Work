@@ -11,6 +11,7 @@
 
 .cta__panel {
   position: relative;
+  isolation: isolate;
   overflow: hidden;
   border-radius: 24px;
   padding: clamp(2rem, 6vw, 5rem);
@@ -18,6 +19,21 @@
   background: var(--dh-cta-panel-bg, #4f378a);
   color: var(--dh-cta-panel-fg, #fff);
   box-shadow: 0 24px 48px var(--dh-cta-shadow, rgb(79 55 138 / 0.35));
+}
+
+.cta__particles {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  pointer-events: none;
+}
+
+:host ::ng-deep .cta__particles > div,
+:host ::ng-deep .cta__particles canvas {
+  width: 100% !important;
+  height: 100% !important;
+  pointer-events: none;
 }
 
 .cta__glow {

@@ -1,6 +1,14 @@
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
+import type { Container, ISourceOptions } from '@tsparticles/engine';
 import { filter, Subscription } from 'rxjs';
+import {
+  buildThemedNightSkyOptions,
+  initParticlesEngine,
+  NIGHT_SKY_DARK_THEME,
+  NIGHT_SKY_LIGHT_THEME,
+  prefersReducedMotion,
+} from 'src/app/Shared/particles/particles-options';
 import { LanguageDirService } from 'src/app/core/services/language-dir.service';
 import { LocalStorageService } from 'src/app/core/services/local-storage.service';
 import { PUBLIC_LANDING_ROUTE_PATH } from '../data/public-landing.data';
@@ -18,7 +26,10 @@ export class PublicLayoutComponent implements OnInit, OnDestroy, AfterViewInit {
   dir: 'rtl' | 'ltr' = 'rtl';
   lang: 'en' | 'ar' = 'ar';
   isDark = false;
+  readonly particleOptions: ISourceOptions = buildThemedNightSkyOptions(prefersReducedMotion());
+  readonly initParticles = initParticlesEngine;
 
+  private particlesContainer?: Container;
   private langSub?: Subscription;
   private themeSub?: Subscription;
   private routerSub?: Subscription;
@@ -48,6 +59,7 @@ export class PublicLayoutComponent implements OnInit, OnDestroy, AfterViewInit {
     this.themeSub = this.theme.isDark$.subscribe((dark) => {
       this.isDark = dark;
       this.applyThemeClass(dark);
+      this.applyParticlesTheme();
     });
 
     this.routerSub = this.router.events
@@ -145,4 +157,16 @@ export class PublicLayoutComponent implements OnInit, OnDestroy, AfterViewInit {
   private applyThemeClass(isDark: boolean): void {
     document.documentElement.classList.toggle('dh-theme-dark', isDark);
   }
+
+  // #region Particles
+  onParticlesLoaded(container: Container): void {
+    this.particlesContainer = container;
+    this.applyParticlesTheme();
+  }
+
+  private applyParticlesTheme(): void {
+    const themeName = this.isDark ? NIGHT_SKY_DARK_THEME : NIGHT_SKY_LIGHT_THEME;
+    void this.particlesContainer?.loadTheme(themeName);
+  }
+  // #endregion
 }

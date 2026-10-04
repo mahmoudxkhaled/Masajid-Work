@@ -1,6 +1,13 @@
 <section id="cta" class="cta" aria-labelledby="cta-heading" [publicScrollReveal]="'up'">
   <div class="cta__inner">
     <div class="cta__panel">
+      <ngx-particles
+        class="cta__particles"
+        aria-hidden="true"
+        [id]="'cta-particles'"
+        [options]="particleOptions"
+        [particlesInit]="initParticles"
+      ></ngx-particles>
       <div class="cta__glow cta__glow--tl" aria-hidden="true"></div>
       <div class="cta__glow cta__glow--br" aria-hidden="true"></div>
       <h2 id="cta-heading" class="cta__title">{{ 'public.landing.cta.title' | translate }}</h2>

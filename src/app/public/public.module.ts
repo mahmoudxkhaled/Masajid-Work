@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
+import { NgxParticlesModule } from '@tsparticles/angular';
 import { PublicRoutingModule } from './public-routing.module';
 import { PublicLayoutComponent } from './layout/public-layout.component';
 import { LandingPageComponent } from './pages/landing-page/landing-page.component';
@@ -48,7 +49,7 @@ import { PublicScrollRevealDirective } from './directives/public-scroll-reveal.d
     CallToActionSectionComponent,
     FooterSectionComponent,
   ],
-  imports: [CommonModule, RouterModule, ReactiveFormsModule, TranslateModule, PublicRoutingModule, LocationPickerModule],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, TranslateModule, PublicRoutingModule, LocationPickerModule, NgxParticlesModule],
   providers: [PublicThemePreferenceService],
 })
 export class PublicModule { }

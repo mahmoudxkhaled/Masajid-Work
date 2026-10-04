@@ -6,6 +6,14 @@
   [attr.lang]="lang"
   (click)="onDhClick($event)"
 >
+  <ngx-particles
+    class="dh__particles"
+    aria-hidden="true"
+    [id]="'public-particles'"
+    [options]="particleOptions"
+    [particlesInit]="initParticles"
+    (particlesLoaded)="onParticlesLoaded($event)"
+  ></ngx-particles>
   <app-header-section></app-header-section>
   <main>
     <router-outlet></router-outlet>
