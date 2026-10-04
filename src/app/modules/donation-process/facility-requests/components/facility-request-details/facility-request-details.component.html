@@ -12,6 +12,7 @@
         <ng-template #requestTitle>{{ details?.title }}</ng-template>
       </p>
     </div>
+    
     <div class="flex flex-wrap gap-2">
       <p-button *ngIf="isDraft" [label]="'donations.facility.requests.actions.edit' | translate" icon="pi pi-pencil"
         (onClick)="goToEdit()" [disabled]="loading"></p-button>

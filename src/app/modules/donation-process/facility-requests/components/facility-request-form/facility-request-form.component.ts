@@ -606,6 +606,9 @@ export class FacilityRequestFormComponent implements OnInit, OnDestroy {
 
   private remapTypes(): void {
     this.typeOptions = this.donationReferenceService.toTypeDropdownOptions(this.rawTypes);
+    if (!this.isEditMode && this.selectedDonationTypeId == null && this.typeOptions.length) {
+      this.selectedDonationTypeId = this.typeOptions[0].value;
+    }
   }
 
   private remapLookups(): void {

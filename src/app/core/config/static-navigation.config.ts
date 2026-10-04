@@ -80,8 +80,8 @@ export const STATIC_MODULES_DETAILS: IModulesDetails = {
     PRF: {
         ModuleID: 3,
         FunctionID: 1,
-        Name: 'Profile',
-        Name_Regional: '\u0627\u0644\u0645\u0644\u0641 \u0627\u0644\u0634\u062e\u0635\u064a',
+        Name: 'My Profile',
+        Name_Regional: '\u0645\u0644\u0641\u064a \u0627\u0644\u0634\u062e\u0635\u064a',
         Default_Order: 20,
         URL: '/summary/profile',
     },

@@ -383,7 +383,7 @@
   </div>
 
   <ng-container *ngIf="loading; else detailsContent">
-    <div class="block-card details-card p-0 mb-3">
+    <div class="block-card details-card p-0 mb-3" *ngIf="offersLoading || vendorOffers.length > 0">
       <div class="details-section-header">
         <span class="details-section-icon"><i class="pi pi-shopping-bag"></i></span>
         <h3 class="details-section-title">{{ 'donations.commitments.vendorOffers.title' | translate }}</h3>
@@ -431,7 +431,7 @@
 
   <ng-template #detailsContent>
     <div *ngIf="details">
-      <div class="block-card details-card p-0 mb-3">
+      <div class="block-card details-card p-0 mb-3" *ngIf="offersLoading || vendorOffers.length > 0">
         <div class="details-section-header">
           <span class="details-section-icon"><i class="pi pi-shopping-bag"></i></span>
           <h3 class="details-section-title">{{ 'donations.commitments.vendorOffers.title' | translate }}</h3>

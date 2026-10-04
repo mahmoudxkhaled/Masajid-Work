@@ -4554,6 +4554,7 @@
                 },
                 "modeLabel": "How do you want to split this request?",
                 "instructions": {
+                    "title": "How a breakdown works",
                     "overview": "A breakdown splits this commitment into separate donation requests. You must include at least one donor-portion item (what you will fulfill) and at least one remaining item (what stays on the original request).",
                     "quantity": "Review the original request, then enter the quantity you will fulfill and the currency.",
                     "custom": "Add at least two items. Check Donor portion on the item or items you will fulfill, and leave it unchecked on items that should remain. Each item needs a title, a quantity greater than zero, and a currency."

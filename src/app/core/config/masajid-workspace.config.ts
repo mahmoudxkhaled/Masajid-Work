@@ -230,14 +230,15 @@ export const MASAJID_WORKSPACE_MODULES: IModulesDetails = {
     Default_Order: 20,
     URL: '/donations/charity/commitments',
   },
-  CHR_SUPPORT: {
-    ModuleID: 343,
-    FunctionID: 15,
-    Name: 'Fulfillment Support',
-    Name_Regional: '\u062f\u0639\u0645 \u0627\u0644\u062a\u0646\u0641\u064a\u0630',
-    Default_Order: 30,
-    URL: '/donations/charity/fulfillment-support',
-  },
+  // TODO: restore Fulfillment Support module later
+  // CHR_SUPPORT: {
+  //   ModuleID: 343,
+  //   FunctionID: 15,
+  //   Name: 'Fulfillment Support',
+  //   Name_Regional: '\u062f\u0639\u0645 \u0627\u0644\u062a\u0646\u0641\u064a\u0630',
+  //   Default_Order: 30,
+  //   URL: '/donations/charity/fulfillment-support',
+  // },
 };
 
 export const MASAJID_WORKSPACE_MODULE_ROLE_VISIBILITY: Partial<Record<string, Roles[]>> = {
@@ -265,5 +266,5 @@ export const MASAJID_WORKSPACE_MODULE_ROLE_VISIBILITY: Partial<Record<string, Ro
   VOFR_NEW: DEFAULT_MODULE_VISIBLE_ROLES,
   CHR_REQ: DEFAULT_MODULE_VISIBLE_ROLES,
   CHR_CMT: DEFAULT_MODULE_VISIBLE_ROLES,
-  CHR_SUPPORT: DEFAULT_MODULE_VISIBLE_ROLES,
+  // CHR_SUPPORT: DEFAULT_MODULE_VISIBLE_ROLES,
 };
