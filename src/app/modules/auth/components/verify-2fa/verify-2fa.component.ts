@@ -82,6 +82,10 @@ export class Verify2FAComponent implements OnInit, OnDestroy, AfterViewInit {
           console.log('verify2FA response', response);
           if (response?.success === false) {
             console.log('verify2FA response error', response);
+            if (String(response?.message || '') === 'DAP11064') {
+              this.router.navigate(['/auth'], { queryParams: { accountSuspended: '1' } });
+              return;
+            }
             this.validationMessageKey = 'auth.verify2fa.invalidCode';
             return;
           }

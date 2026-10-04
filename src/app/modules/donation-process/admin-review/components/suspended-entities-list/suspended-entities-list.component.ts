@@ -107,9 +107,8 @@ export class SuspendedEntitiesListComponent implements OnInit, OnDestroy {
             this.handleBusinessError('list', response);
             return;
           }
-          const items: SuspendedEntityBackend[] = response.message?.Suspended_Entities || [];
-          this.entities = items;
-          this.totalRecords = this.first + items.length + (items.length === this.rows ? 1 : 0);
+          this.entities = response.message.Suspended_Entities || [];
+          this.totalRecords = Number(response.message.Total_Count || 0);
         },
         error: () => {
           this.entities = [];

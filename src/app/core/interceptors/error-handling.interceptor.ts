@@ -7,6 +7,9 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { LocalStorageService } from '../services/local-storage.service';
 
+const LOGIN_REQUEST_CODE = 100;
+const ACCOUNT_SUSPENDED_CODE = 'DAP11064';
+
 @Injectable()
 export class ErrorHandlingInterceptor implements HttpInterceptor {
     private sessionExpiredRedirectScheduled = false;
@@ -82,6 +85,11 @@ export class ErrorHandlingInterceptor implements HttpInterceptor {
             errorCode,
         });
 
+        if (this.isAccountSuspendedCode(errorCode)) {
+            this.handleAccountSuspended(req);
+            return;
+        }
+
         if (this.isGenericErrorCode(errorCode)) {
             if (this.isSessionExpiredCode(errorCode)) {
                 this.redirectToLoginForExpiredSession();
@@ -127,6 +135,11 @@ export class ErrorHandlingInterceptor implements HttpInterceptor {
             }
         }
 
+        if (errorCode && this.isAccountSuspendedCode(errorCode)) {
+            this.handleAccountSuspended(req);
+            return;
+        }
+
         if (errorCode && this.isGenericErrorCode(errorCode)) {
             if (this.isSessionExpiredCode(errorCode)) {
                 this.redirectToLoginForExpiredSession();
@@ -152,14 +165,38 @@ export class ErrorHandlingInterceptor implements HttpInterceptor {
     }
 
     private redirectToLoginForExpiredSession(): void {
+        this.redirectToLoginWithReason({ sessionExpired: '1' });
+    }
+
+    private handleAccountSuspended(req: HttpRequest<any>): void {
+        if (this.getPackedRequestCode(req) === LOGIN_REQUEST_CODE) {
+            return;
+        }
+        if (this.isOnAuthPage()) {
+            this.localStorageService.clearLoginDataPackage();
+            return;
+        }
+        this.redirectToLoginWithReason({ accountSuspended: '1' });
+    }
+
+    private isOnAuthPage(): boolean {
+        const path = this.router.url.split('?')[0];
+        return path === '/auth' || path.startsWith('/auth/');
+    }
+
+    private redirectToLoginWithReason(queryParams: { [key: string]: string }): void {
         if (this.sessionExpiredRedirectScheduled) {
             return;
         }
         this.sessionExpiredRedirectScheduled = true;
         this.localStorageService.clearLoginDataPackage();
-        const urlTree = this.router.createUrlTree(['/auth'], { queryParams: { sessionExpired: '1' } });
+        const urlTree = this.router.createUrlTree(['/auth'], { queryParams });
         const url = this.router.serializeUrl(urlTree);
         window.location.assign(`${window.location.origin}${url}`);
+    }
+
+    private isAccountSuspendedCode(code: string): boolean {
+        return this.normalizeGenericErrorCode(code) === ACCOUNT_SUSPENDED_CODE;
     }
 
     private canonicalErrorCode(code: string): string {

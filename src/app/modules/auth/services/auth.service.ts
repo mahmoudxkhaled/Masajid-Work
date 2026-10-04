@@ -49,45 +49,56 @@ export class AuthService {
             switchMap((response: any) => {
                 if (response?.success) {
                     return this.getLoginDataPackage(email).pipe(
-                        switchMap((r) =>
-                            this.getSettingsEngine()
-                                .loadAllLayers(true, { applyShell: false })
-                                .pipe(
-                                    switchMap(() => this.getSettingsEngine().applyRuntimeShell()),
-                                    catchError(() =>
-                                        this.getSettingsEngine().applyRuntimeShell().pipe(map(() => null))
-                                    ),
-                                    map(() => r)
-                                )
-                        ),
-                        switchMap((r) =>
-                            this.loadUserPreferencesOnLogin().pipe(
-                                catchError(() => of(undefined)),
-                                map(() => r)
-                            )
-                        ),
-                        switchMap(() => {
-                            this.dashboardResolverService.invalidateUserTypeCache();
-                            return this.dashboardResolverService.resolveCurrentUserType();
-                        }),
-                        tap(() => {
-                            this.notificationRefreshService.requestRefresh();
-                            const returnUrl = this.router.parseUrl(this.router.url).queryParams['returnUrl'];
-                            void this.router.navigateByUrl(
-                                returnUrl &&
-                                    returnUrl.startsWith('/') &&
-                                    !returnUrl.startsWith('//') &&
-                                    !returnUrl.startsWith('/auth')
-                                    ? returnUrl
-                                    : '/dashboard',
-                            );
-                        })
+                        switchMap((packageResponse: any) => this.completeLogin(packageResponse))
                     );
                 }
                 return of(response);
             }),
             finalize(() => {
                 this.isLoadingSubject.next(false);
+            })
+        );
+    }
+
+    private completeLogin(packageResponse: any): Observable<any> {
+        if (packageResponse?.success === false) {
+            this.localStorageService.clearLoginDataPackage();
+            return of(packageResponse);
+        }
+
+        return of(packageResponse).pipe(
+            switchMap((r) =>
+                this.getSettingsEngine()
+                    .loadAllLayers(true, { applyShell: false })
+                    .pipe(
+                        switchMap(() => this.getSettingsEngine().applyRuntimeShell()),
+                        catchError(() =>
+                            this.getSettingsEngine().applyRuntimeShell().pipe(map(() => null))
+                        ),
+                        map(() => r)
+                    )
+            ),
+            switchMap((r) =>
+                this.loadUserPreferencesOnLogin().pipe(
+                    catchError(() => of(undefined)),
+                    map(() => r)
+                )
+            ),
+            switchMap(() => {
+                this.dashboardResolverService.invalidateUserTypeCache();
+                return this.dashboardResolverService.resolveCurrentUserType();
+            }),
+            tap(() => {
+                this.notificationRefreshService.requestRefresh();
+                const returnUrl = this.router.parseUrl(this.router.url).queryParams['returnUrl'];
+                void this.router.navigateByUrl(
+                    returnUrl &&
+                        returnUrl.startsWith('/') &&
+                        !returnUrl.startsWith('//') &&
+                        !returnUrl.startsWith('/auth')
+                        ? returnUrl
+                        : '/dashboard',
+                );
             })
         );
     }
@@ -106,39 +117,7 @@ export class AuthService {
             switchMap((response: any) => {
                 if (response?.success) {
                     return this.getLoginDataPackage(email).pipe(
-                        switchMap((r) =>
-                            this.getSettingsEngine()
-                                .loadAllLayers(true, { applyShell: false })
-                                .pipe(
-                                    switchMap(() => this.getSettingsEngine().applyRuntimeShell()),
-                                    catchError(() =>
-                                        this.getSettingsEngine().applyRuntimeShell().pipe(map(() => null))
-                                    ),
-                                    map(() => r)
-                                )
-                        ),
-                        switchMap((r) =>
-                            this.loadUserPreferencesOnLogin().pipe(
-                                catchError(() => of(undefined)),
-                                map(() => r)
-                            )
-                        ),
-                        switchMap(() => {
-                            this.dashboardResolverService.invalidateUserTypeCache();
-                            return this.dashboardResolverService.resolveCurrentUserType();
-                        }),
-                        tap(() => {
-                            this.notificationRefreshService.requestRefresh();
-                            const returnUrl = this.router.parseUrl(this.router.url).queryParams['returnUrl'];
-                            void this.router.navigateByUrl(
-                                returnUrl &&
-                                    returnUrl.startsWith('/') &&
-                                    !returnUrl.startsWith('//') &&
-                                    !returnUrl.startsWith('/auth')
-                                    ? returnUrl
-                                    : '/dashboard',
-                            );
-                        })
+                        switchMap((packageResponse: any) => this.completeLogin(packageResponse))
                     );
                 }
                 return of(response);
@@ -203,6 +182,9 @@ export class AuthService {
             tap((response: any) => {
                 const accountData: IAccountStatusResponse = response.message;
                 console.log('accountData', accountData);
+                if (response?.success === false) {
+                    return;
+                }
                 this.localStorageService.setLoginDataPackage(accountData);
             })
         );

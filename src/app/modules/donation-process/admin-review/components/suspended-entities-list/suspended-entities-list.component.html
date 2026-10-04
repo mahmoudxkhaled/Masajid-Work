@@ -46,6 +46,8 @@
         <tr>
           <th style="width: 10rem">{{ 'donations.adminSuspendedEntities.columns.entityId' | translate }}</th>
           <th style="width: 12rem">{{ 'donations.adminSuspendedEntities.columns.entityType' | translate }}</th>
+          <th style="width: 12rem">{{ 'donations.adminSuspendedEntities.columns.suspendedAt' | translate }}</th>
+          <th style="width: 24rem">{{ 'donations.adminSuspendedEntities.columns.suspensionReason' | translate }}</th>
           <th class="text-center" style="width: 10rem">{{ 'donations.adminSuspendedEntities.columns.status' | translate }}</th>
         </tr>
       </ng-template>
@@ -68,6 +70,24 @@
               </span>
             </ng-template>
           </td>
+          <td style="width: 12rem">
+            <ng-container *ngIf="tableLoadingSpinner; else suspendedAtCell">
+              <p-skeleton height="1.25rem" width="8rem"></p-skeleton>
+            </ng-container>
+            <ng-template #suspendedAtCell>
+              <span dir="ltr">{{ row.Suspended_At ? (row.Suspended_At | date: 'yyyy-MM-dd HH:mm') : '-' }}</span>
+            </ng-template>
+          </td>
+          <td class="suspended-entities-cell-ellipsis" style="width: 24rem">
+            <ng-container *ngIf="tableLoadingSpinner; else reasonCell">
+              <p-skeleton height="1.25rem" width="80%"></p-skeleton>
+            </ng-container>
+            <ng-template #reasonCell>
+              <span class="text-overflow-ellipsis" [pTooltip]="row.Suspension_Reason || ''" tooltipPosition="top">
+                {{ row.Suspension_Reason || '-' }}
+              </span>
+            </ng-template>
+          </td>
           <td class="text-center" style="width: 10rem">
             <ng-container *ngIf="tableLoadingSpinner; else statusCell">
               <div class="flex justify-content-center">
@@ -86,7 +106,7 @@
 
       <ng-template pTemplate="emptymessage">
         <tr>
-          <td colspan="3" class="text-center p-4 text-500">
+          <td colspan="5" class="text-center p-4 text-500">
             {{ 'donations.adminSuspendedEntities.empty' | translate }}
           </td>
         </tr>

@@ -54,6 +54,12 @@ export class LoginComponent implements OnInit, OnDestroy {
             this.router.navigate(['/auth'], { replaceUrl: true });
         }
 
+        const accountSuspended = this.route.snapshot.queryParamMap.get('accountSuspended');
+        if (accountSuspended === '1') {
+            this.setLoginBanner('auth.login.accountSuspended');
+            this.router.navigate(['/auth'], { replaceUrl: true });
+        }
+
         this.initForm();
     }
 
@@ -111,6 +117,9 @@ export class LoginComponent implements OnInit, OnDestroy {
                 return;
             case 'DAP11104':
                 this.setLoginBanner('auth.login.invalidCredentials');
+                return;
+            case 'DAP11064':
+                this.setLoginBanner('auth.login.accountSuspended');
                 return;
             default:
                 this.setLoginBanner('auth.login.signInFailedWithCode', { code: code || '—' });

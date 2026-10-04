@@ -1611,7 +1611,8 @@
             "invalidCredentials": "Invalid login credentials. Please check your email or password.",
             "validationInvalid": "Please enter a valid email and password.",
             "signInFailedWithCode": "Unable to sign in ({code}). Please try again or contact support.",
-            "sessionExpired": "Your session has expired. Please sign in again."
+            "sessionExpired": "Your session has expired. Please sign in again.",
+            "accountSuspended": "Your account has been suspended. Please contact support."
         },
         "register": {
             "title": "Sign up to {platformName}",
@@ -4184,6 +4185,8 @@
             "columns": {
                 "entityId": "Entity ID",
                 "entityType": "Entity Type",
+                "suspendedAt": "Suspended At",
+                "suspensionReason": "Suspension Reason",
                 "status": "Status"
             },
             "status": {

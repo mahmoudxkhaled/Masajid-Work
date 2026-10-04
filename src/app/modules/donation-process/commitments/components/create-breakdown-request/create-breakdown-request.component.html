@@ -32,24 +32,39 @@
       <div class="mode-tip mb-3">
         <p-skeleton height="0.9rem" width="80%"></p-skeleton>
       </div>
-      <div class="item-row mb-3">
-        <p-skeleton height="0.85rem" width="8rem" class="mb-2"></p-skeleton>
-        <p-skeleton height="1.25rem" width="70%" class="mb-2"></p-skeleton>
-        <p-skeleton height="0.85rem" width="6rem" class="mb-2"></p-skeleton>
-        <p-skeleton height="3rem" width="100%" class="mb-2"></p-skeleton>
-        <p-skeleton height="0.85rem" width="8rem" class="mb-2"></p-skeleton>
-        <p-skeleton height="1.25rem" width="40%"></p-skeleton>
-      </div>
-      <div class="grid mb-3">
-        <div class="col-12 md:col-6">
-          <p-skeleton height="0.85rem" width="45%" class="mb-2"></p-skeleton>
-          <p-skeleton height="2.5rem" width="100%" borderRadius="6px"></p-skeleton>
+      <section class="section-card mb-3">
+        <header class="section-card__header">
+          <p-skeleton shape="circle" size="2rem"></p-skeleton>
+          <p-skeleton height="1rem" width="9rem"></p-skeleton>
+          <p-skeleton height="1.9rem" width="11rem" borderRadius="999px" class="quantity-chip-skeleton"></p-skeleton>
+        </header>
+        <div class="section-card__body">
+          <p-skeleton height="0.8rem" width="5rem" class="mb-2"></p-skeleton>
+          <p-skeleton height="1.2rem" width="60%" class="mb-3"></p-skeleton>
+          <p-skeleton height="0.8rem" width="6rem" class="mb-2"></p-skeleton>
+          <p-skeleton height="0.95rem" width="100%" class="mb-2"></p-skeleton>
+          <p-skeleton height="0.95rem" width="75%"></p-skeleton>
         </div>
-        <div class="col-12 md:col-6">
-          <p-skeleton height="0.85rem" width="45%" class="mb-2"></p-skeleton>
-          <p-skeleton height="2.5rem" width="100%" borderRadius="6px"></p-skeleton>
+      </section>
+      <section class="section-card mb-3">
+        <header class="section-card__header">
+          <p-skeleton shape="circle" size="2rem"></p-skeleton>
+          <p-skeleton height="1rem" width="9rem"></p-skeleton>
+        </header>
+        <div class="section-card__body">
+          <div class="grid">
+            <div class="col-12 md:col-6">
+              <p-skeleton height="0.85rem" width="45%" class="mb-2"></p-skeleton>
+              <p-skeleton height="2.5rem" width="100%" borderRadius="6px"></p-skeleton>
+            </div>
+            <div class="col-12 md:col-6">
+              <p-skeleton height="0.85rem" width="45%" class="mb-2"></p-skeleton>
+              <p-skeleton height="2.5rem" width="100%" borderRadius="6px"></p-skeleton>
+            </div>
+          </div>
+          <p-skeleton height="4.25rem" width="100%" borderRadius="10px" class="split-preview-skeleton"></p-skeleton>
         </div>
-      </div>
+      </section>
       <p-skeleton height="0.85rem" width="12rem" class="mb-2"></p-skeleton>
       <p-skeleton height="6rem" width="100%" borderRadius="10px" class="mb-4"></p-skeleton>
       <div class="flex flex-wrap gap-2">
@@ -121,99 +136,133 @@
           </span>
         </div>
 
-        <div class="item-row">
-          <div class="font-medium mb-3">{{ 'donations.breakdown.createDialog.originalRequestSummary' | translate }}</div>
-          <div class="grid">
-            <div class="col-12">
-              <span class="summary-label">{{ 'donations.breakdown.columns.title' | translate }}</span>
-              <span class="summary-value">{{ originalTitle || '-' }}</span>
-            </div>
-            <div class="col-12">
-              <span class="summary-label">{{ 'donations.breakdown.columns.description' | translate }}</span>
-              <span class="summary-value summary-value--multiline">{{ originalDescription || '-' }}</span>
-            </div>
-            <div class="col-12 md:col-4">
-              <span class="summary-label">{{ 'donations.breakdown.createDialog.originalQuantity' | translate }}</span>
-              <span class="summary-value">{{ originalQuantityLabel }}</span>
-            </div>
+        <section class="section-card">
+          <header class="section-card__header">
+            <span class="section-card__icon"><i class="pi pi-file"></i></span>
+            <h3 class="section-card__title">{{ 'donations.breakdown.createDialog.originalRequestSummary' | translate }}</h3>
+            <span class="quantity-chip">
+              <i class="pi pi-box"></i>
+              <span class="quantity-chip__label">{{ 'donations.breakdown.createDialog.originalQuantity' | translate }}</span>
+              <span class="quantity-chip__value">{{ originalQuantityLabel }}</span>
+            </span>
+          </header>
+          <div class="section-card__body">
+            <span class="summary-label">{{ 'donations.breakdown.columns.title' | translate }}</span>
+            <span class="summary-value summary-value--title mb-3">{{ originalTitle || '-' }}</span>
+            <span class="summary-label">{{ 'donations.breakdown.columns.description' | translate }}</span>
+            <span class="summary-value summary-value--multiline">{{ originalDescription || '-' }}</span>
           </div>
-        </div>
+        </section>
 
         <ng-container *ngIf="mode === 'quantity'">
           <p *ngIf="!canSplitByQuantity" class="mb-0 text-500">
             {{ 'donations.breakdown.createDialog.validation.quantitySplitUnavailable' | translate }}
           </p>
 
-          <ng-container *ngIf="canSplitByQuantity">
-            <div class="grid">
-              <div class="col-12 md:col-6">
-                <label class="font-medium mb-2 block">{{ 'donations.breakdown.createDialog.donorQuantity' | translate }}</label>
-                <p-inputNumber [(ngModel)]="donorQuantity" [min]="1" [max]="originalQuantity - 1"
-                  [showButtons]="false" styleClass="w-full"
-                  [disabled]="formDisabled || !!(isLoading$ | async)"></p-inputNumber>
-              </div>
-              <div class="col-12 md:col-6">
-                <label class="font-medium mb-2 block">{{ 'donations.breakdown.columns.currency' | translate }}</label>
-                <p-dropdown [options]="currencyOptions" [(ngModel)]="currencyCode" optionLabel="label"
-                  optionValue="value" [filter]="true" [placeholder]="currencyPlaceholder" styleClass="w-full"
-                  [disabled]="formDisabled || !!(isLoading$ | async)"></p-dropdown>
-              </div>
-            </div>
-          </ng-container>
-        </ng-container>
-
-        <ng-container *ngIf="mode === 'custom'">
-          <div class="flex align-items-center justify-content-between gap-2 flex-wrap">
-            <span class="font-medium">{{ 'donations.breakdown.createDialog.itemsTitle' | translate }}</span>
-            <p-button [label]="'donations.breakdown.createDialog.addItem' | translate" icon="pi pi-plus"
-              size="small" [outlined]="true" (onClick)="addItem()"
-              [disabled]="formDisabled || !!(isLoading$ | async)"></p-button>
-          </div>
-
-          <div *ngFor="let item of items; let i = index" class="item-row">
-            <div class="grid">
-              <div class="col-12">
-                <label class="font-medium mb-2 block">{{ 'donations.breakdown.columns.title' | translate }}</label>
-                <input pInputText class="w-full" [(ngModel)]="item.title"
-                  [placeholder]="'donations.breakdown.createDialog.titlePlaceholder' | translate"
-                  [disabled]="formDisabled || !!(isLoading$ | async)" />
-              </div>
-              <div class="col-12">
-                <label class="font-medium mb-2 block">{{ 'donations.breakdown.columns.description' | translate }}</label>
-                <textarea pInputTextarea rows="2" class="w-full" [(ngModel)]="item.description"
-                  [disabled]="formDisabled || !!(isLoading$ | async)"></textarea>
-              </div>
-              <div class="col-6 md:col-3">
-                <label class="font-medium mb-2 block">{{ 'donations.breakdown.columns.quantity' | translate }}</label>
-                <p-inputNumber [(ngModel)]="item.quantity" [min]="1" [showButtons]="false" styleClass="w-full"
-                  [disabled]="formDisabled || !!(isLoading$ | async)"></p-inputNumber>
-              </div>
-              <div class="col-6 md:col-3">
-                <label class="font-medium mb-2 block">{{ 'donations.breakdown.columns.estimatedCost' | translate }}</label>
-                <p-inputNumber [(ngModel)]="item.estimatedCost" [min]="0" mode="decimal" [minFractionDigits]="0"
-                  [maxFractionDigits]="2" styleClass="w-full"
-                  [disabled]="formDisabled || !!(isLoading$ | async)"></p-inputNumber>
-              </div>
-              <div class="col-12 md:col-3">
-                <label class="font-medium mb-2 block">{{ 'donations.breakdown.columns.currency' | translate }}</label>
-                <p-dropdown [options]="currencyOptions" [(ngModel)]="item.currencyCode" optionLabel="label"
-                  optionValue="value" [filter]="true" [placeholder]="currencyPlaceholder" styleClass="w-full"
-                  [disabled]="formDisabled || !!(isLoading$ | async)"></p-dropdown>
-              </div>
-              <div class="col-12 md:col-3 flex align-items-end justify-content-between gap-2 flex-wrap">
-                <div class="flex align-items-center gap-2 mb-2 md:mb-0">
-                  <p-checkbox [(ngModel)]="item.donorPortion" [binary]="true" [inputId]="'donorPortion' + i"
-                    [disabled]="formDisabled || !!(isLoading$ | async)"></p-checkbox>
-                  <label [for]="'donorPortion' + i">{{ 'donations.breakdown.columns.donorPortion' | translate }}</label>
+          <section *ngIf="canSplitByQuantity" class="section-card">
+            <header class="section-card__header">
+              <span class="section-card__icon"><i class="pi pi-sliders-h"></i></span>
+              <h3 class="section-card__title">{{ 'donations.breakdown.createDialog.modes.quantity' | translate }}</h3>
+            </header>
+            <div class="section-card__body">
+              <div class="grid">
+                <div class="col-12 md:col-6">
+                  <label class="field-label">{{ 'donations.breakdown.createDialog.donorQuantity' | translate }}</label>
+                  <p-inputNumber [(ngModel)]="donorQuantity" [min]="1" [max]="originalQuantity - 1"
+                    [showButtons]="false" styleClass="w-full"
+                    [disabled]="formDisabled || !!(isLoading$ | async)"></p-inputNumber>
                 </div>
-                <p-button icon="pi pi-trash" severity="danger" [outlined]="true" size="small"
-                  [disabled]="items.length <= 2 || formDisabled || !!(isLoading$ | async)"
-                  [pTooltip]="'donations.breakdown.createDialog.removeItem' | translate" tooltipPosition="top"
-                  (onClick)="removeItem(i)"></p-button>
+                <div class="col-12 md:col-6">
+                  <label class="field-label">{{ 'donations.breakdown.columns.currency' | translate }}</label>
+                  <p-dropdown appendTo="body" [options]="currencyOptions" [(ngModel)]="currencyCode" optionLabel="label"
+                    optionValue="value" [filter]="true" [placeholder]="currencyPlaceholder" styleClass="w-full"
+                    [disabled]="formDisabled || !!(isLoading$ | async)"></p-dropdown>
+                </div>
+              </div>
+
+              <div class="split-preview">
+                <div class="split-preview__part split-preview__part--donor">
+                  <span class="split-preview__label">{{ 'donations.breakdown.createDialog.donorPortionTitle' | translate }}</span>
+                  <span class="split-preview__value">{{ donorQuantity || 0 }}</span>
+                </div>
+                <i class="pi pi-arrows-h split-preview__divider"></i>
+                <div class="split-preview__part split-preview__part--remaining"
+                  [class.split-preview__part--invalid]="remainingQuantity <= 0">
+                  <span class="split-preview__label">{{ 'donations.breakdown.createDialog.remainingPortionTitle' | translate }}</span>
+                  <span class="split-preview__value">{{ remainingQuantity }}</span>
+                </div>
+              </div>
+            </div>
+          </section>
+        </ng-container>
+
+        <section *ngIf="mode === 'custom'" class="section-card">
+          <header class="section-card__header">
+            <span class="section-card__icon"><i class="pi pi-list"></i></span>
+            <h3 class="section-card__title">{{ 'donations.breakdown.createDialog.itemsTitle' | translate }}</h3>
+            <span class="items-count">{{ items.length }}</span>
+            <p-button class="section-card__action" [label]="'donations.breakdown.createDialog.addItem' | translate"
+              icon="pi pi-plus" size="small" [outlined]="true" (onClick)="addItem()"
+              [disabled]="formDisabled || !!(isLoading$ | async)"></p-button>
+          </header>
+
+          <div class="section-card__body flex flex-column gap-3">
+            <div *ngFor="let item of items; let i = index" class="breakdown-item"
+              [class.breakdown-item--donor]="item.donorPortion">
+              <div class="breakdown-item__header">
+                <span class="breakdown-item__number">{{ i + 1 }}</span>
+                <span class="breakdown-item__tag"
+                  [class.breakdown-item__tag--donor]="item.donorPortion">
+                  {{ (item.donorPortion
+                    ? 'donations.breakdown.createDialog.donorPortionTitle'
+                    : 'donations.breakdown.createDialog.remainingPortionTitle') | translate }}
+                </span>
+                <div class="breakdown-item__controls">
+                  <div class="flex align-items-center gap-2">
+                    <p-checkbox [(ngModel)]="item.donorPortion" [binary]="true" [inputId]="'donorPortion' + i"
+                      [disabled]="formDisabled || !!(isLoading$ | async)"></p-checkbox>
+                    <label [for]="'donorPortion' + i">{{ 'donations.breakdown.columns.donorPortion' | translate }}</label>
+                  </div>
+                  <p-button icon="pi pi-trash" severity="danger" [text]="true" [rounded]="true" size="small"
+                    [disabled]="items.length <= 2 || formDisabled || !!(isLoading$ | async)"
+                    [pTooltip]="'donations.breakdown.createDialog.removeItem' | translate" tooltipPosition="top"
+                    (onClick)="removeItem(i)"></p-button>
+                </div>
+              </div>
+
+              <div class="grid">
+                <div class="col-12">
+                  <label class="field-label">{{ 'donations.breakdown.columns.title' | translate }}</label>
+                  <input pInputText class="w-full" [(ngModel)]="item.title"
+                    [placeholder]="'donations.breakdown.createDialog.titlePlaceholder' | translate"
+                    [disabled]="formDisabled || !!(isLoading$ | async)" />
+                </div>
+                <div class="col-12">
+                  <label class="field-label">{{ 'donations.breakdown.columns.description' | translate }}</label>
+                  <textarea pInputTextarea rows="2" class="w-full" [(ngModel)]="item.description"
+                    [disabled]="formDisabled || !!(isLoading$ | async)"></textarea>
+                </div>
+                <div class="col-12 md:col-4">
+                  <label class="field-label">{{ 'donations.breakdown.columns.quantity' | translate }}</label>
+                  <p-inputNumber [(ngModel)]="item.quantity" [min]="1" [showButtons]="false" styleClass="w-full"
+                    [disabled]="formDisabled || !!(isLoading$ | async)"></p-inputNumber>
+                </div>
+                <div class="col-12 md:col-4">
+                  <label class="field-label">{{ 'donations.breakdown.columns.estimatedCost' | translate }}</label>
+                  <p-inputNumber [(ngModel)]="item.estimatedCost" [min]="0" mode="decimal" [minFractionDigits]="0"
+                    [maxFractionDigits]="2" styleClass="w-full"
+                    [disabled]="formDisabled || !!(isLoading$ | async)"></p-inputNumber>
+                </div>
+                <div class="col-12 md:col-4">
+                  <label class="field-label">{{ 'donations.breakdown.columns.currency' | translate }}</label>
+                  <p-dropdown appendTo="body" [options]="currencyOptions" [(ngModel)]="item.currencyCode" optionLabel="label"
+                    optionValue="value" [filter]="true" [placeholder]="currencyPlaceholder" styleClass="w-full"
+                    [disabled]="formDisabled || !!(isLoading$ | async)"></p-dropdown>
+                </div>
               </div>
             </div>
           </div>
-        </ng-container>
+        </section>
 
         <div class="flex flex-column gap-2">
           <label class="font-medium">{{ 'donations.breakdown.createDialog.attachments' | translate }}</label>
