@@ -40,6 +40,14 @@ export class HeaderSectionComponent implements OnInit, OnDestroy {
   readonly registerVendorPath = REGISTER_VENDOR_PATH;
   readonly registerCharityPath = REGISTER_CHARITY_CENTER_PATH;
 
+  readonly navLinks = [
+    { sectionId: 'hero', labelKey: 'public.landing.header.home' },
+    { sectionId: 'how-it-works', labelKey: 'public.landing.header.howItWorks' },
+    { sectionId: 'about', labelKey: 'public.landing.header.about' },
+    { sectionId: 'trust-validation', labelKey: 'public.landing.header.trust' },
+  ];
+
+  activeSectionId = 'hero';
   currentLang: 'en' | 'ar' = 'ar';
   isDarkTheme = false;
   langMenuOpen = false;
@@ -111,4 +119,23 @@ export class HeaderSectionComponent implements OnInit, OnDestroy {
   toggleTheme(): void {
     this.theme.toggle();
   }
+
+  // #region Active section
+  @HostListener('window:scroll')
+  onWindowScroll(): void {
+    this.updateActiveSection();
+  }
+
+  private updateActiveSection(): void {
+    const headerOffset = 120;
+    let activeId = 'hero';
+    for (const link of this.navLinks) {
+      const section = document.getElementById(link.sectionId);
+      if (section && section.getBoundingClientRect().top <= headerOffset) {
+        activeId = link.sectionId;
+      }
+    }
+    this.activeSectionId = activeId;
+  }
+  // #endregion
 }

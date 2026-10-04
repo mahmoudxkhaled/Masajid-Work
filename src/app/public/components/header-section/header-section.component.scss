@@ -87,7 +87,11 @@
   line-height: 1.6;
   color: var(--dh-on-surface-variant, #494551);
   text-decoration: none;
-  transition: color 0.2s;
+  border-block-end: 2px solid transparent;
+  padding-block-end: 4px;
+  transition:
+    color 0.2s,
+    border-color 0.3s ease;
 }
 
 .header__link:hover {
@@ -97,8 +101,7 @@
 .header__link--active {
   font-weight: 700;
   color: var(--dh-primary, #4f378a);
-  border-block-end: 2px solid var(--dh-primary, #4f378a);
-  padding-block-end: 4px;
+  border-block-end-color: var(--dh-primary, #4f378a);
 }
 
 .header__actions {

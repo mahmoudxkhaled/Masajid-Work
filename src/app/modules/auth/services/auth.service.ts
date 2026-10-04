@@ -1,6 +1,6 @@
 import { Injectable, Injector } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, finalize, of, switchMap, tap, catchError, map } from 'rxjs';
+import { BehaviorSubject, Observable, finalize, from, of, switchMap, tap, catchError, map } from 'rxjs';
 import { ApiService } from 'src/app/core/api/api.service';
 import { LocalStorageService } from 'src/app/core/services/local-storage.service';
 import { NotificationRefreshService } from 'src/app/core/services/notification-refresh.service';
@@ -88,17 +88,17 @@ export class AuthService {
                 this.dashboardResolverService.invalidateUserTypeCache();
                 return this.dashboardResolverService.resolveCurrentUserType();
             }),
-            tap(() => {
+            switchMap((result) => {
                 this.notificationRefreshService.requestRefresh();
                 const returnUrl = this.router.parseUrl(this.router.url).queryParams['returnUrl'];
-                void this.router.navigateByUrl(
+                const targetUrl =
                     returnUrl &&
-                        returnUrl.startsWith('/') &&
-                        !returnUrl.startsWith('//') &&
-                        !returnUrl.startsWith('/auth')
+                    returnUrl.startsWith('/') &&
+                    !returnUrl.startsWith('//') &&
+                    !returnUrl.startsWith('/auth')
                         ? returnUrl
-                        : '/dashboard',
-                );
+                        : '/dashboard';
+                return from(this.router.navigateByUrl(targetUrl)).pipe(map(() => result));
             })
         );
     }

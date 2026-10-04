@@ -11,10 +11,15 @@
       />
     </a>
     <div class="header__nav">
-      <a class="header__link header__link--active" href="#hero">{{ 'public.landing.header.home' | translate }}</a>
-      <a class="header__link" href="#how-it-works">{{ 'public.landing.header.howItWorks' | translate }}</a>
-      <a class="header__link" href="#about">{{ 'public.landing.header.about' | translate }}</a>
-      <a class="header__link" href="#trust-validation">{{ 'public.landing.header.trust' | translate }}</a>
+      <a
+        *ngFor="let link of navLinks"
+        class="header__link"
+        [class.header__link--active]="link.sectionId === activeSectionId"
+        [attr.aria-current]="link.sectionId === activeSectionId ? 'location' : null"
+        [href]="'#' + link.sectionId"
+      >
+        {{ link.labelKey | translate }}
+      </a>
     </div>
     <div class="header__actions">
       <button
