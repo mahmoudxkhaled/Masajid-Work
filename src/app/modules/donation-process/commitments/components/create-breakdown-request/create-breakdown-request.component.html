@@ -36,7 +36,10 @@
         <header class="section-card__header">
           <p-skeleton shape="circle" size="2rem"></p-skeleton>
           <p-skeleton height="1rem" width="9rem"></p-skeleton>
-          <p-skeleton height="1.9rem" width="11rem" borderRadius="999px" class="quantity-chip-skeleton"></p-skeleton>
+          <div class="section-card__chips">
+            <p-skeleton height="1.9rem" width="11rem" borderRadius="999px"></p-skeleton>
+            <p-skeleton height="1.9rem" width="11rem" borderRadius="999px"></p-skeleton>
+          </div>
         </header>
         <div class="section-card__body">
           <p-skeleton height="0.8rem" width="5rem" class="mb-2"></p-skeleton>
@@ -140,11 +143,20 @@
           <header class="section-card__header">
             <span class="section-card__icon"><i class="pi pi-file"></i></span>
             <h3 class="section-card__title">{{ 'donations.breakdown.createDialog.originalRequestSummary' | translate }}</h3>
-            <span class="quantity-chip">
-              <i class="pi pi-box"></i>
-              <span class="quantity-chip__label">{{ 'donations.breakdown.createDialog.originalQuantity' | translate }}</span>
-              <span class="quantity-chip__value">{{ originalQuantityLabel }}</span>
-            </span>
+            <div class="section-card__chips">
+              <span class="quantity-chip">
+                <i class="pi pi-box"></i>
+                <span class="quantity-chip__label">{{ 'donations.breakdown.createDialog.originalQuantity' | translate }}</span>
+                <span class="quantity-chip__value">{{ originalQuantityLabel }}</span>
+              </span>
+              <span class="quantity-chip">
+                <i class="pi pi-wallet"></i>
+                <span class="quantity-chip__label">{{ 'donations.breakdown.columns.estimatedCost' | translate }}</span>
+                <span class="quantity-chip__value" dir="ltr">
+                  {{ originalEstimatedCost ? (originalEstimatedCost | number: '1.0-2') + ' ' + originalCurrencyCode : '-' }}
+                </span>
+              </span>
+            </div>
           </header>
           <div class="section-card__body">
             <span class="summary-label">{{ 'donations.breakdown.columns.title' | translate }}</span>

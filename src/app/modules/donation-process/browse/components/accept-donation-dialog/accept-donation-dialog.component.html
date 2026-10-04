@@ -37,16 +37,22 @@
           ></p-radioButton>
           <label for="fulfillmentSelf">{{ 'donations.commitments.acceptDialog.selfFulfillment' | translate }}</label>
         </div>
-        <div class="flex align-items-center gap-2">
+        <div class="flex align-items-center gap-2 opacity-60">
           <p-radioButton
             name="fulfillmentMode"
             [value]="FulfillmentMode.ViaCharityRepresentative"
             [(ngModel)]="fulfillmentMode"
             inputId="fulfillmentCharity"
+            [disabled]="true"
           ></p-radioButton>
-          <label for="fulfillmentCharity">{{
+          <label for="fulfillmentCharity" class="cursor-default">{{
             'donations.commitments.acceptDialog.viaCharityRepresentative' | translate
           }}</label>
+          <p-tag
+            [value]="'donations.commitments.acceptDialog.comingSoon' | translate"
+            severity="warning"
+            [rounded]="true"
+          ></p-tag>
         </div>
       </div>
       <small *ngIf="fulfillmentMode === FulfillmentMode.ViaCharityRepresentative" class="text-500">{{

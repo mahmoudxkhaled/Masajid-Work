@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
+import { environment } from 'src/environments/environment';
 
 const RESEND_COOLDOWN_END_KEY = 'forgetPasswordResendCooldownEnd';
 const RESEND_COOLDOWN_SECONDS = 120;
@@ -41,7 +42,7 @@ export class ForgetPasswordComponent implements OnInit, OnDestroy {
 
   initForm() {
     this.loginCreditials = new FormGroup({
-      email: new FormControl<String>('mahmoudxkhaled@gmail.com', [Validators.required, Validators.email]),
+      email: new FormControl<String>(environment.devLoginEmail, [Validators.required, Validators.email]),
     });
   }
 

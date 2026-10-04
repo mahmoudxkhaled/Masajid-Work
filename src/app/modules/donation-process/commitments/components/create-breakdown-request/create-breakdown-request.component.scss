@@ -143,9 +143,14 @@
 }
 
 .section-card__action,
-.quantity-chip,
-.quantity-chip-skeleton {
+.section-card__chips {
   margin-inline-start: auto;
+}
+
+.section-card__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
 .section-card__body {

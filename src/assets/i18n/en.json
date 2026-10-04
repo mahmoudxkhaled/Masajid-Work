@@ -3934,6 +3934,7 @@
                 "fulfillmentMode": "Fulfillment mode",
                 "selfFulfillment": "Self Fulfillment",
                 "viaCharityRepresentative": "Via Charity Representative",
+                "comingSoon": "Coming soon",
                 "charityCenter": "Charity center",
                 "charityCenterPlaceholder": "Select a charity center",
                 "noCharityCenters": "No charity centers are currently available.",

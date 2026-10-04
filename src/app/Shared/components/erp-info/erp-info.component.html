@@ -1,11 +1,12 @@
 @if(!isDashboard){
-    <div [class]="boxClass">
-        <span class="icon"><i [class]="icon"></i></span>
-        <div class="text">
-            <div class="description" *ngIf="!isDynamic">{{ description }}</div>
-            <div class="description" *ngIf="isDynamic" [innerHTML]="safeDescription"></div>
-        </div> 
-    </div>
+    <section [class]="boxClass">
+        <span class="erp-info__icon"><i [class]="icon"></i></span>
+        <div class="erp-info__body">
+            <h3 class="erp-info__title" *ngIf="title">{{ title }}</h3>
+            <p class="erp-info__text" *ngIf="!isDynamic">{{ description }}</p>
+            <div class="erp-info__text" *ngIf="isDynamic" [innerHTML]="safeDescription"></div>
+        </div>
+    </section>
 }@else{
     <span class="icon" [pTooltip]="description">
         <i [class]="icon"></i>

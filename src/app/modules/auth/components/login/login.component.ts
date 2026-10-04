@@ -5,6 +5,7 @@ import { Observable, Subscription } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
 import { LocalStorageService } from 'src/app/core/services/local-storage.service';
 import { resolvePostLoginUrl } from 'src/app/core/utils/post-login-navigation';
+import { environment } from 'src/environments/environment';
 
 @Component({
     templateUrl: './login.component.html',
@@ -65,8 +66,8 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     initForm() {
         this.loginCreditials = new FormGroup({
-            email: new FormControl<string>('mahmoudxkhaled@gmail.com', [Validators.required, Validators.email]),
-            password: new FormControl<string>('Kakuzu@123456', [Validators.required]),
+            email: new FormControl<string>(environment.devLoginEmail, [Validators.required, Validators.email]),
+            password: new FormControl<string>(environment.devLoginPassword, [Validators.required]),
         });
     }
 

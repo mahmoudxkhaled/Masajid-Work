@@ -10,13 +10,13 @@ import { Router } from '@angular/router';
 export class ERPInfoComponent implements OnInit, AfterViewInit {
   @Input() icon: string = 'fas fa-info-circle text-primary';
   @Input() severity: string = 'info';
-  @Input() title: string = 'Title Here';
+  @Input() title: string = '';
   @Input() description: string = 'Description here...';
   @Input() isDynamic: boolean = false;
   @Input() isDashboard: boolean = false;
   safeDescription: SafeHtml = '';
   get boxClass() {
-    return `color-box ${this.severity}`;
+    return `erp-info erp-info--${this.severity}`;
   }
 
   constructor(private sanitizer: DomSanitizer, private router: Router, private elementRef: ElementRef) { }
